@@ -132,6 +132,20 @@ def validate_single_h1(path: Path, root: Path) -> str | None:
     return None
 
 
+def section_has_body(text: str, section: str) -> bool:
+    lines = text.splitlines()
+    for index, line in enumerate(lines):
+        if line != section:
+            continue
+        body_lines = []
+        for following_line in lines[index + 1 :]:
+            if following_line.startswith("## "):
+                break
+            body_lines.append(following_line)
+        return bool("\n".join(body_lines).strip())
+    return False
+
+
 def validate(root: Path = ROOT) -> list[str]:
     root = Path(root)
     errors: list[str] = []
@@ -267,6 +281,8 @@ def validate(root: Path = ROOT) -> list[str]:
         for section in REQUIRED_EVAL_CASE_SECTIONS:
             if section not in text:
                 errors.append(f"{rel(case, root)} missing {section}")
+            elif not section_has_body(text, section):
+                errors.append(f"{rel(case, root)} section has no body: {section}")
 
     evals_readme = root / "evals" / "README.md"
     if evals_readme.exists():
