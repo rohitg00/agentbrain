@@ -16,6 +16,7 @@ REQUIRED_ROOT = [
     "CONTRIBUTING.md",
 ]
 REQUIRED_FILES = ["requirements-dev.txt"]
+REQUIRED_DIRECTORIES = ["schemas"]
 REQUIRED_GITIGNORE_PATTERNS = ["__pycache__/", "*.py[cod]", ".pytest_cache/", ".venv/"]
 REQUIRED_DOCS = ["docs/autonomous-goals.md", "docs/skill-distillation.md"]
 REQUIRED_SKILLS = [
@@ -272,6 +273,10 @@ def validate(root: Path = ROOT) -> list[str]:
     for required_path in REQUIRED_FILES:
         if not (root / required_path).exists():
             errors.append(f"missing {required_path}")
+
+    for required_directory in REQUIRED_DIRECTORIES:
+        if not (root / required_directory).is_dir():
+            errors.append(f"missing {required_directory}/")
 
     gitignore = root / ".gitignore"
     if not gitignore.exists():

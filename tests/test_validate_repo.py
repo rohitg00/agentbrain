@@ -1,4 +1,5 @@
 import json
+import shutil
 from pathlib import Path
 
 from scripts import validate_repo
@@ -264,6 +265,15 @@ def test_docs_filenames_must_use_lowercase_kebab_case(tmp_path):
     errors = validate_repo.validate(tmp_path)
 
     assert "docs/Bad_Doc.md filename must use lowercase kebab-case" in errors
+
+
+def test_schema_directory_is_required(tmp_path):
+    write_minimal_repo(tmp_path)
+    shutil.rmtree(tmp_path / "schemas")
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "missing schemas/" in errors
 
 
 def test_invalid_json_schema_reports_relative_path(tmp_path):
