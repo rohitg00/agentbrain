@@ -99,7 +99,8 @@ def parse_frontmatter(text: str) -> dict[str, str]:
 
 
 def term_is_only_in_readme_comparison_section(text: str, term: str) -> bool:
-    if term not in text:
+    term_lower = term.lower()
+    if term_lower not in text.lower():
         return True
 
     in_allowed_section = False
@@ -107,7 +108,7 @@ def term_is_only_in_readme_comparison_section(text: str, term: str) -> bool:
         if line.startswith("## "):
             heading = line.lower().strip("# ")
             in_allowed_section = heading in {"vs others", "benchmarks", "comparisons"}
-        if term in line and not in_allowed_section:
+        if term_lower in line.lower() and not in_allowed_section:
             return False
     return True
 
@@ -292,7 +293,7 @@ def validate(root: Path = ROOT) -> list[str]:
             continue
         text = public_copy_file.read_text(errors="ignore")
         for term in BANNED_PUBLIC_COPY_TERMS:
-            if term in text and not public_copy_term_allowed(public_copy_file, text, term):
+            if term.lower() in text.lower() and not public_copy_term_allowed(public_copy_file, text, term):
                 errors.append(f"{rel(public_copy_file, root)} contains banned public-copy term: {term}")
 
     return errors

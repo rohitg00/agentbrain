@@ -293,6 +293,19 @@ def test_banned_public_copy_terms_are_reported_in_python_scripts(tmp_path):
     assert f"scripts/example.py contains banned public-copy term: {internal_name}" in errors
 
 
+def test_banned_public_copy_terms_are_case_insensitive(tmp_path):
+    write_minimal_repo(tmp_path)
+    internal_name = ("G" + "Brain").lower()
+    canonical_name = "G" + "Brain"
+    (tmp_path / "docs" / "copy.md").write_text(
+        f"This says {internal_name} in public copy.\n", encoding="utf-8"
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert f"docs/copy.md contains banned public-copy term: {canonical_name}" in errors
+
+
 def test_vendor_names_are_reported_in_public_copy(tmp_path):
     write_minimal_repo(tmp_path)
     vendor_name = "Clau" + "de"
