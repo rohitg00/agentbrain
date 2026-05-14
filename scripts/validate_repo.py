@@ -181,6 +181,14 @@ def public_copy_term_allowed(path: Path, text: str, term: str) -> bool:
     return path.name == "README.md" and term_is_only_in_readme_comparison_section(text, term)
 
 
+def find_trailing_whitespace_lines(text: str) -> list[int]:
+    return [
+        line_number
+        for line_number, line in enumerate(text.splitlines(), 1)
+        if line.endswith((" ", "\t"))
+    ]
+
+
 def title_from_slug(slug: str) -> str:
     connector_words = {"and", "or", "the", "to", "vs"}
     parts = slug.split("-")
@@ -652,6 +660,8 @@ def validate(root: Path = ROOT) -> list[str]:
         if any(part in PUBLIC_COPY_EXCLUDED_PARTS for part in public_copy_file.parts):
             continue
         text = public_copy_file.read_text(errors="ignore")
+        for line_number in find_trailing_whitespace_lines(text):
+            errors.append(f"{rel(public_copy_file, root)} line {line_number} has trailing whitespace")
         for term in BANNED_PUBLIC_COPY_TERMS:
             if term.lower() in text.lower() and not public_copy_term_allowed(public_copy_file, text, term):
                 errors.append(f"{rel(public_copy_file, root)} contains banned public-copy term: {term}")

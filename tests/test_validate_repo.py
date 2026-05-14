@@ -291,6 +291,18 @@ def test_markdown_h1_check_ignores_fenced_code_examples(tmp_path):
     assert "docs/autonomous-goals.md must contain exactly one H1 heading" not in errors
 
 
+def test_public_markdown_must_not_have_trailing_whitespace(tmp_path):
+    write_minimal_repo(tmp_path)
+    (tmp_path / "docs" / "copy.md").write_text(
+        "# Copy\n\nThis line has trailing whitespace.  \n",
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "docs/copy.md line 3 has trailing whitespace" in errors
+
+
 def test_docs_filenames_must_use_lowercase_kebab_case(tmp_path):
     write_minimal_repo(tmp_path)
     (tmp_path / "docs" / "Bad_Doc.md").write_text("# Bad Doc\n", encoding="utf-8")
