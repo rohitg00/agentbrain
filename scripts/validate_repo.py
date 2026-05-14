@@ -29,12 +29,15 @@ REQUIRED_GITIGNORE_PATTERNS = ["__pycache__/", "*.py[cod]", ".pytest_cache/", ".
 REQUIRED_DOCS = [
     "docs/agent-harness.md",
     "docs/autonomous-goals.md",
+    "docs/shared-language.md",
+    "docs/decision-records.md",
     "docs/skill-distillation.md",
 ]
 REQUIRED_SKILLS = [
     "skills/activity-recap/SKILL.md",
     "skills/agent-output-verifier/SKILL.md",
     "skills/context-memory/SKILL.md",
+    "skills/domain-language/SKILL.md",
 ]
 REQUIRED_EVAL_CASES = [
     "evals/cases/activity-recap.md",
@@ -42,6 +45,7 @@ REQUIRED_EVAL_CASES = [
     "evals/cases/agent-output-verifier.md",
     "evals/cases/dirty-working-tree-preservation.md",
     "evals/cases/memory-capture-routing.md",
+    "evals/cases/domain-language-drift.md",
     "evals/cases/verification-shortcut.md",
     "evals/cases/skill-boundary-creep.md",
     "evals/cases/no-user-defined.md",
