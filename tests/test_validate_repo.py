@@ -2453,6 +2453,16 @@ def test_evals_readme_case_catalog_entries_must_be_backticked(tmp_path):
     assert "evals/README.md missing eval case catalog entry: activity-recap" in errors
 
 
+def test_evals_readme_case_catalog_entries_must_point_to_existing_files(tmp_path):
+    write_minimal_repo(tmp_path)
+    with (tmp_path / "evals" / "README.md").open("a", encoding="utf-8") as readme:
+        readme.write("- `missing-case`\n")
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "evals/README.md eval case catalog entry points to missing file: missing-case" in errors
+
+
 def test_eval_rubrics_must_have_exactly_one_h1(tmp_path):
     write_minimal_repo(tmp_path)
     rubric_dir = tmp_path / "evals" / "rubrics"

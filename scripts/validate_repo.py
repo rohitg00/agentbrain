@@ -510,6 +510,13 @@ def command_skills_to_load(text: str) -> list[str]:
     return sorted(set(re.findall(r"`([a-z0-9]+(?:-[a-z0-9]+)*)`", body)))
 
 
+def evals_readme_catalog_entries(text: str, section: str) -> list[str]:
+    body = section_body(text, section)
+    if not body.strip() and section == "## Case catalog":
+        body = text
+    return sorted(set(re.findall(r"`([a-z0-9]+(?:-[a-z0-9]+)*)`", body)))
+
+
 def validate(root: Path = ROOT) -> list[str]:
     root = Path(root)
     errors: list[str] = []
@@ -851,11 +858,16 @@ def validate(root: Path = ROOT) -> list[str]:
     evals_readme = root / "evals" / "README.md"
     if evals_readme.exists():
         evals_readme_text = evals_readme.read_text(errors="ignore")
+        eval_case_entries = evals_readme_catalog_entries(evals_readme_text, "## Case catalog")
+        eval_rubric_entries = evals_readme_catalog_entries(evals_readme_text, "## Rubric catalog")
         for case in eval_cases:
-            if f"`{case.stem}`" not in evals_readme_text:
+            if case.stem not in eval_case_entries:
                 errors.append(f"evals/README.md missing eval case catalog entry: {case.stem}")
+        for case_name in eval_case_entries:
+            if not (root / "evals" / "cases" / f"{case_name}.md").exists():
+                errors.append(f"evals/README.md eval case catalog entry points to missing file: {case_name}")
         for rubric in sorted((root / "evals" / "rubrics").glob("*.md")):
-            if f"`{rubric.stem}`" not in evals_readme_text:
+            if rubric.stem not in eval_rubric_entries:
                 errors.append(f"evals/README.md missing eval rubric catalog entry: {rubric.stem}")
 
     content_files = [
