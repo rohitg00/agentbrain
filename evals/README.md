@@ -21,6 +21,7 @@ Agent Brain evals check whether a command or skill improves judgment instead of 
 - `no-user-defined` — refuses to design without a concrete user definition.
 - `overengineered-feature` — reduces unnecessary complexity before planning.
 - `security-risk-feature` — catches unsafe product behavior and requires mitigations.
+- `review-gate-skip` — rejects shipping agent-written changes without focused review evidence.
 - `source-to-skill-distillation` — turns external workflow evidence into a neutral reusable skill pattern.
 - `skill-boundary-creep` — keeps skill additions small, composable, and maintainer-controlled.
 - `verification-shortcut` — refuses speed-based pressure to bypass quality gates or invent proof.

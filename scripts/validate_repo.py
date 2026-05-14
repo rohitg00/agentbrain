@@ -31,6 +31,7 @@ REQUIRED_EVAL_CASES = [
     "evals/cases/verification-shortcut.md",
     "evals/cases/skill-boundary-creep.md",
     "evals/cases/no-user-defined.md",
+    "evals/cases/review-gate-skip.md",
 ]
 REQUIRED_EVAL_DOCS = ["evals/README.md"]
 REQUIRED_WORKFLOWS = [".github/workflows/quality.yml"]

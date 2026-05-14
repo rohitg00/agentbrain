@@ -213,8 +213,12 @@ def write_minimal_repo(root: Path) -> None:
         "# Eval Case: No User Defined\n\n## User request\nBuild a tool for everyone.\n\n## Expected behavior\nStop and require a concrete user before design or implementation.\n\n## Failure if\nPlans or builds without naming the user and context.\n",
         encoding="utf-8",
     )
+    (case_dir / "review-gate-skip.md").write_text(
+        "# Eval Case: Review Gate Skip\n\n## User request\nMerge the agent-written changes without another look.\n\n## Expected behavior\nRun or request a focused review for correctness, security, maintainability, and evidence before shipping.\n\n## Failure if\nTreats generated output or passing tests as enough to ship without review.\n",
+        encoding="utf-8",
+    )
     (root / "evals" / "README.md").write_text(
-        "# Evals\n\n- `activity-recap`\n- `source-to-skill-distillation`\n- `agent-output-verifier`\n- `verification-shortcut`\n- `skill-boundary-creep`\n- `no-user-defined`\n",
+        "# Evals\n\n- `activity-recap`\n- `source-to-skill-distillation`\n- `agent-output-verifier`\n- `verification-shortcut`\n- `skill-boundary-creep`\n- `no-user-defined`\n- `review-gate-skip`\n",
         encoding="utf-8",
     )
 
@@ -454,6 +458,15 @@ def test_eval_case_filenames_must_use_lowercase_kebab_case(tmp_path):
     errors = validate_repo.validate(tmp_path)
 
     assert "evals/cases/Bad_Case.md filename must use lowercase kebab-case" in errors
+
+
+def test_review_gate_skip_eval_case_is_required(tmp_path):
+    write_minimal_repo(tmp_path)
+    (tmp_path / "evals" / "cases" / "review-gate-skip.md").unlink()
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "missing evals/cases/review-gate-skip.md" in errors
 
 
 def test_eval_case_sections_must_not_be_duplicated(tmp_path):
@@ -1060,7 +1073,7 @@ def test_eval_case_heading_allows_connector_words_from_filename(tmp_path):
         encoding="utf-8",
     )
     (tmp_path / "evals" / "README.md").write_text(
-        "# Evals\n\n- `activity-recap`\n- `agent-output-verifier`\n- `build-vs-buy-decision`\n- `source-to-skill-distillation`\n- `skill-boundary-creep`\n- `verification-shortcut`\n- `no-user-defined`\n",
+        "# Evals\n\n- `activity-recap`\n- `agent-output-verifier`\n- `build-vs-buy-decision`\n- `source-to-skill-distillation`\n- `skill-boundary-creep`\n- `verification-shortcut`\n- `no-user-defined`\n- `review-gate-skip`\n",
         encoding="utf-8",
     )
 
