@@ -148,6 +148,8 @@ def write_minimal_repo(root: Path) -> None:
         "python scripts/validate_repo.py\n"
         "git diff --check\n"
         "```\n\n"
+        "## Fresh Checkout Bootstrap\n"
+        "Before acting, inspect git status --short and git log --oneline -5, run the baseline validation, identify the current state, then choose the matching command.\n\n"
         "## Operating Loop\nChoose state, load command, verify.\n\n"
         "## Handoff Contract\nState evidence, risks, blockers, next action.\n\n"
         "## Stop Conditions\nBlock missing evidence.\n\n"
@@ -320,6 +322,22 @@ def test_valid_minimal_repo_has_no_errors(tmp_path):
     write_minimal_repo(tmp_path)
 
     assert validate_repo.validate(tmp_path) == []
+
+
+def test_agent_harness_must_include_fresh_checkout_bootstrap(tmp_path):
+    write_minimal_repo(tmp_path)
+    harness = tmp_path / "docs" / "agent-harness.md"
+    harness.write_text(
+        harness.read_text(encoding="utf-8").replace(
+            "\n## Fresh Checkout Bootstrap\nBefore acting, inspect git status --short and git log --oneline -5, run the baseline validation, identify the current state, then choose the matching command.\n\n",
+            "\n",
+        ),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "docs/agent-harness.md missing harness operating section: ## Fresh Checkout Bootstrap" in errors
 
 
 def test_readme_must_include_maintainer_checklist(tmp_path):

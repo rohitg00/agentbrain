@@ -19,6 +19,27 @@ git diff --check
 
 The harness is ready only when tests, validation, and whitespace checks pass.
 
+## Fresh Checkout Bootstrap
+
+Before a new agent acts on this repo, make it prove the checkout state instead of relying on private session context:
+
+```bash
+git status --short
+git log --oneline -5
+python -m pytest -q
+python scripts/validate_repo.py
+git diff --check
+```
+
+Use the results to answer four setup questions:
+
+1. Is the working tree clean or are there user changes that must be preserved?
+2. What is the latest committed harness behavior?
+3. Do tests and validation pass before new work starts?
+4. Which state, command, skill, template, and schema should handle the request?
+
+If any answer is missing, stop with a handoff report. Do not choose a command, edit files, or delegate work from an unverified checkout.
+
 ## Operating Loop
 
 Every agent run should follow this sequence:

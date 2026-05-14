@@ -90,6 +90,7 @@ REQUIRED_README_REPOSITORY_MAP_PATHS = [
 ]
 REQUIRED_AGENT_HARNESS_SECTIONS = [
     "## Install",
+    "## Fresh Checkout Bootstrap",
     "## Operating Loop",
     "## Handoff Contract",
     "## Stop Conditions",
