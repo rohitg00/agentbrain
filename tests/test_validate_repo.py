@@ -1450,6 +1450,34 @@ def test_all_workflows_must_use_read_only_repository_permissions(tmp_path):
     assert ".github/workflows/validate.yml must set permissions to contents: read" in errors
 
 
+def test_workflows_must_not_request_write_repository_permissions(tmp_path):
+    write_minimal_repo(tmp_path)
+    (tmp_path / ".github" / "workflows" / "validate.yml").write_text(
+        "\n".join([
+            "name: validate",
+            "on:",
+            "  push:",
+            "  pull_request:",
+            "permissions:",
+            "  contents: read",
+            "  issues: write",
+            "jobs:",
+            "  repo-validation:",
+            "    runs-on: ubuntu-latest",
+            "    steps:",
+            "      - uses: actions/checkout@v4",
+            "      - run: python -m pytest -q",
+            "      - run: python scripts/validate_repo.py",
+            "      - run: git diff --check",
+        ]),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert ".github/workflows/validate.yml must not request write repository permissions: issues" in errors
+
+
 def test_all_workflows_must_run_on_push_and_pull_request(tmp_path):
     write_minimal_repo(tmp_path)
     (tmp_path / ".github" / "workflows" / "nightly.yml").write_text(

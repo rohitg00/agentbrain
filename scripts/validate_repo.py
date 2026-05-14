@@ -254,6 +254,29 @@ def workflow_declares_trigger(workflow_text: str, trigger: str) -> bool:
     return False
 
 
+def find_write_workflow_permissions(workflow_text: str) -> list[str]:
+    write_permissions: list[str] = []
+    in_permissions_block = False
+    for raw_line in workflow_text.splitlines():
+        stripped = raw_line.strip()
+        if not stripped or stripped.startswith("#"):
+            continue
+        if stripped == "permissions: write-all":
+            write_permissions.append("write-all")
+            continue
+        if raw_line == "permissions:":
+            in_permissions_block = True
+            continue
+        if in_permissions_block and raw_line and not raw_line.startswith((" ", "\t")):
+            in_permissions_block = False
+        if not in_permissions_block or ":" not in stripped:
+            continue
+        permission, access = [part.strip() for part in stripped.split(":", 1)]
+        if access == "write":
+            write_permissions.append(permission)
+    return write_permissions
+
+
 def find_object_schemas_without_closed_properties(schema: object) -> list[str]:
     missing_locations: list[str] = []
 
@@ -398,6 +421,8 @@ def validate(root: Path = ROOT) -> list[str]:
             for permission_line in REQUIRED_QUALITY_WORKFLOW_PERMISSIONS
         ):
             errors.append(f"{rel(workflow, root)} must set permissions to contents: read")
+        for permission in find_write_workflow_permissions(workflow_text):
+            errors.append(f"{rel(workflow, root)} must not request write repository permissions: {permission}")
         for trigger in REQUIRED_WORKFLOW_TRIGGERS:
             if not workflow_declares_trigger(workflow_text, trigger):
                 errors.append(f"{rel(workflow, root)} must run on {trigger}")
