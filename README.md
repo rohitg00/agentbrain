@@ -235,6 +235,7 @@ Every agent handoff should be useful without private chat context. End each run,
 - **State:** current Agent Brain state and command used.
 - **Decision:** `continue`, `blocked`, `needs-review`, `ready-to-ship`, or `killed`.
 - **Evidence checked:** files, commands, logs, sources, screenshots, traces, or diffs actually inspected.
+- **Fresh validation proof:** command, exit status, and relevant output from the current run when tests, validators, CI, or quality gates are part of the claim.
 - **Facts:** verified statements only.
 - **Assumptions:** unverified beliefs that influenced the next action.
 - **Open questions:** missing information that changes scope, safety, or priority.

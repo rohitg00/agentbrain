@@ -174,6 +174,7 @@ REQUIRED_AGENT_HARNESS_RESUME_TERMS = [
     "stale",
     "resume only the named next action",
 ]
+REQUIRED_AGENT_HARNESS_HANDOFF_TERMS = ["fresh validation proof"]
 REQUIRED_ADAPTER_SECTIONS = ["## Install", "## Validation", "## Failure Modes"]
 REQUIRED_ADAPTER_VALIDATION_COMMANDS = [
     "python3 -m pip install -r requirements-dev.txt",
@@ -796,6 +797,10 @@ def validate(root: Path = ROOT) -> list[str]:
             command_name = f"/{command.stem}"
             if command_name not in harness_command_refs:
                 errors.append(f"docs/agent-harness.md command routing missing command: {command_name}")
+        handoff_contract = section_body(agent_harness_text, "## Handoff Contract").lower()
+        for term in REQUIRED_AGENT_HARNESS_HANDOFF_TERMS:
+            if term not in handoff_contract:
+                errors.append("docs/agent-harness.md handoff contract must require fresh validation proof")
 
     for required_path in REQUIRED_SKILLS:
         if not (root / required_path).exists():
