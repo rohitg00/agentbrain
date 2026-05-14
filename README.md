@@ -218,6 +218,7 @@ Use this guide when a command says to produce an artifact. Start with the comman
 | Implementation slices | `templates/implementation-plan.md` | `schemas/implementation-plan.schema.json` |
 | QA or verification proof | `docs/review-gates.md` QA gate | `schemas/qa-evidence.schema.json` |
 | Trust review before handoff | `templates/review-report.md` | `schemas/review-report.schema.json` |
+| Run handoff or blocked stop | `templates/handoff-report.md` | `schemas/handoff-report.schema.json` |
 | Decision or killed path | `docs/state-machine.md` archive state | `schemas/decision-log.schema.json` |
 | Unknowns and assumptions | `docs/grilling-protocol.md` | `schemas/assumption-ledger.schema.json` |
 

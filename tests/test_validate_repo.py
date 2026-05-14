@@ -18,7 +18,7 @@ def write_minimal_repo(root: Path) -> None:
         encoding="utf-8",
     )
     (root / "README.md").write_text(
-        "# required\n\n## Quickstart\nInstall and run validation.\n\n## Run as an Agent Harness\nLoad the repo as operating instructions.\n\n## Command Selection Guide\n\n- Raw request -> `/brain-sample`\n\n## Handoff Contract\nState the status, evidence checked, facts, assumptions, risks, blockers, and next action.\n\n## Edge Cases and Stop Conditions\nStop on missing evidence.\n\n## Troubleshooting\nRun validation and inspect errors.\n\n- `/brain-sample` — sample command.\n- `sample` — sample skill.\n- `activity-recap` — activity skill.\n- `agent-output-verifier` — verifier skill.\n\n## Documentation Guide\n\n- `docs/agent-harness.md` — how to run the repo as an agent harness.\n- `docs/autonomous-goals.md` — autonomous goal scope and stop conditions.\n- `docs/research-watchlist.md` — source classes to review without copying branding.\n- `docs/skill-distillation.md` — how to convert sources into neutral skills.\n\n## Artifact Routing Guide\n\n- `schemas/artifact.schema.json` — sample artifact schema.\n- `templates/skill-template.md` — sample skill template.\n\n## Validation\n\n```bash\npython3 -m pip install -r requirements-dev.txt\npython -m pytest -q\npython scripts/validate_repo.py\ngit diff --check\n```\n",
+        "# required\n\n## Quickstart\nInstall and run validation.\n\n## Run as an Agent Harness\nLoad the repo as operating instructions.\n\n## Command Selection Guide\n\n- Raw request -> `/brain-sample`\n\n## Handoff Contract\nState the status, evidence checked, facts, assumptions, risks, blockers, and next action.\n\n## Edge Cases and Stop Conditions\nStop on missing evidence.\n\n## Troubleshooting\nRun validation and inspect errors.\n\n- `/brain-sample` — sample command.\n- `sample` — sample skill.\n- `activity-recap` — activity skill.\n- `agent-output-verifier` — verifier skill.\n\n## Documentation Guide\n\n- `docs/agent-harness.md` — how to run the repo as an agent harness.\n- `docs/autonomous-goals.md` — autonomous goal scope and stop conditions.\n- `docs/research-watchlist.md` — source classes to review without copying branding.\n- `docs/skill-distillation.md` — how to convert sources into neutral skills.\n\n## Artifact Routing Guide\n\n- `schemas/artifact.schema.json` — sample artifact schema.\n- `schemas/handoff-report.schema.json` — sample handoff schema.\n- `templates/handoff-report.md` — sample handoff template.\n- `templates/skill-template.md` — sample skill template.\n\n## Validation\n\n```bash\npython3 -m pip install -r requirements-dev.txt\npython -m pytest -q\npython scripts/validate_repo.py\ngit diff --check\n```\n",
         encoding="utf-8",
     )
     (root / "requirements-dev.txt").write_text("pytest\njsonschema\n", encoding="utf-8")
@@ -54,6 +54,35 @@ def write_minimal_repo(root: Path) -> None:
                 "additionalProperties": False,
             }
         ),
+        encoding="utf-8",
+    )
+    (schema_dir / "handoff-report.schema.json").write_text(
+        json.dumps(
+            {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "title": "Handoff Report",
+                "type": "object",
+                "additionalProperties": False,
+                "required": ["state", "decision", "evidence_checked", "next_action"],
+                "properties": {
+                    "state": {"type": "string"},
+                    "decision": {"type": "string"},
+                    "evidence_checked": {"type": "array", "items": {"type": "string"}},
+                    "facts": {"type": "array", "items": {"type": "string"}},
+                    "assumptions": {"type": "array", "items": {"type": "string"}},
+                    "open_questions": {"type": "array", "items": {"type": "string"}},
+                    "risks": {"type": "array", "items": {"type": "string"}},
+                    "next_action": {"type": "string"},
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
+    templates_dir = root / "templates"
+    templates_dir.mkdir(exist_ok=True)
+    (templates_dir / "handoff-report.md").write_text(
+        "# Handoff Report\n\n"
+        "Schema fields: `state`, `decision`, `evidence_checked`, `facts`, `assumptions`, `open_questions`, `risks`, `next_action`.\n",
         encoding="utf-8",
     )
     skill_dir = root / "skills" / "sample"
@@ -641,7 +670,7 @@ def test_templates_must_reference_optional_schema_properties(tmp_path):
         encoding="utf-8",
     )
     templates_dir = tmp_path / "templates"
-    templates_dir.mkdir()
+    templates_dir.mkdir(exist_ok=True)
     (templates_dir / "artifact.md").write_text("# Artifact\n\nSchema fields: `title`.\n", encoding="utf-8")
 
     errors = validate_repo.validate(tmp_path)
@@ -1070,7 +1099,6 @@ def test_skill_required_sections_must_not_be_duplicated(tmp_path):
 def test_readme_must_catalog_artifact_schemas_and_templates(tmp_path):
     write_minimal_repo(tmp_path)
     templates_dir = tmp_path / "templates"
-    templates_dir.mkdir()
     (templates_dir / "skill-template.md").write_text("# Skill Template\n", encoding="utf-8")
     readme = tmp_path / "README.md"
     readme.write_text(
@@ -1084,6 +1112,24 @@ def test_readme_must_catalog_artifact_schemas_and_templates(tmp_path):
 
     assert "README.md missing schema catalog entry: schemas/artifact.schema.json" in errors
     assert "README.md missing template catalog entry: templates/skill-template.md" in errors
+
+
+def test_handoff_report_schema_is_required(tmp_path):
+    write_minimal_repo(tmp_path)
+    (tmp_path / "schemas" / "handoff-report.schema.json").unlink()
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "missing schemas/handoff-report.schema.json" in errors
+
+
+def test_handoff_report_template_is_required(tmp_path):
+    write_minimal_repo(tmp_path)
+    (tmp_path / "templates" / "handoff-report.md").unlink()
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "missing templates/handoff-report.md" in errors
 
 
 def test_adapter_readmes_must_include_validation_section(tmp_path):
@@ -1571,7 +1617,7 @@ def test_eval_case_heading_allows_connector_words_from_filename(tmp_path):
 def test_template_heading_must_match_filename(tmp_path):
     write_minimal_repo(tmp_path)
     templates_dir = tmp_path / "templates"
-    templates_dir.mkdir()
+    templates_dir.mkdir(exist_ok=True)
     (templates_dir / "product-brief.md").write_text(
         "# Different Brief\n\nSchema fields: `title`.\n",
         encoding="utf-8",
@@ -1585,7 +1631,7 @@ def test_template_heading_must_match_filename(tmp_path):
 def test_templates_must_reference_required_schema_fields(tmp_path):
     write_minimal_repo(tmp_path)
     templates_dir = tmp_path / "templates"
-    templates_dir.mkdir()
+    templates_dir.mkdir(exist_ok=True)
     (tmp_path / "schemas" / "product-brief.schema.json").write_text(
         json.dumps({"type": "object", "required": ["title", "target_user"]}),
         encoding="utf-8",
@@ -1603,7 +1649,7 @@ def test_templates_must_reference_required_schema_fields(tmp_path):
 def test_template_schema_field_references_must_be_exact_tokens(tmp_path):
     write_minimal_repo(tmp_path)
     templates_dir = tmp_path / "templates"
-    templates_dir.mkdir()
+    templates_dir.mkdir(exist_ok=True)
     (tmp_path / "schemas" / "product-brief.schema.json").write_text(
         json.dumps(
             {
@@ -2202,7 +2248,7 @@ def test_research_watchlist_must_track_goal_and_skill_sources(tmp_path):
 def test_docs_and_templates_must_have_exactly_one_h1(tmp_path):
     write_minimal_repo(tmp_path)
     templates_dir = tmp_path / "templates"
-    templates_dir.mkdir()
+    templates_dir.mkdir(exist_ok=True)
     (templates_dir / "product-brief.md").write_text(
         "# Product Brief\n\n# Duplicate Brief\n",
         encoding="utf-8",
@@ -2670,7 +2716,7 @@ def test_public_copy_scan_ignores_local_dependency_directories(tmp_path):
 def test_skill_template_description_must_start_with_trigger(tmp_path):
     write_minimal_repo(tmp_path)
     templates_dir = tmp_path / "templates"
-    templates_dir.mkdir()
+    templates_dir.mkdir(exist_ok=True)
     (templates_dir / "skill-template.md").write_text(
         "\n".join([
             "---",
@@ -2702,7 +2748,7 @@ def test_skill_template_description_must_start_with_trigger(tmp_path):
 def test_skill_template_name_must_be_lowercase_kebab_case(tmp_path):
     write_minimal_repo(tmp_path)
     templates_dir = tmp_path / "templates"
-    templates_dir.mkdir()
+    templates_dir.mkdir(exist_ok=True)
     (templates_dir / "skill-template.md").write_text(
         "\n".join([
             "---",
@@ -2734,7 +2780,7 @@ def test_skill_template_name_must_be_lowercase_kebab_case(tmp_path):
 def test_skill_template_frontmatter_must_have_closing_delimiter(tmp_path):
     write_minimal_repo(tmp_path)
     templates_dir = tmp_path / "templates"
-    templates_dir.mkdir()
+    templates_dir.mkdir(exist_ok=True)
     (templates_dir / "skill-template.md").write_text(
         "\n".join([
             "---",
@@ -2765,7 +2811,7 @@ def test_skill_template_frontmatter_must_have_closing_delimiter(tmp_path):
 def test_skill_template_must_include_required_skill_sections(tmp_path):
     write_minimal_repo(tmp_path)
     templates_dir = tmp_path / "templates"
-    templates_dir.mkdir()
+    templates_dir.mkdir(exist_ok=True)
     (templates_dir / "skill-template.md").write_text(
         "\n".join([
             "---",
@@ -2795,7 +2841,7 @@ def test_skill_template_must_include_required_skill_sections(tmp_path):
 def test_skill_template_must_include_anti_rationalization_section(tmp_path):
     write_minimal_repo(tmp_path)
     templates_dir = tmp_path / "templates"
-    templates_dir.mkdir()
+    templates_dir.mkdir(exist_ok=True)
     (templates_dir / "skill-template.md").write_text(
         "\n".join([
             "---",

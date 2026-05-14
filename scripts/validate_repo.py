@@ -18,6 +18,10 @@ REQUIRED_ROOT = [
 REQUIRED_FILES = ["requirements-dev.txt"]
 REQUIRED_DEV_REQUIREMENTS = ["jsonschema", "pytest"]
 REQUIRED_DIRECTORIES = ["schemas"]
+REQUIRED_ARTIFACT_FILES = [
+    "schemas/handoff-report.schema.json",
+    "templates/handoff-report.md",
+]
 REQUIRED_GITIGNORE_PATTERNS = ["__pycache__/", "*.py[cod]", ".pytest_cache/", ".venv/"]
 REQUIRED_DOCS = [
     "docs/agent-harness.md",
@@ -619,6 +623,10 @@ def validate(root: Path = ROOT) -> list[str]:
     for required_directory in REQUIRED_DIRECTORIES:
         if not (root / required_directory).is_dir():
             errors.append(f"missing {required_directory}/")
+
+    for required_path in REQUIRED_ARTIFACT_FILES:
+        if not (root / required_path).exists():
+            errors.append(f"missing {required_path}")
 
     gitignore = root / ".gitignore"
     if not gitignore.exists():
