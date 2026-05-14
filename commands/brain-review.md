@@ -52,4 +52,4 @@ Stop and ask for human input when:
 
 ## Quality bar
 
-A good `/brain-review` run is short enough to act on, explicit enough to audit, and skeptical enough to prevent premature building.
+A good `/brain-review` run identifies blocking correctness, security, maintainability, test, and evidence issues with file or artifact references, then separates required fixes from optional polish.

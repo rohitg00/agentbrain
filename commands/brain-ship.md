@@ -52,4 +52,4 @@ Stop and ask for human input when:
 
 ## Quality bar
 
-A good `/brain-ship` run is short enough to act on, explicit enough to audit, and skeptical enough to prevent premature building.
+A good `/brain-ship` run makes a go/no-go call from current verification, rollback, support, and monitoring evidence, and blocks release when launch safety is missing.

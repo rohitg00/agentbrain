@@ -54,4 +54,4 @@ Stop and ask for human input when:
 
 ## Quality bar
 
-A good `/brain-grill` run is short enough to act on, explicit enough to audit, and skeptical enough to prevent premature building.
+A good `/brain-grill` run asks only the few blocking questions that change the decision, gives recommended answers where useful, and captures verified decisions instead of drifting into generic discovery.

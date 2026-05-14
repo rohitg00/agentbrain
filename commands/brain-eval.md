@@ -52,4 +52,4 @@ Stop and ask for human input when:
 
 ## Quality bar
 
-A good `/brain-eval` run is short enough to act on, explicit enough to audit, and skeptical enough to prevent premature building.
+A good `/brain-eval` run turns a repeated failure mode into a concrete eval case or rubric entry with expected behavior, failure criteria, and catalog coverage before relying on prose assurances.

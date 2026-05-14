@@ -52,4 +52,4 @@ Stop and ask for human input when:
 
 ## Quality bar
 
-A good `/brain-verify` run is short enough to act on, explicit enough to audit, and skeptical enough to prevent premature building.
+A good `/brain-verify` run checks the actual artifact against tests, logs, diffs, traces, screenshots, source citations, or approvals, and refuses claims that lack reproducible evidence.

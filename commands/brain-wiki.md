@@ -52,4 +52,4 @@ Stop and ask for human input when:
 
 ## Quality bar
 
-A good `/brain-wiki` run is short enough to act on, explicit enough to audit, and skeptical enough to prevent premature building.
+A good `/brain-wiki` run updates durable project knowledge only after evidence is checked, links it to the relevant command or skill, and avoids turning temporary session context into permanent doctrine.

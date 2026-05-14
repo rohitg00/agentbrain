@@ -52,4 +52,4 @@ Stop and ask for human input when:
 
 ## Quality bar
 
-A good `/brain-plan` run is short enough to act on, explicit enough to audit, and skeptical enough to prevent premature building.
+A good `/brain-plan` run decomposes approved work into ordered vertical slices, gives each slice acceptance checks and rollback notes, and keeps unverified assumptions out of the build queue.

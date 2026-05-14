@@ -52,4 +52,4 @@ Stop and ask for human input when:
 
 ## Quality bar
 
-A good `/brain-build` run is short enough to act on, explicit enough to audit, and skeptical enough to prevent premature building.
+A good `/brain-build` run implements one approved slice, preserves the planned scope, records the failing-then-passing verification evidence when behavior changes, and stops before unrelated cleanup.

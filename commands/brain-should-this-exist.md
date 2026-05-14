@@ -52,4 +52,4 @@ Stop and ask for human input when:
 
 ## Quality bar
 
-A good `/brain-should-this-exist` run is short enough to act on, explicit enough to audit, and skeptical enough to prevent premature building.
+A good `/brain-should-this-exist` run challenges whether the requested agent feature should exist, compares non-agent alternatives, names the concrete user and failure mode, and blocks vague automation.

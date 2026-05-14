@@ -52,4 +52,4 @@ Stop and ask for human input when:
 
 ## Quality bar
 
-A good `/brain-brief` run is short enough to act on, explicit enough to audit, and skeptical enough to prevent premature building.
+A good `/brain-brief` run produces a schema-aligned product brief with a named user, source-backed problem evidence, explicit non-goals, acceptance criteria, and unresolved risks before any build work starts.

@@ -553,6 +553,10 @@ def command_skills_to_load(text: str) -> list[str]:
     return sorted(set(re.findall(r"`([a-z0-9]+(?:-[a-z0-9]+)*)`", body)))
 
 
+def normalized_section_body(text: str, section: str) -> str:
+    return re.sub(r"\s+", " ", section_body(text, section).strip().lower())
+
+
 def evals_readme_catalog_entries(text: str, section: str) -> list[str]:
     body = section_body(text, section)
     if not body.strip() and section == "## Case catalog":
@@ -776,6 +780,7 @@ def validate(root: Path = ROOT) -> list[str]:
         if not sections_are_in_order(text, REQUIRED_SKILL_SECTIONS):
             errors.append(f"{rel(skill, root)} sections must appear in canonical order")
 
+    seen_quality_bars: dict[str, str] = {}
     for command in sorted((root / "commands").glob("*.md")):
         text = command.read_text(errors="ignore")
         expected_heading = f"# /{command.stem}"
@@ -801,6 +806,14 @@ def validate(root: Path = ROOT) -> list[str]:
                     errors.append(f"{rel(command, root)} section has no body: {section}")
         if not sections_are_in_order(text, REQUIRED_COMMAND_SECTIONS):
             errors.append(f"{rel(command, root)} sections must appear in canonical order")
+        quality_bar = normalized_section_body(text, "## Quality bar")
+        if quality_bar:
+            if quality_bar in seen_quality_bars:
+                errors.append(
+                    f"{rel(command, root)} quality bar duplicates {seen_quality_bars[quality_bar]}"
+                )
+            else:
+                seen_quality_bars[quality_bar] = rel(command, root)
         skill_names = command_skills_to_load(text)
         if not skill_names:
             errors.append(f"{rel(command, root)} skills-to-load section must name at least one skill")

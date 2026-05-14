@@ -52,4 +52,4 @@ Stop and ask for human input when:
 
 ## Quality bar
 
-A good `/brain-start` run is short enough to act on, explicit enough to audit, and skeptical enough to prevent premature building.
+A good `/brain-start` run classifies the request into the earliest safe state, names missing inputs and evidence, selects the next command and skills, and avoids jumping directly to implementation.

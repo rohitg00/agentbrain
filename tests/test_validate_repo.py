@@ -501,6 +501,50 @@ def test_command_skills_to_load_must_name_at_least_one_skill(tmp_path):
     assert "commands/brain-sample.md skills-to-load section must name at least one skill" in errors
 
 
+def test_command_quality_bars_must_not_be_reused_boilerplate(tmp_path):
+    write_minimal_repo(tmp_path)
+    second_command = tmp_path / "commands" / "brain-other.md"
+    second_command.write_text(
+        "\n".join([
+            "# /brain-other",
+            "## Purpose",
+            "Route other work.",
+            "## When to use",
+            "Use for other requests.",
+            "## Input contract",
+            "Raw request.",
+            "## Skills to load",
+            "Load `sample` for sample routing.",
+            "## Workflow",
+            "Inspect inputs and decide the next action.",
+            "## Output",
+            "A concrete next action.",
+            "## Stop conditions",
+            "Stop when the request is unsafe.",
+            "## Quality bar",
+            "Evidence is checked before output.",
+        ]),
+        encoding="utf-8",
+    )
+    readme = tmp_path / "README.md"
+    readme.write_text(
+        readme.read_text(encoding="utf-8")
+        .replace("- Raw request -> `/brain-sample`", "- Raw request -> `/brain-sample`\n- Other request -> `/brain-other`")
+        .replace("- `/brain-sample` — sample command.", "- `/brain-sample` — sample command.\n- `/brain-other` — other command."),
+        encoding="utf-8",
+    )
+    (tmp_path / "commands" / "brain-sample.md").write_text(
+        (tmp_path / "commands" / "brain-sample.md")
+        .read_text(encoding="utf-8")
+        .replace("Evidence is checked before output.", "Evidence is checked before output."),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "commands/brain-sample.md quality bar duplicates commands/brain-other.md" in errors
+
+
 def test_readme_skill_catalog_entries_must_point_to_existing_files(tmp_path):
     write_minimal_repo(tmp_path)
     readme = tmp_path / "README.md"

@@ -52,4 +52,4 @@ Stop and ask for human input when:
 
 ## Quality bar
 
-A good `/brain-design` run is short enough to act on, explicit enough to audit, and skeptical enough to prevent premature building.
+A good `/brain-design` run compares viable approaches, names trade-offs and constraints, rejects unnecessary agentic complexity, and leaves the next implementation slice small enough to verify.

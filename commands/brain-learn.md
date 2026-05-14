@@ -52,4 +52,4 @@ Stop and ask for human input when:
 
 ## Quality bar
 
-A good `/brain-learn` run is short enough to act on, explicit enough to audit, and skeptical enough to prevent premature building.
+A good `/brain-learn` run distills a durable operator lesson into neutral guidance, updates the smallest relevant skill, doc, template, or eval, and avoids storing source-specific branding as project doctrine.
