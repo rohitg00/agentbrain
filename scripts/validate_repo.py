@@ -104,6 +104,7 @@ REQUIRED_README_TROUBLESHOOTING_TERMS = [
     "git status --short",
     "preserve user changes",
 ]
+REQUIRED_README_SECRET_TROUBLESHOOTING_TERMS = ["secret-like values"]
 REQUIRED_AGENT_HARNESS_SECTIONS = [
     "## Install",
     "## Fresh Checkout Bootstrap",
@@ -211,6 +212,11 @@ BANNED_PUBLIC_COPY_TERMS = [
     "Co" + "dex",
     "Open" + "AI",
     "Anth" + "ropic",
+]
+SECRET_LIKE_PATTERNS = [
+    ("GitHub token", re.compile(r"\bgh[pousr]_[A-Za-z0-9_]{20,}\b")),
+    ("private key block", re.compile(r"-----BEGIN (?:RSA |OPENSSH |EC |DSA )?PRIVATE KEY-----")),
+    ("cloud access key", re.compile(r"\bAKIA[0-9A-Z]{16}\b")),
 ]
 PUBLIC_COPY_SUFFIXES = {
     ".json",
@@ -943,6 +949,12 @@ def validate(root: Path = ROOT) -> list[str]:
                     "README.md troubleshooting must document dirty working tree recovery: "
                     f"{required_term}"
                 )
+        for required_term in REQUIRED_README_SECRET_TROUBLESHOOTING_TERMS:
+            if required_term.lower() not in troubleshooting_body:
+                errors.append(
+                    "README.md troubleshooting must document secret-like value recovery: "
+                    f"{required_term}"
+                )
 
     contributing = root / "CONTRIBUTING.md"
     if contributing.exists():
@@ -1075,6 +1087,9 @@ def validate(root: Path = ROOT) -> list[str]:
         text = public_copy_file.read_text(errors="ignore")
         for line_number in find_trailing_whitespace_lines(text):
             errors.append(f"{rel(public_copy_file, root)} line {line_number} has trailing whitespace")
+        for secret_name, secret_pattern in SECRET_LIKE_PATTERNS:
+            if secret_pattern.search(text):
+                errors.append(f"{rel(public_copy_file, root)} contains secret-like value: {secret_name}")
         for term in BANNED_PUBLIC_COPY_TERMS:
             if term.lower() in text.lower() and not public_copy_term_allowed(public_copy_file, text, term):
                 errors.append(f"{rel(public_copy_file, root)} contains banned public-copy term: {term}")

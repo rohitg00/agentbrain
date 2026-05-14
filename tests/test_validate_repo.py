@@ -18,7 +18,7 @@ def write_minimal_repo(root: Path) -> None:
         encoding="utf-8",
     )
     (root / "README.md").write_text(
-        "# required\n\n## Quickstart\nInstall and run validation.\n\n## Run as an Agent Harness\nLoad the repo as operating instructions.\n\n## Command Selection Guide\n\n- Raw request -> `/brain-sample`\n\n## Handoff Contract\nState the status, evidence checked, facts, assumptions, risks, blockers, and next action.\n\n## Edge Cases and Stop Conditions\nStop on missing evidence.\n\n## Troubleshooting\nRun validation and inspect errors. If git status --short shows a dirty working tree, preserve user changes before editing.\n\n## Maintainer Checklist\nBefore release, confirm README bootstraps a new agent, commands and skills are cataloged, evals cover current failure modes, validation passes, CI mirrors local checks, public copy is neutral, caches are untracked, and the remote branch is verified.\n\n## Minimal Harness Prompt\n\n```text\nRead AGENTBRAIN.md, PRINCIPLES.md, ANTI_RATIONALIZATION.md, and docs/state-machine.md before acting.\nInspect git status --short and git log --oneline -5 before choosing work.\nRun baseline validation before editing.\nPreserve user changes before editing.\nChoose the matching command in commands/ and load only the required skills/ entry.\nUse templates/ and schemas/ for structured artifacts when they fit.\nRun python -m pytest -q, python scripts/validate_repo.py, and git diff --check before claiming completion.\nStop when evidence, approval, secrets handling, or loop limits are missing.\n```\n\n## Core Commands\n\n- `/brain-sample` — sample command.\n\n## Core Skills\n\n- `sample` — sample skill.\n- `activity-recap` — activity skill.\n- `agent-output-verifier` — verifier skill.\n\n## Repository Map\n\n```text\nrequirements-dev.txt           # local validation dependencies\n.github/workflows/             # CI quality gate\ncommands/                      # command specs\nskills/                        # portable skills\nschemas/                       # artifact schemas\ntemplates/                     # artifact templates\ndocs/                          # supporting docs\n```\n\n## Documentation Guide\n\n- `docs/agent-harness.md` — how to run the repo as an agent harness.\n- `docs/autonomous-goals.md` — autonomous goal scope and stop conditions.\n- `docs/research-watchlist.md` — source classes to review without copying branding.\n- `docs/skill-distillation.md` — how to convert sources into neutral skills.\n\n## Artifact Routing Guide\n\n- `schemas/artifact.schema.json` — sample artifact schema.\n- `schemas/handoff-report.schema.json` — sample handoff schema.\n- `templates/handoff-report.md` — sample handoff template.\n- `templates/skill-template.md` — sample skill template.\n\n## Validation\n\n```bash\npython3 -m pip install -r requirements-dev.txt\npython -m pytest -q\npython scripts/validate_repo.py\ngit diff --check\n```\n",
+        "# required\n\n## Quickstart\nInstall and run validation.\n\n## Run as an Agent Harness\nLoad the repo as operating instructions.\n\n## Command Selection Guide\n\n- Raw request -> `/brain-sample`\n\n## Handoff Contract\nState the status, evidence checked, facts, assumptions, risks, blockers, and next action.\n\n## Edge Cases and Stop Conditions\nStop on missing evidence.\n\n## Troubleshooting\nRun validation and inspect errors. If git status --short shows a dirty working tree, preserve user changes before editing. If secret-like values are reported, remove the value, rotate it outside the repo, and keep only a redacted placeholder.\n\n## Maintainer Checklist\nBefore release, confirm README bootstraps a new agent, commands and skills are cataloged, evals cover current failure modes, validation passes, CI mirrors local checks, public copy is neutral, caches are untracked, and the remote branch is verified.\n\n## Minimal Harness Prompt\n\n```text\nRead AGENTBRAIN.md, PRINCIPLES.md, ANTI_RATIONALIZATION.md, and docs/state-machine.md before acting.\nInspect git status --short and git log --oneline -5 before choosing work.\nRun baseline validation before editing.\nPreserve user changes before editing.\nChoose the matching command in commands/ and load only the required skills/ entry.\nUse templates/ and schemas/ for structured artifacts when they fit.\nRun python -m pytest -q, python scripts/validate_repo.py, and git diff --check before claiming completion.\nStop when evidence, approval, secrets handling, or loop limits are missing.\n```\n\n## Core Commands\n\n- `/brain-sample` — sample command.\n\n## Core Skills\n\n- `sample` — sample skill.\n- `activity-recap` — activity skill.\n- `agent-output-verifier` — verifier skill.\n\n## Repository Map\n\n```text\nrequirements-dev.txt           # local validation dependencies\n.github/workflows/             # CI quality gate\ncommands/                      # command specs\nskills/                        # portable skills\nschemas/                       # artifact schemas\ntemplates/                     # artifact templates\ndocs/                          # supporting docs\n```\n\n## Documentation Guide\n\n- `docs/agent-harness.md` — how to run the repo as an agent harness.\n- `docs/autonomous-goals.md` — autonomous goal scope and stop conditions.\n- `docs/research-watchlist.md` — source classes to review without copying branding.\n- `docs/skill-distillation.md` — how to convert sources into neutral skills.\n\n## Artifact Routing Guide\n\n- `schemas/artifact.schema.json` — sample artifact schema.\n- `schemas/handoff-report.schema.json` — sample handoff schema.\n- `templates/handoff-report.md` — sample handoff template.\n- `templates/skill-template.md` — sample skill template.\n\n## Validation\n\n```bash\npython3 -m pip install -r requirements-dev.txt\npython -m pytest -q\npython scripts/validate_repo.py\ngit diff --check\n```\n",
         encoding="utf-8",
     )
     (root / "requirements-dev.txt").write_text("pytest\njsonschema\n", encoding="utf-8")
@@ -535,6 +535,24 @@ def test_readme_troubleshooting_must_cover_dirty_working_tree_recovery(tmp_path)
     errors = validate_repo.validate(tmp_path)
 
     assert "README.md troubleshooting must document dirty working tree recovery: dirty working tree" in errors
+
+
+def test_readme_troubleshooting_must_cover_secret_like_value_recovery(tmp_path):
+    write_minimal_repo(tmp_path)
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "README.md troubleshooting must document secret-like value recovery: secret-like values" not in errors
+
+    readme = tmp_path / "README.md"
+    readme.write_text(
+        readme.read_text(encoding="utf-8").replace("secret-like values", "credential-looking text"),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "README.md troubleshooting must document secret-like value recovery: secret-like values" in errors
 
 
 def test_readme_minimal_harness_prompt_must_name_core_artifact_paths(tmp_path):
@@ -1614,6 +1632,19 @@ def test_adapter_readmes_must_document_full_quality_gate(tmp_path):
     assert "adapters/sample-adapter/README.md validation section must document: python3 -m pip install -r requirements-dev.txt" in errors
     assert "adapters/sample-adapter/README.md validation section must document: python -m pytest -q" in errors
     assert "adapters/sample-adapter/README.md validation section must document: git diff --check" in errors
+
+
+def test_secret_like_values_are_reported_without_echoing_value(tmp_path):
+    write_minimal_repo(tmp_path)
+    token = "gh" + "p_" + ("a" * 36)
+    (tmp_path / "docs" / "copy.md").write_text(
+        f"Do not publish this token: {token}\n", encoding="utf-8"
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "docs/copy.md contains secret-like value: GitHub token" in errors
+    assert all(token not in error for error in errors)
 
 
 def test_banned_public_copy_terms_are_reported(tmp_path):

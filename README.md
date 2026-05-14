@@ -461,6 +461,8 @@ The repo blocks internal, vendor, and competitor-style naming in public copy. Co
 - review gate,
 - evaluation case.
 
+If validation reports secret-like values, do not mask the validator warning by renaming the value. Remove the value from the repo, rotate it in the system where it was created, and replace public examples with redacted placeholders such as `<token-redacted>` or `<access-key-redacted>`.
+
 ### Tests pass locally but CI fails
 
 Run the exact CI sequence locally:
