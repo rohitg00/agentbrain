@@ -25,7 +25,13 @@ def write_minimal_repo(root: Path) -> None:
     schema_dir = root / "schemas"
     schema_dir.mkdir()
     (schema_dir / "artifact.schema.json").write_text(
-        json.dumps({"$schema": "https://json-schema.org/draft/2020-12/schema", "type": "object"}),
+        json.dumps(
+            {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "type": "object",
+                "additionalProperties": False,
+            }
+        ),
         encoding="utf-8",
     )
 
@@ -230,6 +236,18 @@ def test_schema_files_must_declare_schema_dialect(tmp_path):
     errors = validate_repo.validate(tmp_path)
 
     assert "schemas/artifact.schema.json missing $schema dialect declaration" in errors
+
+
+def test_object_schemas_must_reject_unknown_fields(tmp_path):
+    write_minimal_repo(tmp_path)
+    (tmp_path / "schemas" / "artifact.schema.json").write_text(
+        json.dumps({"$schema": "https://json-schema.org/draft/2020-12/schema", "type": "object"}),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "schemas/artifact.schema.json object schema must set additionalProperties to false" in errors
 
 
 def test_missing_skill_sections_are_reported(tmp_path):
