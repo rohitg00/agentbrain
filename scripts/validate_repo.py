@@ -14,11 +14,13 @@ REQUIRED_ROOT = [
     "ANTI_RATIONALIZATION.md",
     "CONTRIBUTING.md",
 ]
+REQUIRED_FILES = ["requirements-dev.txt"]
 REQUIRED_DOCS = ["docs/autonomous-goals.md", "docs/skill-distillation.md"]
 REQUIRED_SKILLS = ["skills/activity-recap/SKILL.md"]
 REQUIRED_EVAL_CASES = ["evals/cases/activity-recap.md"]
 REQUIRED_WORKFLOWS = [".github/workflows/quality.yml"]
 REQUIRED_QUALITY_WORKFLOW_RUNS = [
+    "python -m pip install -r requirements-dev.txt",
     "python -m pytest -q",
     "python scripts/validate_repo.py",
 ]
@@ -164,6 +166,10 @@ def validate(root: Path = ROOT) -> list[str]:
             single_h1_error = validate_single_h1(path, root)
             if single_h1_error:
                 errors.append(single_h1_error)
+
+    for required_path in REQUIRED_FILES:
+        if not (root / required_path).exists():
+            errors.append(f"missing {required_path}")
 
     for required_path in REQUIRED_DOCS:
         if not (root / required_path).exists():

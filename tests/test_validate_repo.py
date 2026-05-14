@@ -13,6 +13,7 @@ def write_minimal_repo(root: Path) -> None:
         "CONTRIBUTING.md",
     ]:
         (root / rel).write_text("# required\n", encoding="utf-8")
+    (root / "requirements-dev.txt").write_text("pytest\njsonschema\n", encoding="utf-8")
 
     adapters_dir = root / "adapters" / "sample-adapter"
     adapters_dir.mkdir(parents=True)
@@ -552,6 +553,42 @@ def test_quality_workflow_must_run_pytest(tmp_path):
     errors = validate_repo.validate(tmp_path)
 
     assert ".github/workflows/quality.yml must run: python -m pytest -q" in errors
+
+
+def test_dev_requirements_file_is_required(tmp_path):
+    write_minimal_repo(tmp_path)
+    (tmp_path / "requirements-dev.txt").unlink()
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "missing requirements-dev.txt" in errors
+
+
+def test_quality_workflow_must_install_dev_requirements(tmp_path):
+    write_minimal_repo(tmp_path)
+    (tmp_path / ".github" / "workflows" / "quality.yml").write_text(
+        "\n".join([
+            "name: Quality",
+            "on:",
+            "  push:",
+            "  pull_request:",
+            "jobs:",
+            "  validate:",
+            "    runs-on: ubuntu-latest",
+            "    steps:",
+            "      - uses: actions/checkout@v4",
+            "      - uses: actions/setup-python@v5",
+            "        with:",
+            "          python-version: '3.11'",
+            "      - run: python -m pytest -q",
+            "      - run: python scripts/validate_repo.py",
+        ]),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert ".github/workflows/quality.yml must run: python -m pip install -r requirements-dev.txt" in errors
 
 
 def test_research_watchlist_must_track_goal_and_skill_sources(tmp_path):
