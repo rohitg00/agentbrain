@@ -442,6 +442,9 @@ def validate(root: Path = ROOT) -> list[str]:
         skill_template_text = skill_template.read_text(errors="ignore")
         skill_template_lines = skill_template_text.splitlines()
         skill_template_frontmatter = parse_frontmatter(skill_template_text)
+        skill_template_name = skill_template_frontmatter.get("name", "")
+        if not is_lowercase_kebab(skill_template_name):
+            errors.append("templates/skill-template.md frontmatter name must use lowercase kebab-case")
         if not skill_template_frontmatter.get("description", "").startswith("Use when"):
             errors.append("templates/skill-template.md frontmatter description must start with 'Use when'")
         for section in REQUIRED_SKILL_SECTIONS:
