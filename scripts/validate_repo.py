@@ -92,6 +92,15 @@ REQUIRED_AGENT_HARNESS_PROMPT_TERMS = [
     "git diff --check",
     "Stop",
 ]
+REQUIRED_AGENT_HARNESS_WORKER_ROLES = [
+    "researcher",
+    "planner",
+    "builder",
+    "verifier",
+    "reviewer",
+    "shipper",
+    "learner",
+]
 REQUIRED_ADAPTER_SECTIONS = ["## Install", "## Validation", "## Failure Modes"]
 REQUIRED_CONTRIBUTING_VALIDATION_COMMANDS = ["pytest -q", "git diff --check"]
 RESEARCH_WATCHLIST_REQUIRED_SOURCES = [
@@ -637,6 +646,14 @@ def validate(root: Path = ROOT) -> list[str]:
         for required_term in REQUIRED_AGENT_HARNESS_PROMPT_TERMS:
             if required_term not in harness_prompt:
                 errors.append(f"docs/agent-harness.md harness prompt must mention: {required_term}")
+        worker_guidance = section_body(agent_harness_text, "## Using It With Coding Agents")
+        if not worker_guidance.strip():
+            errors.append(
+                "docs/agent-harness.md missing harness operating section: ## Using It With Coding Agents"
+            )
+        for role in REQUIRED_AGENT_HARNESS_WORKER_ROLES:
+            if role not in worker_guidance:
+                errors.append(f"docs/agent-harness.md worker guidance must mention role: {role}")
 
     for required_path in REQUIRED_SKILLS:
         if not (root / required_path).exists():

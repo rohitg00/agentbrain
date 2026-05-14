@@ -128,6 +128,8 @@ def write_minimal_repo(root: Path) -> None:
         "Run python -m pytest -q, python scripts/validate_repo.py, and git diff --check before claiming completion.\n"
         "Stop and report blockers when evidence, approval, scope, tests, rollback, or safety is missing.\n"
         "```\n\n"
+        "## Using It With Coding Agents\n"
+        "For large work, split worker scopes into researcher, planner, builder, verifier, reviewer, shipper, and learner roles.\n\n"
         "## Troubleshooting\nInspect validation errors before continuing.\n",
         encoding="utf-8",
     )
@@ -1687,6 +1689,22 @@ def test_agent_harness_doc_must_include_copyable_harness_prompt(tmp_path):
     assert "docs/agent-harness.md missing copyable harness prompt section: ## Copyable Harness Prompt" in errors
     assert "docs/agent-harness.md harness prompt must mention: commands/" in errors
     assert "docs/agent-harness.md harness prompt must mention: templates/" in errors
+
+
+def test_agent_harness_doc_must_include_worker_scope_guidance(tmp_path):
+    write_minimal_repo(tmp_path)
+    agent_harness = tmp_path / "docs" / "agent-harness.md"
+    agent_harness.write_text(
+        agent_harness.read_text(encoding="utf-8").replace(
+            "For large work, split worker scopes into researcher, planner, builder, verifier, reviewer, shipper, and learner roles.",
+            "Keep work scoped to the current command.",
+        ),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "docs/agent-harness.md worker guidance must mention role: verifier" in errors
 
 
 def test_activity_recap_skill_is_required(tmp_path):
