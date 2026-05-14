@@ -99,6 +99,13 @@ def public_copy_term_allowed(path: Path, text: str, term: str) -> bool:
     return path.name == "README.md" and term_is_only_in_readme_comparison_section(text, term)
 
 
+def title_from_slug(slug: str) -> str:
+    connector_words = {"and", "or", "the", "to", "vs"}
+    parts = slug.split("-")
+    titled_parts = [part if part in connector_words else part.capitalize() for part in parts]
+    return " ".join(titled_parts)
+
+
 def validate(root: Path = ROOT) -> list[str]:
     root = Path(root)
     errors: list[str] = []
@@ -166,6 +173,10 @@ def validate(root: Path = ROOT) -> list[str]:
 
     for case in sorted((root / "evals" / "cases").glob("*.md")):
         text = case.read_text(errors="ignore")
+        expected_heading = f"# Eval Case: {title_from_slug(case.stem)}"
+        first_line = text.splitlines()[0] if text.splitlines() else ""
+        if first_line != expected_heading:
+            errors.append(f"{rel(case, root)} heading must be {expected_heading}")
         for section in REQUIRED_EVAL_CASE_SECTIONS:
             if section not in text:
                 errors.append(f"{rel(case, root)} missing {section}")

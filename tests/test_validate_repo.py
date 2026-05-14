@@ -244,12 +244,54 @@ def test_eval_cases_require_behavior_and_failure_sections(tmp_path):
     write_minimal_repo(tmp_path)
     case_dir = tmp_path / "evals" / "cases"
     case_dir.mkdir(parents=True)
-    (case_dir / "thin-case.md").write_text("# Thin\n## User request\nDo something\n", encoding="utf-8")
+    (case_dir / "thin-case.md").write_text("# Eval Case: Thin Case\n## User request\nDo something\n", encoding="utf-8")
 
     errors = validate_repo.validate(tmp_path)
 
     assert "evals/cases/thin-case.md missing ## Expected behavior" in errors
     assert "evals/cases/thin-case.md missing ## Failure if" in errors
+
+
+def test_eval_case_heading_must_match_filename(tmp_path):
+    write_minimal_repo(tmp_path)
+    case_dir = tmp_path / "evals" / "cases"
+    case_dir.mkdir(parents=True)
+    (case_dir / "thin-case.md").write_text(
+        "\n".join([
+            "# Eval Case: Different Case",
+            "## User request",
+            "Do something",
+            "## Expected behavior",
+            "Do it well",
+            "## Failure if",
+            "The response misses the point",
+        ]),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "evals/cases/thin-case.md heading must be # Eval Case: Thin Case" in errors
+
+
+def test_eval_case_heading_allows_connector_words_from_filename(tmp_path):
+    write_minimal_repo(tmp_path)
+    case_dir = tmp_path / "evals" / "cases"
+    case_dir.mkdir(parents=True)
+    (case_dir / "build-vs-buy-decision.md").write_text(
+        "\n".join([
+            "# Eval Case: Build vs Buy Decision",
+            "## User request",
+            "Choose a path",
+            "## Expected behavior",
+            "Compare options",
+            "## Failure if",
+            "The response assumes the answer",
+        ]),
+        encoding="utf-8",
+    )
+
+    assert validate_repo.validate(tmp_path) == []
 
 
 def test_templates_must_reference_required_schema_fields(tmp_path):
