@@ -46,7 +46,6 @@ REQUIRED_QUALITY_WORKFLOW_RUNS = [
     "python scripts/validate_repo.py",
     "git diff --check",
 ]
-REQUIRED_QUALITY_WORKFLOW_PERMISSIONS = ["permissions:", "  contents: read"]
 REQUIRED_WORKFLOW_TRIGGERS = ["push", "pull_request"]
 REQUIRED_README_VALIDATION_COMMANDS = [
     "pip install -r requirements-dev.txt",
@@ -282,6 +281,28 @@ def workflow_declares_trigger(workflow_text: str, trigger: str) -> bool:
     return False
 
 
+def workflow_sets_readonly_contents_permission(workflow_text: str) -> bool:
+    permissions_block_indent: int | None = None
+    for raw_line in workflow_text.splitlines():
+        stripped = raw_line.strip()
+        if not stripped or stripped.startswith("#"):
+            continue
+        line_indent = len(raw_line) - len(raw_line.lstrip(" \t"))
+        if stripped == "permissions: read-all":
+            return True
+        if permissions_block_indent is not None and line_indent <= permissions_block_indent:
+            permissions_block_indent = None
+        if stripped == "permissions:":
+            permissions_block_indent = line_indent
+            continue
+        if permissions_block_indent is None or ":" not in stripped:
+            continue
+        permission, access = [part.strip() for part in stripped.split(":", 1)]
+        if permission == "contents" and access == "read":
+            return True
+    return False
+
+
 def find_write_workflow_permissions(workflow_text: str) -> list[str]:
     write_permissions: list[str] = []
     permissions_block_indent: int | None = None
@@ -465,10 +486,7 @@ def validate(root: Path = ROOT) -> list[str]:
         workflow_text = workflow.read_text(errors="ignore")
         if "git diff --check" not in workflow_text:
             errors.append(f"{rel(workflow, root)} must run: git diff --check")
-        if not all(
-            permission_line in workflow_text
-            for permission_line in REQUIRED_QUALITY_WORKFLOW_PERMISSIONS
-        ):
+        if not workflow_sets_readonly_contents_permission(workflow_text):
             errors.append(f"{rel(workflow, root)} must set permissions to contents: read")
         if "timeout-minutes:" not in workflow_text:
             errors.append(f"{rel(workflow, root)} must set timeout-minutes")

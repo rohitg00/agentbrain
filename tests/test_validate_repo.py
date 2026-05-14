@@ -980,6 +980,38 @@ def test_readme_vendor_names_outside_vs_others_are_reported(tmp_path):
     assert f"README.md contains banned public-copy term: {vendor_name}" in errors
 
 
+def test_workflow_readonly_permission_must_not_be_satisfied_by_comments(tmp_path):
+    write_minimal_repo(tmp_path)
+    (tmp_path / ".github" / "workflows" / "quality.yml").write_text(
+        "\n".join([
+            "name: Quality",
+            "on:",
+            "  push:",
+            "  pull_request:",
+            "# permissions:",
+            "#   contents: read",
+            "jobs:",
+            "  validate:",
+            "    runs-on: ubuntu-latest",
+            "    timeout-minutes: 10",
+            "    steps:",
+            "      - uses: actions/checkout@v4",
+            "      - uses: actions/setup-python@v5",
+            "        with:",
+            "          python-version: '3.11'",
+            "      - run: python -m pip install -r requirements-dev.txt",
+            "      - run: python -m pytest -q",
+            "      - run: python scripts/validate_repo.py",
+            "      - run: git diff --check",
+        ]),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert ".github/workflows/quality.yml must set permissions to contents: read" in errors
+
+
 def test_skill_directory_names_must_be_lowercase_kebab_case(tmp_path):
     write_minimal_repo(tmp_path)
     uppercase_skill_dir = tmp_path / "skills" / "SampleSkill"
