@@ -1093,6 +1093,18 @@ def test_contributing_validation_section_must_list_whitespace_check(tmp_path):
     assert "CONTRIBUTING.md validation section must document: git diff --check" in errors
 
 
+def test_contributing_validation_section_must_list_pytest(tmp_path):
+    write_minimal_repo(tmp_path)
+    (tmp_path / "CONTRIBUTING.md").write_text(
+        "# Contributing\n\n## Validation\n\n```bash\npython3 -m pip install -r requirements-dev.txt\npython3 scripts/validate_repo.py\ngit diff --check\n```\n",
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "CONTRIBUTING.md validation section must document: pytest -q" in errors
+
+
 def test_evals_readme_must_list_available_cases(tmp_path):
     write_minimal_repo(tmp_path)
     (tmp_path / "evals" / "README.md").write_text(

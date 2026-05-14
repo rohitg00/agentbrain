@@ -39,7 +39,7 @@ REQUIRED_README_VALIDATION_COMMANDS = [
     "python scripts/validate_repo.py",
     "git diff --check",
 ]
-REQUIRED_CONTRIBUTING_VALIDATION_COMMANDS = ["git diff --check"]
+REQUIRED_CONTRIBUTING_VALIDATION_COMMANDS = ["pytest -q", "git diff --check"]
 RESEARCH_WATCHLIST_REQUIRED_SOURCES = [
     "autonomous-goal runtime docs",
     "service-layer skill pattern",
