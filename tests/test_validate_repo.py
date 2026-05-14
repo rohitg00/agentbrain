@@ -30,7 +30,7 @@ def write_minimal_repo(root: Path) -> None:
             "name: sample",
             "description: Sample skill",
             "---",
-            "# Sample",
+            "# sample",
             "## Trigger",
             "## Inputs",
             "## Procedure",
@@ -199,7 +199,7 @@ def test_skill_frontmatter_must_have_closing_delimiter(tmp_path):
             "---",
             "name: sample",
             "description: Sample skill",
-            "# Sample",
+            "# sample",
             "## Trigger",
             "## Inputs",
             "## Procedure",
@@ -284,7 +284,7 @@ def test_skill_frontmatter_name_must_match_directory(tmp_path):
             "name: wrong-name",
             "description: Sample skill",
             "---",
-            "# Sample",
+            "# sample",
             "## Trigger",
             "## Inputs",
             "## Procedure",
@@ -298,6 +298,30 @@ def test_skill_frontmatter_name_must_match_directory(tmp_path):
     errors = validate_repo.validate(tmp_path)
 
     assert "skills/sample/SKILL.md frontmatter name must be sample" in errors
+
+
+def test_skill_heading_must_match_directory_name(tmp_path):
+    write_minimal_repo(tmp_path)
+    (tmp_path / "skills" / "sample" / "SKILL.md").write_text(
+        "\n".join([
+            "---",
+            "name: sample",
+            "description: Sample skill",
+            "---",
+            "# Different Skill",
+            "## Trigger",
+            "## Inputs",
+            "## Procedure",
+            "## Verification",
+            "## Failure Modes",
+            "## Example",
+        ]),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "skills/sample/SKILL.md heading must be # sample" in errors
 
 
 def test_command_heading_must_match_filename(tmp_path):

@@ -181,6 +181,10 @@ def validate(root: Path = ROOT) -> list[str]:
             errors.append(f"{rel(skill, root)} frontmatter must be delimited by ---")
         frontmatter = parse_frontmatter(text)
         expected_name = skill.parent.name
+        first_line = next((line for line in text.splitlines() if line.startswith("# ")), "")
+        expected_heading = f"# {expected_name}"
+        if first_line != expected_heading:
+            errors.append(f"{rel(skill, root)} heading must be {expected_heading}")
         if frontmatter.get("name") != expected_name:
             errors.append(f"{rel(skill, root)} frontmatter name must be {expected_name}")
         if not frontmatter.get("description"):
