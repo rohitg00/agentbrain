@@ -1044,6 +1044,39 @@ def test_docs_filenames_must_use_lowercase_kebab_case(tmp_path):
     assert "docs/Bad_Doc.md filename must use lowercase kebab-case" in errors
 
 
+def test_doc_heading_must_match_filename(tmp_path):
+    write_minimal_repo(tmp_path)
+    (tmp_path / "docs" / "autonomous-goals.md").write_text(
+        "# Different Goal Notes\n\n/goal\nmeasurable end state\nconstraints\n",
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "docs/autonomous-goals.md heading must be # Autonomous Goals" in errors
+
+
+def test_doc_heading_preserves_non_agent_domain_term(tmp_path):
+    write_minimal_repo(tmp_path)
+    readme = tmp_path / "README.md"
+    readme.write_text(
+        readme.read_text(encoding="utf-8").replace(
+            "- `docs/skill-distillation.md` — how to convert sources into neutral skills.",
+            "- `docs/skill-distillation.md` — how to convert sources into neutral skills.\n"
+            "- `docs/non-agent-alternatives.md` — alternatives to agentic systems.",
+        ),
+        encoding="utf-8",
+    )
+    (tmp_path / "docs" / "non-agent-alternatives.md").write_text(
+        "# Non Agent Alternatives\n",
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "docs/non-agent-alternatives.md heading must be # Non-Agent Alternatives" in errors
+
+
 def test_adapter_readme_heading_must_match_adapter_directory(tmp_path):
     write_minimal_repo(tmp_path)
     (tmp_path / "adapters" / "sample-adapter" / "README.md").write_text(

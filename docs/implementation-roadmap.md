@@ -1,4 +1,4 @@
-# Agent Brain v0.2.0 Implementation Roadmap
+# Implementation Roadmap
 
 Status: v0.2.0 checkpoints completed. This file remains as the checkpoint ledger showing how the rewrite was chunked, reviewed, and committed without one giant dump.
 

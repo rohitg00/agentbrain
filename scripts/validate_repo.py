@@ -341,6 +341,8 @@ def reject_duplicate_json_keys(pairs: list[tuple[str, object]]) -> dict[str, obj
 
 
 def title_from_slug(slug: str) -> str:
+    if slug.startswith("non-agent-"):
+        return f"Non-Agent {title_from_slug(slug.removeprefix('non-agent-'))}"
     connector_words = {"and", "or", "the", "to", "vs"}
     parts = slug.split("-")
     titled_parts = [part if part in connector_words else part.capitalize() for part in parts]
@@ -1118,6 +1120,11 @@ def validate(root: Path = ROOT) -> list[str]:
         single_h1_error = validate_single_h1(markdown_file, root)
         if single_h1_error:
             errors.append(single_h1_error)
+        if markdown_file.parent == root / "docs":
+            expected_heading = f"# {title_from_slug(markdown_file.stem)}"
+            first_line = markdown_file.read_text(errors="ignore").splitlines()[0]
+            if first_line != expected_heading:
+                errors.append(f"{rel(markdown_file, root)} heading must be {expected_heading}")
         if markdown_file.parent == root / "templates" and markdown_file.name != "skill-template.md":
             expected_heading = f"# {title_from_slug(markdown_file.stem)}"
             first_line = markdown_file.read_text(errors="ignore").splitlines()[0]

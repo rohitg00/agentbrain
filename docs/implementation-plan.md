@@ -1,4 +1,4 @@
-# Agent Brain Implementation Plan
+# Implementation Plan
 
 > For agents: implement this repo task-by-task. Do not push to a remote until the owner approves.
 
