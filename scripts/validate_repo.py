@@ -10,10 +10,11 @@ ROOT = Path(__file__).resolve().parents[1]
 REQUIRED_ROOT = ["README.md", "AGENTBRAIN.md", "PRINCIPLES.md", "ANTI_RATIONALIZATION.md"]
 REQUIRED_DOCS = ["docs/autonomous-goals.md"]
 RESEARCH_WATCHLIST_REQUIRED_SOURCES = [
-    "Claude Code /goal",
-    "michaelshimeles/skills",
-    "obra/superpowers",
-    "Everything Claude Code",
+    "autonomous-goal runtime docs",
+    "service-layer skill pattern",
+    "small composable engineering skills",
+    "methodology skill library",
+    "harness integration skill library",
 ]
 REQUIRED_SKILL_SECTIONS = [
     "## Trigger",
@@ -32,7 +33,17 @@ REQUIRED_COMMAND_SECTIONS = [
     "## Stop conditions",
 ]
 REQUIRED_EVAL_CASE_SECTIONS = ["## User request", "## Expected behavior", "## Failure if"]
-BANNED_PUBLIC_COPY_TERMS = ["Garry", "GBrain", "GStack", "Hermes vs", "OpenClaw vs", "Claude vs", "Codex vs"]
+BANNED_PUBLIC_COPY_TERMS = [
+    "Garry",
+    "GBrain",
+    "GStack",
+    "Hermes vs",
+    "OpenClaw vs",
+    "Clau" + "de",
+    "Co" + "dex",
+    "Open" + "AI",
+    "Anth" + "ropic",
+]
 
 
 def rel(path: Path, root: Path) -> str:

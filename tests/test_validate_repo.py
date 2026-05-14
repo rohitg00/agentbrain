@@ -53,10 +53,11 @@ def write_minimal_repo(root: Path) -> None:
     (docs_dir / "research-watchlist.md").write_text(
         "\n".join([
             "# Research Watchlist",
-            "Claude Code /goal",
-            "michaelshimeles/skills",
-            "obra/superpowers",
-            "Everything Claude Code",
+            "autonomous-goal runtime docs",
+            "service-layer skill pattern",
+            "small composable engineering skills",
+            "methodology skill library",
+            "harness integration skill library",
         ]),
         encoding="utf-8",
     )
@@ -107,6 +108,16 @@ def test_banned_public_copy_terms_are_reported(tmp_path):
     errors = validate_repo.validate(tmp_path)
 
     assert "docs/copy.md contains banned public-copy term: GBrain" in errors
+
+
+def test_vendor_names_are_reported_in_public_copy(tmp_path):
+    write_minimal_repo(tmp_path)
+    vendor_name = "Clau" + "de"
+    (tmp_path / "docs" / "copy.md").write_text(f"This names {vendor_name} in public copy.\n", encoding="utf-8")
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert f"docs/copy.md contains banned public-copy term: {vendor_name}" in errors
 
 
 def test_skill_frontmatter_name_must_match_directory(tmp_path):
@@ -200,7 +211,8 @@ def test_research_watchlist_must_track_goal_and_skill_sources(tmp_path):
 
     errors = validate_repo.validate(tmp_path)
 
-    assert "docs/research-watchlist.md missing tracked source: Claude Code /goal" in errors
-    assert "docs/research-watchlist.md missing tracked source: michaelshimeles/skills" in errors
-    assert "docs/research-watchlist.md missing tracked source: obra/superpowers" in errors
-    assert "docs/research-watchlist.md missing tracked source: Everything Claude Code" in errors
+    assert "docs/research-watchlist.md missing tracked source: autonomous-goal runtime docs" in errors
+    assert "docs/research-watchlist.md missing tracked source: service-layer skill pattern" in errors
+    assert "docs/research-watchlist.md missing tracked source: small composable engineering skills" in errors
+    assert "docs/research-watchlist.md missing tracked source: methodology skill library" in errors
+    assert "docs/research-watchlist.md missing tracked source: harness integration skill library" in errors

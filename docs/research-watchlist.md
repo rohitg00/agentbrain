@@ -19,11 +19,9 @@ What changed the repo:
 
 ### Web sources checked
 
-- Anthropic Engineering: `Equipping agents for the real world with Agent Skills`
-- Claude API Docs: `Agent Skills`
-- OpenAI Agents SDK Docs: `Guardrails`
-- OpenAI API Docs: `Guardrails and human review`
-- HumanLayer / 12-factor-agents public materials surfaced by web search
+- Agent skills documentation from major agent providers.
+- Guardrail and human-review documentation from major agent providers.
+- Production agent architecture materials surfaced by web search.
 
 ## 2026-05-14 memory and context pass
 
@@ -44,7 +42,7 @@ What changed the repo:
 
 ### Web source checked
 
-- HumanLayer / 12-factor-agents: production LLM apps are usually deterministic software with LLM calls at high-leverage boundaries, owned context, explicit state, pause/resume, human contact, small focused agents, and compact errors.
+- Production agent architecture material: production LLM apps are usually deterministic software with LLM calls at high-leverage boundaries, owned context, explicit state, pause/resume, human contact, small focused agents, and compact errors.
 
 What changed the repo:
 
@@ -56,15 +54,15 @@ What changed the repo:
 
 ### User-supplied source
 
-- AI Edge / Miles Deutscher X guide on `/goal`: useful as practitioner signal, but treated as social input rather than canonical implementation detail.
+- Social guide on `/goal`: useful as practitioner signal, but treated as social input rather than canonical implementation detail.
 
 ### Web sources checked
 
-- Claude Code /goal docs: `/goal` sets a session-scoped completion condition, uses a separate evaluator after each turn, complements auto-approval, and needs measurable evidence surfaced by the agent.
-- michaelshimeles/skills `code-structure/SKILL.md`: reinforced service-layer separation between orchestration rules and reusable operational mechanics.
-- mattpocock/skills: reinforced small composable engineering skills, grilling/alignment, shared project language, and user-controlled process over giant frameworks.
-- obra/superpowers: reinforced skills as a full development methodology with TDD, plans, subagent-driven development, finishing branches, and cross-runtime adaptation.
-- Everything Claude Code (`affaan-m/everything-claude-code`): reinforced that serious agent harnesses combine skills, agents, hooks, memory, security checks, evals, and cross-tool adapters.
+- autonomous-goal runtime docs: `/goal` sets a session-scoped completion condition, uses a separate evaluator after each turn, complements auto-approval, and needs measurable evidence surfaced by the agent.
+- service-layer skill pattern: reinforced separation between orchestration rules and reusable operational mechanics.
+- small composable engineering skills: reinforced grilling/alignment, shared project language, and user-controlled process over giant frameworks.
+- methodology skill library: reinforced skills as a full development methodology with TDD, plans, subagent-driven development, finishing branches, and cross-runtime adaptation.
+- harness integration skill library: reinforced that serious agent harnesses combine skills, agents, hooks, memory, security checks, evals, and cross-tool adapters.
 
 What changed the repo:
 
@@ -81,5 +79,5 @@ When hardening the repo, repeat this loop:
 3. Compare findings against `docs/`, `commands/`, `skills/`, `schemas/`, and `evals/`.
 4. Patch the smallest mismatch.
 5. Add or update validation/tests when the mismatch is structural.
-6. Run `python3 -m pytest -q` and `python3 scripts/validate_repo.py`.
+6. Run `python -m pytest -q` and `python scripts/validate_repo.py`.
 7. Commit and push to `main`.

@@ -45,12 +45,12 @@ This prevents a skill library from becoming a giant prompt dump while still allo
 
 Agent Brain should mine strong public skill libraries for patterns, not copy them wholesale.
 
-Current references to keep checking:
+Current pattern classes to keep checking:
 
-- `mattpocock/skills` for small, composable engineering skills, grilling, shared language, and repo-specific agent docs.
-- `obra/superpowers` for TDD-first development methodology, subagent workflows, planning, and branch-finishing discipline.
-- `michaelshimeles/skills` for service-layer separation between orchestration rules and reusable mechanics.
-- `affaan-m/everything-claude-code` / Everything Claude Code for harness-level integration across skills, agents, hooks, memory, security, evals, and adapters.
+- Small, composable engineering skills for grilling, shared language, and repo-specific agent docs.
+- Methodology skill libraries for TDD-first development, subagent workflows, planning, and branch-finishing discipline.
+- Service-layer skill patterns for separating orchestration rules from reusable mechanics.
+- Harness-integration skill libraries for combining skills, agents, hooks, memory, security, evals, and adapters.
 
 Import rule: extract the reusable design pressure, then rewrite it in Agent Brain vocabulary with tests or checklists. Do not vendor giant prompt packs, copy private assumptions, or add runtime-specific commands to the portable core.
 

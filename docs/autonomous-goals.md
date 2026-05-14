@@ -2,7 +2,7 @@
 
 Autonomous goal loops are a runtime pattern where the user gives an agent a completion condition and the agent keeps taking turns until that condition is demonstrably satisfied.
 
-This pattern appears in current coding-agent products as commands such as `/goal` in Claude Code, Codex, and Hermes-like runtimes. Agent Brain should treat it as a portable workflow primitive, not as a vendor-specific feature.
+This pattern appears in current coding-agent products as commands such as `/goal` in long-running agent runtimes. Agent Brain should treat it as a portable workflow primitive, not as a vendor-specific feature.
 
 ## What `/goal` changes
 
