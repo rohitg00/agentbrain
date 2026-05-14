@@ -129,6 +129,7 @@ def write_minimal_repo(root: Path) -> None:
             "      - run: python -m pip install -r requirements-dev.txt",
             "      - run: python -m pytest -q",
             "      - run: python scripts/validate_repo.py",
+            "      - run: git diff --check",
         ]),
         encoding="utf-8",
     )
@@ -668,6 +669,34 @@ def test_quality_workflow_must_run_pytest(tmp_path):
     errors = validate_repo.validate(tmp_path)
 
     assert ".github/workflows/quality.yml must run: python -m pytest -q" in errors
+
+
+def test_quality_workflow_must_run_whitespace_check(tmp_path):
+    write_minimal_repo(tmp_path)
+    (tmp_path / ".github" / "workflows" / "quality.yml").write_text(
+        "\n".join([
+            "name: Quality",
+            "on:",
+            "  push:",
+            "  pull_request:",
+            "jobs:",
+            "  validate:",
+            "    runs-on: ubuntu-latest",
+            "    steps:",
+            "      - uses: actions/checkout@v4",
+            "      - uses: actions/setup-python@v5",
+            "        with:",
+            "          python-version: '3.11'",
+            "      - run: python -m pip install -r requirements-dev.txt",
+            "      - run: python -m pytest -q",
+            "      - run: python scripts/validate_repo.py",
+        ]),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert ".github/workflows/quality.yml must run: git diff --check" in errors
 
 
 def test_dev_requirements_file_is_required(tmp_path):

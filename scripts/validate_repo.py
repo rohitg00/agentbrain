@@ -27,6 +27,7 @@ REQUIRED_QUALITY_WORKFLOW_RUNS = [
     "python -m pip install -r requirements-dev.txt",
     "python -m pytest -q",
     "python scripts/validate_repo.py",
+    "git diff --check",
 ]
 RESEARCH_WATCHLIST_REQUIRED_SOURCES = [
     "autonomous-goal runtime docs",
