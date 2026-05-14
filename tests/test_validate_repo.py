@@ -39,11 +39,17 @@ def write_minimal_repo(root: Path) -> None:
             "---",
             "# sample",
             "## Trigger",
+            "Use for sample requests.",
             "## Inputs",
+            "Raw request.",
             "## Procedure",
+            "Check the request.",
             "## Verification",
+            "Confirm evidence.",
             "## Failure Modes",
+            "Stop if evidence is missing.",
             "## Example",
+            "Sample request routes through the skill.",
         ]),
         encoding="utf-8",
     )
@@ -89,11 +95,17 @@ def write_minimal_repo(root: Path) -> None:
             "---",
             "# activity-recap",
             "## Trigger",
+            "Use when a user asks what changed recently.",
             "## Inputs",
+            "Local activity evidence.",
             "## Procedure",
+            "Collect evidence before summarizing.",
             "## Verification",
+            "State the checked scope.",
             "## Failure Modes",
+            "Do not invent work without evidence.",
             "## Example",
+            "Summarize commits and changed files from the current repo.",
         ]),
         encoding="utf-8",
     )
@@ -271,6 +283,35 @@ def test_skill_frontmatter_must_have_closing_delimiter(tmp_path):
     errors = validate_repo.validate(tmp_path)
 
     assert "skills/sample/SKILL.md frontmatter must be delimited by ---" in errors
+
+
+def test_skill_required_sections_must_have_body(tmp_path):
+    write_minimal_repo(tmp_path)
+    (tmp_path / "skills" / "sample" / "SKILL.md").write_text(
+        "\n".join([
+            "---",
+            "name: sample",
+            "description: Sample skill",
+            "---",
+            "# sample",
+            "## Trigger",
+            "Use for sample requests.",
+            "## Inputs",
+            "Raw request.",
+            "## Procedure",
+            "Check the request.",
+            "## Verification",
+            "Confirm evidence.",
+            "## Failure Modes",
+            "Stop if evidence is missing.",
+            "## Example",
+        ]),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "skills/sample/SKILL.md section has no body: ## Example" in errors
 
 
 def test_banned_public_copy_terms_are_reported(tmp_path):
