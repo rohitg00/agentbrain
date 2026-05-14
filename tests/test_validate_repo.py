@@ -349,6 +349,22 @@ def test_readme_command_catalog_entries_must_point_to_existing_files(tmp_path):
     assert "README.md command catalog entry points to missing file: /brain-missing" in errors
 
 
+def test_command_skills_to_load_must_name_at_least_one_skill(tmp_path):
+    write_minimal_repo(tmp_path)
+    command = tmp_path / "commands" / "brain-sample.md"
+    command.write_text(
+        command.read_text(encoding="utf-8").replace(
+            "Load `sample` for sample routing.",
+            "Load the relevant skill for sample routing.",
+        ),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "commands/brain-sample.md skills-to-load section must name at least one skill" in errors
+
+
 def test_readme_skill_catalog_entries_must_point_to_existing_files(tmp_path):
     write_minimal_repo(tmp_path)
     readme = tmp_path / "README.md"

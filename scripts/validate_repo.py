@@ -735,7 +735,10 @@ def validate(root: Path = ROOT) -> list[str]:
                     errors.append(f"{rel(command, root)} section has no body: {section}")
         if not sections_are_in_order(text, REQUIRED_COMMAND_SECTIONS):
             errors.append(f"{rel(command, root)} sections must appear in canonical order")
-        for skill_name in command_skills_to_load(text):
+        skill_names = command_skills_to_load(text)
+        if not skill_names:
+            errors.append(f"{rel(command, root)} skills-to-load section must name at least one skill")
+        for skill_name in skill_names:
             skill_file = root / "skills" / skill_name / "SKILL.md"
             if not skill_file.exists():
                 errors.append(
