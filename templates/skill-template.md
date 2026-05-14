@@ -22,15 +22,25 @@ Use when ...
 
 - ...
 
-## Pitfalls
+## Anti-Rationalization
 
-- ...
+| Shortcut | Rebuttal |
+|---|---|
+| "..." | ... |
 
 ## Verification
 
 - ...
 
-## Example output
+## Output Artifact
+
+...
+
+## Failure Modes
+
+- ...
+
+## Example
 
 ```markdown
 ...

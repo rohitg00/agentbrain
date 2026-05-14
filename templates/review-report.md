@@ -1,20 +1,22 @@
 # Review Report
 
-## Verdict
+Schema fields: `summary`, `findings`, `decision`.
 
-Approved / Approved with changes / Rejected
+## Summary
 
-## Must fix
+...
 
-1. ...
+## Findings
 
-## Should fix
+### Finding 1
 
-1. ...
+**Severity:** blocker / major / minor / note
 
-## Nice to have
+**Area:** product / design / engineering / security / guardrails / QA / launch
 
-1. ...
+**Finding:** ...
+
+**Recommendation:** ...
 
 ## Evidence checked
 
@@ -23,6 +25,10 @@ Approved / Approved with changes / Rejected
 ## Risks remaining
 
 - ...
+
+## Decision
+
+approve / request_changes / block
 
 ## Follow-up learning
 

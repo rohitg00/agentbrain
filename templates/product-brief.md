@@ -1,16 +1,22 @@
 # Product Brief
 
-## One-line idea
+Schema fields: `title`, `target_user`, `problem`, `evidence`, `success_metric`, `non_goals`, `open_questions`, `risks`.
+
+## Title
 
 ...
 
-## Primary user
+## Target user
 
 ...
 
-## User pain / job
+## Problem
 
 ...
+
+## Evidence
+
+- Source / observation / test result: ...
 
 ## Current workaround
 
@@ -22,7 +28,7 @@
 
 ## Non-goals
 
-...
+- ...
 
 ## Success metric
 

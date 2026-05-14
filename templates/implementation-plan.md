@@ -1,5 +1,7 @@
 # Implementation Plan
 
+Schema fields: `goal`, `tasks`, `validation`, `rollback`.
+
 ## Goal
 
 ...
@@ -12,12 +14,17 @@
 
 ### Task 1: ...
 
-**Objective:** ...
+**ID:** `T1`
+
+**Description:** ...
 
 **Files:**
 - Create: `...`
 - Modify: `...`
 - Test: `...`
+
+**Acceptance criteria:**
+- ...
 
 **Steps:**
 1. ...
@@ -32,11 +39,22 @@
 
 Expected: ...
 
+**Depends on:** ...
+
+## Validation
+
+- ...
+
+## Rollback
+
+- ...
+
 ## Review gates
 
 - Product:
 - Design:
 - Engineering:
 - Security/trust:
+- Guardrail/approval:
 - QA:
 - Launch:
