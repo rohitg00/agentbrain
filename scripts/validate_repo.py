@@ -50,6 +50,7 @@ REQUIRED_COMMAND_SECTIONS = [
     "## Quality bar",
 ]
 REQUIRED_EVAL_CASE_SECTIONS = ["## User request", "## Expected behavior", "## Failure if"]
+REQUIRED_EVAL_RUBRIC_SECTIONS = ["## Dimensions", "## Interpretation"]
 BANNED_PUBLIC_COPY_TERMS = [
     "G" + "arry",
     "G" + "Brain",
@@ -305,6 +306,14 @@ def validate(root: Path = ROOT) -> list[str]:
         single_h1_error = validate_single_h1(markdown_file, root)
         if single_h1_error:
             errors.append(single_h1_error)
+
+    for rubric in sorted((root / "evals" / "rubrics").glob("*.md")):
+        text = rubric.read_text(errors="ignore")
+        for section in REQUIRED_EVAL_RUBRIC_SECTIONS:
+            if section not in text:
+                errors.append(f"{rel(rubric, root)} missing {section}")
+            elif not section_has_body(text, section):
+                errors.append(f"{rel(rubric, root)} section has no body: {section}")
 
     for public_copy_file in sorted(
         path for path in root.rglob("*") if path.suffix in PUBLIC_COPY_SUFFIXES

@@ -846,3 +846,17 @@ def test_eval_rubrics_must_have_exactly_one_h1(tmp_path):
     errors = validate_repo.validate(tmp_path)
 
     assert "evals/rubrics/quality.md must contain exactly one H1 heading" in errors
+
+
+def test_eval_rubrics_require_scoring_and_interpretation_sections(tmp_path):
+    write_minimal_repo(tmp_path)
+    rubric_dir = tmp_path / "evals" / "rubrics"
+    rubric_dir.mkdir(parents=True)
+    (rubric_dir / "quality.md").write_text(
+        "# Quality Rubric\n\n## Dimensions\n\nScore the evidence quality.\n",
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "evals/rubrics/quality.md missing ## Interpretation" in errors
