@@ -255,6 +255,8 @@ def validate(root: Path = ROOT) -> list[str]:
         for section in REQUIRED_COMMAND_SECTIONS:
             if section not in text:
                 errors.append(f"{rel(command, root)} missing {section}")
+            elif not section_has_body(text, section):
+                errors.append(f"{rel(command, root)} section has no body: {section}")
 
     readme = root / "README.md"
     if readme.exists():

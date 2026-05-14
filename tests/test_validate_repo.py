@@ -54,12 +54,19 @@ def write_minimal_repo(root: Path) -> None:
         "\n".join([
             "# /brain-sample",
             "## Purpose",
+            "Route sample work.",
             "## When to use",
+            "Use for sample requests.",
             "## Input contract",
+            "Raw request.",
             "## Workflow",
+            "Inspect inputs and decide the next action.",
             "## Output",
+            "A concrete next action.",
             "## Stop conditions",
+            "Stop when the request is unsafe.",
             "## Quality bar",
+            "Evidence is checked before output.",
         ]),
         encoding="utf-8",
     )
@@ -725,6 +732,33 @@ def test_commands_must_include_quality_bar_section(tmp_path):
     errors = validate_repo.validate(tmp_path)
 
     assert "commands/brain-sample.md missing ## Quality bar" in errors
+
+
+def test_command_required_sections_must_have_body(tmp_path):
+    write_minimal_repo(tmp_path)
+    (tmp_path / "commands" / "brain-sample.md").write_text(
+        "\n".join([
+            "# /brain-sample",
+            "## Purpose",
+            "Route the work.",
+            "## When to use",
+            "Use for sample requests.",
+            "## Input contract",
+            "Raw request.",
+            "## Workflow",
+            "Inspect and decide.",
+            "## Output",
+            "Next action.",
+            "## Stop conditions",
+            "Stop if unsafe.",
+            "## Quality bar",
+        ]),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "commands/brain-sample.md section has no body: ## Quality bar" in errors
 
 
 def test_readme_must_list_available_commands(tmp_path):
