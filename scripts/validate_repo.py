@@ -29,6 +29,11 @@ REQUIRED_QUALITY_WORKFLOW_RUNS = [
     "python scripts/validate_repo.py",
     "git diff --check",
 ]
+REQUIRED_README_VALIDATION_COMMANDS = [
+    "python -m pytest -q",
+    "python scripts/validate_repo.py",
+    "git diff --check",
+]
 RESEARCH_WATCHLIST_REQUIRED_SOURCES = [
     "autonomous-goal runtime docs",
     "service-layer skill pattern",
@@ -277,6 +282,9 @@ def validate(root: Path = ROOT) -> list[str]:
     readme = root / "README.md"
     if readme.exists():
         readme_text = readme.read_text(errors="ignore")
+        for run_command in REQUIRED_README_VALIDATION_COMMANDS:
+            if run_command not in readme_text:
+                errors.append(f"README.md validation section must document: {run_command}")
         for command in sorted((root / "commands").glob("*.md")):
             command_name = f"/{command.stem}"
             if command_name not in readme_text:

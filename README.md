@@ -103,8 +103,9 @@ Run the local quality gate before committing changes:
 
 ```bash
 python3 -m pip install -r requirements-dev.txt
-python3 -m pytest -q
-python3 scripts/validate_repo.py
+python -m pytest -q
+python scripts/validate_repo.py
+git diff --check
 ```
 
 The same checks run in GitHub Actions on every push and pull request.
