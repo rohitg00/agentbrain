@@ -46,15 +46,21 @@ A command spec must include:
 
 ## Validation
 
-Run:
+Run the full local quality gate before opening a PR or pushing to `main`:
 
 ```bash
+python3 -m pip install -r requirements-dev.txt
+python3 -m pytest -q
 python3 scripts/validate_repo.py
 ```
 
-If the script is not available yet, check manually:
+The validator checks:
 
-- all markdown links are sane,
-- JSON schemas parse,
-- skills have required sections,
-- no obvious placeholder text remains.
+- JSON schema syntax and schema semantics,
+- required root files,
+- skill frontmatter name/description and required sections,
+- command heading/filename alignment and required sections,
+- eval-case required sections,
+- banned public-copy terms.
+
+GitHub Actions runs the same quality gate on pushes and pull requests.
