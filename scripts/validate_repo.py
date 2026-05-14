@@ -498,6 +498,7 @@ def validate(root: Path = ROOT) -> list[str]:
         *sorted((root / "docs").glob("*.md")),
         *sorted((root / "templates").glob("*.md")),
         *sorted((root / "evals" / "rubrics").glob("*.md")),
+        *sorted((root / "evals").glob("README.md")),
         *sorted((root / "adapters").glob("*/README.md")),
     ]
     for markdown_file in content_files:

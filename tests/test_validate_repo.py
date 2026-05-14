@@ -1200,6 +1200,18 @@ def test_evals_readme_is_required(tmp_path):
     assert "missing evals/README.md" in errors
 
 
+def test_evals_readme_must_have_exactly_one_h1(tmp_path):
+    write_minimal_repo(tmp_path)
+    (tmp_path / "evals" / "README.md").write_text(
+        "# Evals\n\n# Duplicate Evals\n\n- `activity-recap`\n- `source-to-skill-distillation`\n- `agent-output-verifier`\n- `verification-shortcut`\n- `skill-boundary-creep`\n- `no-user-defined`\n",
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "evals/README.md must contain exactly one H1 heading" in errors
+
+
 def test_quality_workflow_is_required(tmp_path):
     write_minimal_repo(tmp_path)
     (tmp_path / ".github" / "workflows" / "quality.yml").unlink()
