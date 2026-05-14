@@ -788,6 +788,36 @@ def test_templates_must_reference_required_schema_fields(tmp_path):
     assert "templates/product-brief.md missing required schema field reference: target_user" in errors
 
 
+def test_template_schema_field_references_must_be_exact_tokens(tmp_path):
+    write_minimal_repo(tmp_path)
+    templates_dir = tmp_path / "templates"
+    templates_dir.mkdir()
+    (tmp_path / "schemas" / "product-brief.schema.json").write_text(
+        json.dumps(
+            {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "title": "Product Brief",
+                "type": "object",
+                "additionalProperties": False,
+                "required": ["title", "user"],
+                "properties": {
+                    "title": {"type": "string"},
+                    "user": {"type": "string"},
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
+    (templates_dir / "product-brief.md").write_text(
+        "# Product Brief\n\nSchema fields: `title`, `target_user`.\n",
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "templates/product-brief.md missing required schema field reference: user" in errors
+
+
 def test_autonomous_goal_doc_is_required(tmp_path):
     write_minimal_repo(tmp_path)
     (tmp_path / "docs" / "autonomous-goals.md").unlink()
