@@ -21,7 +21,9 @@ REQUIRED_DEV_REQUIREMENTS = ["jsonschema", "pytest"]
 REQUIRED_DIRECTORIES = ["schemas"]
 REQUIRED_ARTIFACT_FILES = [
     "schemas/handoff-report.schema.json",
+    "schemas/memory-decision.schema.json",
     "templates/handoff-report.md",
+    "templates/memory-decision.md",
 ]
 REQUIRED_GITIGNORE_PATTERNS = ["__pycache__/", "*.py[cod]", ".pytest_cache/", ".venv/"]
 REQUIRED_DOCS = [
@@ -32,11 +34,13 @@ REQUIRED_DOCS = [
 REQUIRED_SKILLS = [
     "skills/activity-recap/SKILL.md",
     "skills/agent-output-verifier/SKILL.md",
+    "skills/context-memory/SKILL.md",
 ]
 REQUIRED_EVAL_CASES = [
     "evals/cases/activity-recap.md",
     "evals/cases/source-to-skill-distillation.md",
     "evals/cases/agent-output-verifier.md",
+    "evals/cases/memory-capture-routing.md",
     "evals/cases/verification-shortcut.md",
     "evals/cases/skill-boundary-creep.md",
     "evals/cases/no-user-defined.md",

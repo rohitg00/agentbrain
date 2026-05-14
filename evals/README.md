@@ -20,6 +20,7 @@ Agent Brain evals check whether a command or skill improves judgment instead of 
 - `build-vs-buy-decision` — compares whether to build, buy, or avoid automation.
 - `context-drift` — rebuilds a compact repo context map from evidence before planning follow-up work.
 - `interrupted-handoff-resume` — resumes from prior agent handoffs only after checking repo state and stale-note risk.
+- `memory-capture-routing` — routes candidate memories to the right tier while rejecting noise, secrets, and stale progress.
 - `no-user-defined` — refuses to design without a concrete user definition.
 - `overengineered-feature` — reduces unnecessary complexity before planning.
 - `plan-slicing` — splits broad work into vertical slices with acceptance checks instead of big-bang plans.
