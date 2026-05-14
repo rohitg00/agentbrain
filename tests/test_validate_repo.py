@@ -549,6 +549,24 @@ def test_readme_repository_map_must_include_setup_and_ci_paths(tmp_path):
     assert "README.md repository map missing required path: .github/workflows/" in errors
 
 
+def test_readme_artifact_routing_guide_must_cover_schemas_and_templates(tmp_path):
+    write_minimal_repo(tmp_path)
+    readme = tmp_path / "README.md"
+    readme.write_text(
+        readme.read_text(encoding="utf-8")
+        .replace("- `schemas/handoff-report.schema.json` — sample handoff schema.\n", "- Handoff schema exists.\n")
+        .replace("- `templates/handoff-report.md` — sample handoff template.\n", "- Handoff template exists.\n")
+        + "\nSchema catalog: `schemas/handoff-report.schema.json`\n"
+        + "Template catalog: `templates/handoff-report.md`\n",
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "README.md artifact routing guide missing schema: schemas/handoff-report.schema.json" in errors
+    assert "README.md artifact routing guide missing template: templates/handoff-report.md" in errors
+
+
 def test_readme_troubleshooting_must_cover_dirty_working_tree_recovery(tmp_path):
     write_minimal_repo(tmp_path)
 

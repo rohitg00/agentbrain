@@ -628,6 +628,13 @@ def readme_documentation_guide_entries(text: str) -> list[str]:
     return sorted(entries)
 
 
+def readme_artifact_routing_entries(text: str, prefix: str) -> list[str]:
+    body = section_body(text, "## Artifact Routing Guide")
+    escaped_prefix = re.escape(prefix)
+    pattern = rf"`({escaped_prefix}/[a-z0-9-]+(?:\.schema)?\.json|{escaped_prefix}/[a-z0-9-]+\.md)`"
+    return sorted(set(re.findall(pattern, body)))
+
+
 def command_skills_to_load(text: str) -> list[str]:
     body = section_body(text, "## Skills to load")
     return sorted(set(re.findall(r"`([a-z0-9]+(?:-[a-z0-9]+)*)`", body)))
@@ -978,14 +985,20 @@ def validate(root: Path = ROOT) -> list[str]:
         for doc_ref in readme_docs:
             if not (root / doc_ref).exists():
                 errors.append(f"README.md documentation guide entry points to missing file: {doc_ref}")
+        artifact_schema_refs = readme_artifact_routing_entries(readme_text, "schemas")
+        artifact_template_refs = readme_artifact_routing_entries(readme_text, "templates")
         for schema in sorted((root / "schemas").glob("*.json")):
             schema_ref = rel(schema, root)
             if f"`{schema_ref}`" not in readme_text:
                 errors.append(f"README.md missing schema catalog entry: {schema_ref}")
+            if schema_ref not in artifact_schema_refs:
+                errors.append(f"README.md artifact routing guide missing schema: {schema_ref}")
         for template in sorted((root / "templates").glob("*.md")):
             template_ref = rel(template, root)
             if f"`{template_ref}`" not in readme_text:
                 errors.append(f"README.md missing template catalog entry: {template_ref}")
+            if template_ref not in artifact_template_refs:
+                errors.append(f"README.md artifact routing guide missing template: {template_ref}")
         mapped_paths = readme_repository_map_paths(readme_text)
         for mapped_path in mapped_paths:
             if not (root / mapped_path).exists():
