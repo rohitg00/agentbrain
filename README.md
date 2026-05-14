@@ -1,59 +1,85 @@
 # Agent Brain
 
-Agent Brain is a portable operating system for AI agents that turns vague user requests into well-shaped products, plans, reviews, tests, launches, and durable learning.
+Agent Brain is an evidence-first operating system for AI agents.
 
-It is designed to be agent-agnostic: any capable coding or research agent can read these files, load the relevant skill, ask the right questions, challenge weak assumptions, and guide the user from idea to shipped artifact.
+It helps an agent turn raw human intent into a researched decision, a challenged product brief, a small implementation plan, verifiable work, review gates, and durable learning.
 
-## What it gives an agent
+The core question is not "how do we build this?"
 
-- A single entrypoint for product creation: `/brain-start`
-- A product interrogation loop before implementation
-- Role-based review passes for product, design, engineering, developer experience, safety, and launch
-- A durable memory model for facts, decisions, learnings, and reusable procedures
-- Skill templates that convert repeated success or failure into reusable playbooks
-- A shipping gate that blocks random building and requires evidence, tests, review, and learning capture
+The core question is:
 
-## Core principle
+> Should this exist, should it be an agent, and what evidence would prove or kill it?
 
-Do not build from the first prompt.
+## Why this exists
 
-First understand intent, audience, constraints, risk, success criteria, and the user's taste. Then grill the idea until the problem is sharp. Then design the smallest plan that can produce evidence. Then implement. Then review. Then learn.
+Agents are good at executing. That is dangerous when the request is vague, over-scoped, under-researched, or better solved by a simpler system.
 
-## Quick start for any agent
+Agent Brain gives agents a portable discipline:
 
-1. Read `AGENTBRAIN.md`.
-2. Load `skills/brain-start/SKILL.md`.
-3. Run the question ladder from `docs/question-ladder.md`.
-4. Use `docs/grilling-protocol.md` to challenge the answer.
-5. Save the final product brief using `templates/product-brief.md`.
-6. Create the implementation plan using `templates/implementation-plan.md`.
-7. Run the review gates in `docs/review-gates.md`.
-8. Capture learnings using `skills/brain-learn/SKILL.md`.
+```text
+Intake
+→ Research
+→ Challenge
+→ Decide
+→ Design
+→ Plan
+→ Build
+→ Verify
+→ Review
+→ Ship
+→ Learn
+```
 
-## Slash commands
+Every stage has artifacts, exit criteria, and stop conditions.
 
-- `/brain-start` — start from a raw idea and produce a product brief
-- `/brain-grill` — challenge a product, plan, design, or architecture until it is stronger
-- `/brain-plan` — produce a bite-sized implementation plan
-- `/brain-design` — turn requirements into UX, information architecture, and interaction design
-- `/brain-eng` — harden architecture, data flow, edge cases, and tests
-- `/brain-review` — pre-merge review for correctness, security, maintainability, and product fit
-- `/brain-qa` — run a real user-flow QA loop and produce evidence
-- `/brain-ship` — final shipping gate and release checklist
-- `/brain-learn` — turn a repeated failure or success into a reusable skill
+## What Agent Brain gives an agent
+
+- A constitution for constructive disagreement.
+- Anti-rationalization rules that prevent shortcut-taking.
+- A state machine for product and engineering work.
+- Slash-command specs for repeated workflows.
+- Portable skills with triggers, steps, verification, and examples.
+- Artifact schemas for briefs, plans, reviews, QA evidence, and learning capture.
+- Evals that test whether the agent asks, challenges, verifies, and learns.
+- Adapters for different runtimes without locking the core to one tool.
+
+## Core commands
+
+- `/brain-start` — turn a raw request into the correct next state.
+- `/brain-should-this-exist` — test whether the product or agent should exist at all.
+- `/brain-research` — produce a source-backed claim ledger.
+- `/brain-grill` — challenge assumptions, user, market, design, engineering, and risk.
+- `/brain-brief` — create a product brief with evidence and open questions.
+- `/brain-design` — define user flow, interface, states, and edge cases.
+- `/brain-plan` — break work into small, verifiable slices.
+- `/brain-build` — implement only after plan and evidence gates pass.
+- `/brain-verify` — collect tests, traces, screenshots, logs, or other proof.
+- `/brain-review` — review correctness, product fit, security, UX, and maintainability.
+- `/brain-ship` — decide go/no-go with launch checklist and rollback plan.
+- `/brain-learn` — convert repeated success or failure into durable knowledge or skill.
+- `/brain-wiki` — maintain source-backed project knowledge.
+- `/brain-eval` — test the brain, command, or skill against cases and rubrics.
 
 ## Repository map
 
 ```text
-AGENTBRAIN.md                  # The full operating constitution
+AGENTBRAIN.md                  # Constitution and operating loop
+PRINCIPLES.md                  # Behavioral principles
+ANTI_RATIONALIZATION.md        # Shortcut rebuttals
 commands/                      # Slash command specs
 skills/                        # Portable agent skills
-src/                           # Future runtime integrations
-schemas/                       # Future machine-readable specs
-docs/                          # Design, memory, review, and safety docs
-templates/                     # Briefs, plans, review reports, skill templates
+schemas/                       # Machine-checkable artifact schemas
+docs/                          # Architecture, state, memory, research, gates
+templates/                     # Artifact templates
+evals/                         # Cases and rubrics
+adapters/                      # Runtime-specific integration notes
+scripts/                       # Repository validation
 ```
+
+## Rule of thumb
+
+If the agent cannot name the user, problem, evidence, risk, success metric, simpler alternative, and verification method, it is not ready to build.
 
 ## Status
 
-Draft v0.1. This repo is intentionally documentation-first. The first milestone is a complete portable brain that any agent can use before we add installers, CLIs, or runtime adapters.
+v0.2.0 rewrite in progress. The repo is intentionally documentation-first until the portable brain, schemas, and evals are coherent.

@@ -1,20 +1,60 @@
 # Contributing
 
-Agent Brain is a portable agent operating system. Contributions should improve agent behavior without tying the core to one runtime.
+Agent Brain contributions should improve agent judgment, evidence quality, verification, or portability.
 
-## Rules
+## Contribution principles
 
-- Keep public docs runtime-neutral.
-- Prefer small skills over giant prompts.
-- Add verification to every skill.
-- Add examples for every template.
-- Do not include secrets, private data, or vendor-specific credentials.
-- Do not add competitor comparisons to public docs.
+- Prefer small, reviewable changes.
+- Keep public copy runtime-agnostic.
+- Add examples for new commands and skills.
+- Add verification steps for every workflow.
+- Add eval cases when changing behavior.
+- Avoid hype, unsupported claims, and broad superiority language.
 
-## Change checklist
+## Skill contribution checklist
 
-- [ ] Does this improve a real agent workflow?
-- [ ] Is the trigger clear?
-- [ ] Are failure modes documented?
-- [ ] Is there a verification step?
-- [ ] Can another agent use this without guessing?
+A skill must include:
+
+- trigger,
+- required inputs,
+- procedure,
+- questions,
+- anti-rationalization table,
+- verification,
+- output artifact,
+- failure modes,
+- at least one example.
+
+## Command contribution checklist
+
+A command spec must include:
+
+- purpose,
+- when to use,
+- input contract,
+- workflow,
+- required output,
+- stop conditions,
+- quality bar.
+
+## Public copy rules
+
+- Do not position Agent Brain by attacking named alternatives.
+- Do not include private credentials, tokens, or internal connection strings.
+- Treat public discussion as leads, not proof.
+- Separate facts, assumptions, and opinions.
+
+## Validation
+
+Run:
+
+```bash
+python3 scripts/validate_repo.py
+```
+
+If the script is not available yet, check manually:
+
+- all markdown links are sane,
+- JSON schemas parse,
+- skills have required sections,
+- no obvious placeholder text remains.
