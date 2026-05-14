@@ -19,6 +19,7 @@ Agent Brain evals check whether a command or skill improves judgment instead of 
 - `bad-agent-idea` — challenges weak agent ideas before implementation.
 - `build-vs-buy-decision` — compares whether to build, buy, or avoid automation.
 - `context-drift` — rebuilds a compact repo context map from evidence before planning follow-up work.
+- `dirty-working-tree-preservation` — preserves unrelated local edits before autonomous hardening or commits.
 - `interrupted-handoff-resume` — resumes from prior agent handoffs only after checking repo state and stale-note risk.
 - `memory-capture-routing` — routes candidate memories to the right tier while rejecting noise, secrets, and stale progress.
 - `no-user-defined` — refuses to design without a concrete user definition.

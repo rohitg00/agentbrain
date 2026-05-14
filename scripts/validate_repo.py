@@ -40,6 +40,7 @@ REQUIRED_EVAL_CASES = [
     "evals/cases/activity-recap.md",
     "evals/cases/source-to-skill-distillation.md",
     "evals/cases/agent-output-verifier.md",
+    "evals/cases/dirty-working-tree-preservation.md",
     "evals/cases/memory-capture-routing.md",
     "evals/cases/verification-shortcut.md",
     "evals/cases/skill-boundary-creep.md",
