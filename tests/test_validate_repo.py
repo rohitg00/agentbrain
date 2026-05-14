@@ -61,6 +61,29 @@ def write_minimal_repo(root: Path) -> None:
     (docs_dir / "autonomous-goals.md").write_text(
         "# Autonomous Goals\n\n/goal\nmeasurable end state\nconstraints\n", encoding="utf-8"
     )
+
+    workflow_dir = root / ".github" / "workflows"
+    workflow_dir.mkdir(parents=True)
+    (workflow_dir / "quality.yml").write_text(
+        "\n".join([
+            "name: Quality",
+            "on:",
+            "  push:",
+            "  pull_request:",
+            "jobs:",
+            "  validate:",
+            "    runs-on: ubuntu-latest",
+            "    steps:",
+            "      - uses: actions/checkout@v4",
+            "      - uses: actions/setup-python@v5",
+            "        with:",
+            "          python-version: '3.11'",
+            "      - run: python -m pip install -r requirements-dev.txt",
+            "      - run: python -m pytest -q",
+            "      - run: python scripts/validate_repo.py",
+        ]),
+        encoding="utf-8",
+    )
     (docs_dir / "research-watchlist.md").write_text(
         "\n".join([
             "# Research Watchlist",
@@ -399,6 +422,15 @@ def test_autonomous_goal_doc_is_required(tmp_path):
     errors = validate_repo.validate(tmp_path)
 
     assert "missing docs/autonomous-goals.md" in errors
+
+
+def test_quality_workflow_is_required(tmp_path):
+    write_minimal_repo(tmp_path)
+    (tmp_path / ".github" / "workflows" / "quality.yml").unlink()
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "missing .github/workflows/quality.yml" in errors
 
 
 def test_research_watchlist_must_track_goal_and_skill_sources(tmp_path):

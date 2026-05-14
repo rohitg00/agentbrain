@@ -15,6 +15,7 @@ REQUIRED_ROOT = [
     "CONTRIBUTING.md",
 ]
 REQUIRED_DOCS = ["docs/autonomous-goals.md"]
+REQUIRED_WORKFLOWS = [".github/workflows/quality.yml"]
 RESEARCH_WATCHLIST_REQUIRED_SOURCES = [
     "autonomous-goal runtime docs",
     "service-layer skill pattern",
@@ -157,6 +158,10 @@ def validate(root: Path = ROOT) -> list[str]:
                 errors.append(single_h1_error)
 
     for required_path in REQUIRED_DOCS:
+        if not (root / required_path).exists():
+            errors.append(f"missing {required_path}")
+
+    for required_path in REQUIRED_WORKFLOWS:
         if not (root / required_path).exists():
             errors.append(f"missing {required_path}")
 
