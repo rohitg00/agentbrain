@@ -40,6 +40,8 @@ Use the results to answer four setup questions:
 
 If any answer is missing, stop with a handoff report. Do not choose a command, edit files, or delegate work from an unverified checkout.
 
+If a previous handoff exists, re-run baseline validation, treat notes as stale until files and commands confirm them, and resume only the named next action. Do not trust old status copy, repeat broad discovery, or skip blockers recorded by the earlier run.
+
 ## Operating Loop
 
 Every agent run should follow this sequence:

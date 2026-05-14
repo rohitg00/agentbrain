@@ -153,6 +153,7 @@ def write_minimal_repo(root: Path) -> None:
         "```\n\n"
         "## Fresh Checkout Bootstrap\n"
         "Before acting, inspect git status --short and git log --oneline -5, run the baseline validation, identify the current state, then choose the matching command.\n\n"
+        "If a previous handoff exists, re-run baseline validation, treat notes as stale until files and commands confirm them, and resume only the named next action.\n\n"
         "## Operating Loop\nChoose state, load command, verify.\n\n"
         "## Command Routing\nUse `/brain-sample` for sample requests before loading skills.\n\n"
         "## Handoff Contract\nState evidence, risks, blockers, next action.\n\n"
@@ -441,6 +442,24 @@ def test_agent_harness_prompt_must_name_side_effect_stop_conditions(tmp_path):
     assert "docs/agent-harness.md copyable prompt must mention: approval" in errors
     assert "docs/agent-harness.md copyable prompt must mention: secrets" in errors
     assert "docs/agent-harness.md copyable prompt must mention: loop limits" in errors
+
+
+def test_agent_harness_must_define_interrupted_handoff_resume_protocol(tmp_path):
+    write_minimal_repo(tmp_path)
+    harness = tmp_path / "docs" / "agent-harness.md"
+    harness.write_text(
+        harness.read_text(encoding="utf-8").replace(
+            "If a previous handoff exists, re-run baseline validation, treat notes as stale until files and commands confirm them, and resume only the named next action.\n\n",
+            "",
+        ),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "docs/agent-harness.md resume guidance must mention: previous handoff" in errors
+    assert "docs/agent-harness.md resume guidance must mention: stale" in errors
+    assert "docs/agent-harness.md resume guidance must mention: resume only the named next action" in errors
 
 
 def test_readme_must_include_maintainer_checklist(tmp_path):

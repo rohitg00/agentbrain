@@ -168,6 +168,11 @@ REQUIRED_AGENT_HARNESS_WORKER_CONTRACT_TERMS = {
     "stop condition": "docs/agent-harness.md worker guidance must require stop conditions",
     "handoff": "docs/agent-harness.md worker guidance must require handoff contracts",
 }
+REQUIRED_AGENT_HARNESS_RESUME_TERMS = [
+    "previous handoff",
+    "stale",
+    "resume only the named next action",
+]
 REQUIRED_ADAPTER_SECTIONS = ["## Install", "## Validation", "## Failure Modes"]
 REQUIRED_ADAPTER_VALIDATION_COMMANDS = [
     "python3 -m pip install -r requirements-dev.txt",
@@ -771,6 +776,10 @@ def validate(root: Path = ROOT) -> list[str]:
         for term, message in REQUIRED_AGENT_HARNESS_WORKER_CONTRACT_TERMS.items():
             if term not in worker_guidance_lower:
                 errors.append(message)
+        agent_harness_lower = agent_harness_text.lower()
+        for term in REQUIRED_AGENT_HARNESS_RESUME_TERMS:
+            if term not in agent_harness_lower:
+                errors.append(f"docs/agent-harness.md resume guidance must mention: {term}")
         harness_command_refs = agent_harness_command_routing_references(agent_harness_text)
         for command in sorted((root / "commands").glob("*.md")):
             command_name = f"/{command.stem}"
