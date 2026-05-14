@@ -234,6 +234,15 @@ def test_contributing_guide_is_required(tmp_path):
     assert "missing CONTRIBUTING.md" in errors
 
 
+def test_dev_requirements_must_include_validator_dependencies(tmp_path):
+    write_minimal_repo(tmp_path)
+    (tmp_path / "requirements-dev.txt").write_text("pytest>=8.0\n", encoding="utf-8")
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "requirements-dev.txt must include: jsonschema" in errors
+
+
 def test_required_root_markdown_must_have_exactly_one_h1(tmp_path):
     write_minimal_repo(tmp_path)
     (tmp_path / "PRINCIPLES.md").write_text(

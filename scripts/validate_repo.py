@@ -16,6 +16,7 @@ REQUIRED_ROOT = [
     "CONTRIBUTING.md",
 ]
 REQUIRED_FILES = ["requirements-dev.txt"]
+REQUIRED_DEV_REQUIREMENTS = ["jsonschema", "pytest"]
 REQUIRED_DIRECTORIES = ["schemas"]
 REQUIRED_GITIGNORE_PATTERNS = ["__pycache__/", "*.py[cod]", ".pytest_cache/", ".venv/"]
 REQUIRED_DOCS = ["docs/autonomous-goals.md", "docs/skill-distillation.md"]
@@ -194,6 +195,18 @@ def sections_are_in_order(text: str, sections: list[str]) -> bool:
     return positions == sorted(positions)
 
 
+def requirement_name(line: str) -> str:
+    requirement = line.strip()
+    if not requirement or requirement.startswith("#"):
+        return ""
+    return re.split(r"\s*(?:[<>=!~]=|==|>|<|~=|\[)", requirement, maxsplit=1)[0].lower()
+
+
+def find_missing_dev_requirements(text: str) -> list[str]:
+    installed = {requirement_name(line) for line in text.splitlines()}
+    return [requirement for requirement in REQUIRED_DEV_REQUIREMENTS if requirement not in installed]
+
+
 def find_object_schemas_without_closed_properties(schema: object) -> list[str]:
     missing_locations: list[str] = []
 
@@ -272,8 +285,13 @@ def validate(root: Path = ROOT) -> list[str]:
             errors.append(single_h1_error)
 
     for required_path in REQUIRED_FILES:
-        if not (root / required_path).exists():
+        required_file = root / required_path
+        if not required_file.exists():
             errors.append(f"missing {required_path}")
+            continue
+        if required_path == "requirements-dev.txt":
+            for requirement in find_missing_dev_requirements(required_file.read_text(errors="ignore")):
+                errors.append(f"requirements-dev.txt must include: {requirement}")
 
     for required_directory in REQUIRED_DIRECTORIES:
         if not (root / required_directory).is_dir():
