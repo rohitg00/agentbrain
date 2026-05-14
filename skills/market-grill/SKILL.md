@@ -1,6 +1,6 @@
 ---
 name: market-grill
-description: Challenge alternatives, category, urgency, and distribution.
+description: Use when a product idea needs pressure-testing against alternatives, category, urgency, and distribution.
 ---
 
 # market-grill

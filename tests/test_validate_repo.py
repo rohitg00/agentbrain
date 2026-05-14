@@ -41,7 +41,7 @@ def write_minimal_repo(root: Path) -> None:
         "\n".join([
             "---",
             "name: sample",
-            "description: Sample skill",
+            "description: Use when a sample request needs routing.",
             "---",
             "# sample",
             "## Trigger",
@@ -97,7 +97,7 @@ def write_minimal_repo(root: Path) -> None:
         "\n".join([
             "---",
             "name: activity-recap",
-            "description: Summarize recent work from local project activity.",
+            "description: Use when recent work needs a summary from local project activity.",
             "---",
             "# activity-recap",
             "## Trigger",
@@ -266,7 +266,7 @@ def test_skills_must_have_exactly_one_h1(tmp_path):
         "\n".join([
             "---",
             "name: sample",
-            "description: Sample skill",
+            "description: Use when a sample request needs routing.",
             "---",
             "# Sample",
             "# Duplicate Sample",
@@ -285,13 +285,43 @@ def test_skills_must_have_exactly_one_h1(tmp_path):
     assert "skills/sample/SKILL.md must contain exactly one H1 heading" in errors
 
 
+def test_skill_frontmatter_description_must_name_trigger(tmp_path):
+    write_minimal_repo(tmp_path)
+    (tmp_path / "skills" / "sample" / "SKILL.md").write_text(
+        "\n".join([
+            "---",
+            "name: sample",
+            "description: Route sample requests.",
+            "---",
+            "# sample",
+            "## Trigger",
+            "Use for sample requests.",
+            "## Inputs",
+            "Raw request.",
+            "## Procedure",
+            "Check the request.",
+            "## Verification",
+            "Confirm evidence.",
+            "## Failure Modes",
+            "Stop if evidence is missing.",
+            "## Example",
+            "Sample request routes through the skill.",
+        ]),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "skills/sample/SKILL.md frontmatter description must include 'Use when'" in errors
+
+
 def test_skill_frontmatter_must_have_closing_delimiter(tmp_path):
     write_minimal_repo(tmp_path)
     (tmp_path / "skills" / "sample" / "SKILL.md").write_text(
         "\n".join([
             "---",
             "name: sample",
-            "description: Sample skill",
+            "description: Use when a sample request needs routing.",
             "# sample",
             "## Trigger",
             "## Inputs",
@@ -314,7 +344,7 @@ def test_skill_frontmatter_must_close_before_markdown_body(tmp_path):
         "\n".join([
             "---",
             "name: sample",
-            "description: Sample skill",
+            "description: Use when a sample request needs routing.",
             "# sample",
             "## Trigger",
             "Use for sample requests.",
@@ -344,7 +374,7 @@ def test_skill_required_sections_must_have_body(tmp_path):
         "\n".join([
             "---",
             "name: sample",
-            "description: Sample skill",
+            "description: Use when a sample request needs routing.",
             "---",
             "# sample",
             "## Trigger",
@@ -447,7 +477,7 @@ def test_skill_frontmatter_name_must_match_directory(tmp_path):
         "\n".join([
             "---",
             "name: wrong-name",
-            "description: Sample skill",
+            "description: Use when a sample request needs routing.",
             "---",
             "# sample",
             "## Trigger",
@@ -471,7 +501,7 @@ def test_skill_heading_must_match_directory_name(tmp_path):
         "\n".join([
             "---",
             "name: sample",
-            "description: Sample skill",
+            "description: Use when a sample request needs routing.",
             "---",
             "# Different Skill",
             "## Trigger",

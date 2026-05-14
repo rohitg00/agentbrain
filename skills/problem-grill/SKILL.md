@@ -1,6 +1,6 @@
 ---
 name: problem-grill
-description: Challenge problem, user, pain, success, and timing.
+description: Use when a product or feature idea needs pressure-testing against problem, user, pain, success, and timing.
 ---
 
 # problem-grill

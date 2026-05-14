@@ -1,6 +1,6 @@
 ---
 name: qa-evidence
-description: Collect concrete proof that behavior works.
+description: Use when behavior needs concrete proof before review, merge, or shipment.
 ---
 
 # qa-evidence

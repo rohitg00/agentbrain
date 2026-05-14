@@ -1,6 +1,6 @@
 ---
 name: learning-capture
-description: Turn repeated wins/failures into durable memory, wiki, or skill updates.
+description: Use when repeated wins or failures should become durable memory, wiki, or skill updates.
 ---
 
 # learning-capture

@@ -1,6 +1,6 @@
 ---
 name: intake
-description: Capture raw intent and route to the right next state.
+description: Use when raw intent must be captured and routed to the right next state.
 ---
 
 # intake

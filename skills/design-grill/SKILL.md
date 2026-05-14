@@ -1,6 +1,6 @@
 ---
 name: design-grill
-description: Challenge UX, information architecture, states, and accessibility.
+description: Use when a design needs pressure-testing for UX, information architecture, states, and accessibility.
 ---
 
 # design-grill

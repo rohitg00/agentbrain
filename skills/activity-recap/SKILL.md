@@ -1,6 +1,6 @@
 ---
 name: activity-recap
-description: Summarize recent project activity from local evidence when the user needs a standup-ready update.
+description: Use when the user needs a standup-ready summary of recent project activity from local evidence.
 version: 0.1.0
 ---
 

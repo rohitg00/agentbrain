@@ -1,6 +1,6 @@
 ---
 name: question-ladder
-description: Ask the minimum useful sequence of questions.
+description: Use when uncertainty remains and the minimum useful sequence of questions should be asked.
 ---
 
 # question-ladder

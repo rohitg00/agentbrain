@@ -250,6 +250,8 @@ def validate(root: Path = ROOT) -> list[str]:
             errors.append(f"{rel(skill, root)} frontmatter name must be {expected_name}")
         if not frontmatter.get("description"):
             errors.append(f"{rel(skill, root)} frontmatter description is required")
+        elif "Use when" not in frontmatter["description"]:
+            errors.append(f"{rel(skill, root)} frontmatter description must include 'Use when'")
         for section in REQUIRED_SKILL_SECTIONS:
             if section not in text:
                 errors.append(f"{rel(skill, root)} missing {section}")

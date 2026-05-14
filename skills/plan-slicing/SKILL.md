@@ -1,6 +1,6 @@
 ---
 name: plan-slicing
-description: Break work into small verifiable slices.
+description: Use when broad work needs to be broken into small verifiable slices.
 ---
 
 # plan-slicing

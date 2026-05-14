@@ -1,6 +1,6 @@
 ---
 name: launch-gate
-description: Make a go/no-go decision with rollback and monitoring.
+description: Use when a launch needs a go/no-go decision with rollback and monitoring evidence.
 ---
 
 # launch-gate

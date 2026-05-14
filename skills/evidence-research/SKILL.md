@@ -1,6 +1,6 @@
 ---
 name: evidence-research
-description: Convert sources into a claim ledger with confidence.
+description: Use when sources need to be converted into a claim ledger with confidence levels.
 ---
 
 # evidence-research

@@ -1,6 +1,6 @@
 ---
 name: wiki-maintenance
-description: Maintain source-backed project knowledge.
+description: Use when source-backed project knowledge needs to be created, refreshed, or corrected.
 ---
 
 # wiki-maintenance

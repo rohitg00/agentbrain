@@ -1,6 +1,6 @@
 ---
 name: engineering-grill
-description: Challenge architecture, complexity, data, risk, and operability.
+description: Use when an engineering plan needs pressure-testing for architecture, complexity, data, risk, and operability.
 ---
 
 # engineering-grill
