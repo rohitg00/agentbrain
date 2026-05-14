@@ -40,6 +40,7 @@ REQUIRED_QUALITY_WORKFLOW_RUNS = [
     "git diff --check",
 ]
 REQUIRED_QUALITY_WORKFLOW_PERMISSIONS = ["permissions:", "  contents: read"]
+REQUIRED_WORKFLOW_TRIGGERS = ["push", "pull_request"]
 REQUIRED_README_VALIDATION_COMMANDS = [
     "pip install -r requirements-dev.txt",
     "python -m pytest -q",
@@ -324,6 +325,10 @@ def validate(root: Path = ROOT) -> list[str]:
             for permission_line in REQUIRED_QUALITY_WORKFLOW_PERMISSIONS
         ):
             errors.append(f"{rel(workflow, root)} must set permissions to contents: read")
+        workflow_lines = [line.strip() for line in workflow_text.splitlines()]
+        for trigger in REQUIRED_WORKFLOW_TRIGGERS:
+            if f"{trigger}:" not in workflow_lines and f"on: {trigger}" not in workflow_lines:
+                errors.append(f"{rel(workflow, root)} must run on {trigger}")
 
     research_watchlist = root / "docs" / "research-watchlist.md"
     if research_watchlist.exists():

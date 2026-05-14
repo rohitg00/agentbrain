@@ -1328,6 +1328,29 @@ def test_all_workflows_must_use_read_only_repository_permissions(tmp_path):
     assert ".github/workflows/validate.yml must set permissions to contents: read" in errors
 
 
+def test_all_workflows_must_run_on_push_and_pull_request(tmp_path):
+    write_minimal_repo(tmp_path)
+    (tmp_path / ".github" / "workflows" / "nightly.yml").write_text(
+        "\n".join([
+            "name: Nightly",
+            "on:",
+            "  push:",
+            "permissions:",
+            "  contents: read",
+            "jobs:",
+            "  validate:",
+            "    runs-on: ubuntu-latest",
+            "    steps:",
+            "      - run: git diff --check",
+        ]),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert ".github/workflows/nightly.yml must run on pull_request" in errors
+
+
 def test_dev_requirements_file_is_required(tmp_path):
     write_minimal_repo(tmp_path)
     (tmp_path / "requirements-dev.txt").unlink()
