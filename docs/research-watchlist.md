@@ -25,6 +25,21 @@ What changed the repo:
 - OpenAI API Docs: `Guardrails and human review`
 - HumanLayer / 12-factor-agents public materials surfaced by web search
 
+## 2026-05-14 memory and context pass
+
+### last30days query
+
+Query: `AI agent memory context engineering durable knowledge workflows`
+
+Active sources: Reddit, X, YouTube, Hacker News, GitHub.
+
+What changed the repo:
+
+- Added `docs/memory-model.md` context engineering loop.
+- Reinforced that context, memory, retrieval, evals, observability, guardrails, runtime control, and workflows are the real harness around the model.
+- Clarified that durable markdown project knowledge remains source of truth while indexes accelerate retrieval.
+- Added a continuation test: a good context pack lets another agent continue without rereading the whole chat.
+
 ## Repeat loop
 
 When hardening the repo, repeat this loop:

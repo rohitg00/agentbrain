@@ -51,6 +51,20 @@ A skill is created when:
 
 Optional retrieval layer for large corpora. Markdown remains the source of truth; indexes accelerate search.
 
+## Context engineering loop
+
+Current agent practice is converging on a simple lesson: prompts are not enough. Reliable agents need the right context selected, checked, and refreshed at the right moment.
+
+Agent Brain treats context as an engineered input:
+
+1. **Select** only the memory tier relevant to the current state.
+2. **Separate** facts, assumptions, decisions, and open questions before acting.
+3. **Ground** important claims in repo files, source links, tests, logs, screenshots, or human approval.
+4. **Refresh** stale project docs when a decision changes.
+5. **Prune** memories that are task logs, stale implementation status, or personal data without durable value.
+
+A context pack is good when another agent can continue the task without rereading the whole chat.
+
 ## Memory write rules
 
 - Prefer stable facts over logs.
