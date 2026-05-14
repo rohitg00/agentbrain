@@ -212,9 +212,11 @@ def write_minimal_repo(root: Path) -> None:
         "## Install\nRun validation.\n\n"
         "```bash\n"
         "python3 -m pip install -r requirements-dev.txt\n"
+        "rm -rf scripts/__pycache__ tests/__pycache__\n"
         "python -m pytest -q\n"
         "python scripts/validate_repo.py\n"
         "git diff --check\n"
+        "targeted exact-name scrub\n"
         "```\n\n"
         "## Fresh Checkout Bootstrap\n"
         "Before acting, inspect git status --short and git log --oneline -5, run the baseline validation, identify the current state, then choose the matching command.\n\n"
@@ -555,6 +557,22 @@ def test_agent_harness_prompt_must_name_side_effect_stop_conditions(tmp_path):
     assert "docs/agent-harness.md copyable prompt must mention: approval" in errors
     assert "docs/agent-harness.md copyable prompt must mention: secrets" in errors
     assert "docs/agent-harness.md copyable prompt must mention: loop limits" in errors
+
+
+def test_agent_harness_validation_gate_must_include_cache_cleanup_and_exact_name_scrub(tmp_path):
+    write_minimal_repo(tmp_path)
+    harness = tmp_path / "docs" / "agent-harness.md"
+    harness.write_text(
+        harness.read_text(encoding="utf-8")
+        .replace("rm -rf scripts/__pycache__ tests/__pycache__\n", "")
+        .replace("targeted exact-name scrub\n", ""),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "docs/agent-harness.md validation gate must include cache cleanup before tests" in errors
+    assert "docs/agent-harness.md validation gate must include targeted exact-name scrub" in errors
 
 
 def test_agent_harness_must_define_interrupted_handoff_resume_protocol(tmp_path):

@@ -12,12 +12,13 @@ From a fresh checkout:
 git clone https://github.com/rohitg00/agentbrain.git
 cd agentbrain
 python3 -m pip install -r requirements-dev.txt
+rm -rf scripts/__pycache__ tests/__pycache__
 python -m pytest -q
 python scripts/validate_repo.py
 git diff --check
 ```
 
-The harness is ready only when tests, validation, and whitespace checks pass.
+Then run the targeted exact-name scrub from `README.md#validation` before committing public copy changes. The harness is ready only when tests, validation, whitespace checks, and the scrub gate pass.
 
 ## Fresh Checkout Bootstrap
 
@@ -26,10 +27,13 @@ Before a new agent acts on this repo, make it prove the checkout state instead o
 ```bash
 git status --short
 git log --oneline -5
+rm -rf scripts/__pycache__ tests/__pycache__
 python -m pytest -q
 python scripts/validate_repo.py
 git diff --check
 ```
+
+For public docs, commands, skills, templates, schemas, or evals, also run the targeted exact-name scrub before treating baseline validation as complete.
 
 Use the results to answer four setup questions:
 

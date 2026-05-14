@@ -148,6 +148,10 @@ REQUIRED_AGENT_HARNESS_VALIDATION_COMMANDS = [
     "python scripts/validate_repo.py",
     "git diff --check",
 ]
+REQUIRED_AGENT_HARNESS_VALIDATION_GATE_TERMS = {
+    "rm -rf scripts/__pycache__ tests/__pycache__": "docs/agent-harness.md validation gate must include cache cleanup before tests",
+    "targeted exact-name scrub": "docs/agent-harness.md validation gate must include targeted exact-name scrub",
+}
 REQUIRED_AGENT_HARNESS_PROMPT_SECTION = "## Copyable Harness Prompt"
 REQUIRED_AGENT_HARNESS_PROMPT_TERMS = [
     "AGENTBRAIN.md",
@@ -783,6 +787,10 @@ def validate(root: Path = ROOT) -> list[str]:
         for run_command in REQUIRED_AGENT_HARNESS_VALIDATION_COMMANDS:
             if run_command not in agent_harness_text:
                 errors.append(f"docs/agent-harness.md validation section must document: {run_command}")
+        agent_harness_text_lower = agent_harness_text.lower()
+        for required_term, message in REQUIRED_AGENT_HARNESS_VALIDATION_GATE_TERMS.items():
+            if required_term.lower() not in agent_harness_text_lower:
+                errors.append(message)
         harness_prompt = section_body(agent_harness_text, REQUIRED_AGENT_HARNESS_PROMPT_SECTION)
         if not harness_prompt.strip():
             errors.append(
@@ -803,9 +811,8 @@ def validate(root: Path = ROOT) -> list[str]:
         for term, message in REQUIRED_AGENT_HARNESS_WORKER_CONTRACT_TERMS.items():
             if term not in worker_guidance_lower:
                 errors.append(message)
-        agent_harness_lower = agent_harness_text.lower()
         for term in REQUIRED_AGENT_HARNESS_RESUME_TERMS:
-            if term not in agent_harness_lower:
+            if term not in agent_harness_text_lower:
                 errors.append(f"docs/agent-harness.md resume guidance must mention: {term}")
         harness_command_refs = agent_harness_command_routing_references(agent_harness_text)
         for command in sorted((root / "commands").glob("*.md")):
