@@ -126,6 +126,28 @@ Still run validation. Docs are executable context for future agents, so broken d
 
 Run verifier and review gates. Existing output still needs evidence before trust.
 
+## Troubleshooting
+
+### Validation fails before any change
+
+Treat the repo as untrusted until the baseline is explained. Capture the failing command, inspect the exact validator or test error, and fix the harness before asking another agent to rely on it.
+
+### The next state is unclear
+
+Return to `docs/state-machine.md` and choose the earliest state that can produce evidence. When multiple states seem plausible, prefer research, challenge, or planning over implementation.
+
+### A command and skill disagree
+
+Follow the stricter stop condition, then update the stale command, skill, template, or validator in a small verified slice. Do not let a one-off run create a hidden fork of the operating rules.
+
+### An external source looks useful but branded
+
+Extract the operator job, triggers, evidence, and failure modes. Public docs should name the neutral pattern, while session-specific source notes should stay out of promoted copy unless a comparison section is explicitly requested.
+
+### A worker reports success without proof
+
+Route the output through verification and review. Ask for or collect the missing logs, diffs, traces, screenshots, citations, or approvals before accepting the result.
+
 ## Maintainer Checklist
 
 Before a harness release or major push:

@@ -64,6 +64,13 @@ REQUIRED_README_HARNESS_SECTIONS = [
     "## Edge Cases and Stop Conditions",
     "## Troubleshooting",
 ]
+REQUIRED_AGENT_HARNESS_SECTIONS = [
+    "## Install",
+    "## Operating Loop",
+    "## Handoff Contract",
+    "## Stop Conditions",
+    "## Troubleshooting",
+]
 REQUIRED_CONTRIBUTING_VALIDATION_COMMANDS = ["pytest -q", "git diff --check"]
 RESEARCH_WATCHLIST_REQUIRED_SOURCES = [
     "autonomous-goal runtime docs",
@@ -468,6 +475,15 @@ def validate(root: Path = ROOT) -> list[str]:
     for required_path in REQUIRED_DOCS:
         if not (root / required_path).exists():
             errors.append(f"missing {required_path}")
+
+    agent_harness = root / "docs" / "agent-harness.md"
+    if agent_harness.exists():
+        agent_harness_text = agent_harness.read_text(errors="ignore")
+        for required_section in REQUIRED_AGENT_HARNESS_SECTIONS:
+            if required_section not in agent_harness_text:
+                errors.append(
+                    f"docs/agent-harness.md missing harness operating section: {required_section}"
+                )
 
     for required_path in REQUIRED_SKILLS:
         if not (root / required_path).exists():
