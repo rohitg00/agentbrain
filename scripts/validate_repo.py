@@ -314,6 +314,11 @@ def validate(root: Path = ROOT) -> list[str]:
             for field in required_fields:
                 if f"`{field}`" not in template_text:
                     errors.append(f"{rel(template, root)} missing required schema field reference: {field}")
+            for field in properties:
+                if field in required_fields:
+                    continue
+                if f"`{field}`" not in template_text:
+                    errors.append(f"{rel(template, root)} missing schema field reference: {field}")
 
     for required_path in REQUIRED_ROOT:
         if not (root / required_path).exists():

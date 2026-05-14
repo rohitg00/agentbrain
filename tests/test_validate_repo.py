@@ -387,6 +387,33 @@ def test_schema_files_must_have_titles(tmp_path):
     assert "schemas/artifact.schema.json missing title" in errors
 
 
+def test_templates_must_reference_optional_schema_properties(tmp_path):
+    write_minimal_repo(tmp_path)
+    (tmp_path / "schemas" / "artifact.schema.json").write_text(
+        json.dumps(
+            {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "title": "Artifact",
+                "type": "object",
+                "additionalProperties": False,
+                "required": ["title"],
+                "properties": {
+                    "title": {"type": "string"},
+                    "review_notes": {"type": "string"},
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
+    templates_dir = tmp_path / "templates"
+    templates_dir.mkdir()
+    (templates_dir / "artifact.md").write_text("# Artifact\n\nSchema fields: `title`.\n", encoding="utf-8")
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "templates/artifact.md missing schema field reference: review_notes" in errors
+
+
 def test_object_schemas_must_reject_unknown_fields(tmp_path):
     write_minimal_repo(tmp_path)
     (tmp_path / "schemas" / "artifact.schema.json").write_text(
