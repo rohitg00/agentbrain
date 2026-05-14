@@ -163,7 +163,7 @@ def write_minimal_repo(root: Path) -> None:
         "Stop and report blockers when evidence, approval, scope, tests, rollback, or safety is missing.\n"
         "```\n\n"
         "## Using It With Coding Agents\n"
-        "For large work, split worker scopes into researcher, planner, builder, verifier, reviewer, shipper, and learner roles.\n\n"
+        "For large work, split worker scopes into researcher, planner, builder, verifier, reviewer, shipper, and learner roles. Each worker scope must name evidence, a stop condition, and a handoff contract.\n\n"
         "## Troubleshooting\nInspect validation errors before continuing.\n",
         encoding="utf-8",
     )
@@ -338,6 +338,22 @@ def test_agent_harness_must_include_fresh_checkout_bootstrap(tmp_path):
     errors = validate_repo.validate(tmp_path)
 
     assert "docs/agent-harness.md missing harness operating section: ## Fresh Checkout Bootstrap" in errors
+
+
+def test_agent_harness_worker_guidance_must_define_handoff_requirements(tmp_path):
+    write_minimal_repo(tmp_path)
+    harness = tmp_path / "docs" / "agent-harness.md"
+    harness.write_text(
+        harness.read_text(encoding="utf-8").replace(
+            "Each worker scope must name evidence, a stop condition, and a handoff contract.",
+            "Each worker scope must name responsibilities.",
+        ),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "docs/agent-harness.md worker guidance must require handoff contracts" in errors
 
 
 def test_readme_must_include_maintainer_checklist(tmp_path):

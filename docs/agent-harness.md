@@ -117,7 +117,7 @@ Stop and report blockers when evidence, approval, scope, tests, rollback, or saf
 
 When feeding this repo to a coding agent, use the copyable prompt above as the baseline instruction. Keep the run scoped to the current command, skill, artifact, verification, and next state; if evidence is missing, stop instead of improvising.
 
-For large work, split into worker scopes:
+For large work, split into worker scopes. Each worker scope must name its evidence inputs, stop condition, and handoff contract before it starts:
 
 - researcher: source-backed claim ledger,
 - planner: small verifiable implementation slices,
@@ -127,7 +127,7 @@ For large work, split into worker scopes:
 - shipper: launch, rollback, support path,
 - learner: durable lessons and skill updates.
 
-No worker should approve its own unsupported claims.
+No worker should approve its own unsupported claims, and every worker handoff should include checked evidence, blockers, residual risks, and the smallest safe next action.
 
 ## Edge Cases
 

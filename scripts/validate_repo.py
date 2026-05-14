@@ -124,6 +124,11 @@ REQUIRED_AGENT_HARNESS_WORKER_ROLES = [
     "shipper",
     "learner",
 ]
+REQUIRED_AGENT_HARNESS_WORKER_CONTRACT_TERMS = {
+    "evidence": "docs/agent-harness.md worker guidance must require evidence",
+    "stop condition": "docs/agent-harness.md worker guidance must require stop conditions",
+    "handoff": "docs/agent-harness.md worker guidance must require handoff contracts",
+}
 REQUIRED_ADAPTER_SECTIONS = ["## Install", "## Validation", "## Failure Modes"]
 REQUIRED_ADAPTER_VALIDATION_COMMANDS = [
     "python3 -m pip install -r requirements-dev.txt",
@@ -687,6 +692,10 @@ def validate(root: Path = ROOT) -> list[str]:
         for role in REQUIRED_AGENT_HARNESS_WORKER_ROLES:
             if role not in worker_guidance:
                 errors.append(f"docs/agent-harness.md worker guidance must mention role: {role}")
+        worker_guidance_lower = worker_guidance.lower()
+        for term, message in REQUIRED_AGENT_HARNESS_WORKER_CONTRACT_TERMS.items():
+            if term not in worker_guidance_lower:
+                errors.append(message)
 
     for required_path in REQUIRED_SKILLS:
         if not (root / required_path).exists():
