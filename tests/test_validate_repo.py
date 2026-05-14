@@ -8,6 +8,10 @@ def write_minimal_repo(root: Path) -> None:
     for rel in ["README.md", "AGENTBRAIN.md", "PRINCIPLES.md", "ANTI_RATIONALIZATION.md"]:
         (root / rel).write_text("# required\n", encoding="utf-8")
 
+    adapters_dir = root / "adapters" / "sample-adapter"
+    adapters_dir.mkdir(parents=True)
+    (adapters_dir / "README.md").write_text("# Sample Adapter\n", encoding="utf-8")
+
     schema_dir = root / "schemas"
     schema_dir.mkdir()
     (schema_dir / "artifact.schema.json").write_text(json.dumps({"type": "object"}), encoding="utf-8")
@@ -348,6 +352,18 @@ def test_docs_and_templates_must_have_exactly_one_h1(tmp_path):
     errors = validate_repo.validate(tmp_path)
 
     assert "templates/product-brief.md must contain exactly one H1 heading" in errors
+
+
+def test_adapter_readmes_must_have_exactly_one_h1(tmp_path):
+    write_minimal_repo(tmp_path)
+    (tmp_path / "adapters" / "sample-adapter" / "README.md").write_text(
+        "# Sample Adapter\n\n# Duplicate Adapter\n",
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "adapters/sample-adapter/README.md must contain exactly one H1 heading" in errors
 
 
 def test_commands_must_have_exactly_one_h1(tmp_path):
