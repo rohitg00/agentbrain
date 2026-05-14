@@ -931,6 +931,18 @@ def test_readme_must_list_available_commands(tmp_path):
     assert "README.md missing command catalog entry: /brain-sample" in errors
 
 
+def test_readme_command_catalog_entries_must_be_backticked(tmp_path):
+    write_minimal_repo(tmp_path)
+    (tmp_path / "README.md").write_text(
+        "# required\n\n/brain-sample is mentioned only as prose.\n- `sample` — sample skill.\n- `activity-recap` — activity skill.\n\n## Validation\n\n```bash\npython3 -m pip install -r requirements-dev.txt\npython -m pytest -q\npython scripts/validate_repo.py\ngit diff --check\n```\n",
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "README.md missing command catalog entry: /brain-sample" in errors
+
+
 def test_readme_must_list_available_skills(tmp_path):
     write_minimal_repo(tmp_path)
     (tmp_path / "README.md").write_text(

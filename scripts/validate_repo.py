@@ -288,7 +288,7 @@ def validate(root: Path = ROOT) -> list[str]:
                 errors.append(f"README.md validation section must document: {run_command}")
         for command in sorted((root / "commands").glob("*.md")):
             command_name = f"/{command.stem}"
-            if command_name not in readme_text:
+            if f"`{command_name}`" not in readme_text:
                 errors.append(f"README.md missing command catalog entry: {command_name}")
         for skill in sorted((root / "skills").glob("*/SKILL.md")):
             skill_name = skill.parent.name
