@@ -12,6 +12,16 @@ Agent Brain evals check whether a command or skill improves judgment instead of 
 - Did it define evidence and verification?
 - Did it avoid premature building?
 
+## Case catalog
+
+- `activity-recap` — summarizes recent local work without inventing missing activity.
+- `bad-agent-idea` — challenges weak agent ideas before implementation.
+- `build-vs-buy-decision` — compares whether to build, buy, or avoid automation.
+- `no-user-defined` — refuses to design without a concrete user definition.
+- `overengineered-feature` — reduces unnecessary complexity before planning.
+- `security-risk-feature` — catches unsafe product behavior and requires mitigations.
+- `vague-startup-idea` — turns an unclear startup idea into sharper discovery work.
+
 ## How to use
 
 1. Pick a case from `evals/cases/`.

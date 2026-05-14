@@ -680,3 +680,14 @@ def test_readme_must_list_available_commands(tmp_path):
     errors = validate_repo.validate(tmp_path)
 
     assert "README.md missing command catalog entry: /brain-sample" in errors
+
+
+def test_evals_readme_must_list_available_cases(tmp_path):
+    write_minimal_repo(tmp_path)
+    (tmp_path / "evals" / "README.md").write_text(
+        "# Evals\n\nNo case catalog here.\n", encoding="utf-8"
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "evals/README.md missing eval case catalog entry: activity-recap" in errors

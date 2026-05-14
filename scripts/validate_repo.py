@@ -244,7 +244,8 @@ def validate(root: Path = ROOT) -> list[str]:
             if command_name not in readme_text:
                 errors.append(f"README.md missing command catalog entry: {command_name}")
 
-    for case in sorted((root / "evals" / "cases").glob("*.md")):
+    eval_cases = sorted((root / "evals" / "cases").glob("*.md"))
+    for case in eval_cases:
         text = case.read_text(errors="ignore")
         single_h1_error = validate_single_h1(case, root)
         if single_h1_error:
@@ -256,6 +257,13 @@ def validate(root: Path = ROOT) -> list[str]:
         for section in REQUIRED_EVAL_CASE_SECTIONS:
             if section not in text:
                 errors.append(f"{rel(case, root)} missing {section}")
+
+    evals_readme = root / "evals" / "README.md"
+    if evals_readme.exists():
+        evals_readme_text = evals_readme.read_text(errors="ignore")
+        for case in eval_cases:
+            if case.stem not in evals_readme_text:
+                errors.append(f"evals/README.md missing eval case catalog entry: {case.stem}")
 
     content_files = [
         *sorted((root / "docs").glob("*.md")),
