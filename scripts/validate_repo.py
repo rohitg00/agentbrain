@@ -62,6 +62,7 @@ REQUIRED_README_HARNESS_SECTIONS = [
     "## Quickstart",
     "## Run as an Agent Harness",
     "## Command Selection Guide",
+    "## Handoff Contract",
     "## Edge Cases and Stop Conditions",
     "## Troubleshooting",
 ]

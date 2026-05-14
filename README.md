@@ -201,6 +201,21 @@ Use this guide when a command says to produce an artifact. Start with the comman
 
 If no template fits, do not invent a new format silently. State the closest existing artifact, explain the gap, and add a validator-backed template/schema improvement as a separate hardening slice.
 
+## Handoff Contract
+
+Every agent handoff should be useful without private chat context. End each run, review, or blocked stop with the smallest artifact that names:
+
+- **State:** current Agent Brain state and command used.
+- **Decision:** `continue`, `blocked`, `needs-review`, `ready-to-ship`, or `killed`.
+- **Evidence checked:** files, commands, logs, sources, screenshots, traces, or diffs actually inspected.
+- **Facts:** verified statements only.
+- **Assumptions:** unverified beliefs that influenced the next action.
+- **Open questions:** missing information that changes scope, safety, or priority.
+- **Risks:** security, privacy, product, rollback, reliability, or maintenance concerns.
+- **Next action:** the smallest safe step, including the command, skill, template, or validator to use next.
+
+Do not summarize intent as if it were evidence. If the handoff cannot name proof, mark it `blocked` and route to `/brain-verify`, `/brain-review`, or `/brain-research` before continuing.
+
 ## Core Commands
 
 - `/brain-start` — turn a raw request into the correct next state.
