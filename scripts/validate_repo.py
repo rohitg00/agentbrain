@@ -234,13 +234,13 @@ def validate(root: Path = ROOT) -> list[str]:
                     errors.append(f"{rel(template, root)} missing required schema field reference: {field}")
 
     for required_path in REQUIRED_ROOT:
-        path = root / required_path
-        if not path.exists():
+        if not (root / required_path).exists():
             errors.append(f"missing {required_path}")
-        else:
-            single_h1_error = validate_single_h1(path, root)
-            if single_h1_error:
-                errors.append(single_h1_error)
+
+    for root_markdown in sorted(root.glob("*.md")):
+        single_h1_error = validate_single_h1(root_markdown, root)
+        if single_h1_error:
+            errors.append(single_h1_error)
 
     for required_path in REQUIRED_FILES:
         if not (root / required_path).exists():

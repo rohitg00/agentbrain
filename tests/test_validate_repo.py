@@ -235,6 +235,18 @@ def test_required_root_markdown_must_have_exactly_one_h1(tmp_path):
     assert "PRINCIPLES.md must contain exactly one H1 heading" in errors
 
 
+def test_all_root_markdown_must_have_exactly_one_h1(tmp_path):
+    write_minimal_repo(tmp_path)
+    (tmp_path / "CHANGELOG.md").write_text(
+        "# Changelog\n\n# Duplicate Changelog\n",
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "CHANGELOG.md must contain exactly one H1 heading" in errors
+
+
 def test_invalid_json_schema_reports_relative_path(tmp_path):
     write_minimal_repo(tmp_path)
     (tmp_path / "schemas" / "artifact.schema.json").write_text("{bad json", encoding="utf-8")
