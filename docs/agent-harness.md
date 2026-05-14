@@ -57,6 +57,29 @@ Every agent run should follow this sequence:
 
 The agent should not treat every task as implementation. Agent Brain often routes work to research, challenge, design, review, or learning before build.
 
+## Command Routing
+
+Use the earliest command that closes the current evidence gap. This table keeps the harness doc self-contained for agents that start here before reading the README catalog.
+
+| Request or gap | Route to | Evidence before moving on |
+| --- | --- | --- |
+| Raw request, unclear state, or missing setup context | `/brain-start` | Request classification, checked files, and next safe state. |
+| Product or automation may not deserve an agent | `/brain-should-this-exist` | User, problem, alternatives, success metric, and kill criteria. |
+| Current facts, APIs, claims, or external signals need grounding | `/brain-research` | Source-backed claim ledger with dates and inspected URLs or files. |
+| Assumptions are soft or requirements are fuzzy | `/brain-grill` | Answered challenge questions, unresolved risks, and decision criteria. |
+| Product scope or user story is needed | `/brain-brief` | Brief with facts, assumptions, open questions, risks, and acceptance criteria. |
+| Interface, workflow, states, or edge cases are underspecified | `/brain-design` | User flow, state model, failure paths, and UX constraints. |
+| Implementation is ready to slice | `/brain-plan` | Ordered vertical slices, test or validator command, and rollback path. |
+| Code, docs, schemas, templates, commands, or skills need creation | `/brain-build` | Existing plan plus test-first or validator-first proof for the slice. |
+| Proof is missing or a claim must be checked | `/brain-verify` | Tests, logs, diffs, traces, screenshots, citations, or approval evidence. |
+| Agent output needs trust review before handoff | `/brain-review` | Correctness, safety, maintainability, scope, and evidence review. |
+| Release, merge, deploy, or public change is being considered | `/brain-ship` | Go/no-go, rollback, monitoring, support path, and launch notes. |
+| Repeated work should become durable knowledge | `/brain-learn` | Pattern, trigger, artifact update, validation, and future failure mode. |
+| Project knowledge should be refreshed | `/brain-wiki` | Source-backed facts with freshness and stale-memory rejection. |
+| Harness behavior itself needs testing | `/brain-eval` | Eval case, rubric result, failure evidence, and follow-up hardening slice. |
+
+If no route fits, stop with a handoff report instead of inventing a new command silently. Add a new command only as a separate validator-backed hardening slice.
+
 ## Handoff Contract
 
 Every handoff should include:

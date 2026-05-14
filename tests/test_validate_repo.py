@@ -151,6 +151,7 @@ def write_minimal_repo(root: Path) -> None:
         "## Fresh Checkout Bootstrap\n"
         "Before acting, inspect git status --short and git log --oneline -5, run the baseline validation, identify the current state, then choose the matching command.\n\n"
         "## Operating Loop\nChoose state, load command, verify.\n\n"
+        "## Command Routing\nUse `/brain-sample` for sample requests before loading skills.\n\n"
         "## Handoff Contract\nState evidence, risks, blockers, next action.\n\n"
         "## Stop Conditions\nBlock missing evidence.\n\n"
         "## Copyable Harness Prompt\n"
@@ -1989,6 +1990,37 @@ def test_agent_harness_doc_must_include_worker_scope_guidance(tmp_path):
     errors = validate_repo.validate(tmp_path)
 
     assert "docs/agent-harness.md worker guidance must mention role: verifier" in errors
+
+
+def test_agent_harness_command_routing_must_cover_every_command(tmp_path):
+    write_minimal_repo(tmp_path)
+    extra_command = tmp_path / "commands" / "brain-extra.md"
+    extra_command.write_text(
+        "\n".join([
+            "# /brain-extra",
+            "## Purpose",
+            "Route extra work.",
+            "## When to use",
+            "Use for extra requests.",
+            "## Input contract",
+            "Raw request.",
+            "## Skills to load",
+            "Load `sample` for extra routing.",
+            "## Workflow",
+            "Inspect extra inputs and decide the next action.",
+            "## Output",
+            "A concrete extra next action.",
+            "## Stop conditions",
+            "Stop when the extra request is unsafe.",
+            "## Quality bar",
+            "Extra evidence is checked before output.",
+        ]),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "docs/agent-harness.md command routing missing command: /brain-extra" in errors
 
 
 def test_activity_recap_skill_is_required(tmp_path):

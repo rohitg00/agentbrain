@@ -92,6 +92,7 @@ REQUIRED_AGENT_HARNESS_SECTIONS = [
     "## Install",
     "## Fresh Checkout Bootstrap",
     "## Operating Loop",
+    "## Command Routing",
     "## Handoff Contract",
     "## Stop Conditions",
     "## Troubleshooting",
@@ -516,6 +517,11 @@ def readme_command_selection_references(text: str) -> list[str]:
     return sorted(entries)
 
 
+def agent_harness_command_routing_references(text: str) -> list[str]:
+    body = section_body(text, "## Command Routing")
+    return sorted(set(re.findall(r"`(/brain-[a-z0-9-]+)`", body)))
+
+
 def readme_skill_catalog_entries(text: str) -> list[str]:
     entries: set[str] = set()
     in_core_skills = False
@@ -700,6 +706,11 @@ def validate(root: Path = ROOT) -> list[str]:
         for term, message in REQUIRED_AGENT_HARNESS_WORKER_CONTRACT_TERMS.items():
             if term not in worker_guidance_lower:
                 errors.append(message)
+        harness_command_refs = agent_harness_command_routing_references(agent_harness_text)
+        for command in sorted((root / "commands").glob("*.md")):
+            command_name = f"/{command.stem}"
+            if command_name not in harness_command_refs:
+                errors.append(f"docs/agent-harness.md command routing missing command: {command_name}")
 
     for required_path in REQUIRED_SKILLS:
         if not (root / required_path).exists():
