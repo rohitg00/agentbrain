@@ -459,15 +459,20 @@ def validate(root: Path = ROOT) -> list[str]:
         text = rubric.read_text(errors="ignore")
         expected_heading = f"# {title_from_slug(rubric.stem)}"
         first_line = text.splitlines()[0] if text.splitlines() else ""
+        lines = text.splitlines()
         if not is_lowercase_kebab(rubric.stem):
             errors.append(f"{rel(rubric, root)} filename must use lowercase kebab-case")
         if first_line != expected_heading:
             errors.append(f"{rel(rubric, root)} heading must be {expected_heading}")
         for section in REQUIRED_EVAL_RUBRIC_SECTIONS:
-            if section not in text:
+            section_count = lines.count(section)
+            if section_count == 0:
                 errors.append(f"{rel(rubric, root)} missing {section}")
-            elif not section_has_body(text, section):
-                errors.append(f"{rel(rubric, root)} section has no body: {section}")
+            else:
+                if section_count > 1:
+                    errors.append(f"{rel(rubric, root)} section must appear exactly once: {section}")
+                if not section_has_body(text, section):
+                    errors.append(f"{rel(rubric, root)} section has no body: {section}")
         if not sections_are_in_order(text, REQUIRED_EVAL_RUBRIC_SECTIONS):
             errors.append(f"{rel(rubric, root)} sections must appear in canonical order")
 

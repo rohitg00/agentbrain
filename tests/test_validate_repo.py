@@ -1574,6 +1574,23 @@ def test_eval_rubric_sections_must_be_in_canonical_order(tmp_path):
     assert "evals/rubrics/quality.md sections must appear in canonical order" in errors
 
 
+def test_eval_rubric_required_sections_must_not_be_duplicated(tmp_path):
+    write_minimal_repo(tmp_path)
+    rubric_dir = tmp_path / "evals" / "rubrics"
+    rubric_dir.mkdir(parents=True)
+    (rubric_dir / "quality.md").write_text(
+        "# Quality\n\n"
+        "## Dimensions\n\nScore evidence quality.\n\n"
+        "## Dimensions\n\nDuplicate dimensions create ambiguous scoring.\n\n"
+        "## Interpretation\n\nUse the score to decide readiness.\n",
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "evals/rubrics/quality.md section must appear exactly once: ## Dimensions" in errors
+
+
 def test_evals_readme_must_list_available_rubrics(tmp_path):
     write_minimal_repo(tmp_path)
     rubric_dir = tmp_path / "evals" / "rubrics"
