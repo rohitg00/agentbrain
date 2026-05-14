@@ -166,6 +166,32 @@ def section_has_body(text: str, section: str) -> bool:
     return False
 
 
+def find_object_schemas_without_closed_properties(schema: object) -> list[str]:
+    missing_locations: list[str] = []
+
+    def walk(node: object, location: str) -> None:
+        if isinstance(node, dict):
+            if node.get("type") == "object" and node.get("additionalProperties") is not False:
+                missing_locations.append(location)
+            for key, value in node.items():
+                if key == "properties" and isinstance(value, dict):
+                    for property_name, property_schema in value.items():
+                        walk(property_schema, f"{location}.properties.{property_name}")
+                elif key == "items":
+                    walk(value, f"{location}.items")
+                elif key in {"anyOf", "allOf", "oneOf"} and isinstance(value, list):
+                    for index, option in enumerate(value):
+                        walk(option, f"{location}.{key}[{index}]")
+                elif key == "not":
+                    walk(value, f"{location}.not")
+        elif isinstance(node, list):
+            for index, item in enumerate(node):
+                walk(item, f"{location}[{index}]")
+
+    walk(schema, "$")
+    return missing_locations
+
+
 def validate(root: Path = ROOT) -> list[str]:
     root = Path(root)
     errors: list[str] = []
@@ -183,11 +209,17 @@ def validate(root: Path = ROOT) -> list[str]:
         properties = schema.get("properties", {})
         if not schema.get("$schema"):
             errors.append(f"{rel(path, root)} missing $schema dialect declaration")
-        if schema.get("type") == "object" and schema.get("additionalProperties") is not False:
-            errors.append(f"{rel(path, root)} object schema must set additionalProperties to false")
         for field in required_fields:
             if field not in properties:
                 errors.append(f"{rel(path, root)} required field lacks property definition: {field}")
+        for location in find_object_schemas_without_closed_properties(schema):
+            if location == "$":
+                errors.append(f"{rel(path, root)} object schema must set additionalProperties to false")
+            else:
+                display_location = location.removeprefix("$.")
+                errors.append(
+                    f"{rel(path, root)} object schema at {display_location} must set additionalProperties to false"
+                )
 
         template = root / "templates" / path.name.replace(".schema.json", ".md")
         if template.exists():
