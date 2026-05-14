@@ -195,6 +195,10 @@ REQUIRED_SKILL_TEMPLATE_SECTIONS = [
     "## Failure Modes",
     "## Example",
 ]
+REQUIRED_PLAN_SLICING_TERMS = {
+    "acceptance checks": "skills/plan-slicing/SKILL.md must require each slice to name acceptance checks",
+    "verification command": "skills/plan-slicing/SKILL.md must require each slice to name a verification command",
+}
 REQUIRED_COMMAND_SECTIONS = [
     "## Purpose",
     "## When to use",
@@ -827,6 +831,11 @@ def validate(root: Path = ROOT) -> list[str]:
                     errors.append(f"{rel(skill, root)} section has no body: {section}")
         if not sections_are_in_order(text, REQUIRED_SKILL_SECTIONS):
             errors.append(f"{rel(skill, root)} sections must appear in canonical order")
+        if skill.parent.name == "plan-slicing":
+            text_lower = text.lower()
+            for required_term, message in REQUIRED_PLAN_SLICING_TERMS.items():
+                if required_term not in text_lower:
+                    errors.append(message)
 
     seen_workflows: dict[str, str] = {}
     seen_quality_bars: dict[str, str] = {}

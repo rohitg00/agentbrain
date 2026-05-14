@@ -832,6 +832,41 @@ def test_command_stop_conditions_must_not_be_reused_boilerplate(tmp_path):
     assert "commands/brain-sample.md stop conditions duplicate commands/brain-other.md" in errors
 
 
+def test_plan_slicing_skill_must_require_acceptance_checks_and_verification_command(tmp_path):
+    write_minimal_repo(tmp_path)
+    plan_skill_dir = tmp_path / "skills" / "plan-slicing"
+    plan_skill_dir.mkdir(parents=True)
+    (plan_skill_dir / "SKILL.md").write_text(
+        "\n".join([
+            "---",
+            "name: plan-slicing",
+            "description: Use when broad work needs to be broken into small verifiable slices.",
+            "---",
+            "# plan-slicing",
+            "## Trigger",
+            "Use before build work.",
+            "## Inputs",
+            "Raw scope and constraints.",
+            "## Procedure",
+            "Split the work into small vertical slices.",
+            "## Verification",
+            "Confirm the plan exists.",
+            "## Output Artifact",
+            "Implementation Plan.",
+            "## Failure Modes",
+            "Avoid big-bang plans.",
+            "## Example",
+            "Split a broad request into smaller steps.",
+        ]),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "skills/plan-slicing/SKILL.md must require each slice to name acceptance checks" in errors
+    assert "skills/plan-slicing/SKILL.md must require each slice to name a verification command" in errors
+
+
 def test_readme_skill_catalog_entries_must_point_to_existing_files(tmp_path):
     write_minimal_repo(tmp_path)
     readme = tmp_path / "README.md"
