@@ -208,6 +208,19 @@ def find_missing_dev_requirements(text: str) -> list[str]:
     return [requirement for requirement in REQUIRED_DEV_REQUIREMENTS if requirement not in installed]
 
 
+def workflow_declares_trigger(workflow_text: str, trigger: str) -> bool:
+    workflow_lines = [line.strip() for line in workflow_text.splitlines()]
+    if f"{trigger}:" in workflow_lines or f"on: {trigger}" in workflow_lines:
+        return True
+    for line in workflow_lines:
+        if not line.startswith("on: [") or not line.endswith("]"):
+            continue
+        inline_triggers = [item.strip() for item in line.removeprefix("on: [").removesuffix("]").split(",")]
+        if trigger in inline_triggers:
+            return True
+    return False
+
+
 def find_object_schemas_without_closed_properties(schema: object) -> list[str]:
     missing_locations: list[str] = []
 
@@ -347,9 +360,8 @@ def validate(root: Path = ROOT) -> list[str]:
             for permission_line in REQUIRED_QUALITY_WORKFLOW_PERMISSIONS
         ):
             errors.append(f"{rel(workflow, root)} must set permissions to contents: read")
-        workflow_lines = [line.strip() for line in workflow_text.splitlines()]
         for trigger in REQUIRED_WORKFLOW_TRIGGERS:
-            if f"{trigger}:" not in workflow_lines and f"on: {trigger}" not in workflow_lines:
+            if not workflow_declares_trigger(workflow_text, trigger):
                 errors.append(f"{rel(workflow, root)} must run on {trigger}")
 
     research_watchlist = root / "docs" / "research-watchlist.md"

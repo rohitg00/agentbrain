@@ -1413,6 +1413,29 @@ def test_all_workflows_must_run_on_push_and_pull_request(tmp_path):
     assert ".github/workflows/nightly.yml must run on pull_request" in errors
 
 
+def test_workflow_trigger_check_accepts_inline_event_list(tmp_path):
+    write_minimal_repo(tmp_path)
+    (tmp_path / ".github" / "workflows" / "inline-triggers.yml").write_text(
+        "\n".join([
+            "name: Inline Triggers",
+            "on: [push, pull_request]",
+            "permissions:",
+            "  contents: read",
+            "jobs:",
+            "  validate:",
+            "    runs-on: ubuntu-latest",
+            "    steps:",
+            "      - run: git diff --check",
+        ]),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert ".github/workflows/inline-triggers.yml must run on push" not in errors
+    assert ".github/workflows/inline-triggers.yml must run on pull_request" not in errors
+
+
 def test_dev_requirements_file_is_required(tmp_path):
     write_minimal_repo(tmp_path)
     (tmp_path / "requirements-dev.txt").unlink()
