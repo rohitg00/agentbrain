@@ -18,10 +18,16 @@ Use this repo as a harness, not as inspiration-only reading.
 git clone https://github.com/rohitg00/agentbrain.git
 cd agentbrain
 python3 -m pip install -r requirements-dev.txt
+rm -rf scripts/__pycache__ tests/__pycache__
 python -m pytest -q
 python scripts/validate_repo.py
 git diff --check
 ```
+
+Before committing public changes, also run a targeted exact-name scrub for
+user-shared source names, internal tool names, and source-specific branding. Keep
+only neutral operator-pattern language unless the change is explicitly in an
+approved comparison or benchmark section.
 
 Expected result:
 

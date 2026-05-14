@@ -74,6 +74,16 @@ REQUIRED_README_VALIDATION_GATE_TERMS = {
     "rm -rf scripts/__pycache__ tests/__pycache__": "README.md validation gate must include cache cleanup before tests",
     "targeted exact-name scrub": "README.md validation gate must include targeted exact-name scrub",
 }
+REQUIRED_README_QUICKSTART_COMMANDS = [
+    "python3 -m pip install -r requirements-dev.txt",
+    "rm -rf scripts/__pycache__ tests/__pycache__",
+    "python -m pytest -q",
+    "python scripts/validate_repo.py",
+    "git diff --check",
+]
+REQUIRED_README_QUICKSTART_TERMS = {
+    "targeted exact-name scrub": "README.md Quickstart must include targeted exact-name scrub",
+}
 REQUIRED_README_HARNESS_SECTIONS = [
     "## Quickstart",
     "## Run as an Agent Harness",
@@ -990,6 +1000,14 @@ def validate(root: Path = ROOT) -> list[str]:
         for run_command in REQUIRED_README_VALIDATION_COMMANDS:
             if run_command not in readme_text:
                 errors.append(f"README.md validation section must document: {run_command}")
+        readme_quickstart = section_body(readme_text, "## Quickstart")
+        readme_quickstart_lower = readme_quickstart.lower()
+        for run_command in REQUIRED_README_QUICKSTART_COMMANDS:
+            if run_command not in readme_quickstart:
+                errors.append(f"README.md Quickstart must document: {run_command}")
+        for required_term, message in REQUIRED_README_QUICKSTART_TERMS.items():
+            if required_term.lower() not in readme_quickstart_lower:
+                errors.append(message)
         readme_text_lower = readme_text.lower()
         for required_term, message in REQUIRED_README_VALIDATION_GATE_TERMS.items():
             if required_term.lower() not in readme_text_lower:
