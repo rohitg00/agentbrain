@@ -23,6 +23,10 @@ Agent Brain evals check whether a command or skill improves judgment instead of 
 - `source-to-skill-distillation` — turns external workflow evidence into a neutral reusable skill pattern.
 - `vague-startup-idea` — turns an unclear startup idea into sharper discovery work.
 
+## Rubric catalog
+
+- `agent-brain-rubric` — scores judgment quality across evidence, challenge, planning, and verification.
+
 ## How to use
 
 1. Pick a case from `evals/cases/`.

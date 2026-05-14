@@ -873,3 +873,17 @@ def test_eval_rubrics_require_scoring_and_interpretation_sections(tmp_path):
     errors = validate_repo.validate(tmp_path)
 
     assert "evals/rubrics/quality.md missing ## Interpretation" in errors
+
+
+def test_evals_readme_must_list_available_rubrics(tmp_path):
+    write_minimal_repo(tmp_path)
+    rubric_dir = tmp_path / "evals" / "rubrics"
+    rubric_dir.mkdir(parents=True)
+    (rubric_dir / "quality.md").write_text(
+        "# Quality Rubric\n\n## Dimensions\n\nScore the evidence quality.\n\n## Interpretation\n\nUse the score to decide whether to ship.\n",
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "evals/README.md missing eval rubric catalog entry: quality" in errors
