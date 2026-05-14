@@ -406,6 +406,34 @@ def test_nested_object_schemas_must_reject_unknown_fields(tmp_path):
     )
 
 
+def test_schema_definition_object_schemas_must_reject_unknown_fields(tmp_path):
+    write_minimal_repo(tmp_path)
+    (tmp_path / "schemas" / "artifact.schema.json").write_text(
+        json.dumps(
+            {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "title": "Artifact",
+                "type": "object",
+                "additionalProperties": False,
+                "$defs": {
+                    "source": {
+                        "type": "object",
+                        "properties": {"url": {"type": "string"}},
+                    }
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert (
+        "schemas/artifact.schema.json object schema at $defs.source must set additionalProperties to false"
+        in errors
+    )
+
+
 def test_missing_skill_sections_are_reported(tmp_path):
     write_minimal_repo(tmp_path)
     (tmp_path / "skills" / "sample" / "SKILL.md").write_text("# Sample\n## Trigger\n", encoding="utf-8")

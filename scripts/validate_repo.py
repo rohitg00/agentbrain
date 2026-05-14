@@ -223,6 +223,9 @@ def find_object_schemas_without_closed_properties(schema: object) -> list[str]:
                 elif key in {"anyOf", "allOf", "oneOf"} and isinstance(value, list):
                     for index, option in enumerate(value):
                         walk(option, f"{location}.{key}[{index}]")
+                elif key in {"$defs", "definitions"} and isinstance(value, dict):
+                    for definition_name, definition_schema in value.items():
+                        walk(definition_schema, f"{location}.{key}.{definition_name}")
                 elif key == "not":
                     walk(value, f"{location}.not")
         elif isinstance(node, list):
