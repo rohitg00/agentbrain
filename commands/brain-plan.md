@@ -21,11 +21,11 @@ If required inputs are missing, ask at most three blocking questions or state ex
 
 ## Workflow
 
-1. State current Agent Brain state.
-2. Check required inputs and list missing blockers.
-3. Apply the relevant anti-rationalization rules.
-4. Produce the required artifact in the documented template.
-5. State evidence, assumptions, risks, and next state.
+1. Start from an approved brief/design and list all constraints.
+2. Use `plan-slicing` to split work into the smallest independently verifiable slices.
+3. Attach acceptance checks, rollback notes, and dependencies to each slice.
+4. Produce an Implementation Plan that a builder can execute without guessing.
+5. Stop if the work is too broad, untestable, or missing a first reversible slice.
 
 ## Output
 

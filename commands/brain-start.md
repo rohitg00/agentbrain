@@ -21,11 +21,11 @@ If required inputs are missing, ask at most three blocking questions or state ex
 
 ## Workflow
 
-1. State current Agent Brain state.
-2. Check required inputs and list missing blockers.
-3. Apply the relevant anti-rationalization rules.
-4. Produce the required artifact in the documented template.
-5. State evidence, assumptions, risks, and next state.
+1. Capture the raw request, user goal, visible constraints, and urgency.
+2. Classify the earliest safe state instead of assuming build work.
+3. Load `intake`; add `question-ladder` only when missing context blocks routing.
+4. Produce an Intake Summary with facts, assumptions, blockers, and recommended next command.
+5. Stop if the request needs approval, secrets, destructive action, or a user decision before routing.
 
 ## Output
 

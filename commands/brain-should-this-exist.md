@@ -21,11 +21,11 @@ If required inputs are missing, ask at most three blocking questions or state ex
 
 ## Workflow
 
-1. State current Agent Brain state.
-2. Check required inputs and list missing blockers.
-3. Apply the relevant anti-rationalization rules.
-4. Produce the required artifact in the documented template.
-5. State evidence, assumptions, risks, and next state.
+1. Name the target user, job, pain, current alternative, and success metric.
+2. Test simpler non-agent options before proposing an agent.
+3. Use `problem-grill` and `market-grill` to find kill criteria, demand gaps, and risk.
+4. Produce a Non-Agent Alternative Review with decision, evidence, risks, and next state.
+5. Stop if the user/problem is undefined or the idea lacks measurable value.
 
 ## Output
 

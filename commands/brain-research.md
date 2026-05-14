@@ -21,11 +21,11 @@ If required inputs are missing, ask at most three blocking questions or state ex
 
 ## Workflow
 
-1. State current Agent Brain state.
-2. Check required inputs and list missing blockers.
-3. Apply the relevant anti-rationalization rules.
-4. Produce the required artifact in the documented template.
-5. State evidence, assumptions, risks, and next state.
+1. Convert the question into explicit claims to verify.
+2. Gather source-backed evidence and separate facts from assumptions.
+3. Use `evidence-research`; add `wiki-maintenance` only for durable project knowledge.
+4. Produce a Research Claim Ledger with citations, confidence, contradictions, and gaps.
+5. Stop if sources are stale, unavailable, or insufficient for the requested confidence.
 
 ## Output
 

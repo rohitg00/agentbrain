@@ -23,11 +23,11 @@ If required inputs are missing, ask at most three blocking questions or state ex
 
 ## Workflow
 
-1. State current Agent Brain state.
-2. Check required inputs and list missing blockers.
-3. Apply the relevant anti-rationalization rules.
-4. Produce the required artifact in the documented template.
-5. State evidence, assumptions, risks, and next state.
+1. Identify which assumptions are product, market, design, engineering, safety, or launch risks.
+2. Load the relevant grill skills and challenge the strongest weak points first.
+3. Write rebuttals, failure modes, counterexamples, and kill criteria.
+4. Produce a Grill Report with must-fix blockers and the safest next state.
+5. Stop if the idea should be killed, narrowed, or rerouted before planning.
 
 ## Output
 

@@ -21,11 +21,11 @@ If required inputs are missing, ask at most three blocking questions or state ex
 
 ## Workflow
 
-1. State current Agent Brain state.
-2. Check required inputs and list missing blockers.
-3. Apply the relevant anti-rationalization rules.
-4. Produce the required artifact in the documented template.
-5. State evidence, assumptions, risks, and next state.
+1. List every important claim the artifact makes.
+2. Collect proof through tests, logs, traces, screenshots, citations, diffs, or human approval.
+3. Use `qa-evidence`; add `agent-output-verifier` for agent-produced claims.
+4. Produce QA Evidence with pass/fail status, commands, outputs, and unchecked areas.
+5. Stop if proof is missing or the artifact cannot be verified safely.
 
 ## Output
 

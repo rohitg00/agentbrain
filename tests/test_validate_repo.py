@@ -324,6 +324,39 @@ def test_valid_minimal_repo_has_no_errors(tmp_path):
     assert validate_repo.validate(tmp_path) == []
 
 
+def test_commands_must_not_reuse_the_same_workflow_body(tmp_path):
+    write_minimal_repo(tmp_path)
+    command_dir = tmp_path / "commands"
+    duplicate_workflow = "Inspect inputs, apply safeguards, produce the required artifact, and state the next state."
+    for stem in ["brain-first", "brain-second"]:
+        (command_dir / f"{stem}.md").write_text(
+            "\n".join([
+                f"# /{stem}",
+                "## Purpose",
+                f"Route {stem} work.",
+                "## When to use",
+                f"Use for {stem} requests.",
+                "## Input contract",
+                "Raw request.",
+                "## Skills to load",
+                "Load `sample` for sample routing.",
+                "## Workflow",
+                duplicate_workflow,
+                "## Output",
+                "A concrete next action.",
+                "## Stop conditions",
+                "Stop when the request is unsafe.",
+                "## Quality bar",
+                f"Evidence is checked before {stem} output.",
+            ]),
+            encoding="utf-8",
+        )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "commands/brain-second.md workflow duplicates commands/brain-first.md" in errors
+
+
 def test_agent_harness_must_include_fresh_checkout_bootstrap(tmp_path):
     write_minimal_repo(tmp_path)
     harness = tmp_path / "docs" / "agent-harness.md"

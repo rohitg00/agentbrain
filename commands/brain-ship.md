@@ -21,11 +21,11 @@ If required inputs are missing, ask at most three blocking questions or state ex
 
 ## Workflow
 
-1. State current Agent Brain state.
-2. Check required inputs and list missing blockers.
-3. Apply the relevant anti-rationalization rules.
-4. Produce the required artifact in the documented template.
-5. State evidence, assumptions, risks, and next state.
+1. Confirm verification and review evidence are current.
+2. Use `launch-gate` to check rollout, rollback, monitoring, support, and ownership.
+3. Use `qa-evidence` if release proof is incomplete.
+4. Produce a Launch Checklist with go/no-go decision, risks, rollback, and follow-up.
+5. Stop if rollback, approval, or monitoring is missing for a risky change.
 
 ## Output
 

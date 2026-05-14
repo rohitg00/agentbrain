@@ -780,6 +780,7 @@ def validate(root: Path = ROOT) -> list[str]:
         if not sections_are_in_order(text, REQUIRED_SKILL_SECTIONS):
             errors.append(f"{rel(skill, root)} sections must appear in canonical order")
 
+    seen_workflows: dict[str, str] = {}
     seen_quality_bars: dict[str, str] = {}
     for command in sorted((root / "commands").glob("*.md")):
         text = command.read_text(errors="ignore")
@@ -806,6 +807,14 @@ def validate(root: Path = ROOT) -> list[str]:
                     errors.append(f"{rel(command, root)} section has no body: {section}")
         if not sections_are_in_order(text, REQUIRED_COMMAND_SECTIONS):
             errors.append(f"{rel(command, root)} sections must appear in canonical order")
+        workflow = normalized_section_body(text, "## Workflow")
+        if workflow:
+            if workflow in seen_workflows:
+                errors.append(
+                    f"{rel(command, root)} workflow duplicates {seen_workflows[workflow]}"
+                )
+            else:
+                seen_workflows[workflow] = rel(command, root)
         quality_bar = normalized_section_body(text, "## Quality bar")
         if quality_bar:
             if quality_bar in seen_quality_bars:

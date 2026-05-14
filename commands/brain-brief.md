@@ -21,11 +21,11 @@ If required inputs are missing, ask at most three blocking questions or state ex
 
 ## Workflow
 
-1. State current Agent Brain state.
-2. Check required inputs and list missing blockers.
-3. Apply the relevant anti-rationalization rules.
-4. Produce the required artifact in the documented template.
-5. State evidence, assumptions, risks, and next state.
+1. Start from checked evidence, decisions, constraints, and open questions.
+2. Resolve or label missing user, problem, scope, and success criteria.
+3. Use `problem-grill` for weak scope and `evidence-research` for claims.
+4. Produce a Product Brief that names facts, assumptions, risks, non-goals, and next state.
+5. Stop if the brief would hide uncertainty or convert guesses into requirements.
 
 ## Output
 

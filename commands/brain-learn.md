@@ -21,11 +21,11 @@ If required inputs are missing, ask at most three blocking questions or state ex
 
 ## Workflow
 
-1. State current Agent Brain state.
-2. Check required inputs and list missing blockers.
-3. Apply the relevant anti-rationalization rules.
-4. Produce the required artifact in the documented template.
-5. State evidence, assumptions, risks, and next state.
+1. Identify the repeated outcome, failure mode, correction, or durable decision.
+2. Decide whether it belongs in memory, wiki, skill, template, eval, or nowhere.
+3. Use `learning-capture`; add `wiki-maintenance` for source-backed project knowledge.
+4. Produce Learning Capture with evidence, scope, update target, and next state.
+5. Stop if the lesson is temporary task progress, private data, or stale implementation status.
 
 ## Output
 

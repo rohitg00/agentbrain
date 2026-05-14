@@ -21,11 +21,11 @@ If required inputs are missing, ask at most three blocking questions or state ex
 
 ## Workflow
 
-1. State current Agent Brain state.
-2. Check required inputs and list missing blockers.
-3. Apply the relevant anti-rationalization rules.
-4. Produce the required artifact in the documented template.
-5. State evidence, assumptions, risks, and next state.
+1. Define the command, skill, artifact, or behavior being tested.
+2. Select eval cases, rubric dimensions, and expected failure signals.
+3. Use `agent-output-verifier` and `qa-evidence` to tie judgments to proof.
+4. Produce an Eval Report with case outcomes, regressions, and recommended fixes.
+5. Stop if the eval lacks a clear expected behavior or cannot reproduce the failure.
 
 ## Output
 

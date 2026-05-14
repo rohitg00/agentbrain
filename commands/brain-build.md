@@ -21,11 +21,11 @@ If required inputs are missing, ask at most three blocking questions or state ex
 
 ## Workflow
 
-1. State current Agent Brain state.
-2. Check required inputs and list missing blockers.
-3. Apply the relevant anti-rationalization rules.
-4. Produce the required artifact in the documented template.
-5. State evidence, assumptions, risks, and next state.
+1. Confirm the active slice is approved, narrow, and has acceptance checks.
+2. Implement only that slice; do not opportunistically expand scope.
+3. Keep notes on changed files, commands run, assumptions, and risks.
+4. Produce changed artifacts plus implementation notes and route to verification.
+5. Stop if tests, approvals, secrets, or production access are required but unavailable.
 
 ## Output
 

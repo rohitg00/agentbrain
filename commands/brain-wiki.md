@@ -21,11 +21,11 @@ If required inputs are missing, ask at most three blocking questions or state ex
 
 ## Workflow
 
-1. State current Agent Brain state.
-2. Check required inputs and list missing blockers.
-3. Apply the relevant anti-rationalization rules.
-4. Produce the required artifact in the documented template.
-5. State evidence, assumptions, risks, and next state.
+1. Check the source material, target knowledge area, owner, and staleness risk.
+2. Use `wiki-maintenance` and `evidence-research` to ground each durable statement.
+3. Update project knowledge with citations, decisions, and open questions.
+4. Produce a Wiki Update summarizing changed pages, evidence, and follow-up.
+5. Stop if sources are missing, conflicting, or too weak for a durable knowledge update.
 
 ## Output
 

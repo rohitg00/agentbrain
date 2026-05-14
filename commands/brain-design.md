@@ -21,11 +21,11 @@ If required inputs are missing, ask at most three blocking questions or state ex
 
 ## Workflow
 
-1. State current Agent Brain state.
-2. Check required inputs and list missing blockers.
-3. Apply the relevant anti-rationalization rules.
-4. Produce the required artifact in the documented template.
-5. State evidence, assumptions, risks, and next state.
+1. Define the user journey, interface states, empty states, errors, permissions, and edge cases.
+2. Use `design-grill` to challenge flows and `engineering-grill` for feasibility risks.
+3. Specify behavior before implementation details.
+4. Produce a Design Brief with state transitions, acceptance checks, and unresolved risks.
+5. Stop if critical states, accessibility, or failure paths are missing.
 
 ## Output
 

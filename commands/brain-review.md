@@ -21,11 +21,11 @@ If required inputs are missing, ask at most three blocking questions or state ex
 
 ## Workflow
 
-1. State current Agent Brain state.
-2. Check required inputs and list missing blockers.
-3. Apply the relevant anti-rationalization rules.
-4. Produce the required artifact in the documented template.
-5. State evidence, assumptions, risks, and next state.
+1. Inspect the artifact, evidence, diff, risks, permissions, and side effects.
+2. Use `agent-output-verifier` for trust checks and `engineering-grill` for maintainability/security.
+3. Classify findings by blocker, warning, or accepted risk.
+4. Produce a Review Report with decision, evidence, required fixes, and next state.
+5. Stop if unsupported claims, secrets, unsafe side effects, or skipped gates remain.
 
 ## Output
 
