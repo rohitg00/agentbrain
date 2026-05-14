@@ -22,6 +22,7 @@ Before building, read AGENTBRAIN.md. Use commands/ to choose the right workflow.
 Because this adapter has no native skill loader, validate both the repository and the manual routing behavior:
 
 ```bash
+python3 -m pip install -r requirements-dev.txt
 python -m pytest -q
 python scripts/validate_repo.py
 git diff --check

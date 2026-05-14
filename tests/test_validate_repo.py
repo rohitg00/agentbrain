@@ -34,7 +34,10 @@ def write_minimal_repo(root: Path) -> None:
         "## Install\n\n"
         "Use this adapter in a sample runtime.\n\n"
         "## Validation\n\n"
-        "Run the repo quality gate after setup.\n\n"
+        "python3 -m pip install -r requirements-dev.txt\n"
+        "python -m pytest -q\n"
+        "python scripts/validate_repo.py\n"
+        "git diff --check\n\n"
         "## Failure Modes\n\n"
         "Stop if the runtime cannot load files.\n",
         encoding="utf-8",
@@ -1098,6 +1101,30 @@ def test_adapter_readmes_must_include_validation_section(tmp_path):
     errors = validate_repo.validate(tmp_path)
 
     assert "adapters/sample-adapter/README.md missing adapter section: ## Validation" in errors
+
+
+def test_adapter_readmes_must_document_full_quality_gate(tmp_path):
+    write_minimal_repo(tmp_path)
+    adapter_readme = tmp_path / "adapters" / "sample-adapter" / "README.md"
+    adapter_readme.write_text(
+        "# Sample Adapter\n\n"
+        "## Install\n\n"
+        "Use this adapter in a sample runtime.\n\n"
+        "## Validation\n\n"
+        "Run only the repository validator.\n\n"
+        "```bash\n"
+        "python scripts/validate_repo.py\n"
+        "```\n\n"
+        "## Failure Modes\n\n"
+        "Stop if the runtime cannot load files.\n",
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "adapters/sample-adapter/README.md validation section must document: python3 -m pip install -r requirements-dev.txt" in errors
+    assert "adapters/sample-adapter/README.md validation section must document: python -m pytest -q" in errors
+    assert "adapters/sample-adapter/README.md validation section must document: git diff --check" in errors
 
 
 def test_banned_public_copy_terms_are_reported(tmp_path):

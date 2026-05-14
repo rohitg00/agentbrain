@@ -17,6 +17,7 @@ This adapter explains how to use Agent Brain with Hermes-style skills and tool a
 After wiring the adapter into a workspace, run the same harness gate from the repository root:
 
 ```bash
+python3 -m pip install -r requirements-dev.txt
 python -m pytest -q
 python scripts/validate_repo.py
 git diff --check

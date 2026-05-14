@@ -102,6 +102,12 @@ REQUIRED_AGENT_HARNESS_WORKER_ROLES = [
     "learner",
 ]
 REQUIRED_ADAPTER_SECTIONS = ["## Install", "## Validation", "## Failure Modes"]
+REQUIRED_ADAPTER_VALIDATION_COMMANDS = [
+    "python3 -m pip install -r requirements-dev.txt",
+    "python -m pytest -q",
+    "python scripts/validate_repo.py",
+    "git diff --check",
+]
 REQUIRED_CONTRIBUTING_VALIDATION_COMMANDS = ["pytest -q", "git diff --check"]
 RESEARCH_WATCHLIST_REQUIRED_SOURCES = [
     "autonomous-goal runtime docs",
@@ -914,6 +920,9 @@ def validate(root: Path = ROOT) -> list[str]:
             for required_section in REQUIRED_ADAPTER_SECTIONS:
                 if required_section not in adapter_text:
                     errors.append(f"{rel(markdown_file, root)} missing adapter section: {required_section}")
+            for run_command in REQUIRED_ADAPTER_VALIDATION_COMMANDS:
+                if run_command not in adapter_text:
+                    errors.append(f"{rel(markdown_file, root)} validation section must document: {run_command}")
 
     for rubric in sorted((root / "evals" / "rubrics").glob("*.md")):
         text = rubric.read_text(errors="ignore")
