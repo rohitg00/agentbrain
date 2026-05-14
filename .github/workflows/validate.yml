@@ -24,3 +24,6 @@ jobs:
 
       - name: Run repository validator
         run: python scripts/validate_repo.py
+
+      - name: Check whitespace
+        run: git diff --check
