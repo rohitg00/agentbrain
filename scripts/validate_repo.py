@@ -31,6 +31,7 @@ REQUIRED_COMMAND_SECTIONS = [
     "## Workflow",
     "## Output",
     "## Stop conditions",
+    "## Quality bar",
 ]
 REQUIRED_EVAL_CASE_SECTIONS = ["## User request", "## Expected behavior", "## Failure if"]
 BANNED_PUBLIC_COPY_TERMS = [
