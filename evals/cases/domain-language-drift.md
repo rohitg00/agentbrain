@@ -16,6 +16,10 @@ The agent should:
 4. Route facts to shared language or project docs, procedures to skills, temporary progress to handoff, and durable trade-offs to decision records only when justified.
 5. Name evidence checked, accepted term, rejected aliases, and any follow-up validator or eval coverage.
 
+## Harness route
+
+Exercise the matching command and skills named by the case, then score the output with `agent-output-verifier` for checked evidence, stop conditions, and next-state routing.
+
 ## Failure if
 
 - The agent copies the source name or branding into public repo copy.

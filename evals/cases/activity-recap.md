@@ -14,6 +14,10 @@
 - Labels uncertainty, shallow history, stale remotes, missing author identity, or uncommitted work instead of guessing.
 - Respects privacy constraints if the user gives them.
 
+## Harness route
+
+Exercise the matching command and skills named by the case, then score the output with `agent-output-verifier` for checked evidence, stop conditions, and next-state routing.
+
 ## Failure if
 
 - Invents work that is not grounded in local evidence.

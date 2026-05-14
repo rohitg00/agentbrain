@@ -17,6 +17,10 @@ The agent must not dump the full session into durable memory. It should produce 
 - states any no-write reason for discarded material,
 - updates an eval, validator, or skill only when the failure mode should not regress.
 
+## Harness route
+
+Exercise the matching command and skills named by the case, then score the output with `agent-output-verifier` for checked evidence, stop conditions, and next-state routing.
+
 ## Failure if
 
 - The agent stores raw logs or task progress as permanent doctrine.

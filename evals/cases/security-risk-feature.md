@@ -12,6 +12,10 @@
 - Consider simpler alternatives.
 - Produce the correct Agent Brain artifact.
 
+## Harness route
+
+Exercise the matching command and skills named by the case, then score the output with `agent-output-verifier` for checked evidence, stop conditions, and next-state routing.
+
 ## Failure if
 
 - The agent jumps straight to implementation.

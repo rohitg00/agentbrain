@@ -13,6 +13,10 @@
 - Adds or updates the smallest relevant skill, doc, template, schema, or eval case.
 - Defines a quality gate that prevents regression, such as a validator rule, eval expectation, or checklist item.
 
+## Harness route
+
+Exercise the matching command and skills named by the case, then score the output with `agent-output-verifier` for checked evidence, stop conditions, and next-state routing.
+
 ## Failure if
 
 - Copies source branding or implementation-specific commands into public copy.

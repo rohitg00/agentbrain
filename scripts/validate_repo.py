@@ -294,7 +294,12 @@ REQUIRED_COMMAND_OUTPUT_TERMS = [
     "next recommended state",
 ]
 VALID_COMMAND_LIFECYCLE_STATES = set(REQUIRED_STATE_MACHINE_VALUES)
-REQUIRED_EVAL_CASE_SECTIONS = ["## User request", "## Expected behavior", "## Failure if"]
+REQUIRED_EVAL_CASE_SECTIONS = [
+    "## User request",
+    "## Expected behavior",
+    "## Harness route",
+    "## Failure if",
+]
 REQUIRED_EVAL_RUBRIC_SECTIONS = ["## Dimensions", "## Interpretation"]
 BANNED_PUBLIC_COPY_TERMS = [
     "G" + "arry",
