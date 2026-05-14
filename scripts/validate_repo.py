@@ -8,6 +8,13 @@ from jsonschema import validators
 ROOT = Path(__file__).resolve().parents[1]
 
 REQUIRED_ROOT = ["README.md", "AGENTBRAIN.md", "PRINCIPLES.md", "ANTI_RATIONALIZATION.md"]
+REQUIRED_DOCS = ["docs/autonomous-goals.md"]
+RESEARCH_WATCHLIST_REQUIRED_SOURCES = [
+    "Claude Code /goal",
+    "michaelshimeles/skills",
+    "obra/superpowers",
+    "Everything Claude Code",
+]
 REQUIRED_SKILL_SECTIONS = [
     "## Trigger",
     "## Inputs",
@@ -73,6 +80,17 @@ def validate(root: Path = ROOT) -> list[str]:
     for required_path in REQUIRED_ROOT:
         if not (root / required_path).exists():
             errors.append(f"missing {required_path}")
+
+    for required_path in REQUIRED_DOCS:
+        if not (root / required_path).exists():
+            errors.append(f"missing {required_path}")
+
+    research_watchlist = root / "docs" / "research-watchlist.md"
+    if research_watchlist.exists():
+        research_text = research_watchlist.read_text(errors="ignore")
+        for source in RESEARCH_WATCHLIST_REQUIRED_SOURCES:
+            if source not in research_text:
+                errors.append(f"docs/research-watchlist.md missing tracked source: {source}")
 
     for skill in sorted((root / "skills").glob("*/SKILL.md")):
         text = skill.read_text(errors="ignore")

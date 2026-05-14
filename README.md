@@ -40,6 +40,7 @@ Every stage has artifacts, exit criteria, and stop conditions.
 - Slash-command specs for repeated workflows.
 - Portable skills with triggers, steps, verification, and examples.
 - Artifact schemas for briefs, plans, reviews, QA evidence, and learning capture.
+- A portable autonomous-goal model for bounded `/goal`-style long-running work.
 - Evals that test whether the agent asks, challenges, verifies, and learns.
 - Adapters for different runtimes without locking the core to one tool.
 

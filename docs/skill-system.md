@@ -41,6 +41,19 @@ Agent Brain skills should follow the same loading discipline used by modern skil
 
 This prevents a skill library from becoming a giant prompt dump while still allowing deep procedural knowledge to exist on disk.
 
+## External skill libraries as inputs
+
+Agent Brain should mine strong public skill libraries for patterns, not copy them wholesale.
+
+Current references to keep checking:
+
+- `mattpocock/skills` for small, composable engineering skills, grilling, shared language, and repo-specific agent docs.
+- `obra/superpowers` for TDD-first development methodology, subagent workflows, planning, and branch-finishing discipline.
+- `michaelshimeles/skills` for service-layer separation between orchestration rules and reusable mechanics.
+- `affaan-m/everything-claude-code` / Everything Claude Code for harness-level integration across skills, agents, hooks, memory, security, evals, and adapters.
+
+Import rule: extract the reusable design pressure, then rewrite it in Agent Brain vocabulary with tests or checklists. Do not vendor giant prompt packs, copy private assumptions, or add runtime-specific commands to the portable core.
+
 ## Anti-patterns
 
 - Giant prompt dumps

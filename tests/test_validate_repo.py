@@ -45,6 +45,21 @@ def write_minimal_repo(root: Path) -> None:
         ]),
         encoding="utf-8",
     )
+    docs_dir = root / "docs"
+    docs_dir.mkdir()
+    (docs_dir / "autonomous-goals.md").write_text(
+        "# Autonomous Goals\n\n/goal\nmeasurable end state\nconstraints\n", encoding="utf-8"
+    )
+    (docs_dir / "research-watchlist.md").write_text(
+        "\n".join([
+            "# Research Watchlist",
+            "Claude Code /goal",
+            "michaelshimeles/skills",
+            "obra/superpowers",
+            "Everything Claude Code",
+        ]),
+        encoding="utf-8",
+    )
 
 
 def test_valid_minimal_repo_has_no_errors(tmp_path):
@@ -86,7 +101,7 @@ def test_missing_skill_sections_are_reported(tmp_path):
 
 def test_banned_public_copy_terms_are_reported(tmp_path):
     write_minimal_repo(tmp_path)
-    (tmp_path / "docs").mkdir()
+    (tmp_path / "docs").mkdir(exist_ok=True)
     (tmp_path / "docs" / "copy.md").write_text("This says GBrain in public copy.\n", encoding="utf-8")
 
     errors = validate_repo.validate(tmp_path)
@@ -166,3 +181,26 @@ def test_templates_must_reference_required_schema_fields(tmp_path):
     errors = validate_repo.validate(tmp_path)
 
     assert "templates/product-brief.md missing required schema field reference: target_user" in errors
+
+
+def test_autonomous_goal_doc_is_required(tmp_path):
+    write_minimal_repo(tmp_path)
+    (tmp_path / "docs" / "autonomous-goals.md").unlink()
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "missing docs/autonomous-goals.md" in errors
+
+
+def test_research_watchlist_must_track_goal_and_skill_sources(tmp_path):
+    write_minimal_repo(tmp_path)
+    (tmp_path / "docs" / "research-watchlist.md").write_text(
+        "# Research Watchlist\n\nOnly generic sources.\n", encoding="utf-8"
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "docs/research-watchlist.md missing tracked source: Claude Code /goal" in errors
+    assert "docs/research-watchlist.md missing tracked source: michaelshimeles/skills" in errors
+    assert "docs/research-watchlist.md missing tracked source: obra/superpowers" in errors
+    assert "docs/research-watchlist.md missing tracked source: Everything Claude Code" in errors

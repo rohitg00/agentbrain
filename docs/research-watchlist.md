@@ -52,6 +52,26 @@ What changed the repo:
 - Reinforced portable core over framework lock-in.
 - Mapped current architecture to owned context, explicit artifacts, pause/resume points, human approval, compact errors, and small focused skills.
 
+## 2026-05-14 autonomous goal and skill-library pass
+
+### User-supplied source
+
+- AI Edge / Miles Deutscher X guide on `/goal`: useful as practitioner signal, but treated as social input rather than canonical implementation detail.
+
+### Web sources checked
+
+- Claude Code /goal docs: `/goal` sets a session-scoped completion condition, uses a separate evaluator after each turn, complements auto-approval, and needs measurable evidence surfaced by the agent.
+- michaelshimeles/skills `code-structure/SKILL.md`: reinforced service-layer separation between orchestration rules and reusable operational mechanics.
+- mattpocock/skills: reinforced small composable engineering skills, grilling/alignment, shared project language, and user-controlled process over giant frameworks.
+- obra/superpowers: reinforced skills as a full development methodology with TDD, plans, subagent-driven development, finishing branches, and cross-runtime adaptation.
+- Everything Claude Code (`affaan-m/everything-claude-code`): reinforced that serious agent harnesses combine skills, agents, hooks, memory, security checks, evals, and cross-tool adapters.
+
+What changed the repo:
+
+- Added `docs/autonomous-goals.md` as the portable `/goal` model for long-running, verifiable agent work.
+- Added validator coverage so the autonomous-goal doc remains required.
+- Added validator coverage so the research watchlist keeps tracking the current skill-library references instead of drifting back to generic source lists.
+
 ## Repeat loop
 
 When hardening the repo, repeat this loop:

@@ -24,7 +24,11 @@ Agent Brain is documentation-first, runtime-later.
 
 `docs/memory-model.md` defines what gets stored where.
 
-### 6. Runtime adapters
+### 7. Autonomous goals
+
+`docs/autonomous-goals.md` defines how long-running `/goal`-style loops should be bounded, verified, and paused across runtimes.
+
+### 8. Runtime adapters
 
 Future adapters can install these skills into different agent runtimes without changing the core content.
 
@@ -34,6 +38,7 @@ Future adapters can install these skills into different agent runtimes without c
 User request
   → command router
   → relevant skill(s)
+  → optional autonomous goal loop
   → question ladder
   → artifact templates
   → review gates
@@ -50,6 +55,7 @@ The portable core therefore favors:
 - owned prompts and owned context instead of opaque framework defaults,
 - explicit state and artifacts instead of hidden conversation state,
 - launch / pause / resume points for long-running work,
+- bounded `/goal`-style loops with explicit success evidence,
 - human contact and approval as first-class workflow actions,
 - small focused skills or agents instead of one broad generalist,
 - compact error summaries that can be fed back into the next attempt,
