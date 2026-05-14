@@ -16,6 +16,10 @@ REQUIRED_ROOT = [
 ]
 REQUIRED_DOCS = ["docs/autonomous-goals.md"]
 REQUIRED_WORKFLOWS = [".github/workflows/quality.yml"]
+REQUIRED_QUALITY_WORKFLOW_RUNS = [
+    "python -m pytest -q",
+    "python scripts/validate_repo.py",
+]
 RESEARCH_WATCHLIST_REQUIRED_SOURCES = [
     "autonomous-goal runtime docs",
     "service-layer skill pattern",
@@ -162,8 +166,15 @@ def validate(root: Path = ROOT) -> list[str]:
             errors.append(f"missing {required_path}")
 
     for required_path in REQUIRED_WORKFLOWS:
-        if not (root / required_path).exists():
+        workflow = root / required_path
+        if not workflow.exists():
             errors.append(f"missing {required_path}")
+            continue
+        workflow_text = workflow.read_text(errors="ignore")
+        if required_path == ".github/workflows/quality.yml":
+            for run_command in REQUIRED_QUALITY_WORKFLOW_RUNS:
+                if run_command not in workflow_text:
+                    errors.append(f"{required_path} must run: {run_command}")
 
     research_watchlist = root / "docs" / "research-watchlist.md"
     if research_watchlist.exists():

@@ -457,6 +457,33 @@ def test_quality_workflow_is_required(tmp_path):
     assert "missing .github/workflows/quality.yml" in errors
 
 
+def test_quality_workflow_must_run_pytest(tmp_path):
+    write_minimal_repo(tmp_path)
+    (tmp_path / ".github" / "workflows" / "quality.yml").write_text(
+        "\n".join([
+            "name: Quality",
+            "on:",
+            "  push:",
+            "  pull_request:",
+            "jobs:",
+            "  validate:",
+            "    runs-on: ubuntu-latest",
+            "    steps:",
+            "      - uses: actions/checkout@v4",
+            "      - uses: actions/setup-python@v5",
+            "        with:",
+            "          python-version: '3.11'",
+            "      - run: python -m pip install -r requirements-dev.txt",
+            "      - run: python scripts/validate_repo.py",
+        ]),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert ".github/workflows/quality.yml must run: python -m pytest -q" in errors
+
+
 def test_research_watchlist_must_track_goal_and_skill_sources(tmp_path):
     write_minimal_repo(tmp_path)
     (tmp_path / "docs" / "research-watchlist.md").write_text(
