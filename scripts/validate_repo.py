@@ -256,20 +256,22 @@ def workflow_declares_trigger(workflow_text: str, trigger: str) -> bool:
 
 def find_write_workflow_permissions(workflow_text: str) -> list[str]:
     write_permissions: list[str] = []
-    in_permissions_block = False
+    permissions_block_indent: int | None = None
     for raw_line in workflow_text.splitlines():
         stripped = raw_line.strip()
         if not stripped or stripped.startswith("#"):
             continue
+        line_indent = len(raw_line) - len(raw_line.lstrip(" \t"))
         if stripped == "permissions: write-all":
             write_permissions.append("write-all")
+            permissions_block_indent = None
             continue
-        if raw_line == "permissions:":
-            in_permissions_block = True
+        if permissions_block_indent is not None and line_indent <= permissions_block_indent:
+            permissions_block_indent = None
+        if stripped == "permissions:":
+            permissions_block_indent = line_indent
             continue
-        if in_permissions_block and raw_line and not raw_line.startswith((" ", "\t")):
-            in_permissions_block = False
-        if not in_permissions_block or ":" not in stripped:
+        if permissions_block_indent is None or ":" not in stripped:
             continue
         permission, access = [part.strip() for part in stripped.split(":", 1)]
         if access == "write":
