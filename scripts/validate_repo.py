@@ -243,6 +243,10 @@ def validate(root: Path = ROOT) -> list[str]:
             command_name = f"/{command.stem}"
             if command_name not in readme_text:
                 errors.append(f"README.md missing command catalog entry: {command_name}")
+        for skill in sorted((root / "skills").glob("*/SKILL.md")):
+            skill_name = skill.parent.name
+            if f"`{skill_name}`" not in readme_text:
+                errors.append(f"README.md missing skill catalog entry: {skill_name}")
 
     eval_cases = sorted((root / "evals" / "cases").glob("*.md"))
     for case in eval_cases:

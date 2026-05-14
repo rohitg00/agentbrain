@@ -61,6 +61,22 @@ Every stage has artifacts, exit criteria, and stop conditions.
 - `/brain-wiki` — maintain source-backed project knowledge.
 - `/brain-eval` — test the brain, command, or skill against cases and rubrics.
 
+## Core skills
+
+- `activity-recap` — summarize recent project activity from local evidence.
+- `design-grill` — challenge interface, states, and edge cases before build work.
+- `engineering-grill` — challenge feasibility, failure modes, and implementation risk.
+- `evidence-research` — turn claims into source-backed research evidence.
+- `intake` — route raw intent into the correct next workflow state.
+- `launch-gate` — decide go/no-go with rollout, rollback, and proof.
+- `learning-capture` — convert repeated outcomes into durable project knowledge.
+- `market-grill` — challenge audience, alternatives, and demand evidence.
+- `plan-slicing` — split work into small verifiable implementation slices.
+- `problem-grill` — test whether the problem is real, specific, and worth solving.
+- `qa-evidence` — collect verification proof for review and shipping decisions.
+- `question-ladder` — ask staged questions that narrow ambiguity without overloading the user.
+- `wiki-maintenance` — maintain project knowledge from checked sources.
+
 ## Repository map
 
 ```text
