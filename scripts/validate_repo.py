@@ -70,6 +70,7 @@ REQUIRED_README_HARNESS_SECTIONS = [
     "## Handoff Contract",
     "## Edge Cases and Stop Conditions",
     "## Troubleshooting",
+    "## Maintainer Checklist",
 ]
 REQUIRED_README_MINIMAL_HARNESS_PROMPT_TERMS = [
     "AGENTBRAIN.md",

@@ -18,7 +18,7 @@ def write_minimal_repo(root: Path) -> None:
         encoding="utf-8",
     )
     (root / "README.md").write_text(
-        "# required\n\n## Quickstart\nInstall and run validation.\n\n## Run as an Agent Harness\nLoad the repo as operating instructions.\n\n## Command Selection Guide\n\n- Raw request -> `/brain-sample`\n\n## Handoff Contract\nState the status, evidence checked, facts, assumptions, risks, blockers, and next action.\n\n## Edge Cases and Stop Conditions\nStop on missing evidence.\n\n## Troubleshooting\nRun validation and inspect errors.\n\n## Minimal Harness Prompt\n\n```text\nRead AGENTBRAIN.md and docs/state-machine.md before acting.\nChoose the matching command in commands/ and load only the required skills/ entry.\nUse templates/ and schemas/ for structured artifacts when they fit.\nRun python -m pytest -q, python scripts/validate_repo.py, and git diff --check before claiming completion.\nStop when evidence is missing.\n```\n\n- `/brain-sample` — sample command.\n- `sample` — sample skill.\n- `activity-recap` — activity skill.\n- `agent-output-verifier` — verifier skill.\n\n## Documentation Guide\n\n- `docs/agent-harness.md` — how to run the repo as an agent harness.\n- `docs/autonomous-goals.md` — autonomous goal scope and stop conditions.\n- `docs/research-watchlist.md` — source classes to review without copying branding.\n- `docs/skill-distillation.md` — how to convert sources into neutral skills.\n\n## Artifact Routing Guide\n\n- `schemas/artifact.schema.json` — sample artifact schema.\n- `schemas/handoff-report.schema.json` — sample handoff schema.\n- `templates/handoff-report.md` — sample handoff template.\n- `templates/skill-template.md` — sample skill template.\n\n## Validation\n\n```bash\npython3 -m pip install -r requirements-dev.txt\npython -m pytest -q\npython scripts/validate_repo.py\ngit diff --check\n```\n",
+        "# required\n\n## Quickstart\nInstall and run validation.\n\n## Run as an Agent Harness\nLoad the repo as operating instructions.\n\n## Command Selection Guide\n\n- Raw request -> `/brain-sample`\n\n## Handoff Contract\nState the status, evidence checked, facts, assumptions, risks, blockers, and next action.\n\n## Edge Cases and Stop Conditions\nStop on missing evidence.\n\n## Troubleshooting\nRun validation and inspect errors.\n\n## Maintainer Checklist\nBefore release, confirm README bootstraps a new agent, commands and skills are cataloged, evals cover current failure modes, validation passes, CI mirrors local checks, public copy is neutral, caches are untracked, and the remote branch is verified.\n\n## Minimal Harness Prompt\n\n```text\nRead AGENTBRAIN.md and docs/state-machine.md before acting.\nChoose the matching command in commands/ and load only the required skills/ entry.\nUse templates/ and schemas/ for structured artifacts when they fit.\nRun python -m pytest -q, python scripts/validate_repo.py, and git diff --check before claiming completion.\nStop when evidence is missing.\n```\n\n- `/brain-sample` — sample command.\n- `sample` — sample skill.\n- `activity-recap` — activity skill.\n- `agent-output-verifier` — verifier skill.\n\n## Documentation Guide\n\n- `docs/agent-harness.md` — how to run the repo as an agent harness.\n- `docs/autonomous-goals.md` — autonomous goal scope and stop conditions.\n- `docs/research-watchlist.md` — source classes to review without copying branding.\n- `docs/skill-distillation.md` — how to convert sources into neutral skills.\n\n## Artifact Routing Guide\n\n- `schemas/artifact.schema.json` — sample artifact schema.\n- `schemas/handoff-report.schema.json` — sample handoff schema.\n- `templates/handoff-report.md` — sample handoff template.\n- `templates/skill-template.md` — sample skill template.\n\n## Validation\n\n```bash\npython3 -m pip install -r requirements-dev.txt\npython -m pytest -q\npython scripts/validate_repo.py\ngit diff --check\n```\n",
         encoding="utf-8",
     )
     (root / "requirements-dev.txt").write_text("pytest\njsonschema\n", encoding="utf-8")
@@ -320,6 +320,22 @@ def test_valid_minimal_repo_has_no_errors(tmp_path):
     write_minimal_repo(tmp_path)
 
     assert validate_repo.validate(tmp_path) == []
+
+
+def test_readme_must_include_maintainer_checklist(tmp_path):
+    write_minimal_repo(tmp_path)
+    readme = tmp_path / "README.md"
+    readme.write_text(
+        readme.read_text(encoding="utf-8").replace(
+            "\n## Maintainer Checklist\nBefore release, confirm README bootstraps a new agent, commands and skills are cataloged, evals cover current failure modes, validation passes, CI mirrors local checks, public copy is neutral, caches are untracked, and the remote branch is verified.\n\n",
+            "\n",
+        ),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "README.md missing self-setup harness section: ## Maintainer Checklist" in errors
 
 
 def test_readme_must_include_command_selection_guide(tmp_path):

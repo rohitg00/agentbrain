@@ -460,6 +460,19 @@ git diff --check
 
 Then inspect `.github/workflows/quality.yml` for missing install, test, validation, timeout, or read-only permission settings.
 
+## Maintainer Checklist
+
+Before a harness release or direct-to-main hardening push, verify:
+
+- README can bootstrap a new agent without private context.
+- Commands and skills are cataloged and point to existing files.
+- Required docs, schemas, templates, evals, and adapters are discoverable.
+- The newest failure mode is covered by an eval or validator rule.
+- CI mirrors local validation and uses read-only permissions.
+- Public copy uses neutral pattern language.
+- Generated cache files are not tracked.
+- The latest commit is verified on the remote branch.
+
 ## Maintainer Loop
 
 Use this loop for continuous improvement:
