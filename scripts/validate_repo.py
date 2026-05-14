@@ -219,6 +219,16 @@ def workflow_declares_trigger(workflow_text: str, trigger: str) -> bool:
         inline_triggers = [item.strip() for item in line.removeprefix("on: [").removesuffix("]").split(",")]
         if trigger in inline_triggers:
             return True
+
+    in_on_block = False
+    for raw_line in workflow_text.splitlines():
+        if raw_line == "on:":
+            in_on_block = True
+            continue
+        if in_on_block and raw_line and not raw_line.startswith((" ", "\t")):
+            break
+        if in_on_block and raw_line.strip() == f"- {trigger}":
+            return True
     return False
 
 
