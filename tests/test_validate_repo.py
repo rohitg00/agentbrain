@@ -670,6 +670,22 @@ def test_readme_command_selection_guide_must_cover_every_command(tmp_path):
     assert "README.md command selection guide missing command: /brain-sample" in errors
 
 
+def test_readme_command_selection_entries_must_point_to_existing_files(tmp_path):
+    write_minimal_repo(tmp_path)
+    readme = tmp_path / "README.md"
+    readme.write_text(
+        readme.read_text(encoding="utf-8").replace(
+            "- Raw request -> `/brain-sample`",
+            "- Raw request -> `/brain-sample`\n- Stale request -> `/brain-missing`",
+        ),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "README.md command selection guide entry points to missing file: /brain-missing" in errors
+
+
 def test_readme_repository_map_must_include_setup_and_ci_paths(tmp_path):
     write_minimal_repo(tmp_path)
     readme = tmp_path / "README.md"
@@ -2690,6 +2706,22 @@ def test_agent_harness_command_routing_must_cover_every_command(tmp_path):
     errors = validate_repo.validate(tmp_path)
 
     assert "docs/agent-harness.md command routing missing command: /brain-extra" in errors
+
+
+def test_agent_harness_command_routing_entries_must_point_to_existing_files(tmp_path):
+    write_minimal_repo(tmp_path)
+    harness = tmp_path / "docs" / "agent-harness.md"
+    harness.write_text(
+        harness.read_text(encoding="utf-8").replace(
+            "Use `/brain-sample` for sample requests before loading skills.",
+            "Use `/brain-sample` for sample requests before loading skills. Use `/brain-missing` for stale docs.",
+        ),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "docs/agent-harness.md command routing entry points to missing file: /brain-missing" in errors
 
 
 def test_activity_recap_skill_is_required(tmp_path):

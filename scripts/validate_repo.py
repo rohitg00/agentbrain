@@ -812,6 +812,12 @@ def validate(root: Path = ROOT) -> list[str]:
             command_name = f"/{command.stem}"
             if command_name not in harness_command_refs:
                 errors.append(f"docs/agent-harness.md command routing missing command: {command_name}")
+        for command_name in harness_command_refs:
+            command_file = root / "commands" / f"{command_name.removeprefix('/')}.md"
+            if not command_file.exists():
+                errors.append(
+                    f"docs/agent-harness.md command routing entry points to missing file: {command_name}"
+                )
         handoff_contract = section_body(agent_harness_text, "## Handoff Contract").lower()
         for term in REQUIRED_AGENT_HARNESS_HANDOFF_TERMS:
             if term not in handoff_contract:
@@ -982,16 +988,23 @@ def validate(root: Path = ROOT) -> list[str]:
             if required_term.lower() not in readme_text_lower:
                 errors.append(message)
         core_command_refs = readme_command_references(readme_text)
+        command_selection_refs = readme_command_selection_references(readme_text)
         for command in sorted((root / "commands").glob("*.md")):
             command_name = f"/{command.stem}"
             if command_name not in core_command_refs:
                 errors.append(f"README.md core command catalog missing command: {command_name}")
-            if command_name not in readme_command_selection_references(readme_text):
+            if command_name not in command_selection_refs:
                 errors.append(f"README.md command selection guide missing command: {command_name}")
         for command_name in core_command_refs:
             command_file = root / "commands" / f"{command_name.removeprefix('/')}.md"
             if not command_file.exists():
                 errors.append(f"README.md command catalog entry points to missing file: {command_name}")
+        for command_name in command_selection_refs:
+            command_file = root / "commands" / f"{command_name.removeprefix('/')}.md"
+            if not command_file.exists():
+                errors.append(
+                    f"README.md command selection guide entry points to missing file: {command_name}"
+                )
         core_skill_refs = readme_skill_catalog_entries(readme_text)
         for skill in sorted((root / "skills").glob("*/SKILL.md")):
             skill_name = skill.parent.name
