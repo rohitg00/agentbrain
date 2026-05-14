@@ -110,6 +110,11 @@ REQUIRED_README_CI_TROUBLESHOOTING_TERMS = [
     "exact CI sequence locally",
     ".github/workflows/quality.yml",
 ]
+REQUIRED_README_DEPENDENCY_TROUBLESHOOTING_TERMS = [
+    "ModuleNotFoundError",
+    "virtual environment",
+    "python3 -m pip install -r requirements-dev.txt",
+]
 REQUIRED_AGENT_HARNESS_SECTIONS = [
     "## Install",
     "## Fresh Checkout Bootstrap",
@@ -973,6 +978,12 @@ def validate(root: Path = ROOT) -> list[str]:
             if required_term.lower() not in troubleshooting_body:
                 errors.append(
                     "README.md troubleshooting must document CI failure recovery: "
+                    f"{required_term}"
+                )
+        for required_term in REQUIRED_README_DEPENDENCY_TROUBLESHOOTING_TERMS:
+            if required_term.lower() not in troubleshooting_body:
+                errors.append(
+                    "README.md troubleshooting must document dependency bootstrap recovery: "
                     f"{required_term}"
                 )
 

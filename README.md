@@ -476,6 +476,15 @@ git diff --check
 
 Then inspect `.github/workflows/quality.yml` for missing install, test, validation, timeout, or read-only permission settings.
 
+### Dependency bootstrap fails
+
+If validation fails with `ModuleNotFoundError` or a missing package before repository checks run, fix the setup path rather than editing around the missing dependency:
+
+1. Create or refresh a local virtual environment if the workspace does not already have one.
+2. Re-run `python3 -m pip install -r requirements-dev.txt` from the repository root.
+3. Re-run `python -m pytest -q` before changing docs, skills, schemas, or validators.
+4. If install still fails, report the package manager output as the blocker and do not claim the harness is validated.
+
 ## Maintainer Checklist
 
 Before a harness release or direct-to-main hardening push, verify:
