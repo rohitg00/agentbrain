@@ -136,7 +136,7 @@ Preserve user changes before editing.
 Choose the matching command in commands/ and load only its listed skills.
 Use templates/ and schemas/ for structured artifacts when they fit.
 Run python -m pytest -q, python scripts/validate_repo.py, and git diff --check before claiming completion.
-Stop and report blockers when evidence, approval, scope, tests, rollback, or safety is missing.
+Stop and report blockers when evidence, approval, scope, tests, rollback, secrets handling, safety, or loop limits are missing.
 ```
 
 ## Using It With Coding Agents

@@ -114,7 +114,8 @@ Rules:
 4. Do not preserve external source branding when distilling ideas into skills.
 5. Stop instead of recommending an agent when a script, form, checklist, or human process is safer.
 6. Every artifact must name facts, assumptions, open questions, evidence, risks, and the next state.
-7. Before final output, run: python -m pytest -q && python scripts/validate_repo.py && git diff --check.
+7. Stop when evidence, approval, secrets handling, or loop limits are missing.
+8. Before final output, run: python -m pytest -q && python scripts/validate_repo.py && git diff --check.
 
 Start by reading AGENTBRAIN.md, PRINCIPLES.md, ANTI_RATIONALIZATION.md, and docs/state-machine.md, inspect git status --short and git log --oneline -5, preserve user changes before editing, then proceed through the matching command in commands/, load the required skills/, and use templates/ plus schemas/ for structured artifacts.
 Run baseline validation before editing so failures are not blamed on the new slice.

@@ -91,6 +91,9 @@ REQUIRED_README_MINIMAL_HARNESS_PROMPT_TERMS = [
     "python scripts/validate_repo.py",
     "git diff --check",
     "stop",
+    "approval",
+    "secrets",
+    "loop limits",
 ]
 REQUIRED_README_REPOSITORY_MAP_PATHS = [
     "requirements-dev.txt",
@@ -129,6 +132,9 @@ REQUIRED_AGENT_HARNESS_PROMPT_TERMS = [
     "python scripts/validate_repo.py",
     "git diff --check",
     "Stop",
+    "approval",
+    "secrets",
+    "loop limits",
 ]
 REQUIRED_AGENT_HARNESS_WORKER_ROLES = [
     "researcher",
@@ -708,7 +714,7 @@ def validate(root: Path = ROOT) -> list[str]:
             )
         for required_term in REQUIRED_AGENT_HARNESS_PROMPT_TERMS:
             if required_term not in harness_prompt:
-                errors.append(f"docs/agent-harness.md harness prompt must mention: {required_term}")
+                errors.append(f"docs/agent-harness.md copyable prompt must mention: {required_term}")
         worker_guidance = section_body(agent_harness_text, "## Using It With Coding Agents")
         if not worker_guidance.strip():
             errors.append(
