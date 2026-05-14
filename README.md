@@ -522,7 +522,9 @@ Use this loop for continuous improvement:
 3. Improve the smallest doc, skill, template, or schema that closes the gap.
 4. Run validation.
 5. Commit a small coherent chunk.
-6. Repeat.
+6. `git push` the verified chunk.
+7. Run `git fetch origin main` and confirm HEAD equals origin/main.
+8. Repeat.
 ```
 
 High-priority hardening targets:

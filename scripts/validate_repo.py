@@ -118,6 +118,11 @@ REQUIRED_README_DEPENDENCY_TROUBLESHOOTING_TERMS = [
     "python3 -m pip install -r requirements-dev.txt",
 ]
 REQUIRED_README_GENERATED_CACHE_TROUBLESHOOTING_TERMS = ["generated Python cache file"]
+REQUIRED_README_MAINTAINER_LOOP_TERMS = [
+    "git push",
+    "git fetch origin main",
+    "HEAD equals origin/main",
+]
 REQUIRED_AGENT_HARNESS_SECTIONS = [
     "## Install",
     "## Fresh Checkout Bootstrap",
@@ -1043,6 +1048,10 @@ def validate(root: Path = ROOT) -> list[str]:
                     "README.md troubleshooting must document generated cache recovery: "
                     f"{required_term}"
                 )
+        maintainer_loop_body = section_body(readme_text, "## Maintainer Loop")
+        for required_term in REQUIRED_README_MAINTAINER_LOOP_TERMS:
+            if required_term not in maintainer_loop_body:
+                errors.append(f"README.md maintainer loop must mention: {required_term}")
 
     contributing = root / "CONTRIBUTING.md"
     if contributing.exists():
