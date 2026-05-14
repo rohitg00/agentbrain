@@ -9,6 +9,9 @@ description: Use when a product or feature idea needs pressure-testing against p
 
 Use before accepting that a product or feature should exist.
 
+## When not to use
+Do not use this skill when a simpler checklist, script, or existing command handles the work safely.
+
 ## Inputs
 
 - User request or current artifact.

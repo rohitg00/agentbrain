@@ -9,6 +9,9 @@ description: Use when an engineering plan needs pressure-testing for architectur
 
 Use before committing to implementation approach.
 
+## When not to use
+Do not use this skill when a simpler checklist, script, or existing command handles the work safely.
+
 ## Inputs
 
 - User request or current artifact.

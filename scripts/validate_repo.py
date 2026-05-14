@@ -258,6 +258,7 @@ RESEARCH_WATCHLIST_REQUIRED_SOURCES = [
 ]
 REQUIRED_SKILL_SECTIONS = [
     "## Trigger",
+    "## When not to use",
     "## Inputs",
     "## Procedure",
     "## Anti-Rationalization",
@@ -268,6 +269,7 @@ REQUIRED_SKILL_SECTIONS = [
 ]
 REQUIRED_SKILL_TEMPLATE_SECTIONS = [
     "## Trigger",
+    "## When not to use",
     "## Inputs",
     "## Procedure",
     "## Anti-Rationalization",

@@ -9,6 +9,9 @@ description: Use when sources need to be converted into a claim ledger with conf
 
 Use when external claims, markets, users, or technical options need verification.
 
+## When not to use
+Do not use this skill when a simpler checklist, script, or existing command handles the work safely.
+
 ## Inputs
 
 - User request or current artifact.

@@ -12,6 +12,9 @@ Use when the user asks what changed recently, what they worked on, what a team d
 
 Do not use when the user asks for a product roadmap, a release note, or a narrative post. Those need planning, review, or writing skills instead.
 
+## When not to use
+Do not use this skill when a simpler checklist, script, or existing command handles the work safely.
+
 ## Inputs
 
 - Repository root or parent workspace.

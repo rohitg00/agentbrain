@@ -9,6 +9,9 @@ description: Use when broad work needs to be broken into small verifiable slices
 
 Use after a brief/design is accepted and before build.
 
+## When not to use
+Do not use this skill when a simpler checklist, script, or existing command handles the work safely.
+
 ## Inputs
 
 - User request or current artifact.

@@ -9,6 +9,9 @@ description: Use when uncertainty remains and the minimum useful sequence of que
 
 Use when missing answers block product, design, or engineering decisions.
 
+## When not to use
+Do not use this skill when a simpler checklist, script, or existing command handles the work safely.
+
 ## Inputs
 
 - User request or current artifact.

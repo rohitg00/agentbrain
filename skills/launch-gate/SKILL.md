@@ -9,6 +9,9 @@ description: Use when a launch needs a go/no-go decision with rollback and monit
 
 Use before public release, merge, publication, or operational handoff.
 
+## When not to use
+Do not use this skill when a simpler checklist, script, or existing command handles the work safely.
+
 ## Inputs
 
 - User request or current artifact.

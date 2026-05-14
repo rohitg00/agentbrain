@@ -8,6 +8,9 @@ description: Use when local validation and remote workflow status must be reconc
 
 Use after a push, pull request update, failed workflow notification, or any claim that remote CI disagrees with local validation.
 
+## When not to use
+Do not use this skill when a simpler checklist, script, or existing command handles the work safely.
+
 ## Inputs
 
 Branch, commit SHA, local validation output, workflow run list, failed job logs, changed files, and available reproduction commands.

@@ -10,6 +10,9 @@ version: 0.1.0
 
 Use when ...
 
+## When not to use
+Do not use this skill when a simpler checklist, script, or existing command handles the work safely.
+
 ## Inputs
 
 - ...

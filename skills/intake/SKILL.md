@@ -9,6 +9,9 @@ description: Use when raw intent must be captured and routed to the right next s
 
 Use when a request is vague, new, or missing context.
 
+## When not to use
+Do not use this skill when a simpler checklist, script, or existing command handles the work safely.
+
 ## Inputs
 
 - User request or current artifact.

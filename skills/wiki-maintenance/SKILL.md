@@ -9,6 +9,9 @@ description: Use when source-backed project knowledge needs to be created, refre
 
 Use when ingesting sources, resolving contradictions, or preserving synthesis.
 
+## When not to use
+Do not use this skill when a simpler checklist, script, or existing command handles the work safely.
+
 ## Inputs
 
 - User request or current artifact.

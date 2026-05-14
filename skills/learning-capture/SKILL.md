@@ -9,6 +9,9 @@ description: Use when repeated wins or failures should become durable memory, wi
 
 Use after completing, killing, or repeating a workflow.
 
+## When not to use
+Do not use this skill when a simpler checklist, script, or existing command handles the work safely.
+
 ## Inputs
 
 - User request or current artifact.

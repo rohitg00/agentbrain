@@ -9,6 +9,9 @@ description: Use when behavior needs concrete proof before review, merge, or shi
 
 Use after build or before review/ship.
 
+## When not to use
+Do not use this skill when a simpler checklist, script, or existing command handles the work safely.
+
 ## Inputs
 
 - User request or current artifact.

@@ -9,6 +9,9 @@ description: Use when a product idea needs pressure-testing against alternatives
 
 Use when a product direction depends on adoption or positioning.
 
+## When not to use
+Do not use this skill when a simpler checklist, script, or existing command handles the work safely.
+
 ## Inputs
 
 - User request or current artifact.
