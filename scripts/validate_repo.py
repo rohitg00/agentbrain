@@ -36,6 +36,7 @@ REQUIRED_EVAL_CASES = [
     "evals/cases/context-drift.md",
     "evals/cases/spec-before-build.md",
     "evals/cases/ship-without-rollback.md",
+    "evals/cases/security-risk-feature.md",
 ]
 REQUIRED_EVAL_DOCS = ["evals/README.md"]
 REQUIRED_WORKFLOWS = [".github/workflows/quality.yml"]
