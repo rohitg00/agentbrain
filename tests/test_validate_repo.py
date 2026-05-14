@@ -1693,6 +1693,21 @@ def test_gitignore_must_exclude_generated_python_cache_artifacts(tmp_path):
     assert ".gitignore must ignore generated Python cache artifacts: __pycache__/" in errors
 
 
+def test_public_copy_scan_ignores_local_dependency_directories(tmp_path):
+    write_minimal_repo(tmp_path)
+    dependency_dir = tmp_path / "node_modules" / "generated-package"
+    dependency_dir.mkdir(parents=True)
+    banned_term = "Open" + "AI"
+    (dependency_dir / "README.md").write_text(
+        f"# Generated Package\n\nMentions {banned_term} outside project copy.\n",
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert errors == []
+
+
 def test_skill_template_description_must_start_with_trigger(tmp_path):
     write_minimal_repo(tmp_path)
     templates_dir = tmp_path / "templates"

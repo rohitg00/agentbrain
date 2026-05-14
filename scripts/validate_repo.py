@@ -90,6 +90,14 @@ PUBLIC_COPY_SUFFIXES = {
     ".yaml",
     ".yml",
 }
+PUBLIC_COPY_EXCLUDED_PARTS = {
+    ".git",
+    ".pytest_cache",
+    ".venv",
+    "__pycache__",
+    "node_modules",
+    "venv",
+}
 LOWERCASE_KEBAB_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 
 
@@ -485,7 +493,7 @@ def validate(root: Path = ROOT) -> list[str]:
     for public_copy_file in sorted(
         path for path in root.rglob("*") if path.suffix in PUBLIC_COPY_SUFFIXES
     ):
-        if ".git" in public_copy_file.parts:
+        if any(part in PUBLIC_COPY_EXCLUDED_PARTS for part in public_copy_file.parts):
             continue
         text = public_copy_file.read_text(errors="ignore")
         for term in BANNED_PUBLIC_COPY_TERMS:
