@@ -18,7 +18,7 @@ def write_minimal_repo(root: Path) -> None:
         encoding="utf-8",
     )
     (root / "README.md").write_text(
-        "# required\n\n- `/brain-sample` — sample command.\n- `sample` — sample skill.\n- `activity-recap` — activity skill.\n- `agent-output-verifier` — verifier skill.\n\n## Validation\n\n```bash\npython3 -m pip install -r requirements-dev.txt\npython -m pytest -q\npython scripts/validate_repo.py\ngit diff --check\n```\n",
+        "# required\n\n## Quickstart\nInstall and run validation.\n\n## Run as an Agent Harness\nLoad the repo as operating instructions.\n\n## Edge Cases and Stop Conditions\nStop on missing evidence.\n\n## Troubleshooting\nRun validation and inspect errors.\n\n- `/brain-sample` — sample command.\n- `sample` — sample skill.\n- `activity-recap` — activity skill.\n- `agent-output-verifier` — verifier skill.\n\n## Validation\n\n```bash\npython3 -m pip install -r requirements-dev.txt\npython -m pytest -q\npython scripts/validate_repo.py\ngit diff --check\n```\n",
         encoding="utf-8",
     )
     (root / "requirements-dev.txt").write_text("pytest\njsonschema\n", encoding="utf-8")
@@ -960,7 +960,7 @@ def test_readme_vs_others_section_can_name_specific_runtimes(tmp_path):
     write_minimal_repo(tmp_path)
     vendor_name = "Clau" + "de"
     (tmp_path / "README.md").write_text(
-        f"# required\n\n- `/brain-sample` — sample command.\n- `sample` — sample skill.\n- `activity-recap` — activity skill.\n- `agent-output-verifier` — verifier skill.\n\n## Validation\n\n```bash\npython3 -m pip install -r requirements-dev.txt\npython -m pytest -q\npython scripts/validate_repo.py\ngit diff --check\n```\n\n## vs others\n\nCompared with {vendor_name}, Agent Brain stays portable.\n",
+        f"# required\n\n## Quickstart\nInstall and run validation.\n\n## Run as an Agent Harness\nLoad the repo as operating instructions.\n\n## Edge Cases and Stop Conditions\nStop on missing evidence.\n\n## Troubleshooting\nRun validation and inspect errors.\n\n- `/brain-sample` — sample command.\n- `sample` — sample skill.\n- `activity-recap` — activity skill.\n- `agent-output-verifier` — verifier skill.\n\n## Validation\n\n```bash\npython3 -m pip install -r requirements-dev.txt\npython -m pytest -q\npython scripts/validate_repo.py\ngit diff --check\n```\n\n## vs others\n\nCompared with {vendor_name}, Agent Brain stays portable.\n",
         encoding="utf-8",
     )
 
@@ -2008,6 +2008,21 @@ def test_readme_must_list_available_commands(tmp_path):
     errors = validate_repo.validate(tmp_path)
 
     assert "README.md missing command catalog entry: /brain-sample" in errors
+
+
+def test_readme_must_be_self_setup_harness(tmp_path):
+    write_minimal_repo(tmp_path)
+    (tmp_path / "README.md").write_text(
+        "# required\n\n- `/brain-sample` — sample command.\n- `sample` — sample skill.\n- `activity-recap` — activity skill.\n- `agent-output-verifier` — verifier skill.\n\n## Validation\n\n```bash\npython3 -m pip install -r requirements-dev.txt\npython -m pytest -q\npython scripts/validate_repo.py\ngit diff --check\n```\n",
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "README.md missing self-setup harness section: ## Quickstart" in errors
+    assert "README.md missing self-setup harness section: ## Run as an Agent Harness" in errors
+    assert "README.md missing self-setup harness section: ## Edge Cases and Stop Conditions" in errors
+    assert "README.md missing self-setup harness section: ## Troubleshooting" in errors
 
 
 def test_readme_command_catalog_entries_must_be_backticked(tmp_path):
