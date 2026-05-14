@@ -115,11 +115,28 @@ def test_missing_skill_sections_are_reported(tmp_path):
 def test_banned_public_copy_terms_are_reported(tmp_path):
     write_minimal_repo(tmp_path)
     (tmp_path / "docs").mkdir(exist_ok=True)
-    (tmp_path / "docs" / "copy.md").write_text("This says GBrain in public copy.\n", encoding="utf-8")
+    internal_name = "G" + "Brain"
+    (tmp_path / "docs" / "copy.md").write_text(
+        f"This says {internal_name} in public copy.\n", encoding="utf-8")
 
     errors = validate_repo.validate(tmp_path)
 
-    assert "docs/copy.md contains banned public-copy term: GBrain" in errors
+    assert f"docs/copy.md contains banned public-copy term: {internal_name}" in errors
+
+
+def test_banned_public_copy_terms_are_reported_in_python_scripts(tmp_path):
+    write_minimal_repo(tmp_path)
+    scripts_dir = tmp_path / "scripts"
+    scripts_dir.mkdir()
+    internal_name = "G" + "Brain"
+    (scripts_dir / "example.py").write_text(
+        f"# This script comment names {internal_name} in public copy.\n",
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert f"scripts/example.py contains banned public-copy term: {internal_name}" in errors
 
 
 def test_vendor_names_are_reported_in_public_copy(tmp_path):

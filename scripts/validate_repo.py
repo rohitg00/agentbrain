@@ -34,16 +34,25 @@ REQUIRED_COMMAND_SECTIONS = [
 ]
 REQUIRED_EVAL_CASE_SECTIONS = ["## User request", "## Expected behavior", "## Failure if"]
 BANNED_PUBLIC_COPY_TERMS = [
-    "Garry",
-    "GBrain",
-    "GStack",
-    "Hermes vs",
-    "OpenClaw vs",
+    "G" + "arry",
+    "G" + "Brain",
+    "G" + "Stack",
+    "Her" + "mes vs",
+    "Open" + "Claw vs",
     "Clau" + "de",
     "Co" + "dex",
     "Open" + "AI",
     "Anth" + "ropic",
 ]
+PUBLIC_COPY_SUFFIXES = {
+    ".json",
+    ".md",
+    ".py",
+    ".toml",
+    ".txt",
+    ".yaml",
+    ".yml",
+}
 
 
 def rel(path: Path, root: Path) -> str:
@@ -155,13 +164,15 @@ def validate(root: Path = ROOT) -> list[str]:
             if section not in text:
                 errors.append(f"{rel(case, root)} missing {section}")
 
-    for markdown_file in sorted(root.rglob("*.md")):
-        if ".git" in markdown_file.parts:
+    for public_copy_file in sorted(
+        path for path in root.rglob("*") if path.suffix in PUBLIC_COPY_SUFFIXES
+    ):
+        if ".git" in public_copy_file.parts:
             continue
-        text = markdown_file.read_text(errors="ignore")
+        text = public_copy_file.read_text(errors="ignore")
         for term in BANNED_PUBLIC_COPY_TERMS:
-            if term in text and not public_copy_term_allowed(markdown_file, text, term):
-                errors.append(f"{rel(markdown_file, root)} contains banned public-copy term: {term}")
+            if term in text and not public_copy_term_allowed(public_copy_file, text, term):
+                errors.append(f"{rel(public_copy_file, root)} contains banned public-copy term: {term}")
 
     return errors
 
