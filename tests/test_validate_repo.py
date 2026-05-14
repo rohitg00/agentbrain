@@ -1,5 +1,6 @@
 import json
 import shutil
+import subprocess
 from pathlib import Path
 
 from scripts import validate_repo
@@ -18,7 +19,7 @@ def write_minimal_repo(root: Path) -> None:
         encoding="utf-8",
     )
     (root / "README.md").write_text(
-        "# required\n\n## Quickstart\nInstall and run validation.\n\n## Run as an Agent Harness\nLoad the repo as operating instructions.\n\n## Command Selection Guide\n\n- Raw request -> `/brain-sample`\n\n## Handoff Contract\nState the status, evidence checked, facts, assumptions, risks, blockers, and next action.\n\n## Edge Cases and Stop Conditions\nStop on missing evidence.\n\n## Troubleshooting\nRun validation and inspect errors. If git status --short shows a dirty working tree, preserve user changes before editing. If secret-like values are reported, remove the value, rotate it outside the repo, and keep only a redacted placeholder. If Tests pass locally but CI fails, run the exact CI sequence locally and inspect .github/workflows/quality.yml for parity gaps. If dependency bootstrap fails with ModuleNotFoundError, create or refresh a virtual environment, rerun python3 -m pip install -r requirements-dev.txt, and do not edit around missing dependencies.\n\n## Maintainer Checklist\nBefore release, confirm README bootstraps a new agent, commands and skills are cataloged, evals cover current failure modes, validation passes, CI mirrors local checks, public copy is neutral, caches are untracked, and the remote branch is verified.\n\n## Minimal Harness Prompt\n\n```text\nRead AGENTBRAIN.md, PRINCIPLES.md, ANTI_RATIONALIZATION.md, and docs/state-machine.md before acting.\nInspect git status --short and git log --oneline -5 before choosing work.\nRun baseline validation before editing.\nPreserve user changes before editing.\nChoose the matching command in commands/ and load only the required skills/ entry.\nUse templates/ and schemas/ for structured artifacts when they fit.\nRun python -m pytest -q, python scripts/validate_repo.py, and git diff --check before claiming completion.\nStop when evidence, approval, secrets handling, or loop limits are missing.\n```\n\n## Core Commands\n\n- `/brain-sample` — sample command.\n\n## Core Skills\n\n- `sample` — sample skill.\n- `activity-recap` — activity skill.\n- `agent-output-verifier` — verifier skill.\n\n## Repository Map\n\n```text\nrequirements-dev.txt           # local validation dependencies\n.github/workflows/             # CI quality gate\ncommands/                      # command specs\nskills/                        # portable skills\nschemas/                       # artifact schemas\ntemplates/                     # artifact templates\ndocs/                          # supporting docs\n```\n\n## Documentation Guide\n\n- `docs/agent-harness.md` — how to run the repo as an agent harness.\n- `docs/autonomous-goals.md` — autonomous goal scope and stop conditions.\n- `docs/research-watchlist.md` — source classes to review without copying branding.\n- `docs/skill-distillation.md` — how to convert sources into neutral skills.\n\n## Artifact Routing Guide\n\n- `schemas/artifact.schema.json` — sample artifact schema.\n- `schemas/handoff-report.schema.json` — sample handoff schema.\n- `templates/handoff-report.md` — sample handoff template.\n- `templates/skill-template.md` — sample skill template.\n\n## Validation\n\n```bash\npython3 -m pip install -r requirements-dev.txt\npython -m pytest -q\npython scripts/validate_repo.py\ngit diff --check\n```\n",
+        "# required\n\n## Quickstart\nInstall and run validation.\n\n## Run as an Agent Harness\nLoad the repo as operating instructions.\n\n## Command Selection Guide\n\n- Raw request -> `/brain-sample`\n\n## Handoff Contract\nState the status, evidence checked, facts, assumptions, risks, blockers, and next action.\n\n## Edge Cases and Stop Conditions\nStop on missing evidence.\n\n## Troubleshooting\nRun validation and inspect errors. If git status --short shows a dirty working tree, preserve user changes before editing. If secret-like values are reported, remove the value, rotate it outside the repo, and keep only a redacted placeholder. If Tests pass locally but CI fails, run the exact CI sequence locally and inspect .github/workflows/quality.yml for parity gaps. If dependency bootstrap fails with ModuleNotFoundError, create or refresh a virtual environment, rerun python3 -m pip install -r requirements-dev.txt, and do not edit around missing dependencies. If validation reports a generated Python cache file, delete the cache directory and rerun the full quality gate before committing.\n\n## Maintainer Checklist\nBefore release, confirm README bootstraps a new agent, commands and skills are cataloged, evals cover current failure modes, validation passes, CI mirrors local checks, public copy is neutral, caches are untracked, and the remote branch is verified.\n\n## Minimal Harness Prompt\n\n```text\nRead AGENTBRAIN.md, PRINCIPLES.md, ANTI_RATIONALIZATION.md, and docs/state-machine.md before acting.\nInspect git status --short and git log --oneline -5 before choosing work.\nRun baseline validation before editing.\nPreserve user changes before editing.\nChoose the matching command in commands/ and load only the required skills/ entry.\nUse templates/ and schemas/ for structured artifacts when they fit.\nRun python -m pytest -q, python scripts/validate_repo.py, and git diff --check before claiming completion.\nStop when evidence, approval, secrets handling, or loop limits are missing.\n```\n\n## Core Commands\n\n- `/brain-sample` — sample command.\n\n## Core Skills\n\n- `sample` — sample skill.\n- `activity-recap` — activity skill.\n- `agent-output-verifier` — verifier skill.\n\n## Repository Map\n\n```text\nrequirements-dev.txt           # local validation dependencies\n.github/workflows/             # CI quality gate\ncommands/                      # command specs\nskills/                        # portable skills\nschemas/                       # artifact schemas\ntemplates/                     # artifact templates\ndocs/                          # supporting docs\n```\n\n## Documentation Guide\n\n- `docs/agent-harness.md` — how to run the repo as an agent harness.\n- `docs/autonomous-goals.md` — autonomous goal scope and stop conditions.\n- `docs/research-watchlist.md` — source classes to review without copying branding.\n- `docs/skill-distillation.md` — how to convert sources into neutral skills.\n\n## Artifact Routing Guide\n\n- `schemas/artifact.schema.json` — sample artifact schema.\n- `schemas/handoff-report.schema.json` — sample handoff schema.\n- `templates/handoff-report.md` — sample handoff template.\n- `templates/skill-template.md` — sample skill template.\n\n## Validation\n\n```bash\npython3 -m pip install -r requirements-dev.txt\npython -m pytest -q\npython scripts/validate_repo.py\ngit diff --check\n```\n",
         encoding="utf-8",
     )
     (root / "requirements-dev.txt").write_text("pytest\njsonschema\n", encoding="utf-8")
@@ -586,6 +587,19 @@ def test_readme_troubleshooting_must_cover_dependency_bootstrap_recovery(tmp_pat
     assert "README.md troubleshooting must document dependency bootstrap recovery: ModuleNotFoundError" in errors
 
 
+def test_readme_troubleshooting_must_cover_generated_cache_recovery(tmp_path):
+    write_minimal_repo(tmp_path)
+    readme = tmp_path / "README.md"
+    readme.write_text(
+        readme.read_text(encoding="utf-8").replace("generated Python cache file", "local cache artifact"),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "README.md troubleshooting must document generated cache recovery: generated Python cache file" in errors
+
+
 def test_readme_minimal_harness_prompt_must_name_core_artifact_paths(tmp_path):
     write_minimal_repo(tmp_path)
     readme = tmp_path / "README.md"
@@ -928,6 +942,30 @@ def test_dev_requirements_must_include_validator_dependencies(tmp_path):
     errors = validate_repo.validate(tmp_path)
 
     assert "requirements-dev.txt must include: jsonschema" in errors
+
+
+def test_generated_python_cache_files_are_reported(tmp_path):
+    write_minimal_repo(tmp_path)
+    cache_dir = tmp_path / "scripts" / "__pycache__"
+    cache_dir.mkdir(parents=True)
+    (cache_dir / "validate_repo.cpython-311.pyc").write_bytes(b"cache")
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "generated Python cache file must not be present: scripts/__pycache__/validate_repo.cpython-311.pyc" in errors
+
+
+def test_untracked_python_cache_files_are_ignored_in_git_repos(tmp_path):
+    write_minimal_repo(tmp_path)
+    cache_dir = tmp_path / "scripts" / "__pycache__"
+    cache_dir.mkdir(parents=True)
+    (cache_dir / "validate_repo.cpython-311.pyc").write_bytes(b"cache")
+
+    subprocess.run(["git", "init"], cwd=tmp_path, check=True, capture_output=True)
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "generated Python cache file must not be present: scripts/__pycache__/validate_repo.cpython-311.pyc" not in errors
 
 
 def test_required_root_markdown_must_have_exactly_one_h1(tmp_path):

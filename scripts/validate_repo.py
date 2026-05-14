@@ -2,6 +2,7 @@
 from pathlib import Path
 import json
 import re
+import subprocess
 import sys
 
 from jsonschema import validators
@@ -115,6 +116,7 @@ REQUIRED_README_DEPENDENCY_TROUBLESHOOTING_TERMS = [
     "virtual environment",
     "python3 -m pip install -r requirements-dev.txt",
 ]
+REQUIRED_README_GENERATED_CACHE_TROUBLESHOOTING_TERMS = ["generated Python cache file"]
 REQUIRED_AGENT_HARNESS_SECTIONS = [
     "## Install",
     "## Fresh Checkout Bootstrap",
@@ -249,6 +251,8 @@ PUBLIC_COPY_EXCLUDED_PARTS = {
     "node_modules",
     "venv",
 }
+GENERATED_CACHE_PARTS = {"__pycache__", ".pytest_cache"}
+GENERATED_CACHE_SUFFIXES = {".pyc", ".pyo"}
 LOWERCASE_KEBAB_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 
 
@@ -401,6 +405,21 @@ def requirement_name(line: str) -> str:
 def find_missing_dev_requirements(text: str) -> list[str]:
     installed = {requirement_name(line) for line in text.splitlines()}
     return [requirement for requirement in REQUIRED_DEV_REQUIREMENTS if requirement not in installed]
+
+
+def tracked_git_files(root: Path) -> set[str] | None:
+    if not (root / ".git").exists():
+        return None
+    result = subprocess.run(
+        ["git", "ls-files"],
+        cwd=root,
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    if result.returncode != 0:
+        return None
+    return set(result.stdout.splitlines())
 
 
 def workflow_declares_trigger(workflow_text: str, trigger: str) -> bool:
@@ -986,6 +1005,12 @@ def validate(root: Path = ROOT) -> list[str]:
                     "README.md troubleshooting must document dependency bootstrap recovery: "
                     f"{required_term}"
                 )
+        for required_term in REQUIRED_README_GENERATED_CACHE_TROUBLESHOOTING_TERMS:
+            if required_term.lower() not in troubleshooting_body:
+                errors.append(
+                    "README.md troubleshooting must document generated cache recovery: "
+                    f"{required_term}"
+                )
 
     contributing = root / "CONTRIBUTING.md"
     if contributing.exists():
@@ -993,6 +1018,19 @@ def validate(root: Path = ROOT) -> list[str]:
         for run_command in REQUIRED_CONTRIBUTING_VALIDATION_COMMANDS:
             if run_command not in contributing_text:
                 errors.append(f"CONTRIBUTING.md validation section must document: {run_command}")
+
+    tracked_files = tracked_git_files(root)
+    for generated_path in sorted(root.rglob("*")):
+        if not generated_path.is_file():
+            continue
+        if any(part in {".git", ".venv", "venv", "node_modules"} for part in generated_path.parts):
+            continue
+        if not (any(part in GENERATED_CACHE_PARTS for part in generated_path.parts) or generated_path.suffix in GENERATED_CACHE_SUFFIXES):
+            continue
+        generated_rel = rel(generated_path, root)
+        if tracked_files is not None and generated_rel not in tracked_files:
+            continue
+        errors.append(f"generated Python cache file must not be present: {generated_rel}")
 
     skill_template = root / "templates" / "skill-template.md"
     if skill_template.exists():

@@ -485,6 +485,19 @@ If validation fails with `ModuleNotFoundError` or a missing package before repos
 3. Re-run `python -m pytest -q` before changing docs, skills, schemas, or validators.
 4. If install still fails, report the package manager output as the blocker and do not claim the harness is validated.
 
+### Generated cache validation fails
+
+If validation reports a generated Python cache file, remove the local artifact instead of cataloging or committing it:
+
+```bash
+rm -rf scripts/__pycache__ tests/__pycache__ .pytest_cache
+python -m pytest -q
+python scripts/validate_repo.py
+git diff --check
+```
+
+If the file remains after cleanup, inspect whether it was accidentally tracked and remove it from version control in the same small hardening slice.
+
 ## Maintainer Checklist
 
 Before a harness release or direct-to-main hardening push, verify:
