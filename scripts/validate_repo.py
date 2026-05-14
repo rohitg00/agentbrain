@@ -65,10 +65,23 @@ REQUIRED_README_VALIDATION_COMMANDS = [
 REQUIRED_README_HARNESS_SECTIONS = [
     "## Quickstart",
     "## Run as an Agent Harness",
+    "## Minimal Harness Prompt",
     "## Command Selection Guide",
     "## Handoff Contract",
     "## Edge Cases and Stop Conditions",
     "## Troubleshooting",
+]
+REQUIRED_README_MINIMAL_HARNESS_PROMPT_TERMS = [
+    "AGENTBRAIN.md",
+    "docs/state-machine.md",
+    "commands/",
+    "skills/",
+    "templates/",
+    "schemas/",
+    "python -m pytest -q",
+    "python scripts/validate_repo.py",
+    "git diff --check",
+    "stop",
 ]
 REQUIRED_AGENT_HARNESS_SECTIONS = [
     "## Install",
@@ -789,6 +802,11 @@ def validate(root: Path = ROOT) -> list[str]:
         for required_section in REQUIRED_README_HARNESS_SECTIONS:
             if required_section not in readme_text:
                 errors.append(f"README.md missing self-setup harness section: {required_section}")
+        readme_minimal_prompt = section_body(readme_text, "## Minimal Harness Prompt")
+        readme_minimal_prompt_lower = readme_minimal_prompt.lower()
+        for required_term in REQUIRED_README_MINIMAL_HARNESS_PROMPT_TERMS:
+            if required_term.lower() not in readme_minimal_prompt_lower:
+                errors.append(f"README.md minimal harness prompt must mention: {required_term}")
         for run_command in REQUIRED_README_VALIDATION_COMMANDS:
             if run_command not in readme_text:
                 errors.append(f"README.md validation section must document: {run_command}")

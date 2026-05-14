@@ -112,11 +112,11 @@ Rules:
 2. Do not answer from confidence when evidence can be checked.
 3. Do not skip tests, validators, or review gates for speed.
 4. Do not preserve external source branding when distilling ideas into skills.
-5. Do not recommend an agent when a script, form, checklist, or human process is safer.
+5. Stop instead of recommending an agent when a script, form, checklist, or human process is safer.
 6. Every artifact must name facts, assumptions, open questions, evidence, risks, and the next state.
 7. Before final output, run: python -m pytest -q && python scripts/validate_repo.py && git diff --check.
 
-Start by reading AGENTBRAIN.md and docs/state-machine.md, then proceed through the matching command file.
+Start by reading AGENTBRAIN.md and docs/state-machine.md, then proceed through the matching command in commands/, load the required skills/, and use templates/ plus schemas/ for structured artifacts.
 ```
 
 ## Repository Map
