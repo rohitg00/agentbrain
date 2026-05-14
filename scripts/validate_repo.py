@@ -329,11 +329,16 @@ def validate(root: Path = ROOT) -> list[str]:
             errors.append(f"{rel(skill, root)} frontmatter description is required")
         elif "Use when" not in frontmatter["description"]:
             errors.append(f"{rel(skill, root)} frontmatter description must include 'Use when'")
+        skill_lines = text.splitlines()
         for section in REQUIRED_SKILL_SECTIONS:
-            if section not in text:
+            section_count = skill_lines.count(section)
+            if section_count == 0:
                 errors.append(f"{rel(skill, root)} missing {section}")
-            elif not section_has_body(text, section):
-                errors.append(f"{rel(skill, root)} section has no body: {section}")
+            else:
+                if section_count > 1:
+                    errors.append(f"{rel(skill, root)} section must appear exactly once: {section}")
+                if not section_has_body(text, section):
+                    errors.append(f"{rel(skill, root)} section has no body: {section}")
         if not sections_are_in_order(text, REQUIRED_SKILL_SECTIONS):
             errors.append(f"{rel(skill, root)} sections must appear in canonical order")
 
