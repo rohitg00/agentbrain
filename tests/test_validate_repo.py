@@ -112,6 +112,29 @@ def test_missing_skill_sections_are_reported(tmp_path):
     assert "skills/sample/SKILL.md missing ## Example" in errors
 
 
+def test_skill_frontmatter_must_have_closing_delimiter(tmp_path):
+    write_minimal_repo(tmp_path)
+    (tmp_path / "skills" / "sample" / "SKILL.md").write_text(
+        "\n".join([
+            "---",
+            "name: sample",
+            "description: Sample skill",
+            "# Sample",
+            "## Trigger",
+            "## Inputs",
+            "## Procedure",
+            "## Verification",
+            "## Failure Modes",
+            "## Example",
+        ]),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "skills/sample/SKILL.md frontmatter must be delimited by ---" in errors
+
+
 def test_banned_public_copy_terms_are_reported(tmp_path):
     write_minimal_repo(tmp_path)
     (tmp_path / "docs").mkdir(exist_ok=True)

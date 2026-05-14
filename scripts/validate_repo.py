@@ -59,14 +59,18 @@ def rel(path: Path, root: Path) -> str:
     return path.relative_to(root).as_posix()
 
 
+def has_delimited_frontmatter(text: str) -> bool:
+    lines = text.splitlines()
+    if not lines or lines[0] != "---":
+        return False
+    return "---" in lines[1:]
+
+
 def parse_frontmatter(text: str) -> dict[str, str]:
-    if not text.startswith("---\n"):
+    if not has_delimited_frontmatter(text):
         return {}
 
-    try:
-        frontmatter = text.split("---", 2)[1]
-    except IndexError:
-        return {}
+    frontmatter = text.split("---", 2)[1]
 
     parsed: dict[str, str] = {}
     for line in frontmatter.splitlines():
@@ -138,6 +142,8 @@ def validate(root: Path = ROOT) -> list[str]:
 
     for skill in sorted((root / "skills").glob("*/SKILL.md")):
         text = skill.read_text(errors="ignore")
+        if not has_delimited_frontmatter(text):
+            errors.append(f"{rel(skill, root)} frontmatter must be delimited by ---")
         frontmatter = parse_frontmatter(text)
         expected_name = skill.parent.name
         if frontmatter.get("name") != expected_name:
