@@ -371,6 +371,22 @@ def test_eval_case_filenames_must_use_lowercase_kebab_case(tmp_path):
     assert "evals/cases/Bad_Case.md filename must use lowercase kebab-case" in errors
 
 
+def test_eval_case_sections_must_not_be_duplicated(tmp_path):
+    write_minimal_repo(tmp_path)
+    (tmp_path / "evals" / "cases" / "activity-recap.md").write_text(
+        "# Eval Case: Activity Recap\n\n"
+        "## User request\nSummarize recent activity.\n\n"
+        "## User request\nDuplicate prompt creates ambiguous eval setup.\n\n"
+        "## Expected behavior\nUse local evidence and state checked scope.\n\n"
+        "## Failure if\nInvents work or omits verification scope.\n",
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "evals/cases/activity-recap.md section must appear exactly once: ## User request" in errors
+
+
 def test_skills_must_have_exactly_one_h1(tmp_path):
     write_minimal_repo(tmp_path)
     (tmp_path / "skills" / "sample" / "SKILL.md").write_text(

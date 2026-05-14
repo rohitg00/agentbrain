@@ -408,11 +408,16 @@ def validate(root: Path = ROOT) -> list[str]:
         first_line = text.splitlines()[0] if text.splitlines() else ""
         if first_line != expected_heading:
             errors.append(f"{rel(case, root)} heading must be {expected_heading}")
+        lines = text.splitlines()
         for section in REQUIRED_EVAL_CASE_SECTIONS:
-            if section not in text:
+            section_count = lines.count(section)
+            if section_count == 0:
                 errors.append(f"{rel(case, root)} missing {section}")
-            elif not section_has_body(text, section):
-                errors.append(f"{rel(case, root)} section has no body: {section}")
+            else:
+                if section_count > 1:
+                    errors.append(f"{rel(case, root)} section must appear exactly once: {section}")
+                if not section_has_body(text, section):
+                    errors.append(f"{rel(case, root)} section has no body: {section}")
         if not sections_are_in_order(text, REQUIRED_EVAL_CASE_SECTIONS):
             errors.append(f"{rel(case, root)} sections must appear in canonical order")
 
