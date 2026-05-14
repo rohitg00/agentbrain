@@ -35,6 +35,17 @@ Run these gates before shipping. Each gate can be a standalone agent pass.
 - External calls documented
 - Abuse cases considered
 
+## Guardrail and Approval Gate
+
+Use this gate before any agentic workflow that can call tools, hand off work, or change state.
+
+- Input guardrails block disallowed, irrelevant, unsafe, or too-expensive requests before the main workflow starts.
+- Tool guardrails sit next to side-effecting tools and validate both arguments and results.
+- Output guardrails check the final artifact before it reaches the user or another system.
+- Human approval pauses before sensitive actions such as edits, cancellations, shell commands, credential use, public posting, payments, or production changes.
+- Blocking guardrails are preferred when speculative execution could spend money, call tools, or create side effects before validation finishes.
+- Guardrails must be tested as first-class behavior, not described only in prose.
+
 ## QA Gate
 
 - Real user journey executed

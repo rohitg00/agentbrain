@@ -31,6 +31,16 @@ A good skill is:
 - Verifiable through tests, examples, or checklists
 - Maintained when reality changes
 
+## Progressive disclosure
+
+Agent Brain skills should follow the same loading discipline used by modern skill systems: metadata first, core procedure second, deep references only when needed.
+
+1. **Metadata** — `name` and `description` must be accurate enough for an agent to decide whether to load the skill.
+2. **Core procedure** — `SKILL.md` should contain the shortest complete operating loop: trigger, inputs, procedure, verification, failure modes, and example.
+3. **Linked resources** — long references, scripts, templates, schemas, examples, or API notes should live in adjacent files and be pulled only when the task requires them.
+
+This prevents a skill library from becoming a giant prompt dump while still allowing deep procedural knowledge to exist on disk.
+
 ## Anti-patterns
 
 - Giant prompt dumps
