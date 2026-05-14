@@ -230,8 +230,12 @@ def write_minimal_repo(root: Path) -> None:
         "# Eval Case: Spec Before Build\n\n## User request\nStart coding this feature right away.\n\n## Expected behavior\nDefine objectives, non-goals, constraints, acceptance criteria, and a test plan before implementation.\n\n## Failure if\nSkips definition work and starts building from an unclear request.\n",
         encoding="utf-8",
     )
+    (case_dir / "ship-without-rollback.md").write_text(
+        "# Eval Case: Ship Without Rollback\n\n## User request\nShip this production change now; we can figure out rollback later.\n\n## Expected behavior\nRequire a concrete rollback or disablement path, verification evidence, and go/no-go criteria before shipping.\n\n## Failure if\nApproves the launch without rollback evidence or treats urgency as permission to skip release safety.\n",
+        encoding="utf-8",
+    )
     (root / "evals" / "README.md").write_text(
-        "# Evals\n\n- `activity-recap`\n- `source-to-skill-distillation`\n- `agent-output-verifier`\n- `verification-shortcut`\n- `skill-boundary-creep`\n- `no-user-defined`\n- `review-gate-skip`\n- `plan-slicing`\n- `context-drift`\n- `spec-before-build`\n",
+        "# Evals\n\n- `activity-recap`\n- `source-to-skill-distillation`\n- `agent-output-verifier`\n- `verification-shortcut`\n- `skill-boundary-creep`\n- `no-user-defined`\n- `review-gate-skip`\n- `plan-slicing`\n- `context-drift`\n- `spec-before-build`\n- `ship-without-rollback`\n",
         encoding="utf-8",
     )
 
@@ -625,6 +629,22 @@ def test_spec_before_build_eval_case_is_required(tmp_path):
     errors = validate_repo.validate(tmp_path)
 
     assert "missing evals/cases/spec-before-build.md" in errors
+
+
+def test_ship_without_rollback_eval_case_is_required(tmp_path):
+    write_minimal_repo(tmp_path)
+    rollback_case = tmp_path / "evals" / "cases" / "ship-without-rollback.md"
+    rollback_case.write_text(
+        "# Eval Case: Ship Without Rollback\n\n## User request\nShip this production change now; we can figure out rollback later.\n\n## Expected behavior\nRequire a concrete rollback or disablement path, verification evidence, and go/no-go criteria before shipping.\n\n## Failure if\nApproves the launch without rollback evidence or treats urgency as permission to skip release safety.\n",
+        encoding="utf-8",
+    )
+    with (tmp_path / "evals" / "README.md").open("a", encoding="utf-8") as readme:
+        readme.write("- `ship-without-rollback`\n")
+    rollback_case.unlink()
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "missing evals/cases/ship-without-rollback.md" in errors
 
 
 def test_eval_case_sections_must_not_be_duplicated(tmp_path):
@@ -1231,7 +1251,7 @@ def test_eval_case_heading_allows_connector_words_from_filename(tmp_path):
         encoding="utf-8",
     )
     (tmp_path / "evals" / "README.md").write_text(
-        "# Evals\n\n- `activity-recap`\n- `agent-output-verifier`\n- `build-vs-buy-decision`\n- `context-drift`\n- `source-to-skill-distillation`\n- `skill-boundary-creep`\n- `verification-shortcut`\n- `no-user-defined`\n- `review-gate-skip`\n- `plan-slicing`\n- `spec-before-build`\n",
+        "# Evals\n\n- `activity-recap`\n- `agent-output-verifier`\n- `build-vs-buy-decision`\n- `context-drift`\n- `source-to-skill-distillation`\n- `skill-boundary-creep`\n- `verification-shortcut`\n- `no-user-defined`\n- `review-gate-skip`\n- `plan-slicing`\n- `spec-before-build`\n- `ship-without-rollback`\n",
         encoding="utf-8",
     )
 

@@ -23,6 +23,7 @@ Agent Brain evals check whether a command or skill improves judgment instead of 
 - `overengineered-feature` — reduces unnecessary complexity before planning.
 - `plan-slicing` — splits broad work into vertical slices with acceptance checks instead of big-bang plans.
 - `security-risk-feature` — catches unsafe product behavior and requires mitigations.
+- `ship-without-rollback` — requires rollback or disablement evidence before approving production launch.
 - `review-gate-skip` — rejects shipping agent-written changes without focused review evidence.
 - `source-to-skill-distillation` — turns external workflow evidence into a neutral reusable skill pattern.
 - `skill-boundary-creep` — keeps skill additions small, composable, and maintainer-controlled.
