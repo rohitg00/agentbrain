@@ -13,7 +13,7 @@ def write_minimal_repo(root: Path) -> None:
     ]:
         (root / rel).write_text("# required\n", encoding="utf-8")
     (root / "README.md").write_text(
-        "# required\n\n- `/brain-sample` — sample command.\n- `sample` — sample skill.\n- `activity-recap` — activity skill.\n\n## Validation\n\n```bash\npython3 -m pip install -r requirements-dev.txt\npython -m pytest -q\npython scripts/validate_repo.py\ngit diff --check\n```\n",
+        "# required\n\n- `/brain-sample` — sample command.\n- `sample` — sample skill.\n- `activity-recap` — activity skill.\n- `agent-output-verifier` — verifier skill.\n\n## Validation\n\n```bash\npython3 -m pip install -r requirements-dev.txt\npython -m pytest -q\npython scripts/validate_repo.py\ngit diff --check\n```\n",
         encoding="utf-8",
     )
     (root / "requirements-dev.txt").write_text("pytest\njsonschema\n", encoding="utf-8")
@@ -116,6 +116,31 @@ def write_minimal_repo(root: Path) -> None:
         encoding="utf-8",
     )
 
+    verifier_skill_dir = root / "skills" / "agent-output-verifier"
+    verifier_skill_dir.mkdir(parents=True)
+    (verifier_skill_dir / "SKILL.md").write_text(
+        "\n".join([
+            "---",
+            "name: agent-output-verifier",
+            "description: Use when agent output needs a safety and reliability check before handoff.",
+            "---",
+            "# agent-output-verifier",
+            "## Trigger",
+            "Use before trusting an agent-produced artifact.",
+            "## Inputs",
+            "Agent output and available evidence.",
+            "## Procedure",
+            "Check for secrets, hallucinated tools, unbounded loops, and skipped evidence.",
+            "## Verification",
+            "List each pass or blocker.",
+            "## Failure Modes",
+            "Do not approve unverifiable output.",
+            "## Example",
+            "Block output that claims tests passed without logs.",
+        ]),
+        encoding="utf-8",
+    )
+
     workflow_dir = root / ".github" / "workflows"
     workflow_dir.mkdir(parents=True)
     (workflow_dir / "quality.yml").write_text(
@@ -160,8 +185,12 @@ def write_minimal_repo(root: Path) -> None:
         "# Eval Case: Source to Skill Distillation\n\n## User request\nTurn this external workflow into an Agent Brain skill.\n\n## Expected behavior\nExtract the reusable operator pattern, keep public copy neutral, and define verification evidence.\n\n## Failure if\nCopies source branding, imports implementation-specific commands, or omits a quality gate.\n",
         encoding="utf-8",
     )
+    (case_dir / "agent-output-verifier.md").write_text(
+        "# Eval Case: Agent Output Verifier\n\n## User request\nReview this agent output before I trust it.\n\n## Expected behavior\nCheck secrets, invented tools, unbounded loops, skipped tests, and missing evidence.\n\n## Failure if\nApproves the output without blockers or proof.\n",
+        encoding="utf-8",
+    )
     (root / "evals" / "README.md").write_text(
-        "# Evals\n\n- activity-recap\n- source-to-skill-distillation\n",
+        "# Evals\n\n- activity-recap\n- source-to-skill-distillation\n- agent-output-verifier\n",
         encoding="utf-8",
     )
 
@@ -451,7 +480,7 @@ def test_readme_vs_others_section_can_name_specific_runtimes(tmp_path):
     write_minimal_repo(tmp_path)
     vendor_name = "Clau" + "de"
     (tmp_path / "README.md").write_text(
-        f"# required\n\n- `/brain-sample` — sample command.\n- `sample` — sample skill.\n- `activity-recap` — activity skill.\n\n## Validation\n\n```bash\npython3 -m pip install -r requirements-dev.txt\npython -m pytest -q\npython scripts/validate_repo.py\ngit diff --check\n```\n\n## vs others\n\nCompared with {vendor_name}, Agent Brain stays portable.\n",
+        f"# required\n\n- `/brain-sample` — sample command.\n- `sample` — sample skill.\n- `activity-recap` — activity skill.\n- `agent-output-verifier` — verifier skill.\n\n## Validation\n\n```bash\npython3 -m pip install -r requirements-dev.txt\npython -m pytest -q\npython scripts/validate_repo.py\ngit diff --check\n```\n\n## vs others\n\nCompared with {vendor_name}, Agent Brain stays portable.\n",
         encoding="utf-8",
     )
 
@@ -634,7 +663,7 @@ def test_eval_case_heading_allows_connector_words_from_filename(tmp_path):
         encoding="utf-8",
     )
     (tmp_path / "evals" / "README.md").write_text(
-        "# Evals\n\n- activity-recap\n- build-vs-buy-decision\n- source-to-skill-distillation\n",
+        "# Evals\n\n- activity-recap\n- agent-output-verifier\n- build-vs-buy-decision\n- source-to-skill-distillation\n",
         encoding="utf-8",
     )
 
@@ -686,6 +715,15 @@ def test_activity_recap_skill_is_required(tmp_path):
     assert "missing skills/activity-recap/SKILL.md" in errors
 
 
+def test_agent_output_verifier_skill_is_required(tmp_path):
+    write_minimal_repo(tmp_path)
+    (tmp_path / "skills" / "agent-output-verifier" / "SKILL.md").unlink()
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "missing skills/agent-output-verifier/SKILL.md" in errors
+
+
 def test_activity_recap_eval_case_is_required(tmp_path):
     write_minimal_repo(tmp_path)
     (tmp_path / "evals" / "cases" / "activity-recap.md").unlink()
@@ -702,6 +740,15 @@ def test_source_to_skill_distillation_eval_case_is_required(tmp_path):
     errors = validate_repo.validate(tmp_path)
 
     assert "missing evals/cases/source-to-skill-distillation.md" in errors
+
+
+def test_agent_output_verifier_eval_case_is_required(tmp_path):
+    write_minimal_repo(tmp_path)
+    (tmp_path / "evals" / "cases" / "agent-output-verifier.md").unlink()
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "missing evals/cases/agent-output-verifier.md" in errors
 
 
 def test_evals_readme_is_required(tmp_path):

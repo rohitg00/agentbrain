@@ -14,6 +14,7 @@ Agent Brain evals check whether a command or skill improves judgment instead of 
 
 ## Case catalog
 
+- `agent-output-verifier` — checks agent handoffs for evidence, safety, and reliability before trust.
 - `activity-recap` — summarizes recent local work without inventing missing activity.
 - `bad-agent-idea` — challenges weak agent ideas before implementation.
 - `build-vs-buy-decision` — compares whether to build, buy, or avoid automation.

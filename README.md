@@ -63,7 +63,9 @@ Every stage has artifacts, exit criteria, and stop conditions.
 
 ## Core skills
 
+- `agent-output-verifier` — verify agent-produced artifacts against evidence before handoff.
 - `activity-recap` — summarize recent project activity from local evidence.
+- `agent-output-verifier` — block unsafe or unsupported agent output before trust or handoff.
 - `design-grill` — challenge interface, states, and edge cases before build work.
 - `engineering-grill` — challenge feasibility, failure modes, and implementation risk.
 - `evidence-research` — turn claims into source-backed research evidence.
