@@ -311,6 +311,25 @@ def test_schema_files_must_declare_schema_dialect(tmp_path):
     assert "schemas/artifact.schema.json missing $schema dialect declaration" in errors
 
 
+def test_schema_filenames_must_use_lowercase_kebab_schema_suffix(tmp_path):
+    write_minimal_repo(tmp_path)
+    (tmp_path / "schemas" / "BadSchema.json").write_text(
+        json.dumps(
+            {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "title": "Bad Schema",
+                "type": "object",
+                "additionalProperties": False,
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "schemas/BadSchema.json filename must use lowercase kebab-case with .schema.json suffix" in errors
+
+
 def test_schema_files_must_have_titles(tmp_path):
     write_minimal_repo(tmp_path)
     (tmp_path / "schemas" / "artifact.schema.json").write_text(

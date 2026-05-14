@@ -223,6 +223,10 @@ def validate(root: Path = ROOT) -> list[str]:
     errors: list[str] = []
 
     for path in sorted((root / "schemas").glob("*.json")):
+        schema_slug = path.name.removesuffix(".schema.json")
+        if not path.name.endswith(".schema.json") or not is_lowercase_kebab(schema_slug):
+            errors.append(f"{rel(path, root)} filename must use lowercase kebab-case with .schema.json suffix")
+
         try:
             schema = json.loads(path.read_text(encoding="utf-8"))
             schema_validator = validators.validator_for(schema)
