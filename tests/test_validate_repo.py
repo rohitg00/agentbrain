@@ -1170,3 +1170,21 @@ def test_evals_readme_must_list_available_rubrics(tmp_path):
     errors = validate_repo.validate(tmp_path)
 
     assert "evals/README.md missing eval rubric catalog entry: quality" in errors
+
+
+def test_evals_readme_rubric_catalog_entries_must_be_backticked(tmp_path):
+    write_minimal_repo(tmp_path)
+    rubric_dir = tmp_path / "evals" / "rubrics"
+    rubric_dir.mkdir(parents=True)
+    (rubric_dir / "quality.md").write_text(
+        "# Quality\n\n## Dimensions\n\nScore quality.\n\n## Interpretation\n\nUse the score to decide readiness.\n",
+        encoding="utf-8",
+    )
+    (tmp_path / "evals" / "README.md").write_text(
+        "# Evals\n\n- `activity-recap`\n- `agent-output-verifier`\n- `source-to-skill-distillation`\n\nquality is mentioned only as prose.\n",
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "evals/README.md missing eval rubric catalog entry: quality" in errors
