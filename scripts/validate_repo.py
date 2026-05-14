@@ -85,7 +85,12 @@ def has_delimited_frontmatter(text: str) -> bool:
     lines = text.splitlines()
     if not lines or lines[0] != "---":
         return False
-    return "---" in lines[1:]
+    for line in lines[1:]:
+        if line == "---":
+            return True
+        if line.startswith("# "):
+            return False
+    return False
 
 
 def parse_frontmatter(text: str) -> dict[str, str]:
