@@ -500,6 +500,21 @@ git diff --check
 
 If the file remains after cleanup, inspect whether it was accidentally tracked and remove it from version control in the same small hardening slice.
 
+## Weakest Failure Mode Audit
+
+Before choosing the next hardening slice, inspect the repo for the least protected way a future agent could fail. Check each area quickly and pick the first gap with no eval, validator, or explicit doc coverage:
+
+1. **Commands:** does every command have a distinct workflow, stop conditions, quality bar, and correct skills-to-load list?
+2. **Skills:** do triggers, inputs, procedure, anti-rationalization, verification, output artifact, and failure modes guide a real operator job?
+3. **Schemas and templates:** do artifacts have closed schemas, required fields, and matching template field references?
+4. **Evals:** is the newest repeated failure represented as a case with expected evidence and failure criteria?
+5. **CI and install:** can a fresh checkout run the same quality gate locally and in CI without hidden dependencies?
+6. **Public copy:** are external sources distilled into neutral pattern language with no source-specific naming leakage?
+7. **Handoff:** can another agent resume from state, evidence checked, facts, assumptions, risks, blockers, fresh validation proof, and next action?
+8. **README/docs:** can a capable coding agent self-setup, choose the right command, handle edge cases, troubleshoot failures, and maintain the harness without private context?
+
+Prefer the smallest slice that adds or tightens a validator/eval first, then updates the corresponding doc, skill, command, schema, or template.
+
 ## Maintainer Checklist
 
 Before a harness release or direct-to-main hardening push, verify:

@@ -78,6 +78,7 @@ REQUIRED_README_HARNESS_SECTIONS = [
     "## Handoff Contract",
     "## Edge Cases and Stop Conditions",
     "## Troubleshooting",
+    "## Weakest Failure Mode Audit",
     "## Maintainer Checklist",
 ]
 REQUIRED_README_MINIMAL_HARNESS_PROMPT_TERMS = [
