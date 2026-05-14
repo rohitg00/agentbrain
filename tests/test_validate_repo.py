@@ -1096,6 +1096,34 @@ def test_command_required_sections_must_have_body(tmp_path):
     assert "commands/brain-sample.md section has no body: ## Quality bar" in errors
 
 
+def test_command_required_sections_must_keep_canonical_order(tmp_path):
+    write_minimal_repo(tmp_path)
+    (tmp_path / "commands" / "brain-sample.md").write_text(
+        "\n".join([
+            "# /brain-sample",
+            "## Purpose",
+            "Route the work.",
+            "## Workflow",
+            "Inspect and decide.",
+            "## When to use",
+            "Use for sample requests.",
+            "## Input contract",
+            "Raw request.",
+            "## Output",
+            "Next action.",
+            "## Stop conditions",
+            "Stop if unsafe.",
+            "## Quality bar",
+            "Evidence is checked before output.",
+        ]),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "commands/brain-sample.md sections must appear in canonical order" in errors
+
+
 def test_readme_must_list_available_commands(tmp_path):
     write_minimal_repo(tmp_path)
     (tmp_path / "README.md").write_text("# required\n\nNo command catalog here.\n", encoding="utf-8")

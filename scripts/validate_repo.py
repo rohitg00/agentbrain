@@ -169,6 +169,12 @@ def section_has_body(text: str, section: str) -> bool:
     return False
 
 
+def sections_are_in_order(text: str, sections: list[str]) -> bool:
+    lines = text.splitlines()
+    positions = [lines.index(section) for section in sections if section in lines]
+    return positions == sorted(positions)
+
+
 def find_object_schemas_without_closed_properties(schema: object) -> list[str]:
     missing_locations: list[str] = []
 
@@ -336,6 +342,8 @@ def validate(root: Path = ROOT) -> list[str]:
                 errors.append(f"{rel(command, root)} missing {section}")
             elif not section_has_body(text, section):
                 errors.append(f"{rel(command, root)} section has no body: {section}")
+        if not sections_are_in_order(text, REQUIRED_COMMAND_SECTIONS):
+            errors.append(f"{rel(command, root)} sections must appear in canonical order")
 
     readme = root / "README.md"
     if readme.exists():
