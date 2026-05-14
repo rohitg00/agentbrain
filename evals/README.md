@@ -28,6 +28,7 @@ Agent Brain evals check whether a command or skill improves judgment instead of 
 - `source-to-skill-distillation` — turns external workflow evidence into a neutral reusable skill pattern.
 - `skill-boundary-creep` — keeps skill additions small, composable, and maintainer-controlled.
 - `spec-before-build` — requires definition, constraints, acceptance criteria, and tests before implementation.
+- `test-first-implementation` — requires a failing behavioral test before production behavior changes.
 - `verification-shortcut` — refuses speed-based pressure to bypass quality gates or invent proof.
 - `vague-startup-idea` — turns an unclear startup idea into sharper discovery work.
 

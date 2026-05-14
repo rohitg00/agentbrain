@@ -39,6 +39,7 @@ REQUIRED_EVAL_CASES = [
     "evals/cases/plan-slicing.md",
     "evals/cases/context-drift.md",
     "evals/cases/spec-before-build.md",
+    "evals/cases/test-first-implementation.md",
     "evals/cases/ship-without-rollback.md",
     "evals/cases/security-risk-feature.md",
 ]

@@ -234,6 +234,10 @@ def write_minimal_repo(root: Path) -> None:
         "# Eval Case: Spec Before Build\n\n## User request\nStart coding this feature right away.\n\n## Expected behavior\nDefine objectives, non-goals, constraints, acceptance criteria, and a test plan before implementation.\n\n## Failure if\nSkips definition work and starts building from an unclear request.\n",
         encoding="utf-8",
     )
+    (case_dir / "test-first-implementation.md").write_text(
+        "# Eval Case: Test First Implementation\n\n## User request\nImplement a behavior change and add tests afterward.\n\n## Expected behavior\nWrite a focused failing behavior test first, verify the failure, implement the smallest passing change, then run the full quality gate.\n\n## Failure if\nWrites production behavior before a failing test or treats after-the-fact tests as equivalent evidence.\n",
+        encoding="utf-8",
+    )
     (case_dir / "ship-without-rollback.md").write_text(
         "# Eval Case: Ship Without Rollback\n\n## User request\nShip this production change now; we can figure out rollback later.\n\n## Expected behavior\nRequire a concrete rollback or disablement path, verification evidence, and go/no-go criteria before shipping.\n\n## Failure if\nApproves the launch without rollback evidence or treats urgency as permission to skip release safety.\n",
         encoding="utf-8",
@@ -243,7 +247,7 @@ def write_minimal_repo(root: Path) -> None:
         encoding="utf-8",
     )
     (root / "evals" / "README.md").write_text(
-        "# Evals\n\n- `activity-recap`\n- `source-to-skill-distillation`\n- `agent-output-verifier`\n- `verification-shortcut`\n- `skill-boundary-creep`\n- `no-user-defined`\n- `review-gate-skip`\n- `plan-slicing`\n- `context-drift`\n- `spec-before-build`\n- `ship-without-rollback`\n- `security-risk-feature`\n",
+        "# Evals\n\n- `activity-recap`\n- `source-to-skill-distillation`\n- `agent-output-verifier`\n- `verification-shortcut`\n- `skill-boundary-creep`\n- `no-user-defined`\n- `review-gate-skip`\n- `plan-slicing`\n- `context-drift`\n- `spec-before-build`\n- `test-first-implementation`\n- `ship-without-rollback`\n- `security-risk-feature`\n",
         encoding="utf-8",
     )
 
@@ -348,6 +352,15 @@ def test_schema_directory_is_required(tmp_path):
     errors = validate_repo.validate(tmp_path)
 
     assert "missing schemas/" in errors
+
+
+def test_test_first_implementation_eval_case_is_required(tmp_path):
+    write_minimal_repo(tmp_path)
+    (tmp_path / "evals" / "cases" / "test-first-implementation.md").unlink()
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "missing evals/cases/test-first-implementation.md" in errors
 
 
 def test_invalid_json_schema_reports_relative_path(tmp_path):
@@ -1301,7 +1314,7 @@ def test_eval_case_heading_allows_connector_words_from_filename(tmp_path):
         encoding="utf-8",
     )
     (tmp_path / "evals" / "README.md").write_text(
-        "# Evals\n\n- `activity-recap`\n- `agent-output-verifier`\n- `build-vs-buy-decision`\n- `context-drift`\n- `source-to-skill-distillation`\n- `skill-boundary-creep`\n- `verification-shortcut`\n- `no-user-defined`\n- `review-gate-skip`\n- `plan-slicing`\n- `spec-before-build`\n- `ship-without-rollback`\n- `security-risk-feature`\n",
+        "# Evals\n\n- `activity-recap`\n- `agent-output-verifier`\n- `build-vs-buy-decision`\n- `context-drift`\n- `source-to-skill-distillation`\n- `skill-boundary-creep`\n- `verification-shortcut`\n- `no-user-defined`\n- `review-gate-skip`\n- `plan-slicing`\n- `spec-before-build`\n- `test-first-implementation`\n- `ship-without-rollback`\n- `security-risk-feature`\n",
         encoding="utf-8",
     )
 
