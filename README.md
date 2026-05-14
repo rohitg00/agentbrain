@@ -230,6 +230,7 @@ Use this guide when a command says to produce an artifact. Start with the comman
 | Product scope | `templates/product-brief.md` | `schemas/product-brief.schema.json` |
 | Implementation slices | `templates/implementation-plan.md` | `schemas/implementation-plan.schema.json` |
 | QA or verification proof | `docs/review-gates.md` QA gate | `schemas/qa-evidence.schema.json` |
+| Eval case run or rubric check | `templates/eval-report.md` | `schemas/eval-report.schema.json` |
 | Trust review before handoff | `templates/review-report.md` | `schemas/review-report.schema.json` |
 | Run handoff or blocked stop | `templates/handoff-report.md` | `schemas/handoff-report.schema.json` |
 | Memory write, update, retrieval, or rejection | `templates/memory-decision.md` | `schemas/memory-decision.schema.json` |

@@ -20,8 +20,10 @@ REQUIRED_FILES = ["requirements-dev.txt"]
 REQUIRED_DEV_REQUIREMENTS = ["jsonschema", "pytest"]
 REQUIRED_DIRECTORIES = ["schemas"]
 REQUIRED_ARTIFACT_FILES = [
+    "schemas/eval-report.schema.json",
     "schemas/handoff-report.schema.json",
     "schemas/memory-decision.schema.json",
+    "templates/eval-report.md",
     "templates/handoff-report.md",
     "templates/memory-decision.md",
 ]

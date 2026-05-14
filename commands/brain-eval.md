@@ -31,7 +31,7 @@ If required inputs are missing, ask at most three blocking questions or state ex
 
 ## Output
 
-Required artifact: **Eval Report**.
+Required artifact: **Eval Report** using `templates/eval-report.md` and `schemas/eval-report.schema.json`.
 
 The output must include:
 

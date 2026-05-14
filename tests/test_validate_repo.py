@@ -19,7 +19,7 @@ def write_minimal_repo(root: Path) -> None:
         encoding="utf-8",
     )
     (root / "README.md").write_text(
-        "# required\n\n## Quickstart\nInstall and run validation.\n\n```bash\npython3 -m pip install -r requirements-dev.txt\nrm -rf scripts/__pycache__ tests/__pycache__\npython -m pytest -q\npython scripts/validate_repo.py\ngit diff --check\n```\nRun a targeted exact-name scrub for disallowed source terms before committing.\n\n## Run as an Agent Harness\nLoad the repo as operating instructions.\n\n## Command Selection Guide\n\n- Raw request -> `/brain-sample`\n\n## Handoff Contract\nState the status, evidence checked, facts, assumptions, risks, blockers, and next action.\n\n## Edge Cases and Stop Conditions\nStop on missing evidence.\n\n## Troubleshooting\nRun validation and inspect errors. If git status --short shows a dirty working tree, preserve user changes before editing. If secret-like values are reported, remove the value, rotate it outside the repo, and keep only a redacted placeholder. If Tests pass locally but CI fails, run the exact CI sequence locally and inspect .github/workflows/quality.yml for parity gaps. If dependency bootstrap fails with ModuleNotFoundError, create or refresh a virtual environment, rerun python3 -m pip install -r requirements-dev.txt, and do not edit around missing dependencies. If validation reports a generated Python cache file, delete the cache directory and rerun the full quality gate before committing.\n\n## Weakest Failure Mode Audit\nCheck commands, skills, schemas, templates, evals, CI, public copy, handoff, and install docs before choosing the next hardening slice.\n\n## Maintainer Checklist\nBefore release, confirm README bootstraps a new agent, commands and skills are cataloged, evals cover current failure modes, validation passes, CI mirrors local checks, public copy is neutral, caches are untracked, and the remote branch is verified.\n\n## Maintainer Loop\nFind the weakest uncovered failure mode, add or update an eval or validator first, run rm -rf scripts/__pycache__ tests/__pycache__, run validation, run a targeted exact-name scrub, commit a small coherent chunk, git push, git fetch origin main, and verify HEAD equals origin/main before repeating.\n\n## Minimal Harness Prompt\n\n```text\nRead AGENTBRAIN.md, PRINCIPLES.md, ANTI_RATIONALIZATION.md, and docs/state-machine.md before acting.\nInspect git status --short and git log --oneline -5 before choosing work.\nRun baseline validation before editing.\nPreserve user changes before editing.\nChoose the matching command in commands/ and load only the required skills/ entry.\nUse templates/ and schemas/ for structured artifacts when they fit.\nRun python -m pytest -q, python scripts/validate_repo.py, git diff --check, and a targeted exact-name scrub before claiming completion.\nStop when evidence, approval, secrets handling, or loop limits are missing.\n```\n\n## Core Commands\n\n- `/brain-sample` — sample command.\n\n## Core Skills\n\n- `sample` — sample skill.\n- `activity-recap` — activity skill.\n- `agent-output-verifier` — verifier skill.\n- `ci-recovery` — CI recovery skill.\n- `context-memory` — memory routing skill.\n- `domain-language` — vocabulary routing skill.\n\n## Repository Map\n\n```text\nrequirements-dev.txt           # local validation dependencies\n.github/workflows/             # CI quality gate\ncommands/                      # command specs\nskills/                        # portable skills\nschemas/                       # artifact schemas\ntemplates/                     # artifact templates\ndocs/                          # supporting docs\n```\n\n## Documentation Guide\n\n- `docs/agent-harness.md` — how to run the repo as an agent harness.\n- `docs/autonomous-goals.md` — autonomous goal scope and stop conditions.\n- `docs/decision-records.md` — decision record discipline.\n- `docs/ci-recovery.md` — CI recovery discipline.\n- `docs/research-watchlist.md` — source classes to review without copying branding.\n- `docs/shared-language.md` — glossary discipline.\n- `docs/skill-distillation.md` — how to convert sources into neutral skills.\n\n## Artifact Routing Guide\n\n- `schemas/artifact.schema.json` — sample artifact schema.\n- `schemas/handoff-report.schema.json` — sample handoff schema.\n- `schemas/memory-decision.schema.json` — sample memory decision schema.\n- `templates/handoff-report.md` — sample handoff template.\n- `templates/memory-decision.md` — sample memory decision template.\n- `templates/skill-template.md` — sample skill template.\n\n## Validation\n\n```bash\npython3 -m pip install -r requirements-dev.txt\npython -m pytest -q\npython scripts/validate_repo.py\ngit diff --check\n```\n",
+        "# required\n\n## Quickstart\nInstall and run validation.\n\n```bash\npython3 -m pip install -r requirements-dev.txt\nrm -rf scripts/__pycache__ tests/__pycache__\npython -m pytest -q\npython scripts/validate_repo.py\ngit diff --check\n```\nRun a targeted exact-name scrub for disallowed source terms before committing.\n\n## Run as an Agent Harness\nLoad the repo as operating instructions.\n\n## Command Selection Guide\n\n- Raw request -> `/brain-sample`\n\n## Handoff Contract\nState the status, evidence checked, facts, assumptions, risks, blockers, and next action.\n\n## Edge Cases and Stop Conditions\nStop on missing evidence.\n\n## Troubleshooting\nRun validation and inspect errors. If git status --short shows a dirty working tree, preserve user changes before editing. If secret-like values are reported, remove the value, rotate it outside the repo, and keep only a redacted placeholder. If Tests pass locally but CI fails, run the exact CI sequence locally and inspect .github/workflows/quality.yml for parity gaps. If dependency bootstrap fails with ModuleNotFoundError, create or refresh a virtual environment, rerun python3 -m pip install -r requirements-dev.txt, and do not edit around missing dependencies. If validation reports a generated Python cache file, delete the cache directory and rerun the full quality gate before committing.\n\n## Weakest Failure Mode Audit\nCheck commands, skills, schemas, templates, evals, CI, public copy, handoff, and install docs before choosing the next hardening slice.\n\n## Maintainer Checklist\nBefore release, confirm README bootstraps a new agent, commands and skills are cataloged, evals cover current failure modes, validation passes, CI mirrors local checks, public copy is neutral, caches are untracked, and the remote branch is verified.\n\n## Maintainer Loop\nFind the weakest uncovered failure mode, add or update an eval or validator first, run rm -rf scripts/__pycache__ tests/__pycache__, run validation, run a targeted exact-name scrub, commit a small coherent chunk, git push, git fetch origin main, and verify HEAD equals origin/main before repeating.\n\n## Minimal Harness Prompt\n\n```text\nRead AGENTBRAIN.md, PRINCIPLES.md, ANTI_RATIONALIZATION.md, and docs/state-machine.md before acting.\nInspect git status --short and git log --oneline -5 before choosing work.\nRun baseline validation before editing.\nPreserve user changes before editing.\nChoose the matching command in commands/ and load only the required skills/ entry.\nUse templates/ and schemas/ for structured artifacts when they fit.\nRun python -m pytest -q, python scripts/validate_repo.py, git diff --check, and a targeted exact-name scrub before claiming completion.\nStop when evidence, approval, secrets handling, or loop limits are missing.\n```\n\n## Core Commands\n\n- `/brain-sample` — sample command.\n\n## Core Skills\n\n- `sample` — sample skill.\n- `activity-recap` — activity skill.\n- `agent-output-verifier` — verifier skill.\n- `ci-recovery` — CI recovery skill.\n- `context-memory` — memory routing skill.\n- `domain-language` — vocabulary routing skill.\n\n## Repository Map\n\n```text\nrequirements-dev.txt           # local validation dependencies\n.github/workflows/             # CI quality gate\ncommands/                      # command specs\nskills/                        # portable skills\nschemas/                       # artifact schemas\ntemplates/                     # artifact templates\ndocs/                          # supporting docs\n```\n\n## Documentation Guide\n\n- `docs/agent-harness.md` — how to run the repo as an agent harness.\n- `docs/autonomous-goals.md` — autonomous goal scope and stop conditions.\n- `docs/decision-records.md` — decision record discipline.\n- `docs/ci-recovery.md` — CI recovery discipline.\n- `docs/research-watchlist.md` — source classes to review without copying branding.\n- `docs/shared-language.md` — glossary discipline.\n- `docs/skill-distillation.md` — how to convert sources into neutral skills.\n\n## Artifact Routing Guide\n\n- `schemas/artifact.schema.json` — sample artifact schema.\n- `schemas/eval-report.schema.json` — sample eval report schema.\n- `schemas/handoff-report.schema.json` — sample handoff schema.\n- `schemas/memory-decision.schema.json` — sample memory decision schema.\n- `templates/eval-report.md` — sample eval report template.\n- `templates/handoff-report.md` — sample handoff template.\n- `templates/memory-decision.md` — sample memory decision template.\n- `templates/skill-template.md` — sample skill template.\n\n## Validation\n\n```bash\npython3 -m pip install -r requirements-dev.txt\npython -m pytest -q\npython scripts/validate_repo.py\ngit diff --check\n```\n",
         encoding="utf-8",
     )
     (root / "requirements-dev.txt").write_text("pytest\njsonschema\n", encoding="utf-8")
@@ -124,6 +124,27 @@ def write_minimal_repo(root: Path) -> None:
         ),
         encoding="utf-8",
     )
+    (schema_dir / "eval-report.schema.json").write_text(
+        json.dumps(
+            {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "title": "Eval Report",
+                "type": "object",
+                "additionalProperties": False,
+                "required": ["target", "cases", "decision", "evidence_checked", "next_action"],
+                "properties": {
+                    "target": {"type": "string"},
+                    "cases": {"type": "array", "items": {"type": "object", "additionalProperties": False}},
+                    "decision": {"type": "string"},
+                    "evidence_checked": {"type": "array", "items": {"type": "string"}},
+                    "risks": {"type": "array", "items": {"type": "string"}},
+                    "open_questions": {"type": "array", "items": {"type": "string"}},
+                    "next_action": {"type": "string"},
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
     templates_dir = root / "templates"
     templates_dir.mkdir(exist_ok=True)
     (templates_dir / "handoff-report.md").write_text(
@@ -133,6 +154,10 @@ def write_minimal_repo(root: Path) -> None:
     )
     (templates_dir / "memory-decision.md").write_text(
         "# Memory Decision\n\nSchema fields: `candidate`, `decision`, `target_tier`, `evidence`, `freshness`, `privacy_review`, `rejected_material`, `next_use`.\n",
+        encoding="utf-8",
+    )
+    (templates_dir / "eval-report.md").write_text(
+        "# Eval Report\n\nSchema fields: `target`, `cases`, `decision`, `evidence_checked`, `risks`, `open_questions`, `next_action`.\n",
         encoding="utf-8",
     )
     (templates_dir / "skill-template.md").write_text(
@@ -2347,6 +2372,17 @@ def test_memory_decision_template_is_required(tmp_path):
     errors = validate_repo.validate(tmp_path)
 
     assert "missing templates/memory-decision.md" in errors
+
+
+def test_eval_report_artifacts_are_required(tmp_path):
+    write_minimal_repo(tmp_path)
+    (tmp_path / "schemas" / "eval-report.schema.json").unlink()
+    (tmp_path / "templates" / "eval-report.md").unlink()
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "missing schemas/eval-report.schema.json" in errors
+    assert "missing templates/eval-report.md" in errors
 
 
 def test_adapter_readmes_must_include_validation_section(tmp_path):
