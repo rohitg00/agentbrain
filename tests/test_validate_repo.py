@@ -12,6 +12,10 @@ def write_minimal_repo(root: Path) -> None:
         "CONTRIBUTING.md",
     ]:
         (root / rel).write_text("# required\n", encoding="utf-8")
+    (root / "CONTRIBUTING.md").write_text(
+        "# Contributing\n\n## Validation\n\n```bash\npython3 -m pip install -r requirements-dev.txt\npython3 -m pytest -q\npython3 scripts/validate_repo.py\ngit diff --check\n```\n",
+        encoding="utf-8",
+    )
     (root / "README.md").write_text(
         "# required\n\n- `/brain-sample` — sample command.\n- `sample` — sample skill.\n- `activity-recap` — activity skill.\n- `agent-output-verifier` — verifier skill.\n\n## Validation\n\n```bash\npython3 -m pip install -r requirements-dev.txt\npython -m pytest -q\npython scripts/validate_repo.py\ngit diff --check\n```\n",
         encoding="utf-8",
@@ -1075,6 +1079,18 @@ def test_readme_validation_section_must_install_dev_requirements(tmp_path):
     errors = validate_repo.validate(tmp_path)
 
     assert "README.md validation section must document: pip install -r requirements-dev.txt" in errors
+
+
+def test_contributing_validation_section_must_list_whitespace_check(tmp_path):
+    write_minimal_repo(tmp_path)
+    (tmp_path / "CONTRIBUTING.md").write_text(
+        "# Contributing\n\n## Validation\n\n```bash\npython3 -m pip install -r requirements-dev.txt\npython3 -m pytest -q\npython3 scripts/validate_repo.py\n```\n",
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "CONTRIBUTING.md validation section must document: git diff --check" in errors
 
 
 def test_evals_readme_must_list_available_cases(tmp_path):

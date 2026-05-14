@@ -39,6 +39,7 @@ REQUIRED_README_VALIDATION_COMMANDS = [
     "python scripts/validate_repo.py",
     "git diff --check",
 ]
+REQUIRED_CONTRIBUTING_VALIDATION_COMMANDS = ["git diff --check"]
 RESEARCH_WATCHLIST_REQUIRED_SOURCES = [
     "autonomous-goal runtime docs",
     "service-layer skill pattern",
@@ -335,6 +336,13 @@ def validate(root: Path = ROOT) -> list[str]:
             skill_name = skill.parent.name
             if f"`{skill_name}`" not in readme_text:
                 errors.append(f"README.md missing skill catalog entry: {skill_name}")
+
+    contributing = root / "CONTRIBUTING.md"
+    if contributing.exists():
+        contributing_text = contributing.read_text(errors="ignore")
+        for run_command in REQUIRED_CONTRIBUTING_VALIDATION_COMMANDS:
+            if run_command not in contributing_text:
+                errors.append(f"CONTRIBUTING.md validation section must document: {run_command}")
 
     eval_cases = sorted((root / "evals" / "cases").glob("*.md"))
     for case in eval_cases:

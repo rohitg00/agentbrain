@@ -52,6 +52,7 @@ Run the full local quality gate before opening a PR or pushing to `main`:
 python3 -m pip install -r requirements-dev.txt
 python3 -m pytest -q
 python3 scripts/validate_repo.py
+git diff --check
 ```
 
 The validator checks:
