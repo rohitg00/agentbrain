@@ -2041,6 +2041,37 @@ def test_skill_template_name_must_be_lowercase_kebab_case(tmp_path):
     assert "templates/skill-template.md frontmatter name must use lowercase kebab-case" in errors
 
 
+def test_skill_template_frontmatter_must_have_closing_delimiter(tmp_path):
+    write_minimal_repo(tmp_path)
+    templates_dir = tmp_path / "templates"
+    templates_dir.mkdir()
+    (templates_dir / "skill-template.md").write_text(
+        "\n".join([
+            "---",
+            "name: example-skill",
+            "description: Use when sample work needs routing.",
+            "# Skill Name",
+            "## Trigger",
+            "Use when sample work needs routing.",
+            "## Inputs",
+            "Raw request.",
+            "## Procedure",
+            "Check the request.",
+            "## Verification",
+            "Confirm evidence.",
+            "## Failure Modes",
+            "Stop if evidence is missing.",
+            "## Example",
+            "Sample request routes through the skill.",
+        ]),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "templates/skill-template.md frontmatter must be delimited by ---" in errors
+
+
 def test_skill_template_must_include_required_skill_sections(tmp_path):
     write_minimal_repo(tmp_path)
     templates_dir = tmp_path / "templates"

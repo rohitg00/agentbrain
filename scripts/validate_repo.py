@@ -468,6 +468,8 @@ def validate(root: Path = ROOT) -> list[str]:
     if skill_template.exists():
         skill_template_text = skill_template.read_text(errors="ignore")
         skill_template_lines = skill_template_text.splitlines()
+        if not has_delimited_frontmatter(skill_template_text):
+            errors.append("templates/skill-template.md frontmatter must be delimited by ---")
         skill_template_frontmatter = parse_frontmatter(skill_template_text)
         skill_template_name = skill_template_frontmatter.get("name", "")
         if not is_lowercase_kebab(skill_template_name):
