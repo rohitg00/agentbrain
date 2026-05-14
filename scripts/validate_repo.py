@@ -155,6 +155,7 @@ REQUIRED_SKILL_SECTIONS = [
     "## Inputs",
     "## Procedure",
     "## Verification",
+    "## Output Artifact",
     "## Failure Modes",
     "## Example",
 ]

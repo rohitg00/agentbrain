@@ -102,6 +102,8 @@ def write_minimal_repo(root: Path) -> None:
             "Check the request.",
             "## Verification",
             "Confirm evidence.",
+            "## Output Artifact",
+            "Structured result with status, evidence, blockers, and next state.",
             "## Failure Modes",
             "Stop if evidence is missing.",
             "## Example",
@@ -190,6 +192,8 @@ def write_minimal_repo(root: Path) -> None:
             "Collect evidence before summarizing.",
             "## Verification",
             "State the checked scope.",
+            "## Output Artifact",
+            "Evidence-backed recap with checked scope and unknowns.",
             "## Failure Modes",
             "Do not invent work without evidence.",
             "## Example",
@@ -215,6 +219,8 @@ def write_minimal_repo(root: Path) -> None:
             "Check for secrets, hallucinated tools, unbounded loops, and skipped evidence.",
             "## Verification",
             "List each pass or blocker.",
+            "## Output Artifact",
+            "Verifier decision with evidence, blockers, and next action.",
             "## Failure Modes",
             "Do not approve unverifiable output.",
             "## Example",
@@ -989,6 +995,22 @@ def test_missing_skill_sections_are_reported(tmp_path):
     assert "skills/sample/SKILL.md missing ## Example" in errors
 
 
+def test_skill_must_define_output_artifact_for_handoff(tmp_path):
+    write_minimal_repo(tmp_path)
+    skill = tmp_path / "skills" / "sample" / "SKILL.md"
+    skill.write_text(
+        skill.read_text(encoding="utf-8").replace(
+            "\n## Output Artifact\nStructured result with status, evidence, blockers, and next state.\n",
+            "\n",
+        ),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "skills/sample/SKILL.md missing ## Output Artifact" in errors
+
+
 def test_eval_case_filenames_must_use_lowercase_kebab_case(tmp_path):
     write_minimal_repo(tmp_path)
     (tmp_path / "evals" / "cases" / "Bad_Case.md").write_text(
@@ -1153,6 +1175,8 @@ def test_skill_frontmatter_description_must_name_trigger(tmp_path):
             "Check the request.",
             "## Verification",
             "Confirm evidence.",
+            "## Output Artifact",
+            "Structured result with status, evidence, blockers, and next state.",
             "## Failure Modes",
             "Stop if evidence is missing.",
             "## Example",
@@ -1183,6 +1207,8 @@ def test_skill_frontmatter_description_must_start_with_trigger(tmp_path):
             "Check the request.",
             "## Verification",
             "Confirm evidence.",
+            "## Output Artifact",
+            "Structured result with status, evidence, blockers, and next state.",
             "## Failure Modes",
             "Stop if evidence is missing.",
             "## Example",
@@ -1235,6 +1261,8 @@ def test_skill_frontmatter_must_close_before_markdown_body(tmp_path):
             "Check the request.",
             "## Verification",
             "Confirm evidence.",
+            "## Output Artifact",
+            "Structured result with status, evidence, blockers, and next state.",
             "## Failure Modes",
             "Stop if evidence is missing.",
             "## Example",
@@ -1266,6 +1294,8 @@ def test_skill_required_sections_must_have_body(tmp_path):
             "Check the request.",
             "## Verification",
             "Confirm evidence.",
+            "## Output Artifact",
+            "Structured result with status, evidence, blockers, and next state.",
             "## Failure Modes",
             "Stop if evidence is missing.",
             "## Example",
@@ -1327,6 +1357,8 @@ def test_skill_required_sections_must_not_be_duplicated(tmp_path):
             "Check the request.",
             "## Verification",
             "Confirm evidence.",
+            "## Output Artifact",
+            "Structured result with status, evidence, blockers, and next state.",
             "## Failure Modes",
             "Stop if evidence is missing.",
             "## Example",
@@ -1544,6 +1576,8 @@ def test_skill_directory_names_must_be_lowercase_kebab_case(tmp_path):
             "Check the request.",
             "## Verification",
             "Confirm evidence.",
+            "## Output Artifact",
+            "Structured result with status, evidence, blockers, and next state.",
             "## Failure Modes",
             "Stop if evidence is missing.",
             "## Example",
@@ -3029,6 +3063,8 @@ def test_skill_template_description_must_start_with_trigger(tmp_path):
             "Check the request.",
             "## Verification",
             "Confirm evidence.",
+            "## Output Artifact",
+            "Structured result with status, evidence, blockers, and next state.",
             "## Failure Modes",
             "Stop if evidence is missing.",
             "## Example",
@@ -3061,6 +3097,8 @@ def test_skill_template_name_must_be_lowercase_kebab_case(tmp_path):
             "Check the request.",
             "## Verification",
             "Confirm evidence.",
+            "## Output Artifact",
+            "Structured result with status, evidence, blockers, and next state.",
             "## Failure Modes",
             "Stop if evidence is missing.",
             "## Example",
@@ -3092,6 +3130,8 @@ def test_skill_template_frontmatter_must_have_closing_delimiter(tmp_path):
             "Check the request.",
             "## Verification",
             "Confirm evidence.",
+            "## Output Artifact",
+            "Structured result with status, evidence, blockers, and next state.",
             "## Failure Modes",
             "Stop if evidence is missing.",
             "## Example",

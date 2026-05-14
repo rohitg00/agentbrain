@@ -40,6 +40,10 @@ Use when an agent needs durable context, asks whether memory should be updated, 
 - Secrets and raw sensitive data are excluded.
 - The update can help a future agent act correctly without rereading the full chat.
 
+## Output Artifact
+
+Produce a memory decision that names the target tier, evidence, freshness/scope, rejected material, written update or no-write reason, and any validator, eval, doc, or skill follow-up.
+
 ## Failure Modes
 
 - Saving task logs as permanent doctrine.

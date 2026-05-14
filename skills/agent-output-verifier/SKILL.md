@@ -41,6 +41,10 @@ Do not use as a replacement for domain review. This skill decides whether the ou
 - Side effects match the allowed scope.
 - The final status is one of `pass`, `pass-with-warnings`, or `blocked`.
 
+## Output Artifact
+
+Produce a verifier decision with status, checked claims, evidence references, blockers, warnings, required approvals, and the smallest safe next action.
+
 ## Failure Modes
 
 - Approving fluent but unverifiable output.

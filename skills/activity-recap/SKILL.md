@@ -40,6 +40,10 @@ Do not use when the user asks for a product roadmap, a release note, or a narrat
 - If no activity is found, say so and list the checked scope.
 - Do not infer uncommitted work unless separately inspected and explicitly labeled.
 
+## Output Artifact
+
+Produce a concise recap that names the inspected scope, timeframe, filters, evidence checked, notable changes, empty scopes when relevant, assumptions, and the next useful follow-up.
+
 ## Failure Modes
 
 - **Wrong author identity:** ask for or list available authors instead of guessing.
