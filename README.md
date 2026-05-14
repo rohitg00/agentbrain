@@ -129,7 +129,6 @@ CONTRIBUTING.md                # Contribution and validation workflow
 commands/                      # Slash command specs
 skills/                        # Portable agent skills
 schemas/                       # Machine-checkable artifact schemas
-transitions/                   # State transition rules, if present
 docs/                          # Architecture, state, memory, research, gates
 templates/                     # Artifact templates
 evals/                         # Cases and rubrics

@@ -381,6 +381,35 @@ def find_object_schemas_without_closed_properties(schema: object) -> list[str]:
     return missing_locations
 
 
+def readme_repository_map_paths(text: str) -> list[str]:
+    lines = text.splitlines()
+    paths: list[str] = []
+    in_repository_map = False
+    in_code_fence = False
+
+    for line in lines:
+        if line == "## Repository Map":
+            in_repository_map = True
+            continue
+        if in_repository_map and line.startswith("## "):
+            break
+        if not in_repository_map:
+            continue
+        if line.startswith("```"):
+            in_code_fence = not in_code_fence
+            continue
+        if not in_code_fence:
+            continue
+
+        candidate = line.split("#", 1)[0].strip()
+        if not candidate or candidate.endswith(".md"):
+            continue
+        if candidate.endswith("/"):
+            paths.append(candidate)
+
+    return paths
+
+
 def validate(root: Path = ROOT) -> list[str]:
     root = Path(root)
     errors: list[str] = []
@@ -616,6 +645,9 @@ def validate(root: Path = ROOT) -> list[str]:
             skill_name = skill.parent.name
             if f"`{skill_name}`" not in readme_text:
                 errors.append(f"README.md missing skill catalog entry: {skill_name}")
+        for mapped_path in readme_repository_map_paths(readme_text):
+            if not (root / mapped_path).exists():
+                errors.append(f"README.md repository map lists missing path: {mapped_path}")
 
     contributing = root / "CONTRIBUTING.md"
     if contributing.exists():
