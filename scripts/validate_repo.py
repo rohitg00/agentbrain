@@ -321,6 +321,10 @@ def validate(root: Path = ROOT) -> list[str]:
 
     for rubric in sorted((root / "evals" / "rubrics").glob("*.md")):
         text = rubric.read_text(errors="ignore")
+        expected_heading = f"# {title_from_slug(rubric.stem)}"
+        first_line = text.splitlines()[0] if text.splitlines() else ""
+        if first_line != expected_heading:
+            errors.append(f"{rel(rubric, root)} heading must be {expected_heading}")
         for section in REQUIRED_EVAL_RUBRIC_SECTIONS:
             if section not in text:
                 errors.append(f"{rel(rubric, root)} missing {section}")
