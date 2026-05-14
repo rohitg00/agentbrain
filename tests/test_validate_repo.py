@@ -190,7 +190,7 @@ def write_minimal_repo(root: Path) -> None:
         encoding="utf-8",
     )
     (root / "evals" / "README.md").write_text(
-        "# Evals\n\n- activity-recap\n- source-to-skill-distillation\n- agent-output-verifier\n",
+        "# Evals\n\n- `activity-recap`\n- `source-to-skill-distillation`\n- `agent-output-verifier`\n",
         encoding="utf-8",
     )
 
@@ -690,7 +690,7 @@ def test_eval_case_heading_allows_connector_words_from_filename(tmp_path):
         encoding="utf-8",
     )
     (tmp_path / "evals" / "README.md").write_text(
-        "# Evals\n\n- activity-recap\n- agent-output-verifier\n- build-vs-buy-decision\n- source-to-skill-distillation\n",
+        "# Evals\n\n- `activity-recap`\n- `agent-output-verifier`\n- `build-vs-buy-decision`\n- `source-to-skill-distillation`\n",
         encoding="utf-8",
     )
 
@@ -1081,6 +1081,18 @@ def test_evals_readme_must_list_available_cases(tmp_path):
     write_minimal_repo(tmp_path)
     (tmp_path / "evals" / "README.md").write_text(
         "# Evals\n\nNo case catalog here.\n", encoding="utf-8"
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "evals/README.md missing eval case catalog entry: activity-recap" in errors
+
+
+def test_evals_readme_case_catalog_entries_must_be_backticked(tmp_path):
+    write_minimal_repo(tmp_path)
+    (tmp_path / "evals" / "README.md").write_text(
+        "# Evals\n\nactivity-recap is mentioned only as prose.\n- `agent-output-verifier`\n- `source-to-skill-distillation`\n",
+        encoding="utf-8",
     )
 
     errors = validate_repo.validate(tmp_path)

@@ -356,7 +356,7 @@ def validate(root: Path = ROOT) -> list[str]:
     if evals_readme.exists():
         evals_readme_text = evals_readme.read_text(errors="ignore")
         for case in eval_cases:
-            if case.stem not in evals_readme_text:
+            if f"`{case.stem}`" not in evals_readme_text:
                 errors.append(f"evals/README.md missing eval case catalog entry: {case.stem}")
         for rubric in sorted((root / "evals" / "rubrics").glob("*.md")):
             if rubric.stem not in evals_readme_text:
