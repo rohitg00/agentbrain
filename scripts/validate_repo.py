@@ -327,8 +327,8 @@ def validate(root: Path = ROOT) -> list[str]:
             errors.append(f"{rel(skill, root)} frontmatter name must be {expected_name}")
         if not frontmatter.get("description"):
             errors.append(f"{rel(skill, root)} frontmatter description is required")
-        elif "Use when" not in frontmatter["description"]:
-            errors.append(f"{rel(skill, root)} frontmatter description must include 'Use when'")
+        elif not frontmatter["description"].startswith("Use when"):
+            errors.append(f"{rel(skill, root)} frontmatter description must start with 'Use when'")
         skill_lines = text.splitlines()
         for section in REQUIRED_SKILL_SECTIONS:
             section_count = skill_lines.count(section)
@@ -395,8 +395,8 @@ def validate(root: Path = ROOT) -> list[str]:
         skill_template_text = skill_template.read_text(errors="ignore")
         skill_template_lines = skill_template_text.splitlines()
         skill_template_frontmatter = parse_frontmatter(skill_template_text)
-        if "Use when" not in skill_template_frontmatter.get("description", ""):
-            errors.append("templates/skill-template.md frontmatter description must include 'Use when'")
+        if not skill_template_frontmatter.get("description", "").startswith("Use when"):
+            errors.append("templates/skill-template.md frontmatter description must start with 'Use when'")
         for section in REQUIRED_SKILL_SECTIONS:
             section_count = skill_template_lines.count(section)
             if section_count == 0:

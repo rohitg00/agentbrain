@@ -439,7 +439,37 @@ def test_skill_frontmatter_description_must_name_trigger(tmp_path):
 
     errors = validate_repo.validate(tmp_path)
 
-    assert "skills/sample/SKILL.md frontmatter description must include 'Use when'" in errors
+    assert "skills/sample/SKILL.md frontmatter description must start with 'Use when'" in errors
+
+
+def test_skill_frontmatter_description_must_start_with_trigger(tmp_path):
+    write_minimal_repo(tmp_path)
+    (tmp_path / "skills" / "sample" / "SKILL.md").write_text(
+        "\n".join([
+            "---",
+            "name: sample",
+            "description: Route sample requests. Use when a sample request needs routing.",
+            "---",
+            "# sample",
+            "## Trigger",
+            "Use for sample requests.",
+            "## Inputs",
+            "Raw request.",
+            "## Procedure",
+            "Check the request.",
+            "## Verification",
+            "Confirm evidence.",
+            "## Failure Modes",
+            "Stop if evidence is missing.",
+            "## Example",
+            "Sample request routes through the skill.",
+        ]),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "skills/sample/SKILL.md frontmatter description must start with 'Use when'" in errors
 
 
 def test_skill_frontmatter_must_have_closing_delimiter(tmp_path):
@@ -1632,7 +1662,7 @@ def test_gitignore_must_exclude_generated_python_cache_artifacts(tmp_path):
     assert ".gitignore must ignore generated Python cache artifacts: __pycache__/" in errors
 
 
-def test_skill_template_description_must_name_trigger(tmp_path):
+def test_skill_template_description_must_start_with_trigger(tmp_path):
     write_minimal_repo(tmp_path)
     templates_dir = tmp_path / "templates"
     templates_dir.mkdir()
@@ -1640,7 +1670,7 @@ def test_skill_template_description_must_name_trigger(tmp_path):
         "\n".join([
             "---",
             "name: example-skill",
-            "description: One sentence describing the skill.",
+            "description: One sentence describing the skill. Use when sample work needs routing.",
             "---",
             "# Skill Name",
             "## Trigger",
@@ -1661,7 +1691,7 @@ def test_skill_template_description_must_name_trigger(tmp_path):
 
     errors = validate_repo.validate(tmp_path)
 
-    assert "templates/skill-template.md frontmatter description must include 'Use when'" in errors
+    assert "templates/skill-template.md frontmatter description must start with 'Use when'" in errors
 
 
 def test_skill_template_must_include_required_skill_sections(tmp_path):
