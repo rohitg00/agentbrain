@@ -468,6 +468,8 @@ def validate(root: Path = ROOT) -> list[str]:
             for permission_line in REQUIRED_QUALITY_WORKFLOW_PERMISSIONS
         ):
             errors.append(f"{rel(workflow, root)} must set permissions to contents: read")
+        if "timeout-minutes:" not in workflow_text:
+            errors.append(f"{rel(workflow, root)} must set timeout-minutes")
         for permission in find_write_workflow_permissions(workflow_text):
             errors.append(f"{rel(workflow, root)} must not request write repository permissions: {permission}")
         for trigger in REQUIRED_WORKFLOW_TRIGGERS:
