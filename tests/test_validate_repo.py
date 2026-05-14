@@ -18,7 +18,7 @@ def write_minimal_repo(root: Path) -> None:
         encoding="utf-8",
     )
     (root / "README.md").write_text(
-        "# required\n\n## Quickstart\nInstall and run validation.\n\n## Run as an Agent Harness\nLoad the repo as operating instructions.\n\n## Command Selection Guide\n\n- Raw request -> `/brain-sample`\n\n## Edge Cases and Stop Conditions\nStop on missing evidence.\n\n## Troubleshooting\nRun validation and inspect errors.\n\n- `/brain-sample` — sample command.\n- `sample` — sample skill.\n- `activity-recap` — activity skill.\n- `agent-output-verifier` — verifier skill.\n\n## Validation\n\n```bash\npython3 -m pip install -r requirements-dev.txt\npython -m pytest -q\npython scripts/validate_repo.py\ngit diff --check\n```\n",
+        "# required\n\n## Quickstart\nInstall and run validation.\n\n## Run as an Agent Harness\nLoad the repo as operating instructions.\n\n## Command Selection Guide\n\n- Raw request -> `/brain-sample`\n\n## Edge Cases and Stop Conditions\nStop on missing evidence.\n\n## Troubleshooting\nRun validation and inspect errors.\n\n- `/brain-sample` — sample command.\n- `sample` — sample skill.\n- `activity-recap` — activity skill.\n- `agent-output-verifier` — verifier skill.\n\n## Artifact Routing Guide\n\n- `schemas/artifact.schema.json` — sample artifact schema.\n- `templates/skill-template.md` — sample skill template.\n\n## Validation\n\n```bash\npython3 -m pip install -r requirements-dev.txt\npython -m pytest -q\npython scripts/validate_repo.py\ngit diff --check\n```\n",
         encoding="utf-8",
     )
     (root / "requirements-dev.txt").write_text("pytest\njsonschema\n", encoding="utf-8")
@@ -44,7 +44,6 @@ def write_minimal_repo(root: Path) -> None:
         ),
         encoding="utf-8",
     )
-
     skill_dir = root / "skills" / "sample"
     skill_dir.mkdir(parents=True)
     (skill_dir / "SKILL.md").write_text(
@@ -997,6 +996,25 @@ def test_skill_required_sections_must_not_be_duplicated(tmp_path):
     assert "skills/sample/SKILL.md section must appear exactly once: ## Trigger" in errors
 
 
+def test_readme_must_catalog_artifact_schemas_and_templates(tmp_path):
+    write_minimal_repo(tmp_path)
+    templates_dir = tmp_path / "templates"
+    templates_dir.mkdir()
+    (templates_dir / "skill-template.md").write_text("# Skill Template\n", encoding="utf-8")
+    readme = tmp_path / "README.md"
+    readme.write_text(
+        readme.read_text(encoding="utf-8")
+        .replace("- `schemas/artifact.schema.json` — sample artifact schema.\n", "")
+        .replace("- `templates/skill-template.md` — sample skill template.\n", ""),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "README.md missing schema catalog entry: schemas/artifact.schema.json" in errors
+    assert "README.md missing template catalog entry: templates/skill-template.md" in errors
+
+
 def test_banned_public_copy_terms_are_reported(tmp_path):
     write_minimal_repo(tmp_path)
     (tmp_path / "docs").mkdir(exist_ok=True)
@@ -1050,8 +1068,10 @@ def test_vendor_names_are_reported_in_public_copy(tmp_path):
 def test_readme_vs_others_section_can_name_specific_runtimes(tmp_path):
     write_minimal_repo(tmp_path)
     vendor_name = "Clau" + "de"
-    (tmp_path / "README.md").write_text(
-        f"# required\n\n## Quickstart\nInstall and run validation.\n\n## Run as an Agent Harness\nLoad the repo as operating instructions.\n\n## Command Selection Guide\n\n- Raw request -> `/brain-sample`\n\n## Edge Cases and Stop Conditions\nStop on missing evidence.\n\n## Troubleshooting\nRun validation and inspect errors.\n\n- `/brain-sample` — sample command.\n- `sample` — sample skill.\n- `activity-recap` — activity skill.\n- `agent-output-verifier` — verifier skill.\n\n## Validation\n\n```bash\npython3 -m pip install -r requirements-dev.txt\npython -m pytest -q\npython scripts/validate_repo.py\ngit diff --check\n```\n\n## vs others\n\nCompared with {vendor_name}, Agent Brain stays portable.\n",
+    readme = tmp_path / "README.md"
+    readme.write_text(
+        readme.read_text(encoding="utf-8")
+        + f"\n## vs others\n\nCompared with {vendor_name}, Agent Brain stays portable.\n",
         encoding="utf-8",
     )
 

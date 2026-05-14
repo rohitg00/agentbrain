@@ -185,6 +185,22 @@ Use this guide before reading individual command files. Pick the earliest state 
 
 Do not skip forward because the user asked for speed. If a request matches multiple rows, choose the earliest unsafe gap first, usually research, challenge, brief, or plan before build.
 
+## Artifact Routing Guide
+
+Use this guide when a command says to produce an artifact. Start with the command output, then choose the closest template and validate against the matching schema when one exists.
+
+| Work product | Use this file | Schema / contract |
+| --- | --- | --- |
+| New or revised skill | `templates/skill-template.md` | `schemas/skill.schema.json` |
+| Product scope | `templates/product-brief.md` | `schemas/product-brief.schema.json` |
+| Implementation slices | `templates/implementation-plan.md` | `schemas/implementation-plan.schema.json` |
+| QA or verification proof | `docs/review-gates.md` QA gate | `schemas/qa-evidence.schema.json` |
+| Trust review before handoff | `templates/review-report.md` | `schemas/review-report.schema.json` |
+| Decision or killed path | `docs/state-machine.md` archive state | `schemas/decision-log.schema.json` |
+| Unknowns and assumptions | `docs/grilling-protocol.md` | `schemas/assumption-ledger.schema.json` |
+
+If no template fits, do not invent a new format silently. State the closest existing artifact, explain the gap, and add a validator-backed template/schema improvement as a separate hardening slice.
+
 ## Core Commands
 
 - `/brain-start` — turn a raw request into the correct next state.

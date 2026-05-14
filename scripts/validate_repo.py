@@ -731,6 +731,14 @@ def validate(root: Path = ROOT) -> list[str]:
             skill_file = root / "skills" / skill_name / "SKILL.md"
             if not skill_file.exists():
                 errors.append(f"README.md skill catalog entry points to missing file: {skill_name}")
+        for schema in sorted((root / "schemas").glob("*.json")):
+            schema_ref = rel(schema, root)
+            if f"`{schema_ref}`" not in readme_text:
+                errors.append(f"README.md missing schema catalog entry: {schema_ref}")
+        for template in sorted((root / "templates").glob("*.md")):
+            template_ref = rel(template, root)
+            if f"`{template_ref}`" not in readme_text:
+                errors.append(f"README.md missing template catalog entry: {template_ref}")
         for mapped_path in readme_repository_map_paths(readme_text):
             if not (root / mapped_path).exists():
                 errors.append(f"README.md repository map lists missing path: {mapped_path}")
