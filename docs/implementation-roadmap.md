@@ -1,6 +1,6 @@
 # Agent Brain v0.2.0 Implementation Roadmap
 
-Status: active rewrite plan. This file is the checkpoint ledger for v0.2.0 so work is chunked, reviewable, and not dumped in one giant commit.
+Status: v0.2.0 checkpoints completed. This file remains as the checkpoint ledger showing how the rewrite was chunked, reviewed, and committed without one giant dump.
 
 ## Goal
 
