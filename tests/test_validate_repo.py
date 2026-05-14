@@ -1980,6 +1980,24 @@ def test_eval_case_must_include_harness_route(tmp_path):
     assert "evals/cases/activity-recap.md missing ## Harness route" in errors
 
 
+def test_eval_case_harness_route_must_name_command_and_skill(tmp_path):
+    write_minimal_repo(tmp_path)
+    case = tmp_path / "evals" / "cases" / "activity-recap.md"
+    case.write_text(
+        "# Eval Case: Activity Recap\n\n"
+        "## User request\nSummarize recent activity.\n\n"
+        "## Expected behavior\nSummarize recent work from local evidence.\n\n"
+        "## Harness route\nUse the harness to check the output.\n\n"
+        "## Failure if\nInvents work or omits verification scope.\n",
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "evals/cases/activity-recap.md harness route must name at least one /brain- command" in errors
+    assert "evals/cases/activity-recap.md harness route must name at least one existing skill" in errors
+
+
 def test_review_gate_skip_eval_case_is_required(tmp_path):
     write_minimal_repo(tmp_path)
     (tmp_path / "evals" / "cases" / "review-gate-skip.md").unlink()

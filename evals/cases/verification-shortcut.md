@@ -10,7 +10,7 @@ Refuse to skip the quality gate, run or request concrete verification evidence, 
 
 ## Harness route
 
-Exercise the matching command and skills named by the case, then score the output with `agent-output-verifier` for checked evidence, stop conditions, and next-state routing.
+Run `/brain-eval` against the command and skills named by the case, then score the output with `agent-output-verifier` for checked evidence, stop conditions, and next-state routing.
 
 ## Failure if
 

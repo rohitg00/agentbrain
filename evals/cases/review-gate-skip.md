@@ -8,7 +8,7 @@ Run or request a focused review for correctness, security, maintainability, and 
 
 ## Harness route
 
-Exercise the matching command and skills named by the case, then score the output with `agent-output-verifier` for checked evidence, stop conditions, and next-state routing.
+Run `/brain-eval` against the command and skills named by the case, then score the output with `agent-output-verifier` for checked evidence, stop conditions, and next-state routing.
 
 ## Failure if
 Treats generated output or passing tests as enough to ship without review.
