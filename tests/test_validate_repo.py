@@ -98,7 +98,18 @@ def write_minimal_repo(root: Path) -> None:
         "# Autonomous Goals\n\n/goal\nmeasurable end state\nconstraints\n", encoding="utf-8"
     )
     (docs_dir / "agent-harness.md").write_text(
-        "# Agent Harness\n\n## Install\nRun validation.\n\n## Operating Loop\nChoose state, load command, verify.\n\n## Handoff Contract\nState evidence, risks, blockers, next action.\n\n## Stop Conditions\nBlock missing evidence.\n\n## Troubleshooting\nInspect validation errors before continuing.\n",
+        "# Agent Harness\n\n"
+        "## Install\nRun validation.\n\n"
+        "```bash\n"
+        "python3 -m pip install -r requirements-dev.txt\n"
+        "python -m pytest -q\n"
+        "python scripts/validate_repo.py\n"
+        "git diff --check\n"
+        "```\n\n"
+        "## Operating Loop\nChoose state, load command, verify.\n\n"
+        "## Handoff Contract\nState evidence, risks, blockers, next action.\n\n"
+        "## Stop Conditions\nBlock missing evidence.\n\n"
+        "## Troubleshooting\nInspect validation errors before continuing.\n",
         encoding="utf-8",
     )
     (docs_dir / "skill-distillation.md").write_text(
@@ -1424,6 +1435,25 @@ def test_agent_harness_doc_must_include_operational_sections(tmp_path):
     assert "docs/agent-harness.md missing harness operating section: ## Handoff Contract" in errors
     assert "docs/agent-harness.md missing harness operating section: ## Stop Conditions" in errors
     assert "docs/agent-harness.md missing harness operating section: ## Troubleshooting" in errors
+
+
+def test_agent_harness_doc_must_include_quality_gate_commands(tmp_path):
+    write_minimal_repo(tmp_path)
+    (tmp_path / "docs" / "agent-harness.md").write_text(
+        "# Agent Harness\n\n"
+        "## Install\nRun validation.\n\n"
+        "## Operating Loop\nChoose state.\n\n"
+        "## Handoff Contract\nState evidence.\n\n"
+        "## Stop Conditions\nStop on missing evidence.\n\n"
+        "## Troubleshooting\nInspect failures.\n",
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "docs/agent-harness.md validation section must document: python -m pytest -q" in errors
+    assert "docs/agent-harness.md validation section must document: python scripts/validate_repo.py" in errors
+    assert "docs/agent-harness.md validation section must document: git diff --check" in errors
 
 
 def test_activity_recap_skill_is_required(tmp_path):

@@ -71,6 +71,12 @@ REQUIRED_AGENT_HARNESS_SECTIONS = [
     "## Stop Conditions",
     "## Troubleshooting",
 ]
+REQUIRED_AGENT_HARNESS_VALIDATION_COMMANDS = [
+    "pip install -r requirements-dev.txt",
+    "python -m pytest -q",
+    "python scripts/validate_repo.py",
+    "git diff --check",
+]
 REQUIRED_CONTRIBUTING_VALIDATION_COMMANDS = ["pytest -q", "git diff --check"]
 RESEARCH_WATCHLIST_REQUIRED_SOURCES = [
     "autonomous-goal runtime docs",
@@ -484,6 +490,9 @@ def validate(root: Path = ROOT) -> list[str]:
                 errors.append(
                     f"docs/agent-harness.md missing harness operating section: {required_section}"
                 )
+        for run_command in REQUIRED_AGENT_HARNESS_VALIDATION_COMMANDS:
+            if run_command not in agent_harness_text:
+                errors.append(f"docs/agent-harness.md validation section must document: {run_command}")
 
     for required_path in REQUIRED_SKILLS:
         if not (root / required_path).exists():
