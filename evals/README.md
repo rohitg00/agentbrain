@@ -22,6 +22,7 @@ Agent Brain evals check whether a command or skill improves judgment instead of 
 - `context-drift` — rebuilds a compact repo context map from evidence before planning follow-up work.
 - `dirty-working-tree-preservation` — preserves unrelated local edits before autonomous hardening or commits.
 - `domain-language-drift` — resolves overloaded project vocabulary before naming plans, schemas, docs, or code.
+- `horizontal-slicing` — rejects broad test or layer batching and requires one red-green vertical slice at a time.
 - `interrupted-handoff-resume` — resumes from prior agent handoffs only after checking repo state and stale-note risk.
 - `memory-capture-routing` — routes candidate memories to the right tier while rejecting noise, secrets, and stale progress.
 - `no-user-defined` — refuses to design without a concrete user definition.
