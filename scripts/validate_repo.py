@@ -459,6 +459,8 @@ def validate(root: Path = ROOT) -> list[str]:
         text = rubric.read_text(errors="ignore")
         expected_heading = f"# {title_from_slug(rubric.stem)}"
         first_line = text.splitlines()[0] if text.splitlines() else ""
+        if not is_lowercase_kebab(rubric.stem):
+            errors.append(f"{rel(rubric, root)} filename must use lowercase kebab-case")
         if first_line != expected_heading:
             errors.append(f"{rel(rubric, root)} heading must be {expected_heading}")
         for section in REQUIRED_EVAL_RUBRIC_SECTIONS:

@@ -1514,6 +1514,24 @@ def test_eval_rubrics_must_have_exactly_one_h1(tmp_path):
     assert "evals/rubrics/quality.md must contain exactly one H1 heading" in errors
 
 
+def test_eval_rubric_filenames_must_use_lowercase_kebab_case(tmp_path):
+    write_minimal_repo(tmp_path)
+    rubric_dir = tmp_path / "evals" / "rubrics"
+    rubric_dir.mkdir(parents=True)
+    (rubric_dir / "Quality_Rubric.md").write_text(
+        "# Quality Rubric\n\n## Dimensions\n\nScore the evidence quality.\n\n## Interpretation\n\nUse the score to decide readiness.\n",
+        encoding="utf-8",
+    )
+    (tmp_path / "evals" / "README.md").write_text(
+        "# Evals\n\n- `activity-recap`\n- `agent-output-verifier`\n- `source-to-skill-distillation`\n- `verification-shortcut`\n- `Quality_Rubric`\n",
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "evals/rubrics/Quality_Rubric.md filename must use lowercase kebab-case" in errors
+
+
 def test_eval_rubrics_require_scoring_and_interpretation_sections(tmp_path):
     write_minimal_repo(tmp_path)
     rubric_dir = tmp_path / "evals" / "rubrics"
