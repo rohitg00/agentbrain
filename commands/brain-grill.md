@@ -2,6 +2,8 @@
 
 ## Purpose
 
+State: CHALLENGE
+
 Stress-test assumptions before planning or building.
 
 ## When to use

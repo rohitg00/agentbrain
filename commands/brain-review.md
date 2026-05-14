@@ -2,6 +2,8 @@
 
 ## Purpose
 
+State: REVIEW
+
 Review artifact quality before merge, launch, or handoff.
 
 ## When to use

@@ -2,6 +2,8 @@
 
 ## Purpose
 
+State: BUILD
+
 Implement the next approved slice only.
 
 ## When to use

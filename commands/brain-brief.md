@@ -2,6 +2,8 @@
 
 ## Purpose
 
+State: DESIGN
+
 Convert evidence and decisions into a product brief.
 
 ## When to use

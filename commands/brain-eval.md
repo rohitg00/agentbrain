@@ -2,6 +2,8 @@
 
 ## Purpose
 
+State: VERIFY
+
 Test a command, skill, or artifact against rubric cases.
 
 ## When to use

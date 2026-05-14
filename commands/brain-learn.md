@@ -2,6 +2,8 @@
 
 ## Purpose
 
+State: LEARN
+
 Capture reusable learning from a completed or failed loop.
 
 ## When to use

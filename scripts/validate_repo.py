@@ -293,6 +293,7 @@ REQUIRED_COMMAND_OUTPUT_TERMS = [
     "open questions",
     "next recommended state",
 ]
+VALID_COMMAND_LIFECYCLE_STATES = set(REQUIRED_STATE_MACHINE_VALUES)
 REQUIRED_EVAL_CASE_SECTIONS = ["## User request", "## Expected behavior", "## Failure if"]
 REQUIRED_EVAL_RUBRIC_SECTIONS = ["## Dimensions", "## Interpretation"]
 BANNED_PUBLIC_COPY_TERMS = [
@@ -710,6 +711,12 @@ def command_skills_to_load(text: str) -> list[str]:
     return sorted(set(re.findall(r"`([a-z0-9]+(?:-[a-z0-9]+)*)`", body)))
 
 
+def command_lifecycle_state(text: str) -> str:
+    purpose_body = section_body(text, "## Purpose")
+    match = re.search(r"^State: ([A-Z]+)$", purpose_body, flags=re.MULTILINE)
+    return match.group(1) if match else ""
+
+
 def normalized_section_body(text: str, section: str) -> str:
     return re.sub(r"\s+", " ", section_body(text, section).strip().lower())
 
@@ -1001,6 +1008,8 @@ def validate(root: Path = ROOT) -> list[str]:
                     errors.append(f"{rel(command, root)} section has no body: {section}")
         if not sections_are_in_order(text, REQUIRED_COMMAND_SECTIONS):
             errors.append(f"{rel(command, root)} sections must appear in canonical order")
+        if command_lifecycle_state(text) not in VALID_COMMAND_LIFECYCLE_STATES:
+            errors.append(f"{rel(command, root)} purpose must declare valid lifecycle state")
         output_body = section_body(text, "## Output").lower()
         for required_term in REQUIRED_COMMAND_OUTPUT_TERMS:
             if required_term not in output_body:

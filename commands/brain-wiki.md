@@ -2,6 +2,8 @@
 
 ## Purpose
 
+State: LEARN
+
 Maintain source-backed project knowledge.
 
 ## When to use

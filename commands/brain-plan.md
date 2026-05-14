@@ -2,6 +2,8 @@
 
 ## Purpose
 
+State: PLAN
+
 Break approved work into small verifiable implementation slices.
 
 ## When to use

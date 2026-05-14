@@ -2,6 +2,8 @@
 
 ## Purpose
 
+State: RESEARCH
+
 Turn sources and discussion into a claim ledger.
 
 ## When to use

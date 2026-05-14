@@ -2,6 +2,8 @@
 
 ## Purpose
 
+State: INTAKE
+
 Route raw intent into the correct Agent Brain state.
 
 ## When to use

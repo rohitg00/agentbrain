@@ -2,6 +2,8 @@
 
 ## Purpose
 
+State: DECIDE
+
 Decide whether the idea should exist and whether it should be agentic.
 
 ## When to use

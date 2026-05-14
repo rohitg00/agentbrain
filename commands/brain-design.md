@@ -2,6 +2,8 @@
 
 ## Purpose
 
+State: DESIGN
+
 Define user flow, interface behavior, states, and edge cases.
 
 ## When to use

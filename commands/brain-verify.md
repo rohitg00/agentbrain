@@ -2,6 +2,8 @@
 
 ## Purpose
 
+State: VERIFY
+
 Collect evidence that the artifact works.
 
 ## When to use

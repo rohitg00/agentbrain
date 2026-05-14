@@ -2,6 +2,8 @@
 
 ## Purpose
 
+State: SHIP
+
 Make a go/no-go launch decision.
 
 ## When to use

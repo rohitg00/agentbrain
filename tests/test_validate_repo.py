@@ -254,6 +254,8 @@ def write_minimal_repo(root: Path) -> None:
         "\n".join([
             "# /brain-sample",
             "## Purpose",
+            "State: INTAKE",
+            "",
             "Route sample work.",
             "## When to use",
             "Use for sample requests.",
@@ -536,6 +538,19 @@ def test_required_eval_cases_include_dirty_working_tree_preservation(tmp_path):
     errors = validate_repo.validate(tmp_path)
 
     assert "missing evals/cases/dirty-working-tree-preservation.md" in errors
+
+
+def test_commands_must_declare_lifecycle_state(tmp_path):
+    write_minimal_repo(tmp_path)
+    command_path = tmp_path / "commands" / "brain-sample.md"
+    command_path.write_text(
+        command_path.read_text(encoding="utf-8").replace("## Purpose\nState: INTAKE\n", "## Purpose\n"),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "commands/brain-sample.md purpose must declare valid lifecycle state" in errors
 
 
 def test_commands_must_not_reuse_the_same_workflow_body(tmp_path):
