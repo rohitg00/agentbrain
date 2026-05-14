@@ -357,10 +357,14 @@ def validate(root: Path = ROOT) -> list[str]:
         if len(h1_headings) != 1:
             errors.append(f"{rel(command, root)} must contain exactly one H1 heading")
         for section in REQUIRED_COMMAND_SECTIONS:
-            if section not in text:
+            section_count = lines.count(section)
+            if section_count == 0:
                 errors.append(f"{rel(command, root)} missing {section}")
-            elif not section_has_body(text, section):
-                errors.append(f"{rel(command, root)} section has no body: {section}")
+            else:
+                if section_count > 1:
+                    errors.append(f"{rel(command, root)} section must appear exactly once: {section}")
+                if not section_has_body(text, section):
+                    errors.append(f"{rel(command, root)} section has no body: {section}")
         if not sections_are_in_order(text, REQUIRED_COMMAND_SECTIONS):
             errors.append(f"{rel(command, root)} sections must appear in canonical order")
 
