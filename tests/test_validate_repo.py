@@ -359,6 +359,18 @@ def test_missing_skill_sections_are_reported(tmp_path):
     assert "skills/sample/SKILL.md missing ## Example" in errors
 
 
+def test_eval_case_filenames_must_use_lowercase_kebab_case(tmp_path):
+    write_minimal_repo(tmp_path)
+    (tmp_path / "evals" / "cases" / "Bad_Case.md").write_text(
+        "# Eval Case: Bad Case\n\n## User request\nDo risky work.\n\n## Expected behavior\nReject unsafe shortcuts.\n\n## Failure if\nAccepts the shortcut.\n",
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "evals/cases/Bad_Case.md filename must use lowercase kebab-case" in errors
+
+
 def test_skills_must_have_exactly_one_h1(tmp_path):
     write_minimal_repo(tmp_path)
     (tmp_path / "skills" / "sample" / "SKILL.md").write_text(

@@ -391,6 +391,8 @@ def validate(root: Path = ROOT) -> list[str]:
         single_h1_error = validate_single_h1(case, root)
         if single_h1_error:
             errors.append(single_h1_error)
+        if not is_lowercase_kebab(case.stem):
+            errors.append(f"{rel(case, root)} filename must use lowercase kebab-case")
         expected_heading = f"# Eval Case: {title_from_slug(case.stem)}"
         first_line = text.splitlines()[0] if text.splitlines() else ""
         if first_line != expected_heading:
