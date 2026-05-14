@@ -33,6 +33,7 @@ REQUIRED_EVAL_CASES = [
     "evals/cases/no-user-defined.md",
     "evals/cases/review-gate-skip.md",
     "evals/cases/plan-slicing.md",
+    "evals/cases/context-drift.md",
 ]
 REQUIRED_EVAL_DOCS = ["evals/README.md"]
 REQUIRED_WORKFLOWS = [".github/workflows/quality.yml"]
