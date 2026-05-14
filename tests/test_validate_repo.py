@@ -18,7 +18,7 @@ def write_minimal_repo(root: Path) -> None:
         encoding="utf-8",
     )
     (root / "README.md").write_text(
-        "# required\n\n## Quickstart\nInstall and run validation.\n\n## Run as an Agent Harness\nLoad the repo as operating instructions.\n\n## Command Selection Guide\n\n- Raw request -> `/brain-sample`\n\n## Handoff Contract\nState the status, evidence checked, facts, assumptions, risks, blockers, and next action.\n\n## Edge Cases and Stop Conditions\nStop on missing evidence.\n\n## Troubleshooting\nRun validation and inspect errors.\n\n## Maintainer Checklist\nBefore release, confirm README bootstraps a new agent, commands and skills are cataloged, evals cover current failure modes, validation passes, CI mirrors local checks, public copy is neutral, caches are untracked, and the remote branch is verified.\n\n## Minimal Harness Prompt\n\n```text\nRead AGENTBRAIN.md, PRINCIPLES.md, ANTI_RATIONALIZATION.md, and docs/state-machine.md before acting.\nInspect git status --short and git log --oneline -5 before choosing work.\nPreserve user changes before editing.\nChoose the matching command in commands/ and load only the required skills/ entry.\nUse templates/ and schemas/ for structured artifacts when they fit.\nRun python -m pytest -q, python scripts/validate_repo.py, and git diff --check before claiming completion.\nStop when evidence is missing.\n```\n\n## Core Commands\n\n- `/brain-sample` — sample command.\n\n## Core Skills\n\n- `sample` — sample skill.\n- `activity-recap` — activity skill.\n- `agent-output-verifier` — verifier skill.\n\n## Repository Map\n\n```text\nrequirements-dev.txt           # local validation dependencies\n.github/workflows/             # CI quality gate\ncommands/                      # command specs\nskills/                        # portable skills\nschemas/                       # artifact schemas\ntemplates/                     # artifact templates\ndocs/                          # supporting docs\n```\n\n## Documentation Guide\n\n- `docs/agent-harness.md` — how to run the repo as an agent harness.\n- `docs/autonomous-goals.md` — autonomous goal scope and stop conditions.\n- `docs/research-watchlist.md` — source classes to review without copying branding.\n- `docs/skill-distillation.md` — how to convert sources into neutral skills.\n\n## Artifact Routing Guide\n\n- `schemas/artifact.schema.json` — sample artifact schema.\n- `schemas/handoff-report.schema.json` — sample handoff schema.\n- `templates/handoff-report.md` — sample handoff template.\n- `templates/skill-template.md` — sample skill template.\n\n## Validation\n\n```bash\npython3 -m pip install -r requirements-dev.txt\npython -m pytest -q\npython scripts/validate_repo.py\ngit diff --check\n```\n",
+        "# required\n\n## Quickstart\nInstall and run validation.\n\n## Run as an Agent Harness\nLoad the repo as operating instructions.\n\n## Command Selection Guide\n\n- Raw request -> `/brain-sample`\n\n## Handoff Contract\nState the status, evidence checked, facts, assumptions, risks, blockers, and next action.\n\n## Edge Cases and Stop Conditions\nStop on missing evidence.\n\n## Troubleshooting\nRun validation and inspect errors.\n\n## Maintainer Checklist\nBefore release, confirm README bootstraps a new agent, commands and skills are cataloged, evals cover current failure modes, validation passes, CI mirrors local checks, public copy is neutral, caches are untracked, and the remote branch is verified.\n\n## Minimal Harness Prompt\n\n```text\nRead AGENTBRAIN.md, PRINCIPLES.md, ANTI_RATIONALIZATION.md, and docs/state-machine.md before acting.\nInspect git status --short and git log --oneline -5 before choosing work.\nRun baseline validation before editing.\nPreserve user changes before editing.\nChoose the matching command in commands/ and load only the required skills/ entry.\nUse templates/ and schemas/ for structured artifacts when they fit.\nRun python -m pytest -q, python scripts/validate_repo.py, and git diff --check before claiming completion.\nStop when evidence is missing.\n```\n\n## Core Commands\n\n- `/brain-sample` — sample command.\n\n## Core Skills\n\n- `sample` — sample skill.\n- `activity-recap` — activity skill.\n- `agent-output-verifier` — verifier skill.\n\n## Repository Map\n\n```text\nrequirements-dev.txt           # local validation dependencies\n.github/workflows/             # CI quality gate\ncommands/                      # command specs\nskills/                        # portable skills\nschemas/                       # artifact schemas\ntemplates/                     # artifact templates\ndocs/                          # supporting docs\n```\n\n## Documentation Guide\n\n- `docs/agent-harness.md` — how to run the repo as an agent harness.\n- `docs/autonomous-goals.md` — autonomous goal scope and stop conditions.\n- `docs/research-watchlist.md` — source classes to review without copying branding.\n- `docs/skill-distillation.md` — how to convert sources into neutral skills.\n\n## Artifact Routing Guide\n\n- `schemas/artifact.schema.json` — sample artifact schema.\n- `schemas/handoff-report.schema.json` — sample handoff schema.\n- `templates/handoff-report.md` — sample handoff template.\n- `templates/skill-template.md` — sample skill template.\n\n## Validation\n\n```bash\npython3 -m pip install -r requirements-dev.txt\npython -m pytest -q\npython scripts/validate_repo.py\ngit diff --check\n```\n",
         encoding="utf-8",
     )
     (root / "requirements-dev.txt").write_text("pytest\njsonschema\n", encoding="utf-8")
@@ -161,6 +161,7 @@ def write_minimal_repo(root: Path) -> None:
         "```text\n"
         "Read AGENTBRAIN.md, PRINCIPLES.md, ANTI_RATIONALIZATION.md, and docs/state-machine.md before acting.\n"
         "Inspect git status --short and git log --oneline -5 before choosing work.\n"
+        "Run baseline validation before editing.\n"
         "Preserve user changes before editing.\n"
         "Choose the matching command in commands/ and load only its listed skills.\n"
         "Use templates/ and schemas/ for structured artifacts when they fit.\n"
@@ -534,6 +535,22 @@ def test_readme_minimal_harness_prompt_must_include_full_quality_gate(tmp_path):
     errors = validate_repo.validate(tmp_path)
 
     assert "README.md minimal harness prompt must mention: git diff --check" in errors
+
+
+def test_readme_minimal_harness_prompt_must_run_baseline_validation_before_work(tmp_path):
+    write_minimal_repo(tmp_path)
+    readme = tmp_path / "README.md"
+    readme.write_text(
+        readme.read_text(encoding="utf-8").replace(
+            "Run baseline validation before editing.\n",
+            "",
+        ),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "README.md minimal harness prompt must mention: baseline validation" in errors
 
 
 def test_readme_minimal_harness_prompt_must_include_baseline_repo_inspection(tmp_path):
@@ -2091,6 +2108,7 @@ def test_agent_harness_doc_must_include_copyable_harness_prompt(tmp_path):
             "```text\n"
             "Read AGENTBRAIN.md, PRINCIPLES.md, ANTI_RATIONALIZATION.md, and docs/state-machine.md before acting.\n"
             "Inspect git status --short and git log --oneline -5 before choosing work.\n"
+            "Run baseline validation before editing.\n"
             "Preserve user changes before editing.\n"
             "Choose the matching command in commands/ and load only its listed skills.\n"
             "Use templates/ and schemas/ for structured artifacts when they fit.\n"

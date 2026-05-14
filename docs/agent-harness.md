@@ -131,6 +131,7 @@ Use this prompt when handing the repo to another capable coding agent:
 ```text
 Read AGENTBRAIN.md, PRINCIPLES.md, ANTI_RATIONALIZATION.md, and docs/state-machine.md before acting.
 Inspect git status --short and git log --oneline -5 before choosing work.
+Run baseline validation before editing.
 Preserve user changes before editing.
 Choose the matching command in commands/ and load only its listed skills.
 Use templates/ and schemas/ for structured artifacts when they fit.

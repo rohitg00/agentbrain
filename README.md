@@ -117,6 +117,7 @@ Rules:
 7. Before final output, run: python -m pytest -q && python scripts/validate_repo.py && git diff --check.
 
 Start by reading AGENTBRAIN.md, PRINCIPLES.md, ANTI_RATIONALIZATION.md, and docs/state-machine.md, inspect git status --short and git log --oneline -5, preserve user changes before editing, then proceed through the matching command in commands/, load the required skills/, and use templates/ plus schemas/ for structured artifacts.
+Run baseline validation before editing so failures are not blamed on the new slice.
 ```
 
 ## Repository Map
