@@ -331,6 +331,29 @@ def test_eval_case_heading_must_match_filename(tmp_path):
     assert "evals/cases/thin-case.md heading must be # Eval Case: Thin Case" in errors
 
 
+def test_eval_cases_must_have_exactly_one_h1(tmp_path):
+    write_minimal_repo(tmp_path)
+    case_dir = tmp_path / "evals" / "cases"
+    case_dir.mkdir(parents=True)
+    (case_dir / "thin-case.md").write_text(
+        "\n".join([
+            "# Eval Case: Thin Case",
+            "# Duplicate Case",
+            "## User request",
+            "Do something",
+            "## Expected behavior",
+            "Do it well",
+            "## Failure if",
+            "The response misses the point",
+        ]),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "evals/cases/thin-case.md must contain exactly one H1 heading" in errors
+
+
 def test_eval_case_heading_allows_connector_words_from_filename(tmp_path):
     write_minimal_repo(tmp_path)
     case_dir = tmp_path / "evals" / "cases"

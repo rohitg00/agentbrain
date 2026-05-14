@@ -200,6 +200,9 @@ def validate(root: Path = ROOT) -> list[str]:
 
     for case in sorted((root / "evals" / "cases").glob("*.md")):
         text = case.read_text(errors="ignore")
+        single_h1_error = validate_single_h1(case, root)
+        if single_h1_error:
+            errors.append(single_h1_error)
         expected_heading = f"# Eval Case: {title_from_slug(case.stem)}"
         first_line = text.splitlines()[0] if text.splitlines() else ""
         if first_line != expected_heading:
