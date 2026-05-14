@@ -600,6 +600,42 @@ def test_readme_vendor_names_outside_vs_others_are_reported(tmp_path):
     assert f"README.md contains banned public-copy term: {vendor_name}" in errors
 
 
+def test_skill_directory_names_must_be_lowercase_kebab_case(tmp_path):
+    write_minimal_repo(tmp_path)
+    uppercase_skill_dir = tmp_path / "skills" / "SampleSkill"
+    uppercase_skill_dir.mkdir()
+    (uppercase_skill_dir / "SKILL.md").write_text(
+        "\n".join([
+            "---",
+            "name: SampleSkill",
+            "description: Use when a sample request needs routing.",
+            "---",
+            "# SampleSkill",
+            "## Trigger",
+            "Use for sample requests.",
+            "## Inputs",
+            "Raw request.",
+            "## Procedure",
+            "Check the request.",
+            "## Verification",
+            "Confirm evidence.",
+            "## Failure Modes",
+            "Stop if evidence is missing.",
+            "## Example",
+            "Sample request routes through the skill.",
+        ]),
+        encoding="utf-8",
+    )
+    (tmp_path / "README.md").write_text(
+        "# required\n\n- `/brain-sample` — sample command.\n- `sample` — sample skill.\n- `SampleSkill` — sample skill.\n- `activity-recap` — activity skill.\n- `agent-output-verifier` — verifier skill.\n\n## Validation\n\n```bash\npython3 -m pip install -r requirements-dev.txt\npython -m pytest -q\npython scripts/validate_repo.py\ngit diff --check\n```\n",
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "skills/SampleSkill/SKILL.md skill directory must use lowercase kebab-case" in errors
+
+
 def test_skill_frontmatter_name_must_match_directory(tmp_path):
     write_minimal_repo(tmp_path)
     (tmp_path / "skills" / "sample" / "SKILL.md").write_text(

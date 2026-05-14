@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from pathlib import Path
 import json
+import re
 import sys
 
 from jsonschema import validators
@@ -88,6 +89,7 @@ PUBLIC_COPY_SUFFIXES = {
     ".yaml",
     ".yml",
 }
+LOWERCASE_KEBAB_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 
 
 def rel(path: Path, root: Path) -> str:
@@ -153,6 +155,10 @@ def validate_single_h1(path: Path, root: Path) -> str | None:
     if len(h1_headings) != 1:
         return f"{rel(path, root)} must contain exactly one H1 heading"
     return None
+
+
+def is_lowercase_kebab(value: str) -> bool:
+    return bool(LOWERCASE_KEBAB_RE.fullmatch(value))
 
 
 def section_has_body(text: str, section: str) -> bool:
@@ -311,6 +317,8 @@ def validate(root: Path = ROOT) -> list[str]:
             errors.append(f"{rel(skill, root)} frontmatter must be delimited by ---")
         frontmatter = parse_frontmatter(text)
         expected_name = skill.parent.name
+        if not is_lowercase_kebab(expected_name):
+            errors.append(f"{rel(skill, root)} skill directory must use lowercase kebab-case")
         first_line = next((line for line in text.splitlines() if line.startswith("# ")), "")
         expected_heading = f"# {expected_name}"
         if first_line != expected_heading:
