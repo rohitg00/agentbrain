@@ -14,6 +14,11 @@ Command or skill under test, eval case, rubric.
 
 If required inputs are missing, ask at most three blocking questions or state explicit assumptions and risk.
 
+## Skills to load
+
+- `agent-output-verifier` to evaluate whether the tested output is safe to trust.
+- `qa-evidence` to tie eval conclusions to concrete logs, cases, and rubric evidence.
+
 ## Workflow
 
 1. State current Agent Brain state.

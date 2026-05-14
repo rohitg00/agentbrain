@@ -10,9 +10,14 @@ Use after verification or before public/shipping decisions.
 
 ## Input contract
 
-Artifact, diff or content, evidence, acceptance criteria.
+Artifact or diff, goals, evidence, risk areas.
 
 If required inputs are missing, ask at most three blocking questions or state explicit assumptions and risk.
+
+## Skills to load
+
+- `agent-output-verifier` to block unsupported, unsafe, or hallucinated output.
+- `engineering-grill` when correctness, maintainability, or security risk needs deeper challenge.
 
 ## Workflow
 

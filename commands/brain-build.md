@@ -14,6 +14,11 @@ Implementation Plan task, relevant files, validation command.
 
 If required inputs are missing, ask at most three blocking questions or state explicit assumptions and risk.
 
+## Skills to load
+
+- `plan-slicing` to keep the active slice narrow and independently verifiable.
+- `qa-evidence` when the slice changes behavior and needs test-first proof.
+
 ## Workflow
 
 1. State current Agent Brain state.

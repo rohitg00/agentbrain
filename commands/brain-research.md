@@ -14,6 +14,11 @@ Research question, scope, source constraints, freshness needs.
 
 If required inputs are missing, ask at most three blocking questions or state explicit assumptions and risk.
 
+## Skills to load
+
+- `evidence-research` to turn claims into source-backed evidence.
+- `wiki-maintenance` when the research should update durable project knowledge.
+
 ## Workflow
 
 1. State current Agent Brain state.

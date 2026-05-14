@@ -10,9 +10,14 @@ Use when ingesting sources or updating durable project knowledge.
 
 ## Input contract
 
-Raw source, query, or synthesis target.
+Source material, target knowledge area, staleness or ownership notes.
 
 If required inputs are missing, ask at most three blocking questions or state explicit assumptions and risk.
+
+## Skills to load
+
+- `wiki-maintenance` to update project knowledge from checked sources.
+- `evidence-research` when the update depends on external claims or freshness.
 
 ## Workflow
 

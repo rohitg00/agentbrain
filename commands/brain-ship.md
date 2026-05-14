@@ -10,9 +10,14 @@ Use when a reviewed artifact is ready for release or publication.
 
 ## Input contract
 
-Review Report, QA Evidence, rollout constraints.
+Release candidate, verification evidence, rollback plan, owner.
 
 If required inputs are missing, ask at most three blocking questions or state explicit assumptions and risk.
+
+## Skills to load
+
+- `launch-gate` to decide go/no-go with rollout, rollback, monitoring, and proof.
+- `qa-evidence` when release evidence is incomplete or stale.
 
 ## Workflow
 

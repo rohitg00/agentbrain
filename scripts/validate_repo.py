@@ -108,6 +108,7 @@ REQUIRED_COMMAND_SECTIONS = [
     "## Purpose",
     "## When to use",
     "## Input contract",
+    "## Skills to load",
     "## Workflow",
     "## Output",
     "## Stop conditions",
@@ -263,6 +264,20 @@ def section_has_body(text: str, section: str) -> bool:
             body_lines.append(following_line)
         return bool("\n".join(body_lines).strip())
     return False
+
+
+def section_body(text: str, section: str) -> str:
+    lines = text.splitlines()
+    for index, line in enumerate(lines):
+        if line != section:
+            continue
+        body_lines = []
+        for following_line in lines[index + 1 :]:
+            if following_line.startswith("## "):
+                break
+            body_lines.append(following_line)
+        return "\n".join(body_lines)
+    return ""
 
 
 def sections_are_in_order(text: str, sections: list[str]) -> bool:
@@ -458,6 +473,11 @@ def readme_skill_catalog_entries(text: str) -> list[str]:
         if match:
             entries.add(match.group(1))
     return sorted(entries)
+
+
+def command_skills_to_load(text: str) -> list[str]:
+    body = section_body(text, "## Skills to load")
+    return sorted(set(re.findall(r"`([a-z0-9]+(?:-[a-z0-9]+)*)`", body)))
 
 
 def validate(root: Path = ROOT) -> list[str]:
@@ -677,6 +697,12 @@ def validate(root: Path = ROOT) -> list[str]:
                     errors.append(f"{rel(command, root)} section has no body: {section}")
         if not sections_are_in_order(text, REQUIRED_COMMAND_SECTIONS):
             errors.append(f"{rel(command, root)} sections must appear in canonical order")
+        for skill_name in command_skills_to_load(text):
+            skill_file = root / "skills" / skill_name / "SKILL.md"
+            if not skill_file.exists():
+                errors.append(
+                    f"{rel(command, root)} skills-to-load entry points to missing skill: {skill_name}"
+                )
 
     readme = root / "README.md"
     if readme.exists():

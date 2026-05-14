@@ -10,9 +10,14 @@ Use after repeated success/failure, a tricky fix, or a shipped workflow.
 
 ## Input contract
 
-Final artifacts, decisions, failures, reusable procedures.
+Repeated outcome, trace, decision, and proposed durable update.
 
 If required inputs are missing, ask at most three blocking questions or state explicit assumptions and risk.
+
+## Skills to load
+
+- `learning-capture` to convert repeated outcomes into durable knowledge.
+- `wiki-maintenance` when the update belongs in source-backed project context.
 
 ## Workflow
 

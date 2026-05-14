@@ -14,6 +14,11 @@ Raw request plus any known context.
 
 If required inputs are missing, ask at most three blocking questions or state explicit assumptions and risk.
 
+## Skills to load
+
+- `intake` for routing raw intent into the earliest safe state.
+- `question-ladder` when the request needs staged clarification without overloading the user.
+
 ## Workflow
 
 1. State current Agent Brain state.

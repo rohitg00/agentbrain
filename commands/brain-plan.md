@@ -14,6 +14,11 @@ Product Brief, Design Brief, constraints, repo context.
 
 If required inputs are missing, ask at most three blocking questions or state explicit assumptions and risk.
 
+## Skills to load
+
+- `plan-slicing` to split work into small vertical slices with acceptance checks.
+- `engineering-grill` when implementation risk or feasibility is still uncertain.
+
 ## Workflow
 
 1. State current Agent Brain state.

@@ -10,9 +10,14 @@ Use after build or when evaluating an existing artifact.
 
 ## Input contract
 
-Artifact, expected behavior, validation methods.
+Artifact, claims to verify, available logs or test commands.
 
 If required inputs are missing, ask at most three blocking questions or state explicit assumptions and risk.
+
+## Skills to load
+
+- `qa-evidence` to collect tests, logs, traces, screenshots, citations, or diff proof.
+- `agent-output-verifier` when the proof is attached to agent-produced output.
 
 ## Workflow
 

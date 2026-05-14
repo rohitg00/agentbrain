@@ -10,9 +10,14 @@ Use when a product brief needs UX or interaction design before planning.
 
 ## Input contract
 
-Product Brief, user segment, constraints, target platform.
+Product Brief, user flow, constraints, risk list.
 
 If required inputs are missing, ask at most three blocking questions or state explicit assumptions and risk.
+
+## Skills to load
+
+- `design-grill` to challenge flows, states, edge cases, and failure paths.
+- `engineering-grill` when the design depends on technical feasibility or reliability.
 
 ## Workflow
 

@@ -10,9 +10,14 @@ Use before planning any new product, feature, workflow, or automation.
 
 ## Input contract
 
-Intake Summary, target user, problem hypothesis, constraints.
+Product idea, target user, current workaround, desired outcome.
 
 If required inputs are missing, ask at most three blocking questions or state explicit assumptions and risk.
+
+## Skills to load
+
+- `problem-grill` to test whether the problem is real, specific, and worth solving.
+- `market-grill` when demand, audience, or alternatives are unclear.
 
 ## Workflow
 

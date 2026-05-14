@@ -14,6 +14,13 @@ Artifact to challenge plus known constraints and evidence.
 
 If required inputs are missing, ask at most three blocking questions or state explicit assumptions and risk.
 
+## Skills to load
+
+- `problem-grill` for problem and user assumptions.
+- `market-grill` for demand, alternatives, and positioning assumptions.
+- `design-grill` for interface, state, and edge-case assumptions.
+- `engineering-grill` for feasibility, failure-mode, and implementation assumptions.
+
 ## Workflow
 
 1. State current Agent Brain state.

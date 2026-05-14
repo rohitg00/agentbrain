@@ -10,9 +10,14 @@ Use after intake, research, and grill have enough signal.
 
 ## Input contract
 
-Intake Summary, claim ledger, grill report, assumptions.
+Problem, user, evidence, constraints, acceptance criteria.
 
 If required inputs are missing, ask at most three blocking questions or state explicit assumptions and risk.
+
+## Skills to load
+
+- `problem-grill` when the user, problem, or acceptance criteria are weak.
+- `evidence-research` when brief claims need inspectable sources.
 
 ## Workflow
 

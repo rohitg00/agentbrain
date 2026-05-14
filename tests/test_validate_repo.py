@@ -81,6 +81,8 @@ def write_minimal_repo(root: Path) -> None:
             "Use for sample requests.",
             "## Input contract",
             "Raw request.",
+            "## Skills to load",
+            "Load `sample` for sample routing.",
             "## Workflow",
             "Inspect inputs and decide the next action.",
             "## Output",
@@ -1267,6 +1269,47 @@ def test_command_filenames_must_use_brain_prefix(tmp_path):
     errors = validate_repo.validate(tmp_path)
 
     assert "commands/sample.md filename must start with brain-" in errors
+
+
+def test_commands_must_name_skills_to_load(tmp_path):
+    write_minimal_repo(tmp_path)
+    (tmp_path / "commands" / "brain-sample.md").write_text(
+        "\n".join([
+            "# /brain-sample",
+            "## Purpose",
+            "Route sample work.",
+            "## When to use",
+            "Use for sample requests.",
+            "## Input contract",
+            "Raw request.",
+            "## Workflow",
+            "Inspect inputs and decide the next action.",
+            "## Output",
+            "A concrete next action.",
+            "## Stop conditions",
+            "Stop when the request is unsafe.",
+            "## Quality bar",
+            "Evidence is checked before output.",
+        ]),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "commands/brain-sample.md missing ## Skills to load" in errors
+
+
+def test_command_skills_to_load_must_point_to_existing_skills(tmp_path):
+    write_minimal_repo(tmp_path)
+    command = tmp_path / "commands" / "brain-sample.md"
+    command.write_text(
+        command.read_text(encoding="utf-8").replace("`sample`", "`missing-skill`"),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "commands/brain-sample.md skills-to-load entry points to missing skill: missing-skill" in errors
 
 
 def test_eval_cases_require_behavior_and_failure_sections(tmp_path):
