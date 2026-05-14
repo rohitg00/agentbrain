@@ -435,6 +435,8 @@ def validate(root: Path = ROOT) -> list[str]:
                 errors.append(f"{rel(rubric, root)} missing {section}")
             elif not section_has_body(text, section):
                 errors.append(f"{rel(rubric, root)} section has no body: {section}")
+        if not sections_are_in_order(text, REQUIRED_EVAL_RUBRIC_SECTIONS):
+            errors.append(f"{rel(rubric, root)} sections must appear in canonical order")
 
     for public_copy_file in sorted(
         path for path in root.rglob("*") if path.suffix in PUBLIC_COPY_SUFFIXES
