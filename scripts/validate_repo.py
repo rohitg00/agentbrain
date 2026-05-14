@@ -254,6 +254,14 @@ REQUIRED_COMMAND_SECTIONS = [
     "## Stop conditions",
     "## Quality bar",
 ]
+REQUIRED_COMMAND_OUTPUT_TERMS = [
+    "decision",
+    "evidence",
+    "assumptions",
+    "risks",
+    "open questions",
+    "next recommended state",
+]
 REQUIRED_EVAL_CASE_SECTIONS = ["## User request", "## Expected behavior", "## Failure if"]
 REQUIRED_EVAL_RUBRIC_SECTIONS = ["## Dimensions", "## Interpretation"]
 BANNED_PUBLIC_COPY_TERMS = [
@@ -953,6 +961,10 @@ def validate(root: Path = ROOT) -> list[str]:
                     errors.append(f"{rel(command, root)} section has no body: {section}")
         if not sections_are_in_order(text, REQUIRED_COMMAND_SECTIONS):
             errors.append(f"{rel(command, root)} sections must appear in canonical order")
+        output_body = section_body(text, "## Output").lower()
+        for required_term in REQUIRED_COMMAND_OUTPUT_TERMS:
+            if required_term not in output_body:
+                errors.append(f"{rel(command, root)} output must mention: {required_term}")
         workflow = normalized_section_body(text, "## Workflow")
         if workflow:
             if workflow in seen_workflows:

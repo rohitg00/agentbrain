@@ -220,7 +220,7 @@ def write_minimal_repo(root: Path) -> None:
             "## Workflow",
             "Inspect inputs and decide the next action.",
             "## Output",
-            "A concrete next action.",
+            "A concrete next action with decision, evidence, assumptions, risks, open questions, and next recommended state.",
             "## Stop conditions",
             "Stop when the request is unsafe.",
             "## Quality bar",
@@ -484,6 +484,26 @@ def test_commands_must_not_reuse_the_same_workflow_body(tmp_path):
     errors = validate_repo.validate(tmp_path)
 
     assert "commands/brain-second.md workflow duplicates commands/brain-first.md" in errors
+
+
+def test_commands_must_include_handoff_fields_in_output(tmp_path):
+    write_minimal_repo(tmp_path)
+    command = tmp_path / "commands" / "brain-sample.md"
+    command.write_text(
+        command.read_text(encoding="utf-8").replace(
+            "A concrete next action with decision, evidence, assumptions, risks, open questions, and next recommended state.",
+            "A concrete next action with evidence only.",
+        ),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "commands/brain-sample.md output must mention: decision" in errors
+    assert "commands/brain-sample.md output must mention: assumptions" in errors
+    assert "commands/brain-sample.md output must mention: risks" in errors
+    assert "commands/brain-sample.md output must mention: open questions" in errors
+    assert "commands/brain-sample.md output must mention: next recommended state" in errors
 
 
 def test_agent_harness_must_include_fresh_checkout_bootstrap(tmp_path):
@@ -1086,7 +1106,7 @@ def test_command_quality_bars_must_not_be_reused_boilerplate(tmp_path):
             "## Workflow",
             "Inspect inputs and decide the next action.",
             "## Output",
-            "A concrete next action.",
+            "A concrete next action with decision, evidence, assumptions, risks, open questions, and next recommended state.",
             "## Stop conditions",
             "Stop when the request is unsafe.",
             "## Quality bar",
@@ -2361,7 +2381,7 @@ def test_command_filenames_must_be_lowercase_kebab_case(tmp_path):
             "## Workflow",
             "Inspect inputs and decide the next action.",
             "## Output",
-            "A concrete next action.",
+            "A concrete next action with decision, evidence, assumptions, risks, open questions, and next recommended state.",
             "## Stop conditions",
             "Stop when the request is unsafe.",
             "## Quality bar",
@@ -2393,7 +2413,7 @@ def test_command_filenames_must_use_brain_prefix(tmp_path):
             "## Workflow",
             "Inspect inputs and decide the next action.",
             "## Output",
-            "A concrete next action.",
+            "A concrete next action with decision, evidence, assumptions, risks, open questions, and next recommended state.",
             "## Stop conditions",
             "Stop when the request is unsafe.",
             "## Quality bar",
@@ -2425,7 +2445,7 @@ def test_commands_must_name_skills_to_load(tmp_path):
             "## Workflow",
             "Inspect inputs and decide the next action.",
             "## Output",
-            "A concrete next action.",
+            "A concrete next action with decision, evidence, assumptions, risks, open questions, and next recommended state.",
             "## Stop conditions",
             "Stop when the request is unsafe.",
             "## Quality bar",
