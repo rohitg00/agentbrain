@@ -117,6 +117,12 @@ def write_minimal_repo(root: Path) -> None:
         ]),
         encoding="utf-8",
     )
+    case_dir = root / "evals" / "cases"
+    case_dir.mkdir(parents=True, exist_ok=True)
+    (case_dir / "activity-recap.md").write_text(
+        "# Eval Case: Activity Recap\n\n## User request\nSummarize recent activity.\n\n## Expected behavior\nUse local evidence and state checked scope.\n\n## Failure if\nInvents work or omits verification scope.\n",
+        encoding="utf-8",
+    )
 
 
 def test_valid_minimal_repo_has_no_errors(tmp_path):
@@ -369,7 +375,7 @@ def test_command_heading_must_match_filename(tmp_path):
 def test_eval_cases_require_behavior_and_failure_sections(tmp_path):
     write_minimal_repo(tmp_path)
     case_dir = tmp_path / "evals" / "cases"
-    case_dir.mkdir(parents=True)
+    case_dir.mkdir(parents=True, exist_ok=True)
     (case_dir / "thin-case.md").write_text("# Eval Case: Thin Case\n## User request\nDo something\n", encoding="utf-8")
 
     errors = validate_repo.validate(tmp_path)
@@ -381,7 +387,7 @@ def test_eval_cases_require_behavior_and_failure_sections(tmp_path):
 def test_eval_case_heading_must_match_filename(tmp_path):
     write_minimal_repo(tmp_path)
     case_dir = tmp_path / "evals" / "cases"
-    case_dir.mkdir(parents=True)
+    case_dir.mkdir(parents=True, exist_ok=True)
     (case_dir / "thin-case.md").write_text(
         "\n".join([
             "# Eval Case: Different Case",
@@ -403,7 +409,7 @@ def test_eval_case_heading_must_match_filename(tmp_path):
 def test_eval_cases_must_have_exactly_one_h1(tmp_path):
     write_minimal_repo(tmp_path)
     case_dir = tmp_path / "evals" / "cases"
-    case_dir.mkdir(parents=True)
+    case_dir.mkdir(parents=True, exist_ok=True)
     (case_dir / "thin-case.md").write_text(
         "\n".join([
             "# Eval Case: Thin Case",
@@ -426,7 +432,7 @@ def test_eval_cases_must_have_exactly_one_h1(tmp_path):
 def test_eval_case_heading_allows_connector_words_from_filename(tmp_path):
     write_minimal_repo(tmp_path)
     case_dir = tmp_path / "evals" / "cases"
-    case_dir.mkdir(parents=True)
+    case_dir.mkdir(parents=True, exist_ok=True)
     (case_dir / "build-vs-buy-decision.md").write_text(
         "\n".join([
             "# Eval Case: Build vs Buy Decision",
@@ -486,6 +492,15 @@ def test_activity_recap_skill_is_required(tmp_path):
     errors = validate_repo.validate(tmp_path)
 
     assert "missing skills/activity-recap/SKILL.md" in errors
+
+
+def test_activity_recap_eval_case_is_required(tmp_path):
+    write_minimal_repo(tmp_path)
+    (tmp_path / "evals" / "cases" / "activity-recap.md").unlink()
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "missing evals/cases/activity-recap.md" in errors
 
 
 def test_quality_workflow_is_required(tmp_path):

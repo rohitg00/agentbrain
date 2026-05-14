@@ -16,6 +16,7 @@ REQUIRED_ROOT = [
 ]
 REQUIRED_DOCS = ["docs/autonomous-goals.md", "docs/skill-distillation.md"]
 REQUIRED_SKILLS = ["skills/activity-recap/SKILL.md"]
+REQUIRED_EVAL_CASES = ["evals/cases/activity-recap.md"]
 REQUIRED_WORKFLOWS = [".github/workflows/quality.yml"]
 REQUIRED_QUALITY_WORKFLOW_RUNS = [
     "python -m pytest -q",
@@ -167,6 +168,10 @@ def validate(root: Path = ROOT) -> list[str]:
             errors.append(f"missing {required_path}")
 
     for required_path in REQUIRED_SKILLS:
+        if not (root / required_path).exists():
+            errors.append(f"missing {required_path}")
+
+    for required_path in REQUIRED_EVAL_CASES:
         if not (root / required_path).exists():
             errors.append(f"missing {required_path}")
 
