@@ -29,7 +29,16 @@ def write_minimal_repo(root: Path) -> None:
 
     adapters_dir = root / "adapters" / "sample-adapter"
     adapters_dir.mkdir(parents=True)
-    (adapters_dir / "README.md").write_text("# Sample Adapter\n", encoding="utf-8")
+    (adapters_dir / "README.md").write_text(
+        "# Sample Adapter\n\n"
+        "## Install\n\n"
+        "Use this adapter in a sample runtime.\n\n"
+        "## Validation\n\n"
+        "Run the repo quality gate after setup.\n\n"
+        "## Failure Modes\n\n"
+        "Stop if the runtime cannot load files.\n",
+        encoding="utf-8",
+    )
 
     schema_dir = root / "schemas"
     schema_dir.mkdir()
@@ -1029,6 +1038,23 @@ def test_readme_must_catalog_artifact_schemas_and_templates(tmp_path):
 
     assert "README.md missing schema catalog entry: schemas/artifact.schema.json" in errors
     assert "README.md missing template catalog entry: templates/skill-template.md" in errors
+
+
+def test_adapter_readmes_must_include_validation_section(tmp_path):
+    write_minimal_repo(tmp_path)
+    adapter_readme = tmp_path / "adapters" / "sample-adapter" / "README.md"
+    adapter_readme.write_text(
+        "# Sample Adapter\n\n"
+        "## Install\n\n"
+        "Use this adapter in a sample runtime.\n\n"
+        "## Failure Modes\n\n"
+        "Stop if the runtime cannot load files.\n",
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "adapters/sample-adapter/README.md missing adapter section: ## Validation" in errors
 
 
 def test_banned_public_copy_terms_are_reported(tmp_path):

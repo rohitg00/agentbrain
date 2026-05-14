@@ -79,6 +79,7 @@ REQUIRED_AGENT_HARNESS_VALIDATION_COMMANDS = [
     "python scripts/validate_repo.py",
     "git diff --check",
 ]
+REQUIRED_ADAPTER_SECTIONS = ["## Install", "## Validation", "## Failure Modes"]
 REQUIRED_CONTRIBUTING_VALIDATION_COMMANDS = ["pytest -q", "git diff --check"]
 RESEARCH_WATCHLIST_REQUIRED_SOURCES = [
     "autonomous-goal runtime docs",
@@ -830,9 +831,13 @@ def validate(root: Path = ROOT) -> list[str]:
                 errors.append(f"{rel(markdown_file, root)} heading must be {expected_heading}")
         if markdown_file.parent.parent == root / "adapters" and markdown_file.name == "README.md":
             expected_heading = adapter_heading_from_slug(markdown_file.parent.name)
-            first_line = markdown_file.read_text(errors="ignore").splitlines()[0]
+            adapter_text = markdown_file.read_text(errors="ignore")
+            first_line = adapter_text.splitlines()[0]
             if first_line != expected_heading:
                 errors.append(f"{rel(markdown_file, root)} heading must be {expected_heading}")
+            for required_section in REQUIRED_ADAPTER_SECTIONS:
+                if required_section not in adapter_text:
+                    errors.append(f"{rel(markdown_file, root)} missing adapter section: {required_section}")
 
     for rubric in sorted((root / "evals" / "rubrics").glob("*.md")):
         text = rubric.read_text(errors="ignore")
