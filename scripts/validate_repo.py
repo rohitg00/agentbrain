@@ -1106,6 +1106,9 @@ def validate(root: Path = ROOT) -> list[str]:
                     errors.append(f"{rel(case, root)} section has no body: {section}")
         if not sections_are_in_order(text, REQUIRED_EVAL_CASE_SECTIONS):
             errors.append(f"{rel(case, root)} sections must appear in canonical order")
+        expected_behavior = section_body(text, "## Expected behavior").lower()
+        if "evidence" not in expected_behavior:
+            errors.append(f"{rel(case, root)} expected behavior must name evidence")
 
     evals_readme = root / "evals" / "README.md"
     if evals_readme.exists():
