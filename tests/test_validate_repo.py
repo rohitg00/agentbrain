@@ -18,7 +18,7 @@ def write_minimal_repo(root: Path) -> None:
         encoding="utf-8",
     )
     (root / "README.md").write_text(
-        "# required\n\n## Quickstart\nInstall and run validation.\n\n## Run as an Agent Harness\nLoad the repo as operating instructions.\n\n## Command Selection Guide\n\n- Raw request -> `/brain-sample`\n\n## Handoff Contract\nState the status, evidence checked, facts, assumptions, risks, blockers, and next action.\n\n## Edge Cases and Stop Conditions\nStop on missing evidence.\n\n## Troubleshooting\nRun validation and inspect errors.\n\n## Maintainer Checklist\nBefore release, confirm README bootstraps a new agent, commands and skills are cataloged, evals cover current failure modes, validation passes, CI mirrors local checks, public copy is neutral, caches are untracked, and the remote branch is verified.\n\n## Minimal Harness Prompt\n\n```text\nRead AGENTBRAIN.md and docs/state-machine.md before acting.\nChoose the matching command in commands/ and load only the required skills/ entry.\nUse templates/ and schemas/ for structured artifacts when they fit.\nRun python -m pytest -q, python scripts/validate_repo.py, and git diff --check before claiming completion.\nStop when evidence is missing.\n```\n\n- `/brain-sample` — sample command.\n- `sample` — sample skill.\n- `activity-recap` — activity skill.\n- `agent-output-verifier` — verifier skill.\n\n## Repository Map\n\n```text\nrequirements-dev.txt           # local validation dependencies\n.github/workflows/             # CI quality gate\ncommands/                      # command specs\nskills/                        # portable skills\nschemas/                       # artifact schemas\ntemplates/                     # artifact templates\ndocs/                          # supporting docs\n```\n\n## Documentation Guide\n\n- `docs/agent-harness.md` — how to run the repo as an agent harness.\n- `docs/autonomous-goals.md` — autonomous goal scope and stop conditions.\n- `docs/research-watchlist.md` — source classes to review without copying branding.\n- `docs/skill-distillation.md` — how to convert sources into neutral skills.\n\n## Artifact Routing Guide\n\n- `schemas/artifact.schema.json` — sample artifact schema.\n- `schemas/handoff-report.schema.json` — sample handoff schema.\n- `templates/handoff-report.md` — sample handoff template.\n- `templates/skill-template.md` — sample skill template.\n\n## Validation\n\n```bash\npython3 -m pip install -r requirements-dev.txt\npython -m pytest -q\npython scripts/validate_repo.py\ngit diff --check\n```\n",
+        "# required\n\n## Quickstart\nInstall and run validation.\n\n## Run as an Agent Harness\nLoad the repo as operating instructions.\n\n## Command Selection Guide\n\n- Raw request -> `/brain-sample`\n\n## Handoff Contract\nState the status, evidence checked, facts, assumptions, risks, blockers, and next action.\n\n## Edge Cases and Stop Conditions\nStop on missing evidence.\n\n## Troubleshooting\nRun validation and inspect errors.\n\n## Maintainer Checklist\nBefore release, confirm README bootstraps a new agent, commands and skills are cataloged, evals cover current failure modes, validation passes, CI mirrors local checks, public copy is neutral, caches are untracked, and the remote branch is verified.\n\n## Minimal Harness Prompt\n\n```text\nRead AGENTBRAIN.md and docs/state-machine.md before acting.\nChoose the matching command in commands/ and load only the required skills/ entry.\nUse templates/ and schemas/ for structured artifacts when they fit.\nRun python -m pytest -q, python scripts/validate_repo.py, and git diff --check before claiming completion.\nStop when evidence is missing.\n```\n\n## Core Commands\n\n- `/brain-sample` — sample command.\n\n## Core Skills\n\n- `sample` — sample skill.\n- `activity-recap` — activity skill.\n- `agent-output-verifier` — verifier skill.\n\n## Repository Map\n\n```text\nrequirements-dev.txt           # local validation dependencies\n.github/workflows/             # CI quality gate\ncommands/                      # command specs\nskills/                        # portable skills\nschemas/                       # artifact schemas\ntemplates/                     # artifact templates\ndocs/                          # supporting docs\n```\n\n## Documentation Guide\n\n- `docs/agent-harness.md` — how to run the repo as an agent harness.\n- `docs/autonomous-goals.md` — autonomous goal scope and stop conditions.\n- `docs/research-watchlist.md` — source classes to review without copying branding.\n- `docs/skill-distillation.md` — how to convert sources into neutral skills.\n\n## Artifact Routing Guide\n\n- `schemas/artifact.schema.json` — sample artifact schema.\n- `schemas/handoff-report.schema.json` — sample handoff schema.\n- `templates/handoff-report.md` — sample handoff template.\n- `templates/skill-template.md` — sample skill template.\n\n## Validation\n\n```bash\npython3 -m pip install -r requirements-dev.txt\npython -m pytest -q\npython scripts/validate_repo.py\ngit diff --check\n```\n",
         encoding="utf-8",
     )
     (root / "requirements-dev.txt").write_text("pytest\njsonschema\n", encoding="utf-8")
@@ -507,8 +507,8 @@ def test_readme_command_catalog_entries_must_point_to_existing_files(tmp_path):
     readme = tmp_path / "README.md"
     readme.write_text(
         readme.read_text(encoding="utf-8").replace(
-            "## Validation",
-            "## Core Commands\n\n- `/brain-missing` — stale command entry.\n\n## Validation",
+            "- `/brain-sample` — sample command.",
+            "- `/brain-sample` — sample command.\n- `/brain-missing` — stale command entry.",
         ),
         encoding="utf-8",
     )
@@ -516,6 +516,38 @@ def test_readme_command_catalog_entries_must_point_to_existing_files(tmp_path):
     errors = validate_repo.validate(tmp_path)
 
     assert "README.md command catalog entry points to missing file: /brain-missing" in errors
+
+
+def test_readme_core_command_catalog_must_cover_every_command(tmp_path):
+    write_minimal_repo(tmp_path)
+    readme = tmp_path / "README.md"
+    readme.write_text(
+        readme.read_text(encoding="utf-8").replace(
+            "\n## Core Commands\n\n- `/brain-sample` — sample command.\n\n",
+            "\n",
+        ),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "README.md core command catalog missing command: /brain-sample" in errors
+
+
+def test_readme_core_skill_catalog_must_cover_every_skill(tmp_path):
+    write_minimal_repo(tmp_path)
+    readme = tmp_path / "README.md"
+    readme.write_text(
+        readme.read_text(encoding="utf-8").replace(
+            "\n## Core Skills\n\n- `sample` — sample skill.\n- `activity-recap` — activity skill.\n- `agent-output-verifier` — verifier skill.\n\n",
+            "\n",
+        ),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "README.md core skill catalog missing skill: sample" in errors
 
 
 def test_command_skills_to_load_must_name_at_least_one_skill(tmp_path):
@@ -583,8 +615,8 @@ def test_readme_skill_catalog_entries_must_point_to_existing_files(tmp_path):
     readme = tmp_path / "README.md"
     readme.write_text(
         readme.read_text(encoding="utf-8").replace(
-            "## Validation",
-            "## Core Skills\n\n- `missing-skill` — stale skill entry.\n\n## Validation",
+            "- `sample` — sample skill.",
+            "- `sample` — sample skill.\n- `missing-skill` — stale skill entry.",
         ),
         encoding="utf-8",
     )
@@ -2582,7 +2614,7 @@ def test_readme_must_list_available_commands(tmp_path):
 
     errors = validate_repo.validate(tmp_path)
 
-    assert "README.md missing command catalog entry: /brain-sample" in errors
+    assert "README.md core command catalog missing command: /brain-sample" in errors
 
 
 def test_readme_must_be_self_setup_harness(tmp_path):
@@ -2609,7 +2641,7 @@ def test_readme_command_catalog_entries_must_be_backticked(tmp_path):
 
     errors = validate_repo.validate(tmp_path)
 
-    assert "README.md missing command catalog entry: /brain-sample" in errors
+    assert "README.md core command catalog missing command: /brain-sample" in errors
 
 
 def test_readme_must_list_available_skills(tmp_path):
@@ -2621,7 +2653,7 @@ def test_readme_must_list_available_skills(tmp_path):
 
     errors = validate_repo.validate(tmp_path)
 
-    assert "README.md missing skill catalog entry: sample" in errors
+    assert "README.md core skill catalog missing skill: sample" in errors
 
 
 def test_readme_repository_map_must_not_list_missing_top_level_directories(tmp_path):
