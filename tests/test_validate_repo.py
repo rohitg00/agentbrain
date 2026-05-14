@@ -1269,3 +1269,35 @@ def test_gitignore_must_exclude_generated_python_cache_artifacts(tmp_path):
     errors = validate_repo.validate(tmp_path)
 
     assert ".gitignore must ignore generated Python cache artifacts: __pycache__/" in errors
+
+
+def test_skill_template_description_must_name_trigger(tmp_path):
+    write_minimal_repo(tmp_path)
+    templates_dir = tmp_path / "templates"
+    templates_dir.mkdir()
+    (templates_dir / "skill-template.md").write_text(
+        "\n".join([
+            "---",
+            "name: example-skill",
+            "description: One sentence describing the skill.",
+            "---",
+            "# Skill Name",
+            "## Trigger",
+            "Use when sample work needs routing.",
+            "## Inputs",
+            "Raw request.",
+            "## Procedure",
+            "Check the request.",
+            "## Verification",
+            "Confirm evidence.",
+            "## Failure Modes",
+            "Stop if evidence is missing.",
+            "## Example",
+            "Sample request routes through the skill.",
+        ]),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "templates/skill-template.md frontmatter description must include 'Use when'" in errors

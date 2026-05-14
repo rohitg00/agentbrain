@@ -359,6 +359,12 @@ def validate(root: Path = ROOT) -> list[str]:
             if run_command not in contributing_text:
                 errors.append(f"CONTRIBUTING.md validation section must document: {run_command}")
 
+    skill_template = root / "templates" / "skill-template.md"
+    if skill_template.exists():
+        skill_template_frontmatter = parse_frontmatter(skill_template.read_text(errors="ignore"))
+        if "Use when" not in skill_template_frontmatter.get("description", ""):
+            errors.append("templates/skill-template.md frontmatter description must include 'Use when'")
+
     eval_cases = sorted((root / "evals" / "cases").glob("*.md"))
     for case in eval_cases:
         text = case.read_text(errors="ignore")

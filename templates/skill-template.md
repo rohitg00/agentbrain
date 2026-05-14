@@ -1,6 +1,6 @@
 ---
 name: example-skill
-description: One sentence describing when to use this skill.
+description: Use when one sentence can name the exact trigger for this skill.
 version: 0.1.0
 ---
 
