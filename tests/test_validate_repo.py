@@ -129,6 +129,31 @@ def test_missing_skill_sections_are_reported(tmp_path):
     assert "skills/sample/SKILL.md missing ## Example" in errors
 
 
+def test_skills_must_have_exactly_one_h1(tmp_path):
+    write_minimal_repo(tmp_path)
+    (tmp_path / "skills" / "sample" / "SKILL.md").write_text(
+        "\n".join([
+            "---",
+            "name: sample",
+            "description: Sample skill",
+            "---",
+            "# Sample",
+            "# Duplicate Sample",
+            "## Trigger",
+            "## Inputs",
+            "## Procedure",
+            "## Verification",
+            "## Failure Modes",
+            "## Example",
+        ]),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "skills/sample/SKILL.md must contain exactly one H1 heading" in errors
+
+
 def test_skill_frontmatter_must_have_closing_delimiter(tmp_path):
     write_minimal_repo(tmp_path)
     (tmp_path / "skills" / "sample" / "SKILL.md").write_text(

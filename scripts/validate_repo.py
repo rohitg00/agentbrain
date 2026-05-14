@@ -163,6 +163,9 @@ def validate(root: Path = ROOT) -> list[str]:
 
     for skill in sorted((root / "skills").glob("*/SKILL.md")):
         text = skill.read_text(errors="ignore")
+        single_h1_error = validate_single_h1(skill, root)
+        if single_h1_error:
+            errors.append(single_h1_error)
         if not has_delimited_frontmatter(text):
             errors.append(f"{rel(skill, root)} frontmatter must be delimited by ---")
         frontmatter = parse_frontmatter(text)
