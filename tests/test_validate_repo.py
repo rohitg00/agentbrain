@@ -898,6 +898,30 @@ def test_all_workflows_must_run_whitespace_check(tmp_path):
     assert ".github/workflows/validate.yml must run: git diff --check" in errors
 
 
+def test_yaml_workflows_must_run_whitespace_check(tmp_path):
+    write_minimal_repo(tmp_path)
+    (tmp_path / ".github" / "workflows" / "validate.yaml").write_text(
+        "\n".join([
+            "name: validate",
+            "on:",
+            "  push:",
+            "  pull_request:",
+            "jobs:",
+            "  repo-validation:",
+            "    runs-on: ubuntu-latest",
+            "    steps:",
+            "      - uses: actions/checkout@v4",
+            "      - run: python -m pytest -q",
+            "      - run: python scripts/validate_repo.py",
+        ]),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert ".github/workflows/validate.yaml must run: git diff --check" in errors
+
+
 def test_dev_requirements_file_is_required(tmp_path):
     write_minimal_repo(tmp_path)
     (tmp_path / "requirements-dev.txt").unlink()

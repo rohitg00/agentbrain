@@ -271,7 +271,9 @@ def validate(root: Path = ROOT) -> list[str]:
                 if run_command not in workflow_text:
                     errors.append(f"{required_path} must run: {run_command}")
 
-    for workflow in sorted((root / ".github" / "workflows").glob("*.yml")):
+    workflow_dir = root / ".github" / "workflows"
+    workflow_files = sorted([*workflow_dir.glob("*.yml"), *workflow_dir.glob("*.yaml")])
+    for workflow in workflow_files:
         workflow_text = workflow.read_text(errors="ignore")
         if "git diff --check" not in workflow_text:
             errors.append(f"{rel(workflow, root)} must run: git diff --check")
