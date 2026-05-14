@@ -691,3 +691,17 @@ def test_evals_readme_must_list_available_cases(tmp_path):
     errors = validate_repo.validate(tmp_path)
 
     assert "evals/README.md missing eval case catalog entry: activity-recap" in errors
+
+
+def test_eval_rubrics_must_have_exactly_one_h1(tmp_path):
+    write_minimal_repo(tmp_path)
+    rubric_dir = tmp_path / "evals" / "rubrics"
+    rubric_dir.mkdir(parents=True)
+    (rubric_dir / "quality.md").write_text(
+        "# Quality Rubric\n\n# Duplicate Rubric\n",
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "evals/rubrics/quality.md must contain exactly one H1 heading" in errors
