@@ -25,6 +25,19 @@ REQUIRED_ARTIFACT_FILES = [
     "templates/handoff-report.md",
     "templates/memory-decision.md",
 ]
+REQUIRED_STATE_MACHINE_VALUES = [
+    "INTAKE",
+    "RESEARCH",
+    "CHALLENGE",
+    "DECIDE",
+    "DESIGN",
+    "PLAN",
+    "BUILD",
+    "VERIFY",
+    "REVIEW",
+    "SHIP",
+    "LEARN",
+]
 REQUIRED_GITIGNORE_PATTERNS = ["__pycache__/", "*.py[cod]", ".pytest_cache/", ".venv/"]
 REQUIRED_DOCS = [
     "docs/agent-harness.md",
@@ -750,6 +763,10 @@ def validate(root: Path = ROOT) -> list[str]:
             errors.append(f"{rel(path, root)} missing $schema dialect declaration")
         if not schema.get("title"):
             errors.append(f"{rel(path, root)} missing title")
+        if path.name == "handoff-report.schema.json":
+            state_schema = properties.get("state", {})
+            if not isinstance(state_schema, dict) or state_schema.get("enum") != REQUIRED_STATE_MACHINE_VALUES:
+                errors.append("schemas/handoff-report.schema.json state must enumerate Agent Brain state machine values")
         for field in required_fields:
             if field not in properties:
                 errors.append(f"{rel(path, root)} required field lacks property definition: {field}")

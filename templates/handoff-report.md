@@ -6,7 +6,7 @@ Use this when ending a run, handing work to another operator, or stopping on a b
 
 ## State
 
-Current state, command, and loaded skills:
+Current state, command, and loaded skills. Use one state-machine value: `INTAKE`, `RESEARCH`, `CHALLENGE`, `DECIDE`, `DESIGN`, `PLAN`, `BUILD`, `VERIFY`, `REVIEW`, `SHIP`, or `LEARN`.
 
 - State:
 - Command:

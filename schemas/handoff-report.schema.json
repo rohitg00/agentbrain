@@ -12,7 +12,19 @@
   "properties": {
     "state": {
       "type": "string",
-      "minLength": 1
+      "enum": [
+        "INTAKE",
+        "RESEARCH",
+        "CHALLENGE",
+        "DECIDE",
+        "DESIGN",
+        "PLAN",
+        "BUILD",
+        "VERIFY",
+        "REVIEW",
+        "SHIP",
+        "LEARN"
+      ]
     },
     "decision": {
       "type": "string",

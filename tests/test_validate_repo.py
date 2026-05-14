@@ -66,7 +66,22 @@ def write_minimal_repo(root: Path) -> None:
                 "additionalProperties": False,
                 "required": ["state", "decision", "evidence_checked", "next_action"],
                 "properties": {
-                    "state": {"type": "string"},
+                    "state": {
+                        "type": "string",
+                        "enum": [
+                            "INTAKE",
+                            "RESEARCH",
+                            "CHALLENGE",
+                            "DECIDE",
+                            "DESIGN",
+                            "PLAN",
+                            "BUILD",
+                            "VERIFY",
+                            "REVIEW",
+                            "SHIP",
+                            "LEARN",
+                        ],
+                    },
                     "decision": {"type": "string"},
                     "evidence_checked": {"type": "array", "items": {"type": "string"}},
                     "facts": {"type": "array", "items": {"type": "string"}},
@@ -500,6 +515,18 @@ def test_valid_minimal_repo_has_no_errors(tmp_path):
     write_minimal_repo(tmp_path)
 
     assert validate_repo.validate(tmp_path) == []
+
+
+def test_handoff_schema_state_must_use_state_machine_enum(tmp_path):
+    write_minimal_repo(tmp_path)
+    schema_path = tmp_path / "schemas" / "handoff-report.schema.json"
+    schema = json.loads(schema_path.read_text(encoding="utf-8"))
+    schema["properties"]["state"].pop("enum", None)
+    schema_path.write_text(json.dumps(schema), encoding="utf-8")
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "schemas/handoff-report.schema.json state must enumerate Agent Brain state machine values" in errors
 
 
 def test_required_eval_cases_include_dirty_working_tree_preservation(tmp_path):
