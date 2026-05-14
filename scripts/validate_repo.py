@@ -465,6 +465,8 @@ def validate(root: Path = ROOT) -> list[str]:
         *sorted((root / "adapters").glob("*/README.md")),
     ]
     for markdown_file in content_files:
+        if markdown_file.parent == root / "docs" and not is_lowercase_kebab(markdown_file.stem):
+            errors.append(f"{rel(markdown_file, root)} filename must use lowercase kebab-case")
         single_h1_error = validate_single_h1(markdown_file, root)
         if single_h1_error:
             errors.append(single_h1_error)
