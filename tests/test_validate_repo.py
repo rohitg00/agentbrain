@@ -148,3 +148,21 @@ def test_eval_cases_require_behavior_and_failure_sections(tmp_path):
 
     assert "evals/cases/thin-case.md missing ## Expected behavior" in errors
     assert "evals/cases/thin-case.md missing ## Failure if" in errors
+
+
+def test_templates_must_reference_required_schema_fields(tmp_path):
+    write_minimal_repo(tmp_path)
+    templates_dir = tmp_path / "templates"
+    templates_dir.mkdir()
+    (tmp_path / "schemas" / "product-brief.schema.json").write_text(
+        json.dumps({"type": "object", "required": ["title", "target_user"]}),
+        encoding="utf-8",
+    )
+    (templates_dir / "product-brief.md").write_text(
+        "# Product Brief\n\nSchema fields: `title`.\n",
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "templates/product-brief.md missing required schema field reference: target_user" in errors

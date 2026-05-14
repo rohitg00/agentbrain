@@ -61,6 +61,14 @@ def validate(root: Path = ROOT) -> list[str]:
             schema_validator.check_schema(schema)
         except Exception as exc:
             errors.append(f"invalid json schema {rel(path, root)}: {exc}")
+            continue
+
+        template = root / "templates" / path.name.replace(".schema.json", ".md")
+        if template.exists():
+            template_text = template.read_text(errors="ignore")
+            for field in schema.get("required", []):
+                if field not in template_text:
+                    errors.append(f"{rel(template, root)} missing required schema field reference: {field}")
 
     for required_path in REQUIRED_ROOT:
         if not (root / required_path).exists():
