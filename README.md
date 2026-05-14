@@ -126,6 +126,8 @@ AGENTBRAIN.md                  # Constitution and operating loop
 PRINCIPLES.md                  # Behavioral principles
 ANTI_RATIONALIZATION.md        # Shortcut rebuttals
 CONTRIBUTING.md                # Contribution and validation workflow
+requirements-dev.txt           # Local validation dependencies
+.github/workflows/             # CI quality gate
 commands/                      # Slash command specs
 skills/                        # Portable agent skills
 schemas/                       # Machine-checkable artifact schemas

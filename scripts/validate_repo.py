@@ -84,6 +84,10 @@ REQUIRED_README_MINIMAL_HARNESS_PROMPT_TERMS = [
     "git diff --check",
     "stop",
 ]
+REQUIRED_README_REPOSITORY_MAP_PATHS = [
+    "requirements-dev.txt",
+    ".github/workflows/",
+]
 REQUIRED_AGENT_HARNESS_SECTIONS = [
     "## Install",
     "## Operating Loop",
@@ -845,9 +849,13 @@ def validate(root: Path = ROOT) -> list[str]:
             template_ref = rel(template, root)
             if f"`{template_ref}`" not in readme_text:
                 errors.append(f"README.md missing template catalog entry: {template_ref}")
-        for mapped_path in readme_repository_map_paths(readme_text):
+        mapped_paths = readme_repository_map_paths(readme_text)
+        for mapped_path in mapped_paths:
             if not (root / mapped_path).exists():
                 errors.append(f"README.md repository map lists missing path: {mapped_path}")
+        for required_path in REQUIRED_README_REPOSITORY_MAP_PATHS:
+            if required_path not in mapped_paths:
+                errors.append(f"README.md repository map missing required path: {required_path}")
 
     contributing = root / "CONTRIBUTING.md"
     if contributing.exists():
