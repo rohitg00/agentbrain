@@ -46,6 +46,17 @@ Use this gate before any agentic workflow that can call tools, hand off work, or
 - Blocking guardrails are preferred when speculative execution could spend money, call tools, or create side effects before validation finishes.
 - Guardrails must be tested as first-class behavior, not described only in prose.
 
+## Agent Output Verifier Gate
+
+Use this gate before trusting a handoff from a long-running agent, parallel agent, or autonomous workflow.
+
+- Claimed tests, commands, files, screenshots, and links have inspectable evidence.
+- Secret-like values, private data, and connection strings are absent or redacted.
+- Tool use is real, allowed, and within the requested scope.
+- Retry loops, background jobs, and scheduled work have explicit stop conditions.
+- Production, public, destructive, or expensive side effects had approval before execution.
+- Missing evidence blocks trust instead of becoming a warning-only note.
+
 ## QA Gate
 
 - Real user journey executed

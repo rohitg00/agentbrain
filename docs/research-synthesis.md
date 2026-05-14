@@ -126,6 +126,17 @@ Agent Brain response:
 - keep `SKILL.md` focused on the core procedure,
 - move long references, templates, scripts, and examples into linked resources when they grow.
 
+### Recent community signal: autonomous output needs a verifier
+
+Recent last-30-days research across high-signal builder and AI-model communities reinforced a repeated gap: confident agent handoffs can hide missing tests, invented tool use, unbounded loops, security leaks, and unapproved side effects.
+
+Agent Brain response:
+
+- add an `agent-output-verifier` skill,
+- require an eval for trust/block decisions,
+- add a review gate that blocks missing evidence,
+- treat loop limits, secrets, and side effects as first-class checks.
+
 ## Design conclusion
 
 Agent Brain must be more than a set of prompts. It should be a portable operating layer with:
