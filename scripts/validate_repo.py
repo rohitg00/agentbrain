@@ -326,6 +326,8 @@ def validate(root: Path = ROOT) -> list[str]:
                 errors.append(f"{rel(skill, root)} missing {section}")
             elif not section_has_body(text, section):
                 errors.append(f"{rel(skill, root)} section has no body: {section}")
+        if not sections_are_in_order(text, REQUIRED_SKILL_SECTIONS):
+            errors.append(f"{rel(skill, root)} sections must appear in canonical order")
 
     for command in sorted((root / "commands").glob("*.md")):
         text = command.read_text(errors="ignore")

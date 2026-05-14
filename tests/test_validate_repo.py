@@ -496,6 +496,36 @@ def test_skill_required_sections_must_have_body(tmp_path):
     assert "skills/sample/SKILL.md section has no body: ## Example" in errors
 
 
+def test_skill_required_sections_must_keep_canonical_order(tmp_path):
+    write_minimal_repo(tmp_path)
+    (tmp_path / "skills" / "sample" / "SKILL.md").write_text(
+        "\n".join([
+            "---",
+            "name: sample",
+            "description: Use when a sample request needs routing.",
+            "---",
+            "# sample",
+            "## Trigger",
+            "Use for sample requests.",
+            "## Procedure",
+            "Check the request.",
+            "## Inputs",
+            "Raw request.",
+            "## Verification",
+            "Confirm evidence.",
+            "## Failure Modes",
+            "Stop if evidence is missing.",
+            "## Example",
+            "Sample request routes through the skill.",
+        ]),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "skills/sample/SKILL.md sections must appear in canonical order" in errors
+
+
 def test_banned_public_copy_terms_are_reported(tmp_path):
     write_minimal_repo(tmp_path)
     (tmp_path / "docs").mkdir(exist_ok=True)
