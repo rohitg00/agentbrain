@@ -139,6 +139,18 @@ def parse_frontmatter(text: str) -> dict[str, str]:
     return parsed
 
 
+def markdown_h1_headings(text: str) -> list[str]:
+    headings: list[str] = []
+    in_fenced_code = False
+    for line in text.splitlines():
+        if line.startswith("```") or line.startswith("~~~"):
+            in_fenced_code = not in_fenced_code
+            continue
+        if not in_fenced_code and line.startswith("# "):
+            headings.append(line)
+    return headings
+
+
 def term_is_only_in_readme_comparison_section(text: str, term: str) -> bool:
     term_lower = term.lower()
     if term_lower not in text.lower():
@@ -167,7 +179,7 @@ def title_from_slug(slug: str) -> str:
 
 def validate_single_h1(path: Path, root: Path) -> str | None:
     text = path.read_text(errors="ignore")
-    h1_headings = [line for line in text.splitlines() if line.startswith("# ")]
+    h1_headings = markdown_h1_headings(text)
     if len(h1_headings) != 1:
         return f"{rel(path, root)} must contain exactly one H1 heading"
     return None
@@ -421,7 +433,7 @@ def validate(root: Path = ROOT) -> list[str]:
         expected_heading = f"# /{command.stem}"
         lines = text.splitlines()
         first_line = lines[0] if lines else ""
-        h1_headings = [line for line in lines if line.startswith("# ")]
+        h1_headings = markdown_h1_headings(text)
         if not is_lowercase_kebab(command.stem):
             errors.append(f"{rel(command, root)} filename must use lowercase kebab-case")
         if not command.stem.startswith("brain-"):

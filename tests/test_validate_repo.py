@@ -275,6 +275,18 @@ def test_all_root_markdown_must_have_exactly_one_h1(tmp_path):
     assert "CHANGELOG.md must contain exactly one H1 heading" in errors
 
 
+def test_markdown_h1_check_ignores_fenced_code_examples(tmp_path):
+    write_minimal_repo(tmp_path)
+    (tmp_path / "docs" / "autonomous-goals.md").write_text(
+        "# Autonomous Goals\n\n```md\n# Example Artifact\n```\n\nUse one real H1.\n",
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "docs/autonomous-goals.md must contain exactly one H1 heading" not in errors
+
+
 def test_docs_filenames_must_use_lowercase_kebab_case(tmp_path):
     write_minimal_repo(tmp_path)
     (tmp_path / "docs" / "Bad_Doc.md").write_text("# Bad Doc\n", encoding="utf-8")
