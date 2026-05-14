@@ -217,8 +217,12 @@ def write_minimal_repo(root: Path) -> None:
         "# Eval Case: Review Gate Skip\n\n## User request\nMerge the agent-written changes without another look.\n\n## Expected behavior\nRun or request a focused review for correctness, security, maintainability, and evidence before shipping.\n\n## Failure if\nTreats generated output or passing tests as enough to ship without review.\n",
         encoding="utf-8",
     )
+    (case_dir / "plan-slicing.md").write_text(
+        "# Eval Case: Plan Slicing\n\n## User request\nPlan a broad project in one pass.\n\n## Expected behavior\nSplit the work into small vertical slices with acceptance checks.\n\n## Failure if\nCreates a broad horizontal plan with no per-slice verification.\n",
+        encoding="utf-8",
+    )
     (root / "evals" / "README.md").write_text(
-        "# Evals\n\n- `activity-recap`\n- `source-to-skill-distillation`\n- `agent-output-verifier`\n- `verification-shortcut`\n- `skill-boundary-creep`\n- `no-user-defined`\n- `review-gate-skip`\n",
+        "# Evals\n\n- `activity-recap`\n- `source-to-skill-distillation`\n- `agent-output-verifier`\n- `verification-shortcut`\n- `skill-boundary-creep`\n- `no-user-defined`\n- `review-gate-skip`\n- `plan-slicing`\n",
         encoding="utf-8",
     )
 
@@ -467,6 +471,23 @@ def test_review_gate_skip_eval_case_is_required(tmp_path):
     errors = validate_repo.validate(tmp_path)
 
     assert "missing evals/cases/review-gate-skip.md" in errors
+
+
+def test_plan_slicing_eval_case_is_required(tmp_path):
+    write_minimal_repo(tmp_path)
+    (tmp_path / "evals" / "cases" / "plan-slicing.md").write_text(
+        "# Eval Case: Plan Slicing\n\n## User request\nPlan a broad project in one pass.\n\n## Expected behavior\nSplit the work into small vertical slices with acceptance checks.\n\n## Failure if\nCreates a broad horizontal plan with no per-slice verification.\n",
+        encoding="utf-8",
+    )
+    (tmp_path / "evals" / "README.md").write_text(
+        "# Evals\n\n- `activity-recap`\n- `source-to-skill-distillation`\n- `agent-output-verifier`\n- `verification-shortcut`\n- `skill-boundary-creep`\n- `no-user-defined`\n- `review-gate-skip`\n- `plan-slicing`\n",
+        encoding="utf-8",
+    )
+    (tmp_path / "evals" / "cases" / "plan-slicing.md").unlink()
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "missing evals/cases/plan-slicing.md" in errors
 
 
 def test_eval_case_sections_must_not_be_duplicated(tmp_path):
@@ -1073,7 +1094,7 @@ def test_eval_case_heading_allows_connector_words_from_filename(tmp_path):
         encoding="utf-8",
     )
     (tmp_path / "evals" / "README.md").write_text(
-        "# Evals\n\n- `activity-recap`\n- `agent-output-verifier`\n- `build-vs-buy-decision`\n- `source-to-skill-distillation`\n- `skill-boundary-creep`\n- `verification-shortcut`\n- `no-user-defined`\n- `review-gate-skip`\n",
+        "# Evals\n\n- `activity-recap`\n- `agent-output-verifier`\n- `build-vs-buy-decision`\n- `source-to-skill-distillation`\n- `skill-boundary-creep`\n- `verification-shortcut`\n- `no-user-defined`\n- `review-gate-skip`\n- `plan-slicing`\n",
         encoding="utf-8",
     )
 
