@@ -80,17 +80,21 @@ Evidence missing: <what would unblock>
 Safe next action: <smallest next step>
 ```
 
-## Using It With Coding Agents
+## Copyable Harness Prompt
 
-When feeding this repo to a coding agent, use this instruction:
+Use this prompt when handing the repo to another capable coding agent:
 
 ```text
-Use Agent Brain as the operating harness.
-Do not skip directly to implementation.
-Choose the state, command, skill, artifact, verification, and next state.
-If evidence is missing, stop.
-Before claiming completion, run the local validation gate.
+Read AGENTBRAIN.md, PRINCIPLES.md, ANTI_RATIONALIZATION.md, and docs/state-machine.md before acting.
+Choose the matching command in commands/ and load only its listed skills.
+Use templates/ and schemas/ for structured artifacts when they fit.
+Run python -m pytest -q, python scripts/validate_repo.py, and git diff --check before claiming completion.
+Stop and report blockers when evidence, approval, scope, tests, rollback, or safety is missing.
 ```
+
+## Using It With Coding Agents
+
+When feeding this repo to a coding agent, use the copyable prompt above as the baseline instruction. Keep the run scoped to the current command, skill, artifact, verification, and next state; if evidence is missing, stop instead of improvising.
 
 For large work, split into worker scopes:
 

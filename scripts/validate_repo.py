@@ -79,6 +79,19 @@ REQUIRED_AGENT_HARNESS_VALIDATION_COMMANDS = [
     "python scripts/validate_repo.py",
     "git diff --check",
 ]
+REQUIRED_AGENT_HARNESS_PROMPT_SECTION = "## Copyable Harness Prompt"
+REQUIRED_AGENT_HARNESS_PROMPT_TERMS = [
+    "AGENTBRAIN.md",
+    "docs/state-machine.md",
+    "commands/",
+    "skills",
+    "templates/",
+    "schemas/",
+    "python -m pytest -q",
+    "python scripts/validate_repo.py",
+    "git diff --check",
+    "Stop",
+]
 REQUIRED_ADAPTER_SECTIONS = ["## Install", "## Validation", "## Failure Modes"]
 REQUIRED_CONTRIBUTING_VALIDATION_COMMANDS = ["pytest -q", "git diff --check"]
 RESEARCH_WATCHLIST_REQUIRED_SOURCES = [
@@ -594,6 +607,14 @@ def validate(root: Path = ROOT) -> list[str]:
         for run_command in REQUIRED_AGENT_HARNESS_VALIDATION_COMMANDS:
             if run_command not in agent_harness_text:
                 errors.append(f"docs/agent-harness.md validation section must document: {run_command}")
+        harness_prompt = section_body(agent_harness_text, REQUIRED_AGENT_HARNESS_PROMPT_SECTION)
+        if not harness_prompt.strip():
+            errors.append(
+                "docs/agent-harness.md missing copyable harness prompt section: ## Copyable Harness Prompt"
+            )
+        for required_term in REQUIRED_AGENT_HARNESS_PROMPT_TERMS:
+            if required_term not in harness_prompt:
+                errors.append(f"docs/agent-harness.md harness prompt must mention: {required_term}")
 
     for required_path in REQUIRED_SKILLS:
         if not (root / required_path).exists():

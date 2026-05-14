@@ -119,6 +119,15 @@ def write_minimal_repo(root: Path) -> None:
         "## Operating Loop\nChoose state, load command, verify.\n\n"
         "## Handoff Contract\nState evidence, risks, blockers, next action.\n\n"
         "## Stop Conditions\nBlock missing evidence.\n\n"
+        "## Copyable Harness Prompt\n"
+        "Use this prompt when handing the repo to another capable coding agent.\n\n"
+        "```text\n"
+        "Read AGENTBRAIN.md, PRINCIPLES.md, ANTI_RATIONALIZATION.md, and docs/state-machine.md before acting.\n"
+        "Choose the matching command in commands/ and load only its listed skills.\n"
+        "Use templates/ and schemas/ for structured artifacts when they fit.\n"
+        "Run python -m pytest -q, python scripts/validate_repo.py, and git diff --check before claiming completion.\n"
+        "Stop and report blockers when evidence, approval, scope, tests, rollback, or safety is missing.\n"
+        "```\n\n"
         "## Troubleshooting\nInspect validation errors before continuing.\n",
         encoding="utf-8",
     )
@@ -1620,6 +1629,32 @@ def test_agent_harness_doc_must_include_quality_gate_commands(tmp_path):
     assert "docs/agent-harness.md validation section must document: python -m pytest -q" in errors
     assert "docs/agent-harness.md validation section must document: python scripts/validate_repo.py" in errors
     assert "docs/agent-harness.md validation section must document: git diff --check" in errors
+
+
+def test_agent_harness_doc_must_include_copyable_harness_prompt(tmp_path):
+    write_minimal_repo(tmp_path)
+    agent_harness = tmp_path / "docs" / "agent-harness.md"
+    agent_harness.write_text(
+        agent_harness.read_text(encoding="utf-8").replace(
+            "## Copyable Harness Prompt\n"
+            "Use this prompt when handing the repo to another capable coding agent.\n\n"
+            "```text\n"
+            "Read AGENTBRAIN.md, PRINCIPLES.md, ANTI_RATIONALIZATION.md, and docs/state-machine.md before acting.\n"
+            "Choose the matching command in commands/ and load only its listed skills.\n"
+            "Use templates/ and schemas/ for structured artifacts when they fit.\n"
+            "Run python -m pytest -q, python scripts/validate_repo.py, and git diff --check before claiming completion.\n"
+            "Stop and report blockers when evidence, approval, scope, tests, rollback, or safety is missing.\n"
+            "```\n\n",
+            "",
+        ),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "docs/agent-harness.md missing copyable harness prompt section: ## Copyable Harness Prompt" in errors
+    assert "docs/agent-harness.md harness prompt must mention: commands/" in errors
+    assert "docs/agent-harness.md harness prompt must mention: templates/" in errors
 
 
 def test_activity_recap_skill_is_required(tmp_path):
