@@ -181,6 +181,13 @@ def validate(root: Path = ROOT) -> list[str]:
             if section not in text:
                 errors.append(f"{rel(case, root)} missing {section}")
 
+    for content_dir in [root / "docs", root / "templates"]:
+        for markdown_file in sorted(content_dir.glob("*.md")):
+            text = markdown_file.read_text(errors="ignore")
+            h1_headings = [line for line in text.splitlines() if line.startswith("# ")]
+            if len(h1_headings) != 1:
+                errors.append(f"{rel(markdown_file, root)} must contain exactly one H1 heading")
+
     for public_copy_file in sorted(
         path for path in root.rglob("*") if path.suffix in PUBLIC_COPY_SUFFIXES
     ):

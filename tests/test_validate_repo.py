@@ -334,3 +334,17 @@ def test_research_watchlist_must_track_goal_and_skill_sources(tmp_path):
     assert "docs/research-watchlist.md missing tracked source: small composable engineering skills" in errors
     assert "docs/research-watchlist.md missing tracked source: methodology skill library" in errors
     assert "docs/research-watchlist.md missing tracked source: harness integration skill library" in errors
+
+
+def test_docs_and_templates_must_have_exactly_one_h1(tmp_path):
+    write_minimal_repo(tmp_path)
+    templates_dir = tmp_path / "templates"
+    templates_dir.mkdir()
+    (templates_dir / "product-brief.md").write_text(
+        "# Product Brief\n\n# Duplicate Brief\n",
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "templates/product-brief.md must contain exactly one H1 heading" in errors
