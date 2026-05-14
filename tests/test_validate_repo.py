@@ -90,6 +90,18 @@ def test_schema_semantics_are_checked(tmp_path):
     assert any(error.startswith("invalid json schema schemas/artifact.schema.json:") for error in errors)
 
 
+def test_schema_required_fields_must_have_property_definitions(tmp_path):
+    write_minimal_repo(tmp_path)
+    (tmp_path / "schemas" / "artifact.schema.json").write_text(
+        json.dumps({"type": "object", "required": ["title"], "properties": {}}),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "schemas/artifact.schema.json required field lacks property definition: title" in errors
+
+
 def test_missing_skill_sections_are_reported(tmp_path):
     write_minimal_repo(tmp_path)
     (tmp_path / "skills" / "sample" / "SKILL.md").write_text("# Sample\n## Trigger\n", encoding="utf-8")

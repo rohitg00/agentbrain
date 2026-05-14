@@ -99,10 +99,16 @@ def validate(root: Path = ROOT) -> list[str]:
             errors.append(f"invalid json schema {rel(path, root)}: {exc}")
             continue
 
+        required_fields = schema.get("required", [])
+        properties = schema.get("properties", {})
+        for field in required_fields:
+            if field not in properties:
+                errors.append(f"{rel(path, root)} required field lacks property definition: {field}")
+
         template = root / "templates" / path.name.replace(".schema.json", ".md")
         if template.exists():
             template_text = template.read_text(errors="ignore")
-            for field in schema.get("required", []):
+            for field in required_fields:
                 if field not in template_text:
                     errors.append(f"{rel(template, root)} missing required schema field reference: {field}")
 
