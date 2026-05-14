@@ -4,6 +4,8 @@ Agent Brain treats memory as a system of records, not a dumping ground.
 
 ## Memory tiers
 
+Agent Brain has an inbuilt memory model, but the source of truth is still explicit artifacts rather than hidden chat state.
+
 ### Tier 1 — Always-on identity and preferences
 
 Small, stable, and loaded early. Stores durable behavior and user preferences.
@@ -50,6 +52,40 @@ A skill is created when:
 ### Tier 5 — External memory indexes
 
 Optional retrieval layer for large corpora. Markdown remains the source of truth; indexes accelerate search.
+
+## Memory quality bar
+
+A good memory layer is not judged by how much it stores. It is judged by whether it improves future decisions without polluting context.
+
+Agent Brain memory is good when:
+
+- the next agent can recover the project state from artifacts, not vibes,
+- stable preferences are separated from temporary task progress,
+- procedures are promoted into skills instead of buried in chat logs,
+- source-backed decisions live in project docs,
+- old work can be recalled without loading every past message,
+- stale facts have an owner, scope, or freshness signal,
+- private data and secrets are never stored as memory.
+
+It is weak when:
+
+- memory becomes a chronological task diary,
+- assumptions are stored as facts,
+- one-off fixes become permanent doctrine,
+- context is duplicated across profile notes, docs, and skills,
+- retrieval can find text but cannot say whether the text is still authoritative.
+
+## Current limitation
+
+Agent Brain currently defines memory discipline and storage tiers; it is not yet a full executable memory database. The strongest built-in memory today is:
+
+- project docs for durable knowledge,
+- skills for reusable procedures,
+- evals and validators for preventing repeated mistakes,
+- session/history search where the host agent supports it,
+- optional external indexes for large corpora.
+
+The next improvement is to make memory writes more testable: every durable memory update should declare target tier, evidence, freshness, and rejection reason for discarded context.
 
 ## Context engineering loop
 

@@ -262,6 +262,7 @@ Do not summarize intent as if it were evidence. If the handoff cannot name proof
 
 - `activity-recap` — summarize recent project activity from local evidence.
 - `agent-output-verifier` — block unsafe or unsupported agent output before trust or handoff.
+- `context-memory` — choose what to remember, retrieve, update, or deliberately forget.
 - `design-grill` — challenge interface, states, and edge cases before build work.
 - `engineering-grill` — challenge feasibility, failure modes, and implementation risk.
 - `evidence-research` — turn claims into source-backed research evidence.
