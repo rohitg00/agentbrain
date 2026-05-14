@@ -106,6 +106,14 @@ def title_from_slug(slug: str) -> str:
     return " ".join(titled_parts)
 
 
+def validate_single_h1(path: Path, root: Path) -> str | None:
+    text = path.read_text(errors="ignore")
+    h1_headings = [line for line in text.splitlines() if line.startswith("# ")]
+    if len(h1_headings) != 1:
+        return f"{rel(path, root)} must contain exactly one H1 heading"
+    return None
+
+
 def validate(root: Path = ROOT) -> list[str]:
     root = Path(root)
     errors: list[str] = []
@@ -133,8 +141,13 @@ def validate(root: Path = ROOT) -> list[str]:
                     errors.append(f"{rel(template, root)} missing required schema field reference: {field}")
 
     for required_path in REQUIRED_ROOT:
-        if not (root / required_path).exists():
+        path = root / required_path
+        if not path.exists():
             errors.append(f"missing {required_path}")
+        else:
+            single_h1_error = validate_single_h1(path, root)
+            if single_h1_error:
+                errors.append(single_h1_error)
 
     for required_path in REQUIRED_DOCS:
         if not (root / required_path).exists():
@@ -191,10 +204,9 @@ def validate(root: Path = ROOT) -> list[str]:
         *sorted((root / "adapters").glob("*/README.md")),
     ]
     for markdown_file in content_files:
-        text = markdown_file.read_text(errors="ignore")
-        h1_headings = [line for line in text.splitlines() if line.startswith("# ")]
-        if len(h1_headings) != 1:
-            errors.append(f"{rel(markdown_file, root)} must contain exactly one H1 heading")
+        single_h1_error = validate_single_h1(markdown_file, root)
+        if single_h1_error:
+            errors.append(single_h1_error)
 
     for public_copy_file in sorted(
         path for path in root.rglob("*") if path.suffix in PUBLIC_COPY_SUFFIXES

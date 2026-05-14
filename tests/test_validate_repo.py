@@ -73,6 +73,18 @@ def test_valid_minimal_repo_has_no_errors(tmp_path):
     assert validate_repo.validate(tmp_path) == []
 
 
+def test_required_root_markdown_must_have_exactly_one_h1(tmp_path):
+    write_minimal_repo(tmp_path)
+    (tmp_path / "PRINCIPLES.md").write_text(
+        "# Principles\n\n# Duplicate Principles\n",
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "PRINCIPLES.md must contain exactly one H1 heading" in errors
+
+
 def test_invalid_json_schema_reports_relative_path(tmp_path):
     write_minimal_repo(tmp_path)
     (tmp_path / "schemas" / "artifact.schema.json").write_text("{bad json", encoding="utf-8")
