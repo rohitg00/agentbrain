@@ -110,6 +110,8 @@ REQUIRED_AGENT_HARNESS_PROMPT_SECTION = "## Copyable Harness Prompt"
 REQUIRED_AGENT_HARNESS_PROMPT_TERMS = [
     "AGENTBRAIN.md",
     "docs/state-machine.md",
+    "git status --short",
+    "git log --oneline -5",
     "commands/",
     "skills",
     "templates/",

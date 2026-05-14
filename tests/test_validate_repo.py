@@ -158,6 +158,7 @@ def write_minimal_repo(root: Path) -> None:
         "Use this prompt when handing the repo to another capable coding agent.\n\n"
         "```text\n"
         "Read AGENTBRAIN.md, PRINCIPLES.md, ANTI_RATIONALIZATION.md, and docs/state-machine.md before acting.\n"
+        "Inspect git status --short and git log --oneline -5 before choosing work.\n"
         "Choose the matching command in commands/ and load only its listed skills.\n"
         "Use templates/ and schemas/ for structured artifacts when they fit.\n"
         "Run python -m pytest -q, python scripts/validate_repo.py, and git diff --check before claiming completion.\n"
@@ -1990,6 +1991,7 @@ def test_agent_harness_doc_must_include_copyable_harness_prompt(tmp_path):
             "Use this prompt when handing the repo to another capable coding agent.\n\n"
             "```text\n"
             "Read AGENTBRAIN.md, PRINCIPLES.md, ANTI_RATIONALIZATION.md, and docs/state-machine.md before acting.\n"
+            "Inspect git status --short and git log --oneline -5 before choosing work.\n"
             "Choose the matching command in commands/ and load only its listed skills.\n"
             "Use templates/ and schemas/ for structured artifacts when they fit.\n"
             "Run python -m pytest -q, python scripts/validate_repo.py, and git diff --check before claiming completion.\n"
@@ -2005,6 +2007,23 @@ def test_agent_harness_doc_must_include_copyable_harness_prompt(tmp_path):
     assert "docs/agent-harness.md missing copyable harness prompt section: ## Copyable Harness Prompt" in errors
     assert "docs/agent-harness.md harness prompt must mention: commands/" in errors
     assert "docs/agent-harness.md harness prompt must mention: templates/" in errors
+
+
+def test_agent_harness_prompt_must_include_baseline_repo_inspection(tmp_path):
+    write_minimal_repo(tmp_path)
+    agent_harness = tmp_path / "docs" / "agent-harness.md"
+    agent_harness.write_text(
+        agent_harness.read_text(encoding="utf-8").replace(
+            "Inspect git status --short and git log --oneline -5 before choosing work.\n",
+            "",
+        ),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "docs/agent-harness.md harness prompt must mention: git status --short" in errors
+    assert "docs/agent-harness.md harness prompt must mention: git log --oneline -5" in errors
 
 
 def test_agent_harness_doc_must_include_worker_scope_guidance(tmp_path):
