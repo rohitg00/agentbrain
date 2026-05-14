@@ -348,3 +348,24 @@ def test_docs_and_templates_must_have_exactly_one_h1(tmp_path):
     errors = validate_repo.validate(tmp_path)
 
     assert "templates/product-brief.md must contain exactly one H1 heading" in errors
+
+
+def test_commands_must_have_exactly_one_h1(tmp_path):
+    write_minimal_repo(tmp_path)
+    (tmp_path / "commands" / "brain-sample.md").write_text(
+        "\n".join([
+            "# /brain-sample",
+            "## Purpose",
+            "## When to use",
+            "## Input contract",
+            "## Workflow",
+            "## Output",
+            "## Stop conditions",
+            "# Duplicate Command",
+        ]),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "commands/brain-sample.md must contain exactly one H1 heading" in errors

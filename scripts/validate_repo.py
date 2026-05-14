@@ -164,9 +164,13 @@ def validate(root: Path = ROOT) -> list[str]:
     for command in sorted((root / "commands").glob("*.md")):
         text = command.read_text(errors="ignore")
         expected_heading = f"# /{command.stem}"
-        first_line = text.splitlines()[0] if text.splitlines() else ""
+        lines = text.splitlines()
+        first_line = lines[0] if lines else ""
+        h1_headings = [line for line in lines if line.startswith("# ")]
         if first_line != expected_heading:
             errors.append(f"{rel(command, root)} heading must be {expected_heading}")
+        if len(h1_headings) != 1:
+            errors.append(f"{rel(command, root)} must contain exactly one H1 heading")
         for section in REQUIRED_COMMAND_SECTIONS:
             if section not in text:
                 errors.append(f"{rel(command, root)} missing {section}")
