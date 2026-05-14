@@ -20,6 +20,7 @@ Agent Brain evals check whether a command or skill improves judgment instead of 
 - `no-user-defined` — refuses to design without a concrete user definition.
 - `overengineered-feature` — reduces unnecessary complexity before planning.
 - `security-risk-feature` — catches unsafe product behavior and requires mitigations.
+- `source-to-skill-distillation` — turns external workflow evidence into a neutral reusable skill pattern.
 - `vague-startup-idea` — turns an unclear startup idea into sharper discovery work.
 
 ## How to use

@@ -17,7 +17,10 @@ REQUIRED_ROOT = [
 REQUIRED_FILES = ["requirements-dev.txt"]
 REQUIRED_DOCS = ["docs/autonomous-goals.md", "docs/skill-distillation.md"]
 REQUIRED_SKILLS = ["skills/activity-recap/SKILL.md"]
-REQUIRED_EVAL_CASES = ["evals/cases/activity-recap.md"]
+REQUIRED_EVAL_CASES = [
+    "evals/cases/activity-recap.md",
+    "evals/cases/source-to-skill-distillation.md",
+]
 REQUIRED_EVAL_DOCS = ["evals/README.md"]
 REQUIRED_WORKFLOWS = [".github/workflows/quality.yml"]
 REQUIRED_QUALITY_WORKFLOW_RUNS = [

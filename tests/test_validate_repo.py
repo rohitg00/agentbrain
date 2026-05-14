@@ -149,8 +149,12 @@ def write_minimal_repo(root: Path) -> None:
         "# Eval Case: Activity Recap\n\n## User request\nSummarize recent activity.\n\n## Expected behavior\nUse local evidence and state checked scope.\n\n## Failure if\nInvents work or omits verification scope.\n",
         encoding="utf-8",
     )
+    (case_dir / "source-to-skill-distillation.md").write_text(
+        "# Eval Case: Source to Skill Distillation\n\n## User request\nTurn this external workflow into an Agent Brain skill.\n\n## Expected behavior\nExtract the reusable operator pattern, keep public copy neutral, and define verification evidence.\n\n## Failure if\nCopies source branding, imports implementation-specific commands, or omits a quality gate.\n",
+        encoding="utf-8",
+    )
     (root / "evals" / "README.md").write_text(
-        "# Evals\n\n- activity-recap\n",
+        "# Evals\n\n- activity-recap\n- source-to-skill-distillation\n",
         encoding="utf-8",
     )
 
@@ -551,7 +555,7 @@ def test_eval_case_heading_allows_connector_words_from_filename(tmp_path):
         encoding="utf-8",
     )
     (tmp_path / "evals" / "README.md").write_text(
-        "# Evals\n\n- activity-recap\n- build-vs-buy-decision\n",
+        "# Evals\n\n- activity-recap\n- build-vs-buy-decision\n- source-to-skill-distillation\n",
         encoding="utf-8",
     )
 
@@ -610,6 +614,15 @@ def test_activity_recap_eval_case_is_required(tmp_path):
     errors = validate_repo.validate(tmp_path)
 
     assert "missing evals/cases/activity-recap.md" in errors
+
+
+def test_source_to_skill_distillation_eval_case_is_required(tmp_path):
+    write_minimal_repo(tmp_path)
+    (tmp_path / "evals" / "cases" / "source-to-skill-distillation.md").unlink()
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "missing evals/cases/source-to-skill-distillation.md" in errors
 
 
 def test_evals_readme_is_required(tmp_path):
