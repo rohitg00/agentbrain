@@ -105,6 +105,11 @@ REQUIRED_README_TROUBLESHOOTING_TERMS = [
     "preserve user changes",
 ]
 REQUIRED_README_SECRET_TROUBLESHOOTING_TERMS = ["secret-like values"]
+REQUIRED_README_CI_TROUBLESHOOTING_TERMS = [
+    "Tests pass locally but CI fails",
+    "exact CI sequence locally",
+    ".github/workflows/quality.yml",
+]
 REQUIRED_AGENT_HARNESS_SECTIONS = [
     "## Install",
     "## Fresh Checkout Bootstrap",
@@ -953,6 +958,12 @@ def validate(root: Path = ROOT) -> list[str]:
             if required_term.lower() not in troubleshooting_body:
                 errors.append(
                     "README.md troubleshooting must document secret-like value recovery: "
+                    f"{required_term}"
+                )
+        for required_term in REQUIRED_README_CI_TROUBLESHOOTING_TERMS:
+            if required_term.lower() not in troubleshooting_body:
+                errors.append(
+                    "README.md troubleshooting must document CI failure recovery: "
                     f"{required_term}"
                 )
 
