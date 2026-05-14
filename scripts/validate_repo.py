@@ -66,6 +66,16 @@ REQUIRED_SKILL_SECTIONS = [
     "## Failure Modes",
     "## Example",
 ]
+REQUIRED_SKILL_TEMPLATE_SECTIONS = [
+    "## Trigger",
+    "## Inputs",
+    "## Procedure",
+    "## Anti-Rationalization",
+    "## Verification",
+    "## Output Artifact",
+    "## Failure Modes",
+    "## Example",
+]
 REQUIRED_COMMAND_SECTIONS = [
     "## Purpose",
     "## When to use",
@@ -493,7 +503,7 @@ def validate(root: Path = ROOT) -> list[str]:
             errors.append("templates/skill-template.md frontmatter name must use lowercase kebab-case")
         if not skill_template_frontmatter.get("description", "").startswith("Use when"):
             errors.append("templates/skill-template.md frontmatter description must start with 'Use when'")
-        for section in REQUIRED_SKILL_SECTIONS:
+        for section in REQUIRED_SKILL_TEMPLATE_SECTIONS:
             section_count = skill_template_lines.count(section)
             if section_count == 0:
                 errors.append(f"templates/skill-template.md missing {section}")
@@ -502,7 +512,7 @@ def validate(root: Path = ROOT) -> list[str]:
                     errors.append(f"templates/skill-template.md section must appear exactly once: {section}")
                 if not section_has_body(skill_template_text, section):
                     errors.append(f"templates/skill-template.md section has no body: {section}")
-        if not sections_are_in_order(skill_template_text, REQUIRED_SKILL_SECTIONS):
+        if not sections_are_in_order(skill_template_text, REQUIRED_SKILL_TEMPLATE_SECTIONS):
             errors.append("templates/skill-template.md sections must appear in canonical order")
 
     eval_cases = sorted((root / "evals" / "cases").glob("*.md"))
