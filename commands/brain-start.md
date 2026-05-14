@@ -20,12 +20,13 @@ If required inputs are missing, ask at most three blocking questions or state ex
 
 - `intake` for routing raw intent into the earliest safe state.
 - `question-ladder` when the request needs staged clarification without overloading the user.
+- `domain-language` when overloaded project terms affect routing, artifact naming, or the next state.
 
 ## Workflow
 
 1. Capture the raw request, user goal, visible constraints, and urgency.
 2. Classify the earliest safe state instead of assuming build work.
-3. Load `intake`; add `question-ladder` only when missing context blocks routing.
+3. Load `intake`; add `question-ladder` only when missing context blocks routing; add `domain-language` when vocabulary ambiguity changes state choice or artifact naming.
 4. Produce an Intake Summary with facts, assumptions, blockers, and recommended next command.
 5. Stop if the request needs approval, secrets, destructive action, or a user decision before routing.
 

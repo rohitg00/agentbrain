@@ -19,13 +19,14 @@ If required inputs are missing, ask at most three blocking questions or state ex
 ## Skills to load
 
 - `learning-capture` to convert repeated outcomes into durable knowledge.
+- `context-memory` to decide whether the lesson belongs in memory, a skill, a doc, a template, an eval, or nowhere.
 - `wiki-maintenance` when the update belongs in source-backed project context.
 
 ## Workflow
 
 1. Identify the repeated outcome, failure mode, correction, or durable decision.
 2. Decide whether it belongs in memory, wiki, skill, template, eval, or nowhere.
-3. Use `learning-capture`; add `wiki-maintenance` for source-backed project knowledge.
+3. Use `learning-capture` and `context-memory`; add `wiki-maintenance` for source-backed project knowledge.
 4. Produce Learning Capture with evidence, scope, update target, and next state.
 5. Stop if the lesson is temporary task progress, private data, or stale implementation status.
 

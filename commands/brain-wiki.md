@@ -19,12 +19,13 @@ If required inputs are missing, ask at most three blocking questions or state ex
 ## Skills to load
 
 - `wiki-maintenance` to update project knowledge from checked sources.
+- `activity-recap` when local repository history or recent changes must be summarized before updating knowledge.
 - `evidence-research` when the update depends on external claims or freshness.
 
 ## Workflow
 
 1. Check the source material, target knowledge area, owner, and staleness risk.
-2. Use `wiki-maintenance` and `evidence-research` to ground each durable statement.
+2. Use `wiki-maintenance`; add `activity-recap` for recent local repo evidence and `evidence-research` for external claims or freshness.
 3. Update project knowledge with citations, decisions, and open questions.
 4. Produce a Wiki Update summarizing changed pages, evidence, and follow-up.
 5. Stop if sources are missing, conflicting, or too weak for a durable knowledge update.

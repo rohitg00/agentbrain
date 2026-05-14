@@ -155,6 +155,7 @@ Use this guide to choose the supporting doc before loading commands or skills:
 - `docs/autonomous-goals.md` — how to scope long-running goals with measurable end states and loop limits.
 - `docs/shared-language.md` — glossary discipline for project terms, aliases, and naming conflicts.
 - `docs/decision-records.md` — when and how to record durable trade-offs without turning chat into history.
+- `docs/ci-recovery.md` — inspect, reproduce, fix, and re-check remote workflow failures.
 - `docs/claims-we-reject.md` — claims and shortcuts the harness refuses without evidence.
 - `docs/ecosystem-review.md` — neutral ecosystem review criteria for evaluating external patterns.
 - `docs/grilling-protocol.md` — staged challenge process for weak assumptions and missing context.
@@ -274,6 +275,7 @@ Do not summarize intent as if it were evidence. If the handoff cannot name proof
 
 - `activity-recap` — summarize recent project activity from local evidence.
 - `agent-output-verifier` — block unsafe or unsupported agent output before trust or handoff.
+- `ci-recovery` — inspect, reproduce, fix, and re-check remote workflow failures.
 - `context-memory` — choose what to remember, retrieve, update, or deliberately forget.
 - `domain-language` — resolve project vocabulary, aliases, and glossary-vs-decision routing.
 - `design-grill` — challenge interface, states, and edge cases before build work.

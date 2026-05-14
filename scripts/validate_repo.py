@@ -44,6 +44,7 @@ REQUIRED_DOCS = [
     "docs/autonomous-goals.md",
     "docs/shared-language.md",
     "docs/decision-records.md",
+    "docs/ci-recovery.md",
     "docs/skill-distillation.md",
 ]
 REQUIRED_SKILLS = [
@@ -51,6 +52,7 @@ REQUIRED_SKILLS = [
     "skills/agent-output-verifier/SKILL.md",
     "skills/context-memory/SKILL.md",
     "skills/domain-language/SKILL.md",
+    "skills/ci-recovery/SKILL.md",
 ]
 REQUIRED_EVAL_CASES = [
     "evals/cases/activity-recap.md",
@@ -59,6 +61,7 @@ REQUIRED_EVAL_CASES = [
     "evals/cases/dirty-working-tree-preservation.md",
     "evals/cases/memory-capture-routing.md",
     "evals/cases/domain-language-drift.md",
+    "evals/cases/ci-failure-triage.md",
     "evals/cases/verification-shortcut.md",
     "evals/cases/skill-boundary-creep.md",
     "evals/cases/no-user-defined.md",
@@ -988,6 +991,7 @@ def validate(root: Path = ROOT) -> list[str]:
     seen_workflows: dict[str, str] = {}
     seen_quality_bars: dict[str, str] = {}
     seen_stop_conditions: dict[str, str] = {}
+    skills_loaded_by_commands: set[str] = set()
     for command in sorted((root / "commands").glob("*.md")):
         text = command.read_text(errors="ignore")
         expected_heading = f"# /{command.stem}"
@@ -1044,6 +1048,7 @@ def validate(root: Path = ROOT) -> list[str]:
             else:
                 seen_stop_conditions[stop_conditions] = rel(command, root)
         skill_names = command_skills_to_load(text)
+        skills_loaded_by_commands.update(skill_names)
         if not skill_names:
             errors.append(f"{rel(command, root)} skills-to-load section must name at least one skill")
         for skill_name in skill_names:
@@ -1052,6 +1057,11 @@ def validate(root: Path = ROOT) -> list[str]:
                 errors.append(
                     f"{rel(command, root)} skills-to-load entry points to missing skill: {skill_name}"
                 )
+
+    for skill in sorted((root / "skills").glob("*/SKILL.md")):
+        skill_name = skill.parent.name
+        if skill_name not in skills_loaded_by_commands:
+            errors.append(f"{rel(skill, root)} must be loaded by at least one command")
 
     readme = root / "README.md"
     if readme.exists():
