@@ -402,6 +402,15 @@ The same checks run in GitHub Actions on every push and pull request.
 
 ## Troubleshooting
 
+### `git status --short` shows a dirty working tree
+
+Do not overwrite local work just to make the harness look clean. Preserve user changes first:
+
+1. Inspect `git status --short` and `git diff` to separate user work from your intended slice.
+2. Stage and commit only the files that belong to the current change, or stop with a handoff if unrelated changes are present.
+3. Never run cleanup, reset, checkout, or format commands that could erase unowned edits without explicit approval.
+4. Report the dirty working tree as a blocker when you cannot prove which changes are yours.
+
 ### Validation says a command is missing from README
 
 Add the command to the Core Commands list with backticks, for example:

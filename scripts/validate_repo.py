@@ -99,6 +99,11 @@ REQUIRED_README_REPOSITORY_MAP_PATHS = [
     "requirements-dev.txt",
     ".github/workflows/",
 ]
+REQUIRED_README_TROUBLESHOOTING_TERMS = [
+    "dirty working tree",
+    "git status --short",
+    "preserve user changes",
+]
 REQUIRED_AGENT_HARNESS_SECTIONS = [
     "## Install",
     "## Fresh Checkout Bootstrap",
@@ -931,6 +936,13 @@ def validate(root: Path = ROOT) -> list[str]:
         for required_path in REQUIRED_README_REPOSITORY_MAP_PATHS:
             if required_path not in mapped_paths:
                 errors.append(f"README.md repository map missing required path: {required_path}")
+        troubleshooting_body = section_body(readme_text, "## Troubleshooting").lower()
+        for required_term in REQUIRED_README_TROUBLESHOOTING_TERMS:
+            if required_term.lower() not in troubleshooting_body:
+                errors.append(
+                    "README.md troubleshooting must document dirty working tree recovery: "
+                    f"{required_term}"
+                )
 
     contributing = root / "CONTRIBUTING.md"
     if contributing.exists():
