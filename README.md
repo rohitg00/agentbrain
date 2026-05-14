@@ -395,9 +395,21 @@ Run the local quality gate before committing changes:
 
 ```bash
 python3 -m pip install -r requirements-dev.txt
+rm -rf scripts/__pycache__ tests/__pycache__
 python -m pytest -q
 python scripts/validate_repo.py
 git diff --check
+```
+
+Also run a targeted exact-name scrub before committing public copy changes:
+
+```bash
+python - <<'PY'
+from scripts.validate_repo import validate
+errors = [error for error in validate() if "banned public-copy term" in error]
+print("\n".join(errors) or "Exact-name scrub passed")
+raise SystemExit(bool(errors))
+PY
 ```
 
 The same checks run in GitHub Actions on every push and pull request.

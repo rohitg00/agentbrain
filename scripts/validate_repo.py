@@ -70,6 +70,10 @@ REQUIRED_README_VALIDATION_COMMANDS = [
     "python scripts/validate_repo.py",
     "git diff --check",
 ]
+REQUIRED_README_VALIDATION_GATE_TERMS = {
+    "rm -rf scripts/__pycache__ tests/__pycache__": "README.md validation gate must include cache cleanup before tests",
+    "targeted exact-name scrub": "README.md validation gate must include targeted exact-name scrub",
+}
 REQUIRED_README_HARNESS_SECTIONS = [
     "## Quickstart",
     "## Run as an Agent Harness",
@@ -973,6 +977,10 @@ def validate(root: Path = ROOT) -> list[str]:
         for run_command in REQUIRED_README_VALIDATION_COMMANDS:
             if run_command not in readme_text:
                 errors.append(f"README.md validation section must document: {run_command}")
+        readme_text_lower = readme_text.lower()
+        for required_term, message in REQUIRED_README_VALIDATION_GATE_TERMS.items():
+            if required_term.lower() not in readme_text_lower:
+                errors.append(message)
         core_command_refs = readme_command_references(readme_text)
         for command in sorted((root / "commands").glob("*.md")):
             command_name = f"/{command.stem}"
