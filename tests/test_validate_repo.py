@@ -97,6 +97,10 @@ def write_minimal_repo(root: Path) -> None:
     (docs_dir / "autonomous-goals.md").write_text(
         "# Autonomous Goals\n\n/goal\nmeasurable end state\nconstraints\n", encoding="utf-8"
     )
+    (docs_dir / "agent-harness.md").write_text(
+        "# Agent Harness\n\n## Install\nRun validation.\n\n## Operating Loop\nChoose state, load command, verify.\n\n## Handoff Contract\nState evidence, risks, blockers, next action.\n\n## Stop Conditions\nBlock missing evidence.\n",
+        encoding="utf-8",
+    )
     (docs_dir / "skill-distillation.md").write_text(
         "# Skill Distillation\n\nworkflow trace\ntrigger\nverification\n", encoding="utf-8"
     )
@@ -1382,6 +1386,17 @@ def test_skill_distillation_doc_is_required(tmp_path):
     errors = validate_repo.validate(tmp_path)
 
     assert "missing docs/skill-distillation.md" in errors
+
+
+def test_agent_harness_doc_is_required(tmp_path):
+    write_minimal_repo(tmp_path)
+    agent_harness = tmp_path / "docs" / "agent-harness.md"
+    if agent_harness.exists():
+        agent_harness.unlink()
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "missing docs/agent-harness.md" in errors
 
 
 def test_activity_recap_skill_is_required(tmp_path):

@@ -62,6 +62,8 @@ Agent Brain converts those principles into concrete controls: spec-before-build,
 
 ## Run as an Agent Harness
 
+For the full operating contract, see `docs/agent-harness.md`.
+
 Paste or attach the repo to a capable coding agent and give it this instruction:
 
 ```text

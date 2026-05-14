@@ -19,7 +19,11 @@ REQUIRED_FILES = ["requirements-dev.txt"]
 REQUIRED_DEV_REQUIREMENTS = ["jsonschema", "pytest"]
 REQUIRED_DIRECTORIES = ["schemas"]
 REQUIRED_GITIGNORE_PATTERNS = ["__pycache__/", "*.py[cod]", ".pytest_cache/", ".venv/"]
-REQUIRED_DOCS = ["docs/autonomous-goals.md", "docs/skill-distillation.md"]
+REQUIRED_DOCS = [
+    "docs/agent-harness.md",
+    "docs/autonomous-goals.md",
+    "docs/skill-distillation.md",
+]
 REQUIRED_SKILLS = [
     "skills/activity-recap/SKILL.md",
     "skills/agent-output-verifier/SKILL.md",
