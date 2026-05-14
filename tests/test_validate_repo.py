@@ -2135,6 +2135,20 @@ def test_readme_repository_map_must_not_list_missing_top_level_directories(tmp_p
     assert "README.md repository map lists missing path: missing-area/" in errors
 
 
+def test_readme_repository_map_must_not_list_missing_files(tmp_path):
+    write_minimal_repo(tmp_path)
+    readme = tmp_path / "README.md"
+    readme.write_text(
+        readme.read_text(encoding="utf-8")
+        + "\n## Repository Map\n\n```text\nAGENTBRAIN.md      # exists\nmissing-guide.md   # stale file entry\ncommands/          # exists\n```\n",
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "README.md repository map lists missing path: missing-guide.md" in errors
+
+
 def test_readme_validation_section_must_list_whitespace_check(tmp_path):
     write_minimal_repo(tmp_path)
     (tmp_path / "README.md").write_text(

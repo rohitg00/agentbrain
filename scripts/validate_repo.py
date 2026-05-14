@@ -402,9 +402,9 @@ def readme_repository_map_paths(text: str) -> list[str]:
             continue
 
         candidate = line.split("#", 1)[0].strip()
-        if not candidate or candidate.endswith(".md"):
+        if not candidate:
             continue
-        if candidate.endswith("/"):
+        if candidate.endswith("/") or "." in Path(candidate).name:
             paths.append(candidate)
 
     return paths
