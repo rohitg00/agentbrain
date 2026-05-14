@@ -354,6 +354,27 @@ def test_schema_required_fields_must_have_property_definitions(tmp_path):
     assert "schemas/artifact.schema.json required field lacks property definition: title" in errors
 
 
+def test_schema_required_fields_must_be_unique(tmp_path):
+    write_minimal_repo(tmp_path)
+    (tmp_path / "schemas" / "artifact.schema.json").write_text(
+        json.dumps(
+            {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "title": "Artifact",
+                "type": "object",
+                "additionalProperties": False,
+                "required": ["title", "title"],
+                "properties": {"title": {"type": "string"}},
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "schemas/artifact.schema.json required field is duplicated: title" in errors
+
+
 def test_schema_files_must_declare_schema_dialect(tmp_path):
     write_minimal_repo(tmp_path)
     (tmp_path / "schemas" / "artifact.schema.json").write_text(

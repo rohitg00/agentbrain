@@ -327,13 +327,29 @@ def validate(root: Path = ROOT) -> list[str]:
 
         try:
             schema = json.loads(path.read_text(encoding="utf-8"))
+        except Exception as exc:
+            errors.append(f"invalid json schema {rel(path, root)}: {exc}")
+            continue
+
+        required_fields = schema.get("required", [])
+        if isinstance(required_fields, list):
+            seen_required_fields: set[str] = set()
+            duplicate_required_fields: set[str] = set()
+            for field in required_fields:
+                field_marker = json.dumps(field, sort_keys=True)
+                if field_marker in seen_required_fields:
+                    duplicate_required_fields.add(field_marker)
+                seen_required_fields.add(field_marker)
+            for field in sorted(duplicate_required_fields):
+                errors.append(f"{rel(path, root)} required field is duplicated: {field.strip(chr(34))}")
+
+        try:
             schema_validator = validators.validator_for(schema)
             schema_validator.check_schema(schema)
         except Exception as exc:
             errors.append(f"invalid json schema {rel(path, root)}: {exc}")
             continue
 
-        required_fields = schema.get("required", [])
         properties = schema.get("properties", {})
         if not schema.get("$schema"):
             errors.append(f"{rel(path, root)} missing $schema dialect declaration")
