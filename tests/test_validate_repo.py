@@ -20,7 +20,10 @@ def write_minimal_repo(root: Path) -> None:
 
     schema_dir = root / "schemas"
     schema_dir.mkdir()
-    (schema_dir / "artifact.schema.json").write_text(json.dumps({"type": "object"}), encoding="utf-8")
+    (schema_dir / "artifact.schema.json").write_text(
+        json.dumps({"$schema": "https://json-schema.org/draft/2020-12/schema", "type": "object"}),
+        encoding="utf-8",
+    )
 
     skill_dir = root / "skills" / "sample"
     skill_dir.mkdir(parents=True)
@@ -183,6 +186,18 @@ def test_schema_required_fields_must_have_property_definitions(tmp_path):
     errors = validate_repo.validate(tmp_path)
 
     assert "schemas/artifact.schema.json required field lacks property definition: title" in errors
+
+
+def test_schema_files_must_declare_schema_dialect(tmp_path):
+    write_minimal_repo(tmp_path)
+    (tmp_path / "schemas" / "artifact.schema.json").write_text(
+        json.dumps({"title": "Artifact", "type": "object"}),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "schemas/artifact.schema.json missing $schema dialect declaration" in errors
 
 
 def test_missing_skill_sections_are_reported(tmp_path):

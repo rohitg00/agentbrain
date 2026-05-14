@@ -143,6 +143,8 @@ def validate(root: Path = ROOT) -> list[str]:
 
         required_fields = schema.get("required", [])
         properties = schema.get("properties", {})
+        if not schema.get("$schema"):
+            errors.append(f"{rel(path, root)} missing $schema dialect declaration")
         for field in required_fields:
             if field not in properties:
                 errors.append(f"{rel(path, root)} required field lacks property definition: {field}")
