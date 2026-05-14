@@ -193,6 +193,7 @@ REQUIRED_SKILL_SECTIONS = [
     "## Trigger",
     "## Inputs",
     "## Procedure",
+    "## Anti-Rationalization",
     "## Verification",
     "## Output Artifact",
     "## Failure Modes",

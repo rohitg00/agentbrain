@@ -31,6 +31,14 @@ Use when an agent needs durable context, asks whether memory should be updated, 
 5. Write the update in neutral, declarative language with a scope and freshness note.
 6. Add or update an eval, validator, or review gate when the memory rule should not regress.
 
+## Anti-Rationalization
+
+| Shortcut | Rebuttal |
+|---|---|
+| "Remember everything just in case." | Durable memory should store stable facts, decisions, or reusable procedures, not raw task logs. |
+| "The chat is enough evidence." | Versioned docs or skills need checked sources, files, commands, or explicit assumptions. |
+| "This procedure belongs in memory." | Repeatable procedures belong in skills or docs so future agents can inspect and validate them. |
+
 ## Verification
 
 - The target tier matches the expected lifetime and use case.

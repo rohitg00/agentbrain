@@ -101,6 +101,8 @@ def write_minimal_repo(root: Path) -> None:
             "Raw request.",
             "## Procedure",
             "Check the request.",
+            "## Anti-Rationalization",
+            "Do not skip evidence because the task is small.",
             "## Verification",
             "Confirm evidence.",
             "## Output Artifact",
@@ -194,6 +196,8 @@ def write_minimal_repo(root: Path) -> None:
             "Local activity evidence.",
             "## Procedure",
             "Collect evidence before summarizing.",
+            "## Anti-Rationalization",
+            "Do not summarize from memory when local evidence can be checked.",
             "## Verification",
             "State the checked scope.",
             "## Output Artifact",
@@ -221,6 +225,8 @@ def write_minimal_repo(root: Path) -> None:
             "Agent output and available evidence.",
             "## Procedure",
             "Check for secrets, hallucinated tools, unbounded loops, and skipped evidence.",
+            "## Anti-Rationalization",
+            "Do not approve output because it sounds confident.",
             "## Verification",
             "List each pass or blocker.",
             "## Output Artifact",
@@ -1634,6 +1640,22 @@ def test_skill_frontmatter_must_close_before_markdown_body(tmp_path):
     errors = validate_repo.validate(tmp_path)
 
     assert "skills/sample/SKILL.md frontmatter must be delimited by ---" in errors
+
+
+def test_skills_must_include_anti_rationalization_section(tmp_path):
+    write_minimal_repo(tmp_path)
+    skill = tmp_path / "skills" / "sample" / "SKILL.md"
+    skill.write_text(
+        skill.read_text(encoding="utf-8").replace(
+            "\n## Anti-Rationalization\nDo not skip evidence because the task is small.\n",
+            "\n",
+        ),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "skills/sample/SKILL.md missing ## Anti-Rationalization" in errors
 
 
 def test_skill_required_sections_must_have_body(tmp_path):

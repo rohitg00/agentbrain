@@ -32,6 +32,14 @@ Do not use as a replacement for domain review. This skill decides whether the ou
 7. Classify the output as `pass`, `pass-with-warnings`, or `blocked`.
 8. Produce a blocker list with exact evidence needed to unblock.
 
+## Anti-Rationalization
+
+| Shortcut | Rebuttal |
+|---|---|
+| "The output sounds careful." | Fluency is not evidence; require logs, diffs, citations, approvals, or traces. |
+| "The agent said tests passed." | Test claims need current command output or an explicit missing-evidence blocker. |
+| "Only small side effects happened." | Any side effect must match the allowed scope and approval evidence. |
+
 ## Verification
 
 - Every pass/fail statement points to evidence or says evidence is missing.

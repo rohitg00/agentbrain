@@ -32,6 +32,14 @@ Do not use when the user asks for a product roadmap, a release note, or a narrat
 7. Mark repositories with no matching activity as empty only when the user asked for a full workspace scan.
 8. Produce a concise recap with the inspected range and evidence summary.
 
+## Anti-Rationalization
+
+| Shortcut | Rebuttal |
+|---|---|
+| "I remember what changed." | Recaps must come from checked local history, files, or logs, not memory. |
+| "A high-level summary is enough." | Name the inspected scope and timeframe so readers can trust the boundary. |
+| "No activity means nothing happened." | Say no matching committed activity was found only for the scope actually checked. |
+
 ## Verification
 
 - State the date range and filters used.
