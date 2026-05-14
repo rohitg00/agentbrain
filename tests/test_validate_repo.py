@@ -1627,3 +1627,33 @@ def test_skill_template_description_must_name_trigger(tmp_path):
     errors = validate_repo.validate(tmp_path)
 
     assert "templates/skill-template.md frontmatter description must include 'Use when'" in errors
+
+
+def test_skill_template_must_include_required_skill_sections(tmp_path):
+    write_minimal_repo(tmp_path)
+    templates_dir = tmp_path / "templates"
+    templates_dir.mkdir()
+    (templates_dir / "skill-template.md").write_text(
+        "\n".join([
+            "---",
+            "name: example-skill",
+            "description: Use when sample work needs routing.",
+            "---",
+            "# Skill Name",
+            "## Trigger",
+            "Use when sample work needs routing.",
+            "## Inputs",
+            "Raw request.",
+            "## Procedure",
+            "Check the request.",
+            "## Verification",
+            "Confirm evidence.",
+            "## Failure Modes",
+            "Stop if evidence is missing.",
+        ]),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "templates/skill-template.md missing ## Example" in errors

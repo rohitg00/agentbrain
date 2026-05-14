@@ -392,9 +392,22 @@ def validate(root: Path = ROOT) -> list[str]:
 
     skill_template = root / "templates" / "skill-template.md"
     if skill_template.exists():
-        skill_template_frontmatter = parse_frontmatter(skill_template.read_text(errors="ignore"))
+        skill_template_text = skill_template.read_text(errors="ignore")
+        skill_template_lines = skill_template_text.splitlines()
+        skill_template_frontmatter = parse_frontmatter(skill_template_text)
         if "Use when" not in skill_template_frontmatter.get("description", ""):
             errors.append("templates/skill-template.md frontmatter description must include 'Use when'")
+        for section in REQUIRED_SKILL_SECTIONS:
+            section_count = skill_template_lines.count(section)
+            if section_count == 0:
+                errors.append(f"templates/skill-template.md missing {section}")
+            else:
+                if section_count > 1:
+                    errors.append(f"templates/skill-template.md section must appear exactly once: {section}")
+                if not section_has_body(skill_template_text, section):
+                    errors.append(f"templates/skill-template.md section has no body: {section}")
+        if not sections_are_in_order(skill_template_text, REQUIRED_SKILL_SECTIONS):
+            errors.append("templates/skill-template.md sections must appear in canonical order")
 
     eval_cases = sorted((root / "evals" / "cases").glob("*.md"))
     for case in eval_cases:
