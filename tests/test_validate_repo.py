@@ -1030,6 +1030,20 @@ def test_eval_case_heading_allows_connector_words_from_filename(tmp_path):
     assert validate_repo.validate(tmp_path) == []
 
 
+def test_template_heading_must_match_filename(tmp_path):
+    write_minimal_repo(tmp_path)
+    templates_dir = tmp_path / "templates"
+    templates_dir.mkdir()
+    (templates_dir / "product-brief.md").write_text(
+        "# Different Brief\n\nSchema fields: `title`.\n",
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "templates/product-brief.md heading must be # Product Brief" in errors
+
+
 def test_templates_must_reference_required_schema_fields(tmp_path):
     write_minimal_repo(tmp_path)
     templates_dir = tmp_path / "templates"

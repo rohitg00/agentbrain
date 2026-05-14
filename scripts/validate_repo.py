@@ -480,6 +480,11 @@ def validate(root: Path = ROOT) -> list[str]:
         single_h1_error = validate_single_h1(markdown_file, root)
         if single_h1_error:
             errors.append(single_h1_error)
+        if markdown_file.parent == root / "templates" and markdown_file.name != "skill-template.md":
+            expected_heading = f"# {title_from_slug(markdown_file.stem)}"
+            first_line = markdown_file.read_text(errors="ignore").splitlines()[0]
+            if first_line != expected_heading:
+                errors.append(f"{rel(markdown_file, root)} heading must be {expected_heading}")
 
     for rubric in sorted((root / "evals" / "rubrics").glob("*.md")):
         text = rubric.read_text(errors="ignore")
