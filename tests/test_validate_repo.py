@@ -354,6 +354,18 @@ def test_schema_semantics_are_checked(tmp_path):
     assert any(error.startswith("invalid json schema schemas/artifact.schema.json:") for error in errors)
 
 
+def test_schema_duplicate_json_keys_are_reported(tmp_path):
+    write_minimal_repo(tmp_path)
+    (tmp_path / "schemas" / "artifact.schema.json").write_text(
+        '{"$schema":"https://json-schema.org/draft/2020-12/schema","title":"Artifact","type":"object","type":"array","additionalProperties":false}',
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "invalid json schema schemas/artifact.schema.json: duplicate key: type" in errors
+
+
 def test_schema_required_fields_must_have_property_definitions(tmp_path):
     write_minimal_repo(tmp_path)
     (tmp_path / "schemas" / "artifact.schema.json").write_text(

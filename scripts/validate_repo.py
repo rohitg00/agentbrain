@@ -189,6 +189,15 @@ def find_trailing_whitespace_lines(text: str) -> list[int]:
     ]
 
 
+def reject_duplicate_json_keys(pairs: list[tuple[str, object]]) -> dict[str, object]:
+    parsed: dict[str, object] = {}
+    for key, value in pairs:
+        if key in parsed:
+            raise ValueError(f"duplicate key: {key}")
+        parsed[key] = value
+    return parsed
+
+
 def title_from_slug(slug: str) -> str:
     connector_words = {"and", "or", "the", "to", "vs"}
     parts = slug.split("-")
@@ -334,7 +343,10 @@ def validate(root: Path = ROOT) -> list[str]:
             errors.append(f"{rel(path, root)} filename must use lowercase kebab-case with .schema.json suffix")
 
         try:
-            schema = json.loads(path.read_text(encoding="utf-8"))
+            schema = json.loads(
+                path.read_text(encoding="utf-8"),
+                object_pairs_hook=reject_duplicate_json_keys,
+            )
         except Exception as exc:
             errors.append(f"invalid json schema {rel(path, root)}: {exc}")
             continue
