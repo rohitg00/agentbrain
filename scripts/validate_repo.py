@@ -345,6 +345,8 @@ def validate(root: Path = ROOT) -> list[str]:
         h1_headings = [line for line in lines if line.startswith("# ")]
         if not is_lowercase_kebab(command.stem):
             errors.append(f"{rel(command, root)} filename must use lowercase kebab-case")
+        if not command.stem.startswith("brain-"):
+            errors.append(f"{rel(command, root)} filename must start with brain-")
         if first_line != expected_heading:
             errors.append(f"{rel(command, root)} heading must be {expected_heading}")
         if len(h1_headings) != 1:

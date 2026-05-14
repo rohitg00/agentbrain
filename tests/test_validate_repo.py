@@ -748,6 +748,38 @@ def test_command_filenames_must_be_lowercase_kebab_case(tmp_path):
     assert "commands/brain_sample.md filename must use lowercase kebab-case" in errors
 
 
+def test_command_filenames_must_use_brain_prefix(tmp_path):
+    write_minimal_repo(tmp_path)
+    (tmp_path / "commands" / "sample.md").write_text(
+        "\n".join([
+            "# /sample",
+            "## Purpose",
+            "Route sample work.",
+            "## When to use",
+            "Use for sample requests.",
+            "## Input contract",
+            "Raw request.",
+            "## Workflow",
+            "Inspect inputs and decide the next action.",
+            "## Output",
+            "A concrete next action.",
+            "## Stop conditions",
+            "Stop when the request is unsafe.",
+            "## Quality bar",
+            "Evidence is checked before output.",
+        ]),
+        encoding="utf-8",
+    )
+    (tmp_path / "README.md").write_text(
+        "# required\n\n- `/sample` — sample command.\n- `/brain-sample` — sample command.\n- `sample` — sample skill.\n- `activity-recap` — activity skill.\n- `agent-output-verifier` — verifier skill.\n\n## Validation\n\n```bash\npython3 -m pip install -r requirements-dev.txt\npython -m pytest -q\npython scripts/validate_repo.py\ngit diff --check\n```\n",
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "commands/sample.md filename must start with brain-" in errors
+
+
 def test_eval_cases_require_behavior_and_failure_sections(tmp_path):
     write_minimal_repo(tmp_path)
     case_dir = tmp_path / "evals" / "cases"
