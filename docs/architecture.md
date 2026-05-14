@@ -41,6 +41,20 @@ User request
   → learning capture
 ```
 
+## Runtime stance
+
+Agent Brain should not depend on a single autonomous loop or framework. Reliable agent products tend to be mostly deterministic software with LLM calls at high-leverage boundaries.
+
+The portable core therefore favors:
+
+- owned prompts and owned context instead of opaque framework defaults,
+- explicit state and artifacts instead of hidden conversation state,
+- launch / pause / resume points for long-running work,
+- human contact and approval as first-class workflow actions,
+- small focused skills or agents instead of one broad generalist,
+- compact error summaries that can be fed back into the next attempt,
+- runtime adapters that translate the same core into different execution environments.
+
 ## Design constraints
 
 - Portable Markdown first

@@ -40,6 +40,18 @@ What changed the repo:
 - Clarified that durable markdown project knowledge remains source of truth while indexes accelerate retrieval.
 - Added a continuation test: a good context pack lets another agent continue without rereading the whole chat.
 
+## 2026-05-14 runtime architecture pass
+
+### Web source checked
+
+- HumanLayer / 12-factor-agents: production LLM apps are usually deterministic software with LLM calls at high-leverage boundaries, owned context, explicit state, pause/resume, human contact, small focused agents, and compact errors.
+
+What changed the repo:
+
+- Added `docs/architecture.md` runtime stance.
+- Reinforced portable core over framework lock-in.
+- Mapped current architecture to owned context, explicit artifacts, pause/resume points, human approval, compact errors, and small focused skills.
+
 ## Repeat loop
 
 When hardening the repo, repeat this loop:
