@@ -185,6 +185,7 @@ REQUIRED_AGENT_HARNESS_PROMPT_TERMS = [
     "python -m pytest -q",
     "python scripts/validate_repo.py",
     "git diff --check",
+    "targeted exact-name scrub",
     "Stop",
     "approval",
     "secrets",

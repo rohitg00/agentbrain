@@ -678,6 +678,22 @@ def test_agent_harness_validation_gate_must_include_cache_cleanup_and_exact_name
     assert "docs/agent-harness.md validation gate must include targeted exact-name scrub" in errors
 
 
+def test_agent_harness_prompt_must_require_exact_name_scrub(tmp_path):
+    write_minimal_repo(tmp_path)
+    harness = tmp_path / "docs" / "agent-harness.md"
+    harness.write_text(
+        harness.read_text(encoding="utf-8").replace(
+            ", and a targeted exact-name scrub before claiming completion",
+            " before claiming completion",
+        ),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "docs/agent-harness.md copyable prompt must mention: targeted exact-name scrub" in errors
+
+
 def test_agent_harness_must_define_interrupted_handoff_resume_protocol(tmp_path):
     write_minimal_repo(tmp_path)
     harness = tmp_path / "docs" / "agent-harness.md"
