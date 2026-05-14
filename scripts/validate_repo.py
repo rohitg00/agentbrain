@@ -410,6 +410,40 @@ def readme_repository_map_paths(text: str) -> list[str]:
     return paths
 
 
+def readme_command_references(text: str) -> list[str]:
+    entries: set[str] = set()
+    in_core_commands = False
+    for line in text.splitlines():
+        if line == "## Core Commands":
+            in_core_commands = True
+            continue
+        if in_core_commands and line.startswith("## "):
+            break
+        if not in_core_commands:
+            continue
+        match = re.match(r"- `(/brain-[a-z0-9-]+)`", line)
+        if match:
+            entries.add(match.group(1))
+    return sorted(entries)
+
+
+def readme_skill_catalog_entries(text: str) -> list[str]:
+    entries: set[str] = set()
+    in_core_skills = False
+    for line in text.splitlines():
+        if line == "## Core Skills":
+            in_core_skills = True
+            continue
+        if in_core_skills and line.startswith("## "):
+            break
+        if not in_core_skills:
+            continue
+        match = re.match(r"- `([a-z0-9]+(?:-[a-z0-9]+)*)`", line)
+        if match:
+            entries.add(match.group(1))
+    return sorted(entries)
+
+
 def validate(root: Path = ROOT) -> list[str]:
     root = Path(root)
     errors: list[str] = []
@@ -641,10 +675,18 @@ def validate(root: Path = ROOT) -> list[str]:
             command_name = f"/{command.stem}"
             if f"`{command_name}`" not in readme_text:
                 errors.append(f"README.md missing command catalog entry: {command_name}")
+        for command_name in readme_command_references(readme_text):
+            command_file = root / "commands" / f"{command_name.removeprefix('/')}.md"
+            if not command_file.exists():
+                errors.append(f"README.md command catalog entry points to missing file: {command_name}")
         for skill in sorted((root / "skills").glob("*/SKILL.md")):
             skill_name = skill.parent.name
             if f"`{skill_name}`" not in readme_text:
                 errors.append(f"README.md missing skill catalog entry: {skill_name}")
+        for skill_name in readme_skill_catalog_entries(readme_text):
+            skill_file = root / "skills" / skill_name / "SKILL.md"
+            if not skill_file.exists():
+                errors.append(f"README.md skill catalog entry points to missing file: {skill_name}")
         for mapped_path in readme_repository_map_paths(readme_text):
             if not (root / mapped_path).exists():
                 errors.append(f"README.md repository map lists missing path: {mapped_path}")

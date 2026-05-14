@@ -269,6 +269,38 @@ def test_valid_minimal_repo_has_no_errors(tmp_path):
     assert validate_repo.validate(tmp_path) == []
 
 
+def test_readme_command_catalog_entries_must_point_to_existing_files(tmp_path):
+    write_minimal_repo(tmp_path)
+    readme = tmp_path / "README.md"
+    readme.write_text(
+        readme.read_text(encoding="utf-8").replace(
+            "## Validation",
+            "## Core Commands\n\n- `/brain-missing` — stale command entry.\n\n## Validation",
+        ),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "README.md command catalog entry points to missing file: /brain-missing" in errors
+
+
+def test_readme_skill_catalog_entries_must_point_to_existing_files(tmp_path):
+    write_minimal_repo(tmp_path)
+    readme = tmp_path / "README.md"
+    readme.write_text(
+        readme.read_text(encoding="utf-8").replace(
+            "## Validation",
+            "## Core Skills\n\n- `missing-skill` — stale skill entry.\n\n## Validation",
+        ),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "README.md skill catalog entry points to missing file: missing-skill" in errors
+
+
 def test_contributing_guide_is_required(tmp_path):
     write_minimal_repo(tmp_path)
     (tmp_path / "CONTRIBUTING.md").unlink()
