@@ -125,6 +125,7 @@ REQUIRED_AGENT_HARNESS_SECTIONS = [
     "## Command Routing",
     "## Handoff Contract",
     "## Stop Conditions",
+    "## Edge Cases",
     "## Troubleshooting",
 ]
 REQUIRED_AGENT_HARNESS_VALIDATION_COMMANDS = [

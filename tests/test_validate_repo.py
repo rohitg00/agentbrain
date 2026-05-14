@@ -160,6 +160,7 @@ def write_minimal_repo(root: Path) -> None:
         "## Command Routing\nUse `/brain-sample` for sample requests before loading skills.\n\n"
         "## Handoff Contract\nState evidence, risks, blockers, next action, and fresh validation proof.\n\n"
         "## Stop Conditions\nBlock missing evidence.\n\n"
+        "## Edge Cases\nDocument fast-path pressure, branded source distillation, documentation-only work, and already-built output.\n\n"
         "## Copyable Harness Prompt\n"
         "Use this prompt when handing the repo to another capable coding agent.\n\n"
         "```text\n"
@@ -433,6 +434,22 @@ def test_agent_harness_handoff_must_capture_fresh_validation_proof(tmp_path):
     errors = validate_repo.validate(tmp_path)
 
     assert "docs/agent-harness.md handoff contract must require fresh validation proof" in errors
+
+
+def test_agent_harness_must_include_edge_case_playbook(tmp_path):
+    write_minimal_repo(tmp_path)
+    harness = tmp_path / "docs" / "agent-harness.md"
+    harness.write_text(
+        harness.read_text(encoding="utf-8").replace(
+            "\n## Edge Cases\nDocument fast-path pressure, branded source distillation, documentation-only work, and already-built output.\n\n",
+            "\n",
+        ),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "docs/agent-harness.md missing harness operating section: ## Edge Cases" in errors
 
 
 def test_agent_harness_prompt_must_name_governance_docs(tmp_path):
