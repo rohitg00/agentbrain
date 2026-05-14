@@ -30,6 +30,7 @@ REQUIRED_QUALITY_WORKFLOW_RUNS = [
     "git diff --check",
 ]
 REQUIRED_README_VALIDATION_COMMANDS = [
+    "pip install -r requirements-dev.txt",
     "python -m pytest -q",
     "python scripts/validate_repo.py",
     "git diff --check",

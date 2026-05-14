@@ -13,7 +13,7 @@ def write_minimal_repo(root: Path) -> None:
     ]:
         (root / rel).write_text("# required\n", encoding="utf-8")
     (root / "README.md").write_text(
-        "# required\n\n- `/brain-sample` — sample command.\n- `sample` — sample skill.\n- `activity-recap` — activity skill.\n\n## Validation\n\n```bash\npython -m pytest -q\npython scripts/validate_repo.py\ngit diff --check\n```\n",
+        "# required\n\n- `/brain-sample` — sample command.\n- `sample` — sample skill.\n- `activity-recap` — activity skill.\n\n## Validation\n\n```bash\npython3 -m pip install -r requirements-dev.txt\npython -m pytest -q\npython scripts/validate_repo.py\ngit diff --check\n```\n",
         encoding="utf-8",
     )
     (root / "requirements-dev.txt").write_text("pytest\njsonschema\n", encoding="utf-8")
@@ -451,7 +451,7 @@ def test_readme_vs_others_section_can_name_specific_runtimes(tmp_path):
     write_minimal_repo(tmp_path)
     vendor_name = "Clau" + "de"
     (tmp_path / "README.md").write_text(
-        f"# required\n\n- `/brain-sample` — sample command.\n- `sample` — sample skill.\n- `activity-recap` — activity skill.\n\n## Validation\n\n```bash\npython -m pytest -q\npython scripts/validate_repo.py\ngit diff --check\n```\n\n## vs others\n\nCompared with {vendor_name}, Agent Brain stays portable.\n",
+        f"# required\n\n- `/brain-sample` — sample command.\n- `sample` — sample skill.\n- `activity-recap` — activity skill.\n\n## Validation\n\n```bash\npython3 -m pip install -r requirements-dev.txt\npython -m pytest -q\npython scripts/validate_repo.py\ngit diff --check\n```\n\n## vs others\n\nCompared with {vendor_name}, Agent Brain stays portable.\n",
         encoding="utf-8",
     )
 
@@ -946,13 +946,25 @@ def test_readme_must_list_available_skills(tmp_path):
 def test_readme_validation_section_must_list_whitespace_check(tmp_path):
     write_minimal_repo(tmp_path)
     (tmp_path / "README.md").write_text(
-        "# required\n\n- `/brain-sample` — sample command.\n- `sample` — sample skill.\n- `activity-recap` — activity skill.\n\n## Validation\n\n```bash\npython -m pytest -q\npython scripts/validate_repo.py\n```\n",
+        "# required\n\n- `/brain-sample` — sample command.\n- `sample` — sample skill.\n- `activity-recap` — activity skill.\n\n## Validation\n\n```bash\npython3 -m pip install -r requirements-dev.txt\npython -m pytest -q\npython scripts/validate_repo.py\n```\n",
         encoding="utf-8",
     )
 
     errors = validate_repo.validate(tmp_path)
 
     assert "README.md validation section must document: git diff --check" in errors
+
+
+def test_readme_validation_section_must_install_dev_requirements(tmp_path):
+    write_minimal_repo(tmp_path)
+    (tmp_path / "README.md").write_text(
+        "# required\n\n- `/brain-sample` — sample command.\n- `sample` — sample skill.\n- `activity-recap` — activity skill.\n\n## Validation\n\n```bash\npython -m pytest -q\npython scripts/validate_repo.py\ngit diff --check\n```\n",
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "README.md validation section must document: pip install -r requirements-dev.txt" in errors
 
 
 def test_evals_readme_must_list_available_cases(tmp_path):
