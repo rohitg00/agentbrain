@@ -68,6 +68,24 @@ def parse_frontmatter(text: str) -> dict[str, str]:
     return parsed
 
 
+def term_is_only_in_readme_comparison_section(text: str, term: str) -> bool:
+    if term not in text:
+        return True
+
+    in_allowed_section = False
+    for line in text.splitlines():
+        if line.startswith("## "):
+            heading = line.lower().strip("# ")
+            in_allowed_section = heading in {"vs others", "benchmarks", "comparisons"}
+        if term in line and not in_allowed_section:
+            return False
+    return True
+
+
+def public_copy_term_allowed(path: Path, text: str, term: str) -> bool:
+    return path.name == "README.md" and term_is_only_in_readme_comparison_section(text, term)
+
+
 def validate(root: Path = ROOT) -> list[str]:
     root = Path(root)
     errors: list[str] = []
@@ -136,7 +154,7 @@ def validate(root: Path = ROOT) -> list[str]:
             continue
         text = markdown_file.read_text(errors="ignore")
         for term in BANNED_PUBLIC_COPY_TERMS:
-            if term in text:
+            if term in text and not public_copy_term_allowed(markdown_file, text, term):
                 errors.append(f"{rel(markdown_file, root)} contains banned public-copy term: {term}")
 
     return errors

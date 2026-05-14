@@ -120,6 +120,30 @@ def test_vendor_names_are_reported_in_public_copy(tmp_path):
     assert f"docs/copy.md contains banned public-copy term: {vendor_name}" in errors
 
 
+def test_readme_vs_others_section_can_name_specific_runtimes(tmp_path):
+    write_minimal_repo(tmp_path)
+    vendor_name = "Clau" + "de"
+    (tmp_path / "README.md").write_text(
+        f"# required\n\n## vs others\n\nCompared with {vendor_name}, Agent Brain stays portable.\n",
+        encoding="utf-8",
+    )
+
+    assert validate_repo.validate(tmp_path) == []
+
+
+def test_readme_vendor_names_outside_vs_others_are_reported(tmp_path):
+    write_minimal_repo(tmp_path)
+    vendor_name = "Clau" + "de"
+    (tmp_path / "README.md").write_text(
+        f"# required\n\nThis names {vendor_name} outside an allowed comparison section.\n",
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert f"README.md contains banned public-copy term: {vendor_name}" in errors
+
+
 def test_skill_frontmatter_name_must_match_directory(tmp_path):
     write_minimal_repo(tmp_path)
     (tmp_path / "skills" / "sample" / "SKILL.md").write_text(
