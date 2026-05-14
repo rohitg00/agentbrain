@@ -784,6 +784,8 @@ def validate(root: Path = ROOT) -> list[str]:
             state_schema = properties.get("state", {})
             if not isinstance(state_schema, dict) or state_schema.get("enum") != REQUIRED_STATE_MACHINE_VALUES:
                 errors.append("schemas/handoff-report.schema.json state must enumerate Agent Brain state machine values")
+            if "fresh_validation_proof" not in required_fields:
+                errors.append("schemas/handoff-report.schema.json must require fresh_validation_proof")
         for field in required_fields:
             if field not in properties:
                 errors.append(f"{rel(path, root)} required field lacks property definition: {field}")

@@ -7,6 +7,7 @@
     "state",
     "decision",
     "evidence_checked",
+    "fresh_validation_proof",
     "next_action"
   ],
   "properties": {
@@ -43,6 +44,11 @@
         "type": "string",
         "minLength": 1
       }
+    },
+    "fresh_validation_proof": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Current-run validation command, exit status, and relevant output; use blocked when proof cannot be produced."
     },
     "facts": {
       "type": "array",

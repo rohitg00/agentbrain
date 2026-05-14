@@ -64,7 +64,7 @@ def write_minimal_repo(root: Path) -> None:
                 "title": "Handoff Report",
                 "type": "object",
                 "additionalProperties": False,
-                "required": ["state", "decision", "evidence_checked", "next_action"],
+                "required": ["state", "decision", "evidence_checked", "fresh_validation_proof", "next_action"],
                 "properties": {
                     "state": {
                         "type": "string",
@@ -84,6 +84,7 @@ def write_minimal_repo(root: Path) -> None:
                     },
                     "decision": {"type": "string"},
                     "evidence_checked": {"type": "array", "items": {"type": "string"}},
+                    "fresh_validation_proof": {"type": "string"},
                     "facts": {"type": "array", "items": {"type": "string"}},
                     "assumptions": {"type": "array", "items": {"type": "string"}},
                     "open_questions": {"type": "array", "items": {"type": "string"}},
@@ -149,7 +150,7 @@ def write_minimal_repo(root: Path) -> None:
     templates_dir.mkdir(exist_ok=True)
     (templates_dir / "handoff-report.md").write_text(
         "# Handoff Report\n\n"
-        "Schema fields: `state`, `decision`, `evidence_checked`, `facts`, `assumptions`, `open_questions`, `risks`, `next_action`.\n",
+        "Schema fields: `state`, `decision`, `evidence_checked`, `fresh_validation_proof`, `facts`, `assumptions`, `open_questions`, `risks`, `next_action`.\n",
         encoding="utf-8",
     )
     (templates_dir / "memory-decision.md").write_text(
@@ -2354,6 +2355,18 @@ def test_handoff_report_template_is_required(tmp_path):
     errors = validate_repo.validate(tmp_path)
 
     assert "missing templates/handoff-report.md" in errors
+
+
+def test_handoff_report_schema_requires_fresh_validation_proof(tmp_path):
+    write_minimal_repo(tmp_path)
+    schema_path = tmp_path / "schemas" / "handoff-report.schema.json"
+    schema = json.loads(schema_path.read_text(encoding="utf-8"))
+    schema["required"].remove("fresh_validation_proof")
+    schema_path.write_text(json.dumps(schema), encoding="utf-8")
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "schemas/handoff-report.schema.json must require fresh_validation_proof" in errors
 
 
 def test_memory_decision_schema_is_required(tmp_path):

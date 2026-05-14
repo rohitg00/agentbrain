@@ -1,6 +1,6 @@
 # Handoff Report
 
-Schema fields: `state`, `decision`, `evidence_checked`, `facts`, `assumptions`, `open_questions`, `risks`, `next_action`.
+Schema fields: `state`, `decision`, `evidence_checked`, `fresh_validation_proof`, `facts`, `assumptions`, `open_questions`, `risks`, `next_action`.
 
 Use this when ending a run, handing work to another operator, or stopping on a blocker. Keep it evidence-first: if a statement was not checked, put it under assumptions or open questions instead of facts.
 
@@ -21,6 +21,10 @@ One of `continue`, `blocked`, `needs-review`, `ready-to-ship`, or `killed`.
 List exact files, commands, logs, sources, screenshots, traces, or diffs inspected.
 
 - ...
+
+## Fresh Validation Proof
+
+Name the current-run command, exit status, and relevant output that prove the claim. If proof is missing or stale, set the decision to `blocked` and route to verification before continuing.
 
 ## Facts
 
