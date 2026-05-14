@@ -19,7 +19,7 @@ def write_minimal_repo(root: Path) -> None:
         encoding="utf-8",
     )
     (root / "README.md").write_text(
-        "# required\n\n## Quickstart\nInstall and run validation.\n\n```bash\npython3 -m pip install -r requirements-dev.txt\nrm -rf scripts/__pycache__ tests/__pycache__\npython -m pytest -q\npython scripts/validate_repo.py\ngit diff --check\n```\nRun a targeted exact-name scrub for disallowed source terms before committing.\n\n## Run as an Agent Harness\nLoad the repo as operating instructions.\n\n## Command Selection Guide\n\n- Raw request -> `/brain-sample`\n\n## Handoff Contract\nState the status, evidence checked, facts, assumptions, risks, blockers, and next action.\n\n## Edge Cases and Stop Conditions\nStop on missing evidence.\n\n## Troubleshooting\nRun validation and inspect errors. If git status --short shows a dirty working tree, preserve user changes before editing. If secret-like values are reported, remove the value, rotate it outside the repo, and keep only a redacted placeholder. If Tests pass locally but CI fails, run the exact CI sequence locally and inspect .github/workflows/quality.yml for parity gaps. If dependency bootstrap fails with ModuleNotFoundError, create or refresh a virtual environment, rerun python3 -m pip install -r requirements-dev.txt, and do not edit around missing dependencies. If validation reports a generated Python cache file, delete the cache directory and rerun the full quality gate before committing.\n\n## Weakest Failure Mode Audit\nCheck commands, skills, schemas, templates, evals, CI, public copy, handoff, and install docs before choosing the next hardening slice.\n\n## Maintainer Checklist\nBefore release, confirm README bootstraps a new agent, commands and skills are cataloged, evals cover current failure modes, validation passes, CI mirrors local checks, public copy is neutral, caches are untracked, and the remote branch is verified.\n\n## Maintainer Loop\nFind the weakest uncovered failure mode, add or update an eval or validator first, run rm -rf scripts/__pycache__ tests/__pycache__, run validation, run a targeted exact-name scrub, commit a small coherent chunk, git push, git fetch origin main, and verify HEAD equals origin/main before repeating.\n\n## Minimal Harness Prompt\n\n```text\nRead AGENTBRAIN.md, PRINCIPLES.md, ANTI_RATIONALIZATION.md, and docs/state-machine.md before acting.\nInspect git status --short and git log --oneline -5 before choosing work.\nRun baseline validation before editing.\nPreserve user changes before editing.\nChoose the matching command in commands/ and load only the required skills/ entry.\nUse templates/ and schemas/ for structured artifacts when they fit.\nRun python -m pytest -q, python scripts/validate_repo.py, and git diff --check before claiming completion.\nStop when evidence, approval, secrets handling, or loop limits are missing.\n```\n\n## Core Commands\n\n- `/brain-sample` — sample command.\n\n## Core Skills\n\n- `sample` — sample skill.\n- `activity-recap` — activity skill.\n- `agent-output-verifier` — verifier skill.\n- `context-memory` — memory routing skill.\n\n## Repository Map\n\n```text\nrequirements-dev.txt           # local validation dependencies\n.github/workflows/             # CI quality gate\ncommands/                      # command specs\nskills/                        # portable skills\nschemas/                       # artifact schemas\ntemplates/                     # artifact templates\ndocs/                          # supporting docs\n```\n\n## Documentation Guide\n\n- `docs/agent-harness.md` — how to run the repo as an agent harness.\n- `docs/autonomous-goals.md` — autonomous goal scope and stop conditions.\n- `docs/research-watchlist.md` — source classes to review without copying branding.\n- `docs/skill-distillation.md` — how to convert sources into neutral skills.\n\n## Artifact Routing Guide\n\n- `schemas/artifact.schema.json` — sample artifact schema.\n- `schemas/handoff-report.schema.json` — sample handoff schema.\n- `schemas/memory-decision.schema.json` — sample memory decision schema.\n- `templates/handoff-report.md` — sample handoff template.\n- `templates/memory-decision.md` — sample memory decision template.\n- `templates/skill-template.md` — sample skill template.\n\n## Validation\n\n```bash\npython3 -m pip install -r requirements-dev.txt\npython -m pytest -q\npython scripts/validate_repo.py\ngit diff --check\n```\n",
+        "# required\n\n## Quickstart\nInstall and run validation.\n\n```bash\npython3 -m pip install -r requirements-dev.txt\nrm -rf scripts/__pycache__ tests/__pycache__\npython -m pytest -q\npython scripts/validate_repo.py\ngit diff --check\n```\nRun a targeted exact-name scrub for disallowed source terms before committing.\n\n## Run as an Agent Harness\nLoad the repo as operating instructions.\n\n## Command Selection Guide\n\n- Raw request -> `/brain-sample`\n\n## Handoff Contract\nState the status, evidence checked, facts, assumptions, risks, blockers, and next action.\n\n## Edge Cases and Stop Conditions\nStop on missing evidence.\n\n## Troubleshooting\nRun validation and inspect errors. If git status --short shows a dirty working tree, preserve user changes before editing. If secret-like values are reported, remove the value, rotate it outside the repo, and keep only a redacted placeholder. If Tests pass locally but CI fails, run the exact CI sequence locally and inspect .github/workflows/quality.yml for parity gaps. If dependency bootstrap fails with ModuleNotFoundError, create or refresh a virtual environment, rerun python3 -m pip install -r requirements-dev.txt, and do not edit around missing dependencies. If validation reports a generated Python cache file, delete the cache directory and rerun the full quality gate before committing.\n\n## Weakest Failure Mode Audit\nCheck commands, skills, schemas, templates, evals, CI, public copy, handoff, and install docs before choosing the next hardening slice.\n\n## Maintainer Checklist\nBefore release, confirm README bootstraps a new agent, commands and skills are cataloged, evals cover current failure modes, validation passes, CI mirrors local checks, public copy is neutral, caches are untracked, and the remote branch is verified.\n\n## Maintainer Loop\nFind the weakest uncovered failure mode, add or update an eval or validator first, run rm -rf scripts/__pycache__ tests/__pycache__, run validation, run a targeted exact-name scrub, commit a small coherent chunk, git push, git fetch origin main, and verify HEAD equals origin/main before repeating.\n\n## Minimal Harness Prompt\n\n```text\nRead AGENTBRAIN.md, PRINCIPLES.md, ANTI_RATIONALIZATION.md, and docs/state-machine.md before acting.\nInspect git status --short and git log --oneline -5 before choosing work.\nRun baseline validation before editing.\nPreserve user changes before editing.\nChoose the matching command in commands/ and load only the required skills/ entry.\nUse templates/ and schemas/ for structured artifacts when they fit.\nRun python -m pytest -q, python scripts/validate_repo.py, git diff --check, and a targeted exact-name scrub before claiming completion.\nStop when evidence, approval, secrets handling, or loop limits are missing.\n```\n\n## Core Commands\n\n- `/brain-sample` — sample command.\n\n## Core Skills\n\n- `sample` — sample skill.\n- `activity-recap` — activity skill.\n- `agent-output-verifier` — verifier skill.\n- `context-memory` — memory routing skill.\n\n## Repository Map\n\n```text\nrequirements-dev.txt           # local validation dependencies\n.github/workflows/             # CI quality gate\ncommands/                      # command specs\nskills/                        # portable skills\nschemas/                       # artifact schemas\ntemplates/                     # artifact templates\ndocs/                          # supporting docs\n```\n\n## Documentation Guide\n\n- `docs/agent-harness.md` — how to run the repo as an agent harness.\n- `docs/autonomous-goals.md` — autonomous goal scope and stop conditions.\n- `docs/research-watchlist.md` — source classes to review without copying branding.\n- `docs/skill-distillation.md` — how to convert sources into neutral skills.\n\n## Artifact Routing Guide\n\n- `schemas/artifact.schema.json` — sample artifact schema.\n- `schemas/handoff-report.schema.json` — sample handoff schema.\n- `schemas/memory-decision.schema.json` — sample memory decision schema.\n- `templates/handoff-report.md` — sample handoff template.\n- `templates/memory-decision.md` — sample memory decision template.\n- `templates/skill-template.md` — sample skill template.\n\n## Validation\n\n```bash\npython3 -m pip install -r requirements-dev.txt\npython -m pytest -q\npython scripts/validate_repo.py\ngit diff --check\n```\n",
         encoding="utf-8",
     )
     (root / "requirements-dev.txt").write_text("pytest\njsonschema\n", encoding="utf-8")
@@ -261,7 +261,7 @@ def write_minimal_repo(root: Path) -> None:
         "Preserve user changes before editing.\n"
         "Choose the matching command in commands/ and load only its listed skills.\n"
         "Use templates/ and schemas/ for structured artifacts when they fit.\n"
-        "Run python -m pytest -q, python scripts/validate_repo.py, and git diff --check before claiming completion.\n"
+        "Run python -m pytest -q, python scripts/validate_repo.py, git diff --check, and a targeted exact-name scrub before claiming completion.\n"
         "Stop and report blockers when evidence, approval, scope, tests, rollback, secrets handling, safety, or loop limits are missing.\n"
         "```\n\n"
         "## Using It With Coding Agents\n"
@@ -591,7 +591,7 @@ def test_agent_harness_validation_gate_must_include_cache_cleanup_and_exact_name
     harness.write_text(
         harness.read_text(encoding="utf-8")
         .replace("rm -rf scripts/__pycache__ tests/__pycache__\n", "")
-        .replace("targeted exact-name scrub\n", ""),
+        .replace("targeted exact-name scrub", ""),
         encoding="utf-8",
     )
 
@@ -894,7 +894,7 @@ def test_readme_minimal_harness_prompt_must_include_full_quality_gate(tmp_path):
     readme = tmp_path / "README.md"
     readme.write_text(
         readme.read_text(encoding="utf-8").replace(
-            "Run python -m pytest -q, python scripts/validate_repo.py, and git diff --check before claiming completion.",
+            "Run python -m pytest -q, python scripts/validate_repo.py, git diff --check, and a targeted exact-name scrub before claiming completion.",
             "Run python -m pytest -q and python scripts/validate_repo.py before claiming completion.",
         ),
         encoding="utf-8",
@@ -903,6 +903,22 @@ def test_readme_minimal_harness_prompt_must_include_full_quality_gate(tmp_path):
     errors = validate_repo.validate(tmp_path)
 
     assert "README.md minimal harness prompt must mention: git diff --check" in errors
+
+
+def test_readme_minimal_harness_prompt_must_require_exact_name_scrub(tmp_path):
+    write_minimal_repo(tmp_path)
+    readme = tmp_path / "README.md"
+    readme.write_text(
+        readme.read_text(encoding="utf-8").replace(
+            ", and a targeted exact-name scrub before claiming completion.",
+            " before claiming completion.",
+        ),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "README.md minimal harness prompt must mention: targeted exact-name scrub" in errors
 
 
 def test_readme_minimal_harness_prompt_must_run_baseline_validation_before_work(tmp_path):
@@ -2698,7 +2714,7 @@ def test_agent_harness_doc_must_include_copyable_harness_prompt(tmp_path):
             "Preserve user changes before editing.\n"
             "Choose the matching command in commands/ and load only its listed skills.\n"
             "Use templates/ and schemas/ for structured artifacts when they fit.\n"
-            "Run python -m pytest -q, python scripts/validate_repo.py, and git diff --check before claiming completion.\n"
+            "Run python -m pytest -q, python scripts/validate_repo.py, git diff --check, and a targeted exact-name scrub before claiming completion.\n"
             "Stop and report blockers when evidence, approval, scope, tests, rollback, secrets handling, safety, or loop limits are missing.\n"
             "```\n\n",
             "",
