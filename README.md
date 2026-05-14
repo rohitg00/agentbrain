@@ -80,6 +80,18 @@ scripts/                       # Repository validation
 
 If the agent cannot name the user, problem, evidence, risk, success metric, simpler alternative, and verification method, it is not ready to build.
 
+## Validation
+
+Run the local quality gate before committing changes:
+
+```bash
+python3 -m pip install -r requirements-dev.txt
+python3 -m pytest -q
+python3 scripts/validate_repo.py
+```
+
+The same checks run in GitHub Actions on every push and pull request.
+
 ## Status
 
-v0.2.0 rewrite in progress. The repo is intentionally documentation-first until the portable brain, schemas, and evals are coherent.
+v0.2.0 rewrite complete. The repo is documentation-first, with portable commands, skills, schemas, eval cases, adapters, and validation checks ready for iterative hardening.

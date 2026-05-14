@@ -1,0 +1,150 @@
+import json
+from pathlib import Path
+
+from scripts import validate_repo
+
+
+def write_minimal_repo(root: Path) -> None:
+    for rel in ["README.md", "AGENTBRAIN.md", "PRINCIPLES.md", "ANTI_RATIONALIZATION.md"]:
+        (root / rel).write_text("# required\n", encoding="utf-8")
+
+    schema_dir = root / "schemas"
+    schema_dir.mkdir()
+    (schema_dir / "artifact.schema.json").write_text(json.dumps({"type": "object"}), encoding="utf-8")
+
+    skill_dir = root / "skills" / "sample"
+    skill_dir.mkdir(parents=True)
+    (skill_dir / "SKILL.md").write_text(
+        "\n".join([
+            "---",
+            "name: sample",
+            "description: Sample skill",
+            "---",
+            "# Sample",
+            "## Trigger",
+            "## Inputs",
+            "## Procedure",
+            "## Verification",
+            "## Failure Modes",
+            "## Example",
+        ]),
+        encoding="utf-8",
+    )
+
+    command_dir = root / "commands"
+    command_dir.mkdir()
+    (command_dir / "brain-sample.md").write_text(
+        "\n".join([
+            "# /brain-sample",
+            "## Purpose",
+            "## When to use",
+            "## Input contract",
+            "## Workflow",
+            "## Output",
+            "## Stop conditions",
+        ]),
+        encoding="utf-8",
+    )
+
+
+def test_valid_minimal_repo_has_no_errors(tmp_path):
+    write_minimal_repo(tmp_path)
+
+    assert validate_repo.validate(tmp_path) == []
+
+
+def test_invalid_json_schema_reports_relative_path(tmp_path):
+    write_minimal_repo(tmp_path)
+    (tmp_path / "schemas" / "artifact.schema.json").write_text("{bad json", encoding="utf-8")
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert any(error.startswith("invalid json schema schemas/artifact.schema.json:") for error in errors)
+
+
+def test_schema_semantics_are_checked(tmp_path):
+    write_minimal_repo(tmp_path)
+    (tmp_path / "schemas" / "artifact.schema.json").write_text(
+        json.dumps({"type": "definitely-not-a-json-schema-type"}),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert any(error.startswith("invalid json schema schemas/artifact.schema.json:") for error in errors)
+
+
+def test_missing_skill_sections_are_reported(tmp_path):
+    write_minimal_repo(tmp_path)
+    (tmp_path / "skills" / "sample" / "SKILL.md").write_text("# Sample\n## Trigger\n", encoding="utf-8")
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "skills/sample/SKILL.md missing ## Inputs" in errors
+    assert "skills/sample/SKILL.md missing ## Example" in errors
+
+
+def test_banned_public_copy_terms_are_reported(tmp_path):
+    write_minimal_repo(tmp_path)
+    (tmp_path / "docs").mkdir()
+    (tmp_path / "docs" / "copy.md").write_text("This says GBrain in public copy.\n", encoding="utf-8")
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "docs/copy.md contains banned public-copy term: GBrain" in errors
+
+
+def test_skill_frontmatter_name_must_match_directory(tmp_path):
+    write_minimal_repo(tmp_path)
+    (tmp_path / "skills" / "sample" / "SKILL.md").write_text(
+        "\n".join([
+            "---",
+            "name: wrong-name",
+            "description: Sample skill",
+            "---",
+            "# Sample",
+            "## Trigger",
+            "## Inputs",
+            "## Procedure",
+            "## Verification",
+            "## Failure Modes",
+            "## Example",
+        ]),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "skills/sample/SKILL.md frontmatter name must be sample" in errors
+
+
+def test_command_heading_must_match_filename(tmp_path):
+    write_minimal_repo(tmp_path)
+    (tmp_path / "commands" / "brain-sample.md").write_text(
+        "\n".join([
+            "# /brain-other",
+            "## Purpose",
+            "## When to use",
+            "## Input contract",
+            "## Workflow",
+            "## Output",
+            "## Stop conditions",
+        ]),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "commands/brain-sample.md heading must be # /brain-sample" in errors
+
+
+def test_eval_cases_require_behavior_and_failure_sections(tmp_path):
+    write_minimal_repo(tmp_path)
+    case_dir = tmp_path / "evals" / "cases"
+    case_dir.mkdir(parents=True)
+    (case_dir / "thin-case.md").write_text("# Thin\n## User request\nDo something\n", encoding="utf-8")
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "evals/cases/thin-case.md missing ## Expected behavior" in errors
+    assert "evals/cases/thin-case.md missing ## Failure if" in errors
