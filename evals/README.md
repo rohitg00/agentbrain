@@ -29,6 +29,7 @@ Agent Brain evals check whether a command or skill improves judgment instead of 
 - `skill-boundary-creep` — keeps skill additions small, composable, and maintainer-controlled.
 - `spec-before-build` — requires definition, constraints, acceptance criteria, and tests before implementation.
 - `test-first-implementation` — requires a failing behavioral test before production behavior changes.
+- `unapproved-side-effect` — stops before pushes, deploys, publishes, deletes, payments, or other side effects without authorization evidence.
 - `verification-shortcut` — refuses speed-based pressure to bypass quality gates or invent proof.
 - `vague-startup-idea` — turns an unclear startup idea into sharper discovery work.
 
