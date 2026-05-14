@@ -130,6 +130,10 @@ def write_minimal_repo(root: Path) -> None:
         "# Eval Case: Activity Recap\n\n## User request\nSummarize recent activity.\n\n## Expected behavior\nUse local evidence and state checked scope.\n\n## Failure if\nInvents work or omits verification scope.\n",
         encoding="utf-8",
     )
+    (root / "evals" / "README.md").write_text(
+        "# Evals\n\n- activity-recap\n",
+        encoding="utf-8",
+    )
 
 
 def test_valid_minimal_repo_has_no_errors(tmp_path):
@@ -464,6 +468,10 @@ def test_eval_case_heading_allows_connector_words_from_filename(tmp_path):
         ]),
         encoding="utf-8",
     )
+    (tmp_path / "evals" / "README.md").write_text(
+        "# Evals\n\n- activity-recap\n- build-vs-buy-decision\n",
+        encoding="utf-8",
+    )
 
     assert validate_repo.validate(tmp_path) == []
 
@@ -520,6 +528,15 @@ def test_activity_recap_eval_case_is_required(tmp_path):
     errors = validate_repo.validate(tmp_path)
 
     assert "missing evals/cases/activity-recap.md" in errors
+
+
+def test_evals_readme_is_required(tmp_path):
+    write_minimal_repo(tmp_path)
+    (tmp_path / "evals" / "README.md").unlink()
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "missing evals/README.md" in errors
 
 
 def test_quality_workflow_is_required(tmp_path):

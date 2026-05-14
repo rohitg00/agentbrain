@@ -18,6 +18,7 @@ REQUIRED_FILES = ["requirements-dev.txt"]
 REQUIRED_DOCS = ["docs/autonomous-goals.md", "docs/skill-distillation.md"]
 REQUIRED_SKILLS = ["skills/activity-recap/SKILL.md"]
 REQUIRED_EVAL_CASES = ["evals/cases/activity-recap.md"]
+REQUIRED_EVAL_DOCS = ["evals/README.md"]
 REQUIRED_WORKFLOWS = [".github/workflows/quality.yml"]
 REQUIRED_QUALITY_WORKFLOW_RUNS = [
     "python -m pip install -r requirements-dev.txt",
@@ -180,6 +181,10 @@ def validate(root: Path = ROOT) -> list[str]:
             errors.append(f"missing {required_path}")
 
     for required_path in REQUIRED_EVAL_CASES:
+        if not (root / required_path).exists():
+            errors.append(f"missing {required_path}")
+
+    for required_path in REQUIRED_EVAL_DOCS:
         if not (root / required_path).exists():
             errors.append(f"missing {required_path}")
 
