@@ -61,6 +61,7 @@ REQUIRED_README_VALIDATION_COMMANDS = [
 REQUIRED_README_HARNESS_SECTIONS = [
     "## Quickstart",
     "## Run as an Agent Harness",
+    "## Command Selection Guide",
     "## Edge Cases and Stop Conditions",
     "## Troubleshooting",
 ]
@@ -427,6 +428,21 @@ def readme_command_references(text: str) -> list[str]:
     return sorted(entries)
 
 
+def readme_command_selection_references(text: str) -> list[str]:
+    entries: set[str] = set()
+    in_command_selection = False
+    for line in text.splitlines():
+        if line == "## Command Selection Guide":
+            in_command_selection = True
+            continue
+        if in_command_selection and line.startswith("## "):
+            break
+        if not in_command_selection:
+            continue
+        entries.update(re.findall(r"`(/brain-[a-z0-9-]+)`", line))
+    return sorted(entries)
+
+
 def readme_skill_catalog_entries(text: str) -> list[str]:
     entries: set[str] = set()
     in_core_skills = False
@@ -675,6 +691,8 @@ def validate(root: Path = ROOT) -> list[str]:
             command_name = f"/{command.stem}"
             if f"`{command_name}`" not in readme_text:
                 errors.append(f"README.md missing command catalog entry: {command_name}")
+            if command_name not in readme_command_selection_references(readme_text):
+                errors.append(f"README.md command selection guide missing command: {command_name}")
         for command_name in readme_command_references(readme_text):
             command_file = root / "commands" / f"{command_name.removeprefix('/')}.md"
             if not command_file.exists():

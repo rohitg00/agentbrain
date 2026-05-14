@@ -162,6 +162,29 @@ Each state should answer:
 - What is the next valid state?
 - What stop condition prevents unsafe progress?
 
+## Command Selection Guide
+
+Use this guide before reading individual command files. Pick the earliest state that matches the request, then load the command spec and only the skills it names.
+
+| Request shape | Start with | Use when |
+| --- | --- | --- |
+| Raw, ambiguous, or missing context | `/brain-start` | The agent needs to classify the request and choose the next safe state. |
+| Product idea or proposed automation | `/brain-should-this-exist` | The agent must test whether an agent, script, checklist, or human process is appropriate. |
+| Claims, market signals, APIs, or current facts | `/brain-research` | The work needs source-backed evidence before a brief, plan, or decision. |
+| Weak assumptions or fuzzy requirements | `/brain-grill` | The agent needs to challenge user, market, design, engineering, or risk assumptions. |
+| Product scope or user story | `/brain-brief` | The agent needs a concise product artifact with facts, assumptions, questions, risks, and acceptance criteria. |
+| Interface, workflow, or edge-case design | `/brain-design` | The agent needs to define states, flows, failure paths, and UX constraints. |
+| Implementation-ready work | `/brain-plan` | The agent needs small vertical slices with test and verification commands. |
+| Code or artifact creation | `/brain-build` | A plan exists and the next slice can be built with test-first or validator-first proof. |
+| Proof collection | `/brain-verify` | The agent needs tests, logs, traces, screenshots, citations, or diff evidence. |
+| Trust decision before handoff | `/brain-review` | The agent needs a focused review for correctness, safety, maintainability, and evidence gaps. |
+| Release or production change | `/brain-ship` | The agent needs go/no-go criteria, rollback, monitoring, and launch notes. |
+| Repeated outcome or new reusable workflow | `/brain-learn` | The agent should update durable knowledge, skills, templates, evals, or validators. |
+| Project knowledge maintenance | `/brain-wiki` | The agent should update source-backed repo knowledge without preserving temporary task chatter. |
+| Harness quality check | `/brain-eval` | The agent should test a command, skill, or output against eval cases and rubrics. |
+
+Do not skip forward because the user asked for speed. If a request matches multiple rows, choose the earliest unsafe gap first, usually research, challenge, brief, or plan before build.
+
 ## Core Commands
 
 - `/brain-start` — turn a raw request into the correct next state.
