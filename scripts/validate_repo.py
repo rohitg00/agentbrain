@@ -76,6 +76,8 @@ REQUIRED_README_HARNESS_SECTIONS = [
 REQUIRED_README_MINIMAL_HARNESS_PROMPT_TERMS = [
     "AGENTBRAIN.md",
     "docs/state-machine.md",
+    "git status --short",
+    "git log --oneline -5",
     "commands/",
     "skills/",
     "templates/",
