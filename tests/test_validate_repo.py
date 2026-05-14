@@ -22,7 +22,7 @@ def write_minimal_repo(root: Path) -> None:
     )
     (root / "requirements-dev.txt").write_text("pytest\njsonschema\n", encoding="utf-8")
     (root / ".gitignore").write_text(
-        "__pycache__/\n*.py[cod]\n.pytest_cache/\n",
+        "__pycache__/\n*.py[cod]\n.pytest_cache/\n.venv/\n",
         encoding="utf-8",
     )
 
@@ -1750,7 +1750,19 @@ def test_gitignore_must_exclude_generated_python_cache_artifacts(tmp_path):
 
     errors = validate_repo.validate(tmp_path)
 
-    assert ".gitignore must ignore generated Python cache artifacts: __pycache__/" in errors
+    assert ".gitignore must ignore local/generated Python artifacts: __pycache__/" in errors
+
+
+def test_gitignore_must_exclude_local_virtual_environments(tmp_path):
+    write_minimal_repo(tmp_path)
+    (tmp_path / ".gitignore").write_text(
+        "__pycache__/\n*.py[cod]\n.pytest_cache/\n",
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert ".gitignore must ignore local/generated Python artifacts: .venv/" in errors
 
 
 def test_public_copy_scan_ignores_local_dependency_directories(tmp_path):
