@@ -236,6 +236,14 @@ def validate(root: Path = ROOT) -> list[str]:
             if section not in text:
                 errors.append(f"{rel(command, root)} missing {section}")
 
+    readme = root / "README.md"
+    if readme.exists():
+        readme_text = readme.read_text(errors="ignore")
+        for command in sorted((root / "commands").glob("*.md")):
+            command_name = f"/{command.stem}"
+            if command_name not in readme_text:
+                errors.append(f"README.md missing command catalog entry: {command_name}")
+
     for case in sorted((root / "evals" / "cases").glob("*.md")):
         text = case.read_text(errors="ignore")
         single_h1_error = validate_single_h1(case, root)

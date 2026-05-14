@@ -6,13 +6,13 @@ from scripts import validate_repo
 
 def write_minimal_repo(root: Path) -> None:
     for rel in [
-        "README.md",
         "AGENTBRAIN.md",
         "PRINCIPLES.md",
         "ANTI_RATIONALIZATION.md",
         "CONTRIBUTING.md",
     ]:
         (root / rel).write_text("# required\n", encoding="utf-8")
+    (root / "README.md").write_text("# required\n\n- `/brain-sample` — sample command.\n", encoding="utf-8")
     (root / "requirements-dev.txt").write_text("pytest\njsonschema\n", encoding="utf-8")
 
     adapters_dir = root / "adapters" / "sample-adapter"
@@ -300,7 +300,7 @@ def test_readme_vs_others_section_can_name_specific_runtimes(tmp_path):
     write_minimal_repo(tmp_path)
     vendor_name = "Clau" + "de"
     (tmp_path / "README.md").write_text(
-        f"# required\n\n## vs others\n\nCompared with {vendor_name}, Agent Brain stays portable.\n",
+        f"# required\n\n- `/brain-sample` — sample command.\n\n## vs others\n\nCompared with {vendor_name}, Agent Brain stays portable.\n",
         encoding="utf-8",
     )
 
@@ -671,3 +671,12 @@ def test_commands_must_include_quality_bar_section(tmp_path):
     errors = validate_repo.validate(tmp_path)
 
     assert "commands/brain-sample.md missing ## Quality bar" in errors
+
+
+def test_readme_must_list_available_commands(tmp_path):
+    write_minimal_repo(tmp_path)
+    (tmp_path / "README.md").write_text("# required\n\nNo command catalog here.\n", encoding="utf-8")
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "README.md missing command catalog entry: /brain-sample" in errors
