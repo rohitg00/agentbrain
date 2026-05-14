@@ -21,6 +21,10 @@ def write_minimal_repo(root: Path) -> None:
         encoding="utf-8",
     )
     (root / "requirements-dev.txt").write_text("pytest\njsonschema\n", encoding="utf-8")
+    (root / ".gitignore").write_text(
+        "__pycache__/\n*.py[cod]\n.pytest_cache/\n",
+        encoding="utf-8",
+    )
 
     adapters_dir = root / "adapters" / "sample-adapter"
     adapters_dir.mkdir(parents=True)
@@ -1256,3 +1260,12 @@ def test_evals_readme_rubric_catalog_entries_must_be_backticked(tmp_path):
     errors = validate_repo.validate(tmp_path)
 
     assert "evals/README.md missing eval rubric catalog entry: quality" in errors
+
+
+def test_gitignore_must_exclude_generated_python_cache_artifacts(tmp_path):
+    write_minimal_repo(tmp_path)
+    (tmp_path / ".gitignore").write_text(".pytest_cache/\n", encoding="utf-8")
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert ".gitignore must ignore generated Python cache artifacts: __pycache__/" in errors

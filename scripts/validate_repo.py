@@ -15,6 +15,7 @@ REQUIRED_ROOT = [
     "CONTRIBUTING.md",
 ]
 REQUIRED_FILES = ["requirements-dev.txt"]
+REQUIRED_GITIGNORE_PATTERNS = ["__pycache__/", "*.py[cod]", ".pytest_cache/"]
 REQUIRED_DOCS = ["docs/autonomous-goals.md", "docs/skill-distillation.md"]
 REQUIRED_SKILLS = [
     "skills/activity-recap/SKILL.md",
@@ -244,6 +245,15 @@ def validate(root: Path = ROOT) -> list[str]:
     for required_path in REQUIRED_FILES:
         if not (root / required_path).exists():
             errors.append(f"missing {required_path}")
+
+    gitignore = root / ".gitignore"
+    if not gitignore.exists():
+        errors.append("missing .gitignore")
+    else:
+        gitignore_lines = set(gitignore.read_text(errors="ignore").splitlines())
+        for pattern in REQUIRED_GITIGNORE_PATTERNS:
+            if pattern not in gitignore_lines:
+                errors.append(f".gitignore must ignore generated Python cache artifacts: {pattern}")
 
     for required_path in REQUIRED_DOCS:
         if not (root / required_path).exists():
