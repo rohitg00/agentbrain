@@ -61,6 +61,28 @@ def write_minimal_repo(root: Path) -> None:
     (docs_dir / "autonomous-goals.md").write_text(
         "# Autonomous Goals\n\n/goal\nmeasurable end state\nconstraints\n", encoding="utf-8"
     )
+    (docs_dir / "skill-distillation.md").write_text(
+        "# Skill Distillation\n\nworkflow trace\ntrigger\nverification\n", encoding="utf-8"
+    )
+
+    activity_skill_dir = root / "skills" / "activity-recap"
+    activity_skill_dir.mkdir(parents=True)
+    (activity_skill_dir / "SKILL.md").write_text(
+        "\n".join([
+            "---",
+            "name: activity-recap",
+            "description: Summarize recent work from local project activity.",
+            "---",
+            "# activity-recap",
+            "## Trigger",
+            "## Inputs",
+            "## Procedure",
+            "## Verification",
+            "## Failure Modes",
+            "## Example",
+        ]),
+        encoding="utf-8",
+    )
 
     workflow_dir = root / ".github" / "workflows"
     workflow_dir.mkdir(parents=True)
@@ -446,6 +468,24 @@ def test_autonomous_goal_doc_is_required(tmp_path):
     errors = validate_repo.validate(tmp_path)
 
     assert "missing docs/autonomous-goals.md" in errors
+
+
+def test_skill_distillation_doc_is_required(tmp_path):
+    write_minimal_repo(tmp_path)
+    (tmp_path / "docs" / "skill-distillation.md").unlink()
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "missing docs/skill-distillation.md" in errors
+
+
+def test_activity_recap_skill_is_required(tmp_path):
+    write_minimal_repo(tmp_path)
+    (tmp_path / "skills" / "activity-recap" / "SKILL.md").unlink()
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "missing skills/activity-recap/SKILL.md" in errors
 
 
 def test_quality_workflow_is_required(tmp_path):
