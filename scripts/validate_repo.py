@@ -490,6 +490,21 @@ def readme_skill_catalog_entries(text: str) -> list[str]:
     return sorted(entries)
 
 
+def readme_documentation_guide_entries(text: str) -> list[str]:
+    entries: set[str] = set()
+    in_documentation_guide = False
+    for line in text.splitlines():
+        if line == "## Documentation Guide":
+            in_documentation_guide = True
+            continue
+        if in_documentation_guide and line.startswith("## "):
+            break
+        if not in_documentation_guide:
+            continue
+        entries.update(re.findall(r"`(docs/[a-z0-9-]+\.md)`", line))
+    return sorted(entries)
+
+
 def command_skills_to_load(text: str) -> list[str]:
     body = section_body(text, "## Skills to load")
     return sorted(set(re.findall(r"`([a-z0-9]+(?:-[a-z0-9]+)*)`", body)))
@@ -754,6 +769,14 @@ def validate(root: Path = ROOT) -> list[str]:
             skill_file = root / "skills" / skill_name / "SKILL.md"
             if not skill_file.exists():
                 errors.append(f"README.md skill catalog entry points to missing file: {skill_name}")
+        readme_docs = readme_documentation_guide_entries(readme_text)
+        for doc in sorted((root / "docs").glob("*.md")):
+            doc_ref = rel(doc, root)
+            if doc_ref not in readme_docs:
+                errors.append(f"README.md documentation guide missing doc: {doc_ref}")
+        for doc_ref in readme_docs:
+            if not (root / doc_ref).exists():
+                errors.append(f"README.md documentation guide entry points to missing file: {doc_ref}")
         for schema in sorted((root / "schemas").glob("*.json")):
             schema_ref = rel(schema, root)
             if f"`{schema_ref}`" not in readme_text:

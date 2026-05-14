@@ -136,6 +136,28 @@ adapters/                      # Runtime-specific integration notes
 scripts/                       # Repository validation
 ```
 
+## Documentation Guide
+
+Use this guide to choose the supporting doc before loading commands or skills:
+
+- `docs/agent-harness.md` — fresh-checkout setup, operating loop, copyable harness prompt, stop conditions, and troubleshooting.
+- `docs/architecture.md` — repository architecture, package boundaries, artifacts, and validation responsibilities.
+- `docs/autonomous-goals.md` — how to scope long-running goals with measurable end states and loop limits.
+- `docs/claims-we-reject.md` — claims and shortcuts the harness refuses without evidence.
+- `docs/ecosystem-review.md` — neutral ecosystem review criteria for evaluating external patterns.
+- `docs/grilling-protocol.md` — staged challenge process for weak assumptions and missing context.
+- `docs/implementation-plan.md` — current implementation guidance for moving from plan to verified slices.
+- `docs/implementation-roadmap.md` — staged roadmap for future harness hardening.
+- `docs/memory-model.md` — what belongs in durable project memory versus temporary task state.
+- `docs/non-agent-alternatives.md` — when to prefer scripts, checklists, forms, queues, or human review over an agent.
+- `docs/question-ladder.md` — progressive questioning patterns that narrow ambiguity without overwhelming the user.
+- `docs/research-synthesis.md` — source-grounded synthesis into operating principles and reusable guidance.
+- `docs/research-watchlist.md` — source classes to monitor while preserving neutral public copy.
+- `docs/review-gates.md` — product, design, engineering, security, QA, launch, and verifier gates.
+- `docs/skill-distillation.md` — converting external workflows into small neutral skills without copying branding.
+- `docs/skill-system.md` — skill anatomy, lifecycle fit, catalog rules, and maintenance expectations.
+- `docs/state-machine.md` — valid states, transitions, required artifacts, and stop conditions.
+
 ## Core State Machine
 
 Agent Brain uses states so the agent cannot jump straight from vague intent to code.

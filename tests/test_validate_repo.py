@@ -18,7 +18,7 @@ def write_minimal_repo(root: Path) -> None:
         encoding="utf-8",
     )
     (root / "README.md").write_text(
-        "# required\n\n## Quickstart\nInstall and run validation.\n\n## Run as an Agent Harness\nLoad the repo as operating instructions.\n\n## Command Selection Guide\n\n- Raw request -> `/brain-sample`\n\n## Handoff Contract\nState the status, evidence checked, facts, assumptions, risks, blockers, and next action.\n\n## Edge Cases and Stop Conditions\nStop on missing evidence.\n\n## Troubleshooting\nRun validation and inspect errors.\n\n- `/brain-sample` — sample command.\n- `sample` — sample skill.\n- `activity-recap` — activity skill.\n- `agent-output-verifier` — verifier skill.\n\n## Artifact Routing Guide\n\n- `schemas/artifact.schema.json` — sample artifact schema.\n- `templates/skill-template.md` — sample skill template.\n\n## Validation\n\n```bash\npython3 -m pip install -r requirements-dev.txt\npython -m pytest -q\npython scripts/validate_repo.py\ngit diff --check\n```\n",
+        "# required\n\n## Quickstart\nInstall and run validation.\n\n## Run as an Agent Harness\nLoad the repo as operating instructions.\n\n## Command Selection Guide\n\n- Raw request -> `/brain-sample`\n\n## Handoff Contract\nState the status, evidence checked, facts, assumptions, risks, blockers, and next action.\n\n## Edge Cases and Stop Conditions\nStop on missing evidence.\n\n## Troubleshooting\nRun validation and inspect errors.\n\n- `/brain-sample` — sample command.\n- `sample` — sample skill.\n- `activity-recap` — activity skill.\n- `agent-output-verifier` — verifier skill.\n\n## Documentation Guide\n\n- `docs/agent-harness.md` — how to run the repo as an agent harness.\n- `docs/autonomous-goals.md` — autonomous goal scope and stop conditions.\n- `docs/research-watchlist.md` — source classes to review without copying branding.\n- `docs/skill-distillation.md` — how to convert sources into neutral skills.\n\n## Artifact Routing Guide\n\n- `schemas/artifact.schema.json` — sample artifact schema.\n- `templates/skill-template.md` — sample skill template.\n\n## Validation\n\n```bash\npython3 -m pip install -r requirements-dev.txt\npython -m pytest -q\npython scripts/validate_repo.py\ngit diff --check\n```\n",
         encoding="utf-8",
     )
     (root / "requirements-dev.txt").write_text("pytest\njsonschema\n", encoding="utf-8")
@@ -363,6 +363,22 @@ def test_readme_skill_catalog_entries_must_point_to_existing_files(tmp_path):
     errors = validate_repo.validate(tmp_path)
 
     assert "README.md skill catalog entry points to missing file: missing-skill" in errors
+
+
+def test_readme_documentation_guide_must_cover_every_doc(tmp_path):
+    write_minimal_repo(tmp_path)
+    readme = tmp_path / "README.md"
+    readme.write_text(
+        readme.read_text(encoding="utf-8").replace(
+            "- `docs/autonomous-goals.md` — autonomous goal scope and stop conditions.\n",
+            "",
+        ),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "README.md documentation guide missing doc: docs/autonomous-goals.md" in errors
 
 
 def test_contributing_guide_is_required(tmp_path):
