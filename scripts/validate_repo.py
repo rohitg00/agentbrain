@@ -390,6 +390,8 @@ def validate(root: Path = ROOT) -> list[str]:
                 errors.append(f"{rel(case, root)} missing {section}")
             elif not section_has_body(text, section):
                 errors.append(f"{rel(case, root)} section has no body: {section}")
+        if not sections_are_in_order(text, REQUIRED_EVAL_CASE_SECTIONS):
+            errors.append(f"{rel(case, root)} sections must appear in canonical order")
 
     evals_readme = root / "evals" / "README.md"
     if evals_readme.exists():

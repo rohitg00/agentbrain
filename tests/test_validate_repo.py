@@ -723,6 +723,28 @@ def test_eval_case_required_sections_must_have_body(tmp_path):
     assert "evals/cases/thin-case.md section has no body: ## Expected behavior" in errors
 
 
+def test_eval_case_required_sections_must_keep_canonical_order(tmp_path):
+    write_minimal_repo(tmp_path)
+    case_dir = tmp_path / "evals" / "cases"
+    case_dir.mkdir(parents=True, exist_ok=True)
+    (case_dir / "thin-case.md").write_text(
+        "\n".join([
+            "# Eval Case: Thin Case",
+            "## Expected behavior",
+            "Do the requested work with evidence.",
+            "## User request",
+            "Do something",
+            "## Failure if",
+            "The response misses the point.",
+        ]),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "evals/cases/thin-case.md sections must appear in canonical order" in errors
+
+
 def test_eval_cases_must_have_exactly_one_h1(tmp_path):
     write_minimal_repo(tmp_path)
     case_dir = tmp_path / "evals" / "cases"
