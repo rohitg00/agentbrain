@@ -211,6 +211,18 @@ REQUIRED_AGENT_HARNESS_RESUME_TERMS = [
     "resume only the named next action",
 ]
 REQUIRED_AGENT_HARNESS_HANDOFF_TERMS = ["fresh validation proof"]
+REQUIRED_AGENT_HARNESS_TROUBLESHOOTING_TERMS = {
+    "dirty working tree": "docs/agent-harness.md troubleshooting must document dirty working tree recovery",
+    "git status --short": "docs/agent-harness.md troubleshooting must document dirty working tree recovery",
+    "preserve user changes": "docs/agent-harness.md troubleshooting must document dirty working tree recovery",
+    "secret-like values": "docs/agent-harness.md troubleshooting must document secret-like value recovery",
+    "Tests pass locally but CI fails": "docs/agent-harness.md troubleshooting must document CI failure recovery",
+    "exact CI sequence locally": "docs/agent-harness.md troubleshooting must document CI failure recovery",
+    ".github/workflows/quality.yml": "docs/agent-harness.md troubleshooting must document CI failure recovery",
+    "ModuleNotFoundError": "docs/agent-harness.md troubleshooting must document dependency bootstrap recovery",
+    "virtual environment": "docs/agent-harness.md troubleshooting must document dependency bootstrap recovery",
+    "generated Python cache file": "docs/agent-harness.md troubleshooting must document generated cache recovery",
+}
 REQUIRED_ADAPTER_SECTIONS = ["## Install", "## Validation", "## Failure Modes"]
 REQUIRED_ADAPTER_VALIDATION_COMMANDS = [
     "python3 -m pip install -r requirements-dev.txt",
@@ -854,6 +866,11 @@ def validate(root: Path = ROOT) -> list[str]:
         for term in REQUIRED_AGENT_HARNESS_HANDOFF_TERMS:
             if term not in handoff_contract:
                 errors.append("docs/agent-harness.md handoff contract must require fresh validation proof")
+        harness_troubleshooting = section_body(agent_harness_text, "## Troubleshooting")
+        harness_troubleshooting_lower = harness_troubleshooting.lower()
+        for required_term, message in REQUIRED_AGENT_HARNESS_TROUBLESHOOTING_TERMS.items():
+            if required_term.lower() not in harness_troubleshooting_lower:
+                errors.append(f"{message}: {required_term}")
 
     for required_path in REQUIRED_SKILLS:
         if not (root / required_path).exists():

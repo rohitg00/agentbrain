@@ -206,6 +206,26 @@ Extract the operator job, triggers, evidence, and failure modes. Public docs sho
 
 Route the output through verification and review. Ask for or collect the missing logs, diffs, traces, screenshots, citations, or approvals before accepting the result.
 
+### The working tree is dirty
+
+Run `git status --short` and classify every changed path before editing. Preserve user changes by leaving unrelated files unstaged, creating a narrow patch, or stopping with a handoff when ownership is unclear. Do not clean, reset, stage, or overwrite a dirty working tree just to make validation easier.
+
+### Secret-like values appear
+
+Treat secret-like values as a blocker, not as normal copy. Remove the value from public artifacts, replace it with a redacted placeholder, rotate the real credential outside the repo, and rerun validation before continuing.
+
+### Tests pass locally but CI fails
+
+Run the exact CI sequence locally, including install, tests, repository validation, and whitespace checks. Inspect `.github/workflows/quality.yml` for Python version, dependency, permission, trigger, or timeout drift before changing production docs or code.
+
+### Dependency bootstrap fails
+
+If validation fails with `ModuleNotFoundError`, create or refresh a virtual environment, rerun `python3 -m pip install -r requirements-dev.txt`, and retry the quality gate. Do not edit around missing dependencies or assume global packages match CI.
+
+### Generated cache files appear
+
+If validation reports a generated Python cache file, delete `__pycache__/`, `.pytest_cache/`, or tracked bytecode artifacts, then rerun the full quality gate. Generated caches are local execution residue and should not become harness state.
+
 ## Maintainer Checklist
 
 Before a harness release or major push:

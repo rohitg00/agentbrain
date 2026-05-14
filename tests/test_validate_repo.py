@@ -303,7 +303,8 @@ def write_minimal_repo(root: Path) -> None:
         "```\n\n"
         "## Using It With Coding Agents\n"
         "For large work, split worker scopes into researcher, planner, builder, verifier, reviewer, shipper, and learner roles. Each worker scope must name evidence, a stop condition, and a handoff contract.\n\n"
-        "## Troubleshooting\nInspect validation errors before continuing.\n",
+        "## Troubleshooting\n"
+        "Inspect validation errors before continuing. If git status --short shows a dirty working tree, preserve user changes before editing. If secret-like values appear, remove them, rotate them outside the repo, and keep only redacted placeholders. If Tests pass locally but CI fails, run the exact CI sequence locally and inspect .github/workflows/quality.yml for parity gaps. If dependency bootstrap fails with ModuleNotFoundError, create or refresh a virtual environment before rerunning install. If validation reports a generated Python cache file, delete cache directories and rerun validation.\n",
         encoding="utf-8",
     )
     (docs_dir / "skill-distillation.md").write_text(
@@ -710,6 +711,19 @@ def test_agent_harness_must_define_interrupted_handoff_resume_protocol(tmp_path)
     assert "docs/agent-harness.md resume guidance must mention: previous handoff" in errors
     assert "docs/agent-harness.md resume guidance must mention: stale" in errors
     assert "docs/agent-harness.md resume guidance must mention: resume only the named next action" in errors
+
+
+def test_agent_harness_troubleshooting_must_cover_secret_like_value_recovery(tmp_path):
+    write_minimal_repo(tmp_path)
+    harness = tmp_path / "docs" / "agent-harness.md"
+    harness.write_text(
+        harness.read_text(encoding="utf-8").replace("secret-like values", "credential-looking text"),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "docs/agent-harness.md troubleshooting must document secret-like value recovery: secret-like values" in errors
 
 
 def test_readme_must_include_maintainer_checklist(tmp_path):
