@@ -5,7 +5,13 @@ from scripts import validate_repo
 
 
 def write_minimal_repo(root: Path) -> None:
-    for rel in ["README.md", "AGENTBRAIN.md", "PRINCIPLES.md", "ANTI_RATIONALIZATION.md"]:
+    for rel in [
+        "README.md",
+        "AGENTBRAIN.md",
+        "PRINCIPLES.md",
+        "ANTI_RATIONALIZATION.md",
+        "CONTRIBUTING.md",
+    ]:
         (root / rel).write_text("# required\n", encoding="utf-8")
 
     adapters_dir = root / "adapters" / "sample-adapter"
@@ -72,6 +78,15 @@ def test_valid_minimal_repo_has_no_errors(tmp_path):
     write_minimal_repo(tmp_path)
 
     assert validate_repo.validate(tmp_path) == []
+
+
+def test_contributing_guide_is_required(tmp_path):
+    write_minimal_repo(tmp_path)
+    (tmp_path / "CONTRIBUTING.md").unlink()
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "missing CONTRIBUTING.md" in errors
 
 
 def test_required_root_markdown_must_have_exactly_one_h1(tmp_path):

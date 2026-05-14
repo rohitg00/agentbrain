@@ -7,7 +7,13 @@ from jsonschema import validators
 
 ROOT = Path(__file__).resolve().parents[1]
 
-REQUIRED_ROOT = ["README.md", "AGENTBRAIN.md", "PRINCIPLES.md", "ANTI_RATIONALIZATION.md"]
+REQUIRED_ROOT = [
+    "README.md",
+    "AGENTBRAIN.md",
+    "PRINCIPLES.md",
+    "ANTI_RATIONALIZATION.md",
+    "CONTRIBUTING.md",
+]
 REQUIRED_DOCS = ["docs/autonomous-goals.md"]
 RESEARCH_WATCHLIST_REQUIRED_SOURCES = [
     "autonomous-goal runtime docs",
