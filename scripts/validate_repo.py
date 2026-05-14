@@ -187,6 +187,13 @@ def title_from_slug(slug: str) -> str:
     return " ".join(titled_parts)
 
 
+def adapter_heading_from_slug(slug: str) -> str:
+    title = title_from_slug(slug)
+    if title.endswith(" Adapter"):
+        return f"# {title}"
+    return f"# {title} Adapter"
+
+
 def validate_single_h1(path: Path, root: Path) -> str | None:
     text = path.read_text(errors="ignore")
     h1_headings = markdown_h1_headings(text)
@@ -592,6 +599,11 @@ def validate(root: Path = ROOT) -> list[str]:
             errors.append(single_h1_error)
         if markdown_file.parent == root / "templates" and markdown_file.name != "skill-template.md":
             expected_heading = f"# {title_from_slug(markdown_file.stem)}"
+            first_line = markdown_file.read_text(errors="ignore").splitlines()[0]
+            if first_line != expected_heading:
+                errors.append(f"{rel(markdown_file, root)} heading must be {expected_heading}")
+        if markdown_file.parent.parent == root / "adapters" and markdown_file.name == "README.md":
+            expected_heading = adapter_heading_from_slug(markdown_file.parent.name)
             first_line = markdown_file.read_text(errors="ignore").splitlines()[0]
             if first_line != expected_heading:
                 errors.append(f"{rel(markdown_file, root)} heading must be {expected_heading}")

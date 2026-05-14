@@ -296,6 +296,18 @@ def test_docs_filenames_must_use_lowercase_kebab_case(tmp_path):
     assert "docs/Bad_Doc.md filename must use lowercase kebab-case" in errors
 
 
+def test_adapter_readme_heading_must_match_adapter_directory(tmp_path):
+    write_minimal_repo(tmp_path)
+    (tmp_path / "adapters" / "sample-adapter" / "README.md").write_text(
+        "# Different Adapter\n",
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "adapters/sample-adapter/README.md heading must be # Sample Adapter" in errors
+
+
 def test_schema_directory_is_required(tmp_path):
     write_minimal_repo(tmp_path)
     shutil.rmtree(tmp_path / "schemas")
