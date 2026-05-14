@@ -1,16 +1,16 @@
-# /brain-review
+# /brain-wiki
 
 ## Purpose
 
-Review artifact quality before merge, launch, or handoff.
+Maintain source-backed project knowledge.
 
 ## When to use
 
-Use after verification or before public/shipping decisions.
+Use when ingesting sources or updating durable project knowledge.
 
 ## Input contract
 
-Artifact, diff or content, evidence, acceptance criteria.
+Raw source, query, or synthesis target.
 
 If required inputs are missing, ask at most three blocking questions or state explicit assumptions and risk.
 
@@ -24,7 +24,7 @@ If required inputs are missing, ask at most three blocking questions or state ex
 
 ## Output
 
-Required artifact: **Review Report**.
+Required artifact: **Wiki Update**.
 
 The output must include:
 
@@ -47,4 +47,4 @@ Stop and ask for human input when:
 
 ## Quality bar
 
-A good `/brain-review` run is short enough to act on, explicit enough to audit, and skeptical enough to prevent premature building.
+A good `/brain-wiki` run is short enough to act on, explicit enough to audit, and skeptical enough to prevent premature building.

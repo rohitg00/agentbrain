@@ -1,16 +1,16 @@
-# /brain-review
+# /brain-design
 
 ## Purpose
 
-Review artifact quality before merge, launch, or handoff.
+Define user flow, interface behavior, states, and edge cases.
 
 ## When to use
 
-Use after verification or before public/shipping decisions.
+Use when a product brief needs UX or interaction design before planning.
 
 ## Input contract
 
-Artifact, diff or content, evidence, acceptance criteria.
+Product Brief, user segment, constraints, target platform.
 
 If required inputs are missing, ask at most three blocking questions or state explicit assumptions and risk.
 
@@ -24,7 +24,7 @@ If required inputs are missing, ask at most three blocking questions or state ex
 
 ## Output
 
-Required artifact: **Review Report**.
+Required artifact: **Design Brief**.
 
 The output must include:
 
@@ -47,4 +47,4 @@ Stop and ask for human input when:
 
 ## Quality bar
 
-A good `/brain-review` run is short enough to act on, explicit enough to audit, and skeptical enough to prevent premature building.
+A good `/brain-design` run is short enough to act on, explicit enough to audit, and skeptical enough to prevent premature building.

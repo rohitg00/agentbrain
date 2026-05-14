@@ -1,16 +1,16 @@
-# /brain-review
+# /brain-research
 
 ## Purpose
 
-Review artifact quality before merge, launch, or handoff.
+Turn sources and discussion into a claim ledger.
 
 ## When to use
 
-Use after verification or before public/shipping decisions.
+Use when the decision depends on external evidence or unfamiliar domain context.
 
 ## Input contract
 
-Artifact, diff or content, evidence, acceptance criteria.
+Research question, scope, source constraints, freshness needs.
 
 If required inputs are missing, ask at most three blocking questions or state explicit assumptions and risk.
 
@@ -24,7 +24,7 @@ If required inputs are missing, ask at most three blocking questions or state ex
 
 ## Output
 
-Required artifact: **Review Report**.
+Required artifact: **Research Claim Ledger**.
 
 The output must include:
 
@@ -47,4 +47,4 @@ Stop and ask for human input when:
 
 ## Quality bar
 
-A good `/brain-review` run is short enough to act on, explicit enough to audit, and skeptical enough to prevent premature building.
+A good `/brain-research` run is short enough to act on, explicit enough to audit, and skeptical enough to prevent premature building.
