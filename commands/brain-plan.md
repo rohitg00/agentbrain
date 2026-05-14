@@ -44,11 +44,11 @@ The output must include:
 
 Stop and ask for human input when:
 
-- the next step changes public state,
-- the next step is destructive or irreversible,
-- credentials or private data are required,
-- evidence is too weak for the requested confidence,
-- the user must choose between materially different directions.
+- objectives, constraints, owner, or acceptance criteria are not defined,
+- the plan cannot be sliced into independently verifiable steps,
+- the first slice needs approvals, credentials, production access, or irreversible migration,
+- risk ordering depends on a stakeholder priority trade-off,
+- verification commands or rollback paths are unknown for the proposed work.
 
 ## Quality bar
 

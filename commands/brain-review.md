@@ -44,11 +44,11 @@ The output must include:
 
 Stop and ask for human input when:
 
-- the next step changes public state,
-- the next step is destructive or irreversible,
-- credentials or private data are required,
-- evidence is too weak for the requested confidence,
-- the user must choose between materially different directions.
+- the diff, artifact, or intended behavior is unavailable,
+- a suspected issue needs runtime, security, or domain evidence the reviewer cannot access,
+- the review would approve generated work without checking tests, docs, and changed files,
+- the next step is a merge, publish, deploy, delete, or other side effect without explicit approval,
+- blocking findings require the author to choose between incompatible fixes.
 
 ## Quality bar
 

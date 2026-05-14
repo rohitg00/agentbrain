@@ -44,11 +44,11 @@ The output must include:
 
 Stop and ask for human input when:
 
-- the next step changes public state,
-- the next step is destructive or irreversible,
-- credentials or private data are required,
-- evidence is too weak for the requested confidence,
-- the user must choose between materially different directions.
+- the user, scenario, constraints, or non-goals are missing,
+- research evidence conflicts and a product/design trade-off needs owner judgment,
+- the design would commit to public claims, brand direction, pricing, or irreversible IA,
+- sensitive user data, accessibility risk, or policy risk needs specialist review,
+- the requested artifact cannot be validated with available examples or acceptance criteria.
 
 ## Quality bar
 

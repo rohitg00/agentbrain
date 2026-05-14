@@ -44,11 +44,11 @@ The output must include:
 
 Stop and ask for human input when:
 
-- the next step changes public state,
-- the next step is destructive or irreversible,
-- credentials or private data are required,
-- evidence is too weak for the requested confidence,
-- the user must choose between materially different directions.
+- the target user, repeated job, or non-agent baseline is not concrete,
+- a simple checklist, script, form, dashboard, or process change may solve the need with less risk,
+- the agent would need broad autonomy, hidden memory, credentials, or policy-sensitive access,
+- expected value depends on unsupported adoption, accuracy, or cost claims,
+- the decision requires stakeholder appetite for complexity, maintenance, or operational risk.
 
 ## Quality bar
 

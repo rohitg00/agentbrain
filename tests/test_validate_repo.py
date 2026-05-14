@@ -747,6 +747,37 @@ def test_command_quality_bars_must_not_be_reused_boilerplate(tmp_path):
     assert "commands/brain-sample.md quality bar duplicates commands/brain-other.md" in errors
 
 
+def test_command_stop_conditions_must_not_be_reused_boilerplate(tmp_path):
+    write_minimal_repo(tmp_path)
+    second_command = tmp_path / "commands" / "brain-other.md"
+    second_command.write_text(
+        "\n".join([
+            "# /brain-other",
+            "## Purpose",
+            "Route other work.",
+            "## When to use",
+            "Use for other requests.",
+            "## Input contract",
+            "Raw request.",
+            "## Skills to load",
+            "Load `sample` for sample routing.",
+            "## Workflow",
+            "Inspect other inputs and decide the next action.",
+            "## Output",
+            "A concrete next action for the other request.",
+            "## Stop conditions",
+            "Stop when the request is unsafe.",
+            "## Quality bar",
+            "Evidence is checked before other output.",
+        ]),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "commands/brain-sample.md stop conditions duplicate commands/brain-other.md" in errors
+
+
 def test_readme_skill_catalog_entries_must_point_to_existing_files(tmp_path):
     write_minimal_repo(tmp_path)
     readme = tmp_path / "README.md"

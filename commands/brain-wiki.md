@@ -44,11 +44,11 @@ The output must include:
 
 Stop and ask for human input when:
 
-- the next step changes public state,
-- the next step is destructive or irreversible,
-- credentials or private data are required,
-- evidence is too weak for the requested confidence,
-- the user must choose between materially different directions.
+- the proposed wiki fact lacks a stable source, owner, or freshness date,
+- the update would expose private project context, secrets, customer data, or internal-only notes,
+- existing docs conflict and the durable source of truth is unclear,
+- the change would replace maintained guidance instead of linking or reconciling it,
+- no validator, review, or freshness check can keep the wiki entry from going stale.
 
 ## Quality bar
 

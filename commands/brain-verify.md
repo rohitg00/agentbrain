@@ -44,11 +44,11 @@ The output must include:
 
 Stop and ask for human input when:
 
-- the next step changes public state,
-- the next step is destructive or irreversible,
-- credentials or private data are required,
-- evidence is too weak for the requested confidence,
-- the user must choose between materially different directions.
+- the artifact under test, expected behavior, or verification command is missing,
+- tests require credentials, paid services, production data, or destructive setup,
+- failures are flaky or unreproducible after the documented retry limit,
+- verification would mutate public state, deploy, publish, charge, or delete resources,
+- observed evidence does not support the requested confidence claim.
 
 ## Quality bar
 

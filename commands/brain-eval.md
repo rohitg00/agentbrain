@@ -44,11 +44,11 @@ The output must include:
 
 Stop and ask for human input when:
 
-- the next step changes public state,
-- the next step is destructive or irreversible,
-- credentials or private data are required,
-- evidence is too weak for the requested confidence,
-- the user must choose between materially different directions.
+- the eval target, rubric, fixture, or expected behavior is undefined,
+- the eval requires private traces, secrets, or unreleased model/provider data,
+- scoring would be based on subjective preference without a written quality bar,
+- the eval result would trigger deployment, deletion, publishing, or spend without approval,
+- the failure mode cannot be reproduced from the available artifact.
 
 ## Quality bar
 

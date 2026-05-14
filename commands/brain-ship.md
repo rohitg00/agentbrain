@@ -44,11 +44,11 @@ The output must include:
 
 Stop and ask for human input when:
 
-- the next step changes public state,
-- the next step is destructive or irreversible,
-- credentials or private data are required,
-- evidence is too weak for the requested confidence,
-- the user must choose between materially different directions.
+- validation, review, rollback, monitoring, or ownership evidence is missing,
+- the release includes migrations, data deletion, billing, credentials, or production access without explicit approval,
+- go/no-go criteria conflict with observed test, CI, or incident signals,
+- user communication, support, or recovery steps are not ready for the launch scope,
+- the ship decision depends on unresolved security, privacy, or policy risk.
 
 ## Quality bar
 

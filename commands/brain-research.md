@@ -44,11 +44,11 @@ The output must include:
 
 Stop and ask for human input when:
 
-- the next step changes public state,
-- the next step is destructive or irreversible,
-- credentials or private data are required,
-- evidence is too weak for the requested confidence,
-- the user must choose between materially different directions.
+- the claim cannot be grounded in primary or authoritative evidence,
+- the source requires login, paywalled/private context, or unverifiable social proof,
+- the research would introduce source branding or vendor names into public copy without an approved comparison section,
+- the answer depends on current facts that cannot be checked from available sources,
+- conflicting evidence changes the recommended next state or risk level.
 
 ## Quality bar
 

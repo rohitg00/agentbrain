@@ -44,11 +44,11 @@ The output must include:
 
 Stop and ask for human input when:
 
-- the next step changes public state,
-- the next step is destructive or irreversible,
-- credentials or private data are required,
-- evidence is too weak for the requested confidence,
-- the user must choose between materially different directions.
+- the lesson is temporary task state rather than durable project behavior,
+- the source contains private data, secrets, credentials, or raw conversation content,
+- the pattern is too source-specific to become a neutral command, skill, template, or validator,
+- the capture would overwrite existing guidance without evidence that it is stale,
+- no regression test, eval, or validator can protect the learned behavior.
 
 ## Quality bar
 

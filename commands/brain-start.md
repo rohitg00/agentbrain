@@ -44,11 +44,11 @@ The output must include:
 
 Stop and ask for human input when:
 
-- the next step changes public state,
-- the next step is destructive or irreversible,
-- credentials or private data are required,
-- evidence is too weak for the requested confidence,
-- the user must choose between materially different directions.
+- the request lacks enough context to choose an initial state or command,
+- repository evidence contradicts the user's stated status,
+- baseline validation fails in a way that changes the safe next action,
+- user changes are present and cannot be preserved before editing,
+- the next step needs approval for side effects, credentials, secrets, or private data.
 
 ## Quality bar
 

@@ -814,6 +814,7 @@ def validate(root: Path = ROOT) -> list[str]:
 
     seen_workflows: dict[str, str] = {}
     seen_quality_bars: dict[str, str] = {}
+    seen_stop_conditions: dict[str, str] = {}
     for command in sorted((root / "commands").glob("*.md")):
         text = command.read_text(errors="ignore")
         expected_heading = f"# /{command.stem}"
@@ -855,6 +856,14 @@ def validate(root: Path = ROOT) -> list[str]:
                 )
             else:
                 seen_quality_bars[quality_bar] = rel(command, root)
+        stop_conditions = normalized_section_body(text, "## Stop conditions")
+        if stop_conditions:
+            if stop_conditions in seen_stop_conditions:
+                errors.append(
+                    f"{rel(command, root)} stop conditions duplicate {seen_stop_conditions[stop_conditions]}"
+                )
+            else:
+                seen_stop_conditions[stop_conditions] = rel(command, root)
         skill_names = command_skills_to_load(text)
         if not skill_names:
             errors.append(f"{rel(command, root)} skills-to-load section must name at least one skill")

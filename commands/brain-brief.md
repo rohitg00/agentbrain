@@ -44,11 +44,11 @@ The output must include:
 
 Stop and ask for human input when:
 
-- the next step changes public state,
-- the next step is destructive or irreversible,
-- credentials or private data are required,
-- evidence is too weak for the requested confidence,
-- the user must choose between materially different directions.
+- the target user, decision owner, or success metric for the brief is unnamed,
+- the brief would depend on private customer, revenue, or analytics data that is not available,
+- evidence is too weak to choose a product direction,
+- the next step commits the team to roadmap, pricing, launch, or public positioning,
+- the user must choose between materially different product bets.
 
 ## Quality bar
 

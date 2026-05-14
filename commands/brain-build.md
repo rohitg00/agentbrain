@@ -44,11 +44,11 @@ The output must include:
 
 Stop and ask for human input when:
 
-- the next step changes public state,
-- the next step is destructive or irreversible,
-- credentials or private data are required,
-- evidence is too weak for the requested confidence,
-- the user must choose between materially different directions.
+- the implementation slice is not approved or lacks acceptance checks,
+- a failing test or baseline validation result cannot be produced for behavior changes,
+- the change requires credentials, production access, destructive migration, or external side effects,
+- unrelated cleanup or architecture work is needed before the selected slice can pass,
+- the next action would exceed the selected implementation scope.
 
 ## Quality bar
 
