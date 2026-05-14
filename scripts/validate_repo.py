@@ -36,6 +36,7 @@ REQUIRED_QUALITY_WORKFLOW_RUNS = [
     "python scripts/validate_repo.py",
     "git diff --check",
 ]
+REQUIRED_QUALITY_WORKFLOW_PERMISSIONS = ["permissions:", "  contents: read"]
 REQUIRED_README_VALIDATION_COMMANDS = [
     "pip install -r requirements-dev.txt",
     "python -m pytest -q",
@@ -293,6 +294,11 @@ def validate(root: Path = ROOT) -> list[str]:
             for run_command in REQUIRED_QUALITY_WORKFLOW_RUNS:
                 if run_command not in workflow_text:
                     errors.append(f"{required_path} must run: {run_command}")
+            if not all(
+                permission_line in workflow_text
+                for permission_line in REQUIRED_QUALITY_WORKFLOW_PERMISSIONS
+            ):
+                errors.append(f"{required_path} must set permissions to contents: read")
 
     workflow_dir = root / ".github" / "workflows"
     workflow_files = sorted([*workflow_dir.glob("*.yml"), *workflow_dir.glob("*.yaml")])

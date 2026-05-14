@@ -158,6 +158,8 @@ def write_minimal_repo(root: Path) -> None:
             "on:",
             "  push:",
             "  pull_request:",
+            "permissions:",
+            "  contents: read",
             "jobs:",
             "  validate:",
             "    runs-on: ubuntu-latest",
@@ -1257,6 +1259,35 @@ def test_quality_workflow_must_install_dev_requirements(tmp_path):
     errors = validate_repo.validate(tmp_path)
 
     assert ".github/workflows/quality.yml must run: python -m pip install -r requirements-dev.txt" in errors
+
+
+def test_quality_workflow_must_use_read_only_repository_permissions(tmp_path):
+    write_minimal_repo(tmp_path)
+    (tmp_path / ".github" / "workflows" / "quality.yml").write_text(
+        "\n".join([
+            "name: Quality",
+            "on:",
+            "  push:",
+            "  pull_request:",
+            "jobs:",
+            "  validate:",
+            "    runs-on: ubuntu-latest",
+            "    steps:",
+            "      - uses: actions/checkout@v4",
+            "      - uses: actions/setup-python@v5",
+            "        with:",
+            "          python-version: '3.11'",
+            "      - run: python -m pip install -r requirements-dev.txt",
+            "      - run: python -m pytest -q",
+            "      - run: python scripts/validate_repo.py",
+            "      - run: git diff --check",
+        ]),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert ".github/workflows/quality.yml must set permissions to contents: read" in errors
 
 
 def test_research_watchlist_must_track_goal_and_skill_sources(tmp_path):
