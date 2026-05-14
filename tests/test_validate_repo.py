@@ -120,6 +120,32 @@ def write_minimal_repo(root: Path) -> None:
         "# Memory Decision\n\nSchema fields: `candidate`, `decision`, `target_tier`, `evidence`, `freshness`, `privacy_review`, `rejected_material`, `next_use`.\n",
         encoding="utf-8",
     )
+    (templates_dir / "skill-template.md").write_text(
+        "\n".join([
+            "---",
+            "name: sample-skill",
+            "description: Use when creating a new portable skill from a repeated workflow.",
+            "---",
+            "# Skill Template",
+            "## Trigger",
+            "Use when the workflow should become a reusable skill.",
+            "## Inputs",
+            "Raw request, evidence, constraints, and target artifact.",
+            "## Procedure",
+            "Write the smallest reusable workflow with concrete steps.",
+            "## Anti-Rationalization",
+            "Do not make the skill broad enough to own unrelated work.",
+            "## Verification",
+            "Confirm trigger, procedure, output, and failure modes are testable.",
+            "## Output Artifact",
+            "A skill file with frontmatter and canonical sections.",
+            "## Failure Modes",
+            "Stop if the trigger is vague or the workflow is one-off.",
+            "## Example",
+            "Convert a repeated review checklist into a small skill.",
+        ]),
+        encoding="utf-8",
+    )
     skill_dir = root / "skills" / "sample"
     skill_dir.mkdir(parents=True)
     (skill_dir / "SKILL.md").write_text(
@@ -3901,3 +3927,20 @@ def test_skill_template_must_include_anti_rationalization_section(tmp_path):
     errors = validate_repo.validate(tmp_path)
 
     assert "templates/skill-template.md missing ## Anti-Rationalization" in errors
+
+
+def test_readme_artifact_routing_must_not_point_to_missing_templates(tmp_path):
+    write_minimal_repo(tmp_path)
+    readme = tmp_path / "README.md"
+    readme.write_text(
+        readme.read_text(encoding="utf-8").replace(
+            "- `templates/skill-template.md` — sample skill template.",
+            "- `templates/skill-template.md` — sample skill template.\n"
+            "- `templates/missing-template.md` — missing template.",
+        ),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "README.md artifact routing guide entry points to missing template: templates/missing-template.md" in errors

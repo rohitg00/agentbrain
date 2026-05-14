@@ -1049,6 +1049,9 @@ def validate(root: Path = ROOT) -> list[str]:
                 errors.append(f"README.md documentation guide entry points to missing file: {doc_ref}")
         artifact_schema_refs = readme_artifact_routing_entries(readme_text, "schemas")
         artifact_template_refs = readme_artifact_routing_entries(readme_text, "templates")
+        for template_ref in artifact_template_refs:
+            if not (root / template_ref).exists():
+                errors.append(f"README.md artifact routing guide entry points to missing template: {template_ref}")
         for schema in sorted((root / "schemas").glob("*.json")):
             schema_ref = rel(schema, root)
             if f"`{schema_ref}`" not in readme_text:
