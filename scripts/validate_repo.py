@@ -1019,6 +1019,11 @@ def validate(root: Path = ROOT) -> list[str]:
         for field in required_fields:
             if field not in properties:
                 errors.append(f"{rel(path, root)} required field lacks property definition: {field}")
+        for field in sorted({"evidence", "evidence_checked"} & set(required_fields)):
+            field_schema = properties.get(field, {})
+            if isinstance(field_schema, dict) and field_schema.get("type") == "array":
+                if field_schema.get("minItems", 0) < 1:
+                    errors.append(f"{rel(path, root)} {field} must require at least one evidence item")
         for location in find_object_schemas_without_closed_properties(schema):
             if location == "$":
                 errors.append(f"{rel(path, root)} object schema must set additionalProperties to false")

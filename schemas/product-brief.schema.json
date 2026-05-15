@@ -30,7 +30,7 @@
       "items": {
         "type": "string"
       },
-      "default": []
+      "minItems": 1
     },
     "success_metric": {
       "type": "string",

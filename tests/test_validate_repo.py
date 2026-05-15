@@ -96,7 +96,7 @@ def write_minimal_repo(root: Path) -> None:
                         ],
                     },
                     "decision": {"type": "string"},
-                    "evidence_checked": {"type": "array", "items": {"type": "string"}},
+                    "evidence_checked": {"type": "array", "minItems": 1, "items": {"type": "string"}},
                     "fresh_validation_proof": {"type": "string"},
                     "coordination_review": {"type": "string"},
                     "facts": {"type": "array", "items": {"type": "string"}},
@@ -122,7 +122,7 @@ def write_minimal_repo(root: Path) -> None:
                     "candidate": {"type": "string"},
                     "decision": {"type": "string"},
                     "target_tier": {"type": "string"},
-                    "evidence": {"type": "array", "items": {"type": "string"}},
+                    "evidence": {"type": "array", "minItems": 1, "items": {"type": "string"}},
                     "freshness": {
                         "type": "object",
                         "additionalProperties": False,
@@ -152,7 +152,7 @@ def write_minimal_repo(root: Path) -> None:
                     "target": {"type": "string"},
                     "cases": {"type": "array", "items": {"type": "object", "additionalProperties": False}},
                     "decision": {"type": "string"},
-                    "evidence_checked": {"type": "array", "items": {"type": "string"}},
+                    "evidence_checked": {"type": "array", "minItems": 1, "items": {"type": "string"}},
                     "risks": {"type": "array", "items": {"type": "string"}},
                     "open_questions": {"type": "array", "items": {"type": "string"}},
                     "next_action": {"type": "string"},
@@ -868,6 +868,21 @@ def test_handoff_schema_state_must_use_state_machine_enum(tmp_path):
     errors = validate_repo.validate(tmp_path)
 
     assert "schemas/handoff-report.schema.json state must enumerate Agent Brain state machine values" in errors
+
+
+def test_artifact_schemas_must_require_non_empty_evidence_arrays(tmp_path):
+    write_minimal_repo(tmp_path)
+    schema_path = tmp_path / "schemas" / "handoff-report.schema.json"
+    schema = json.loads(schema_path.read_text(encoding="utf-8"))
+    schema["properties"]["evidence_checked"] = {"type": "array", "items": {"type": "string"}}
+    schema_path.write_text(json.dumps(schema), encoding="utf-8")
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert (
+        "schemas/handoff-report.schema.json evidence_checked must require at least one evidence item"
+        in errors
+    )
 
 
 def test_readme_handoff_contract_must_include_resume_guidance(tmp_path):
