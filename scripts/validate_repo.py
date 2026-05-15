@@ -564,6 +564,8 @@ REQUIRED_ADAPTER_RUNTIME_SMOKE_COMMAND_FLAGS = [
     "--sandbox-write-mode",
     "--brain-command-mode",
     "--run-scope",
+    "--smoke-result",
+    "--command-exit-status",
     "--transcript-path",
 ]
 REQUIRED_ADAPTER_SAMPLE_ROUTING_PROBE_TERMS = [
