@@ -26,6 +26,8 @@ List exact files, commands, logs, sources, screenshots, traces, or diffs inspect
 
 Name the current-run command, exit status, and relevant output that prove the claim. If proof is missing or stale, set the decision to `blocked` and route to verification before continuing.
 
+When resuming from a previous handoff, re-check freshness before continuing. If the evidence is stale, resume only the named next action after refreshing the proof instead of expanding scope from the old summary.
+
 ## Coordination Review
 
 State whether this was a single-agent run or a parallel-worker join. For parallel work, name worker scopes, evidence accepted, outputs rejected as stale, unsupported, or out-of-scope, conflicts found, and how the coordinator resolved them before trusting the handoff.

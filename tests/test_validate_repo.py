@@ -54,6 +54,22 @@ def test_adapter_requires_sample_routing_probe(tmp_path: Path) -> None:
     )
 
 
+def test_handoff_template_requires_resume_protocol(tmp_path: Path) -> None:
+    write_minimal_repo(tmp_path)
+    handoff_template = tmp_path / "templates" / "handoff-report.md"
+    handoff_template.write_text(
+        handoff_template.read_text(encoding="utf-8")
+        .replace("previous handoff", "old summary")
+        .replace("resume only the named next action", "continue naturally"),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "templates/handoff-report.md resume protocol must mention: previous handoff" in errors
+    assert "templates/handoff-report.md resume protocol must mention: resume only the named next action" in errors
+
+
 def test_command_catalog_requires_artifact_contract(tmp_path: Path) -> None:
     write_minimal_repo(tmp_path)
     catalog = tmp_path / "commands" / "README.md"
@@ -581,7 +597,8 @@ def write_minimal_repo(root: Path) -> None:
     templates_dir.mkdir(exist_ok=True)
     (templates_dir / "handoff-report.md").write_text(
         "# Handoff Report\n\n"
-        "Schema fields: `state`, `decision`, `evidence_checked`, `fresh_validation_proof`, `coordination_review`, `facts`, `assumptions`, `open_questions`, `risks`, `stop_conditions`, `next_action`.\n",
+        "Schema fields: `state`, `decision`, `evidence_checked`, `fresh_validation_proof`, `coordination_review`, `facts`, `assumptions`, `open_questions`, `risks`, `stop_conditions`, `next_action`.\n\n"
+        "Resume from a previous handoff only after checking whether evidence is stale; resume only the named next action after refreshing proof.\n",
         encoding="utf-8",
     )
     (templates_dir / "memory-decision.md").write_text(

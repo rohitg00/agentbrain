@@ -283,6 +283,11 @@ REQUIRED_README_HANDOFF_RESUME_TERMS = [
     "stale",
     "resume only the named next action",
 ]
+REQUIRED_HANDOFF_TEMPLATE_RESUME_TERMS = [
+    "previous handoff",
+    "stale",
+    "resume only the named next action",
+]
 REQUIRED_README_COMMAND_SELECTION_FALLBACK_TERMS = [
     "If no command fits",
     "do not invent",
@@ -1392,6 +1397,13 @@ def validate(root: Path = ROOT) -> list[str]:
                 errors.append(
                     f"{rel(template, root)} references unknown schema field from {rel(path, root)}: {field}"
                 )
+            if path.name == "handoff-report.schema.json":
+                template_text_lower = template_text.lower()
+                for required_term in REQUIRED_HANDOFF_TEMPLATE_RESUME_TERMS:
+                    if required_term not in template_text_lower:
+                        errors.append(
+                            f"templates/handoff-report.md resume protocol must mention: {required_term}"
+                        )
 
     for required_path in REQUIRED_ROOT:
         if not (root / required_path).exists():
