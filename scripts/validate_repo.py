@@ -431,7 +431,13 @@ REQUIRED_AGENT_HARNESS_MAINTAINER_TERMS = [
     "git fetch origin main",
     "HEAD equals origin/main",
 ]
-REQUIRED_ADAPTER_SECTIONS = ["## Install", "## Minimal instruction", "## Validation", "## Failure Modes"]
+REQUIRED_ADAPTER_SECTIONS = [
+    "## Install",
+    "## Capability Matrix",
+    "## Minimal instruction",
+    "## Validation",
+    "## Failure Modes",
+]
 REQUIRED_ADAPTER_VALIDATION_COMMANDS = [
     "python3 -m pip install -r requirements-dev.txt",
     "rm -rf scripts/__pycache__ tests/__pycache__",

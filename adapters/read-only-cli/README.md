@@ -12,6 +12,10 @@ Before wiring the CLI runtime to the harness, run `git status --short` and `git 
 4. Ask the runtime to cite the selected command file, skill files, template, schema, evidence, and stop condition.
 5. Move to workspace-write mode only after the task has a plan, approval scope, and rollback path.
 
+## Capability Matrix
+
+Before the first real-runtime smoke, record whether the runtime can read files, write files, run shell commands, request approvals, reach the network, map `/brain-*` entries as native commands, emit template/schema-backed artifacts, and report blocked commands. Mark unknown capabilities as `unknown` instead of assuming support.
+
 ## Minimal instruction
 
 ```text

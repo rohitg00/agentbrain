@@ -12,6 +12,10 @@ Before wiring the approval-gated runtime to the harness, run `git status --short
 4. Check the runtime approval surface before any shell, file-write, publish, deploy, payment, or production side effect.
 5. If Agent Brain skills are copied into runtime skills, preserve trigger, procedure, verification, output artifact, and failure-mode sections.
 
+## Capability Matrix
+
+Before the first real-runtime smoke, record whether the runtime can read files, write files, run shell commands, request approvals, reach the network, map `/brain-*` entries as native commands, emit template/schema-backed artifacts, and report blocked commands. Mark unknown capabilities as `unknown` instead of assuming support.
+
 ## Minimal instruction
 
 ```text

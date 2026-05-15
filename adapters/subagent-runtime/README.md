@@ -13,6 +13,10 @@ Before wiring the subagent runtime to the harness, run `git status --short` and 
 5. Use subagents for read-only audits and independent reviews, but keep one writer for edits.
 6. Return terminal-friendly handoffs with no platform-specific attachment markers.
 
+## Capability Matrix
+
+Before the first real-runtime smoke, record whether the runtime can read files, write files, run shell commands, request approvals, reach the network, map `/brain-*` entries as native commands, emit template/schema-backed artifacts, and report blocked commands. Mark unknown capabilities as `unknown` instead of assuming support.
+
 ## Minimal instruction
 
 ```text

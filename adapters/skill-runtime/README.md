@@ -14,6 +14,10 @@ Before wiring a runtime, run `git status --short` and `git log --oneline -5`, th
 6. Use file/git tools for `/brain-plan`, `/brain-build`, and `/brain-review`.
 7. Use scheduled jobs only after the workflow is stable.
 
+## Capability Matrix
+
+Before the first real-runtime smoke, record whether the runtime can read files, write files, run shell commands, request approvals, reach the network, map `/brain-*` entries as native commands, emit template/schema-backed artifacts, and report blocked commands. Mark unknown capabilities as `unknown` instead of assuming support.
+
 ## Minimal instruction
 
 ```text

@@ -13,6 +13,10 @@ Before adapting the harness, run `git status --short` and `git log --oneline -5`
 5. Use `templates/` for artifacts.
 6. Run evals manually using `evals/rubrics/agent-brain-rubric.md`.
 
+## Capability Matrix
+
+Before the first real-runtime smoke, record whether the runtime can read files, write files, run shell commands, request approvals, reach the network, map `/brain-*` entries as native commands, emit template/schema-backed artifacts, and report blocked commands. Mark unknown capabilities as `unknown` instead of assuming support.
+
 ## Minimal instruction
 
 ```text
