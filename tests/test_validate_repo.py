@@ -371,7 +371,7 @@ def write_minimal_repo(root: Path) -> None:
         "targeted exact-name scrub\n"
         "```\n\n"
         "## Fresh Checkout Bootstrap\n"
-        "Before acting, inspect git status --short and git log --oneline -5, run git fetch origin main, confirm local HEAD equals origin/main, run the baseline validation, identify the current state, then choose the matching command.\n\n"
+        "Before acting, inspect git status --short and git log --oneline -5, run git fetch origin main, compare git rev-parse HEAD with git rev-parse origin/main, confirm local HEAD equals origin/main, run the baseline validation, identify the current state, then choose the matching command.\n\n"
         "If a previous handoff exists, re-run baseline validation, treat notes as stale until files and commands confirm them, and resume only the named next action.\n\n"
         "## Operating Loop\nChoose state, load command, verify.\n\n"
         "## Command Routing\nUse `/brain-sample` for sample requests before loading skills. Use `/brain-eval` for eval quality checks.\n\n"
@@ -905,7 +905,7 @@ def test_agent_harness_must_include_fresh_checkout_bootstrap(tmp_path):
     harness = tmp_path / "docs" / "agent-harness.md"
     harness.write_text(
         harness.read_text(encoding="utf-8").replace(
-            "\n## Fresh Checkout Bootstrap\nBefore acting, inspect git status --short and git log --oneline -5, run git fetch origin main, confirm local HEAD equals origin/main, run the baseline validation, identify the current state, then choose the matching command.\n\n",
+            "\n## Fresh Checkout Bootstrap\nBefore acting, inspect git status --short and git log --oneline -5, run git fetch origin main, compare git rev-parse HEAD with git rev-parse origin/main, confirm local HEAD equals origin/main, run the baseline validation, identify the current state, then choose the matching command.\n\n",
             "\n",
         ),
         encoding="utf-8",
@@ -1173,7 +1173,7 @@ def test_agent_harness_fresh_checkout_must_verify_remote_freshness(tmp_path):
     harness = tmp_path / "docs" / "agent-harness.md"
     harness.write_text(
         harness.read_text(encoding="utf-8").replace(
-            "Before acting, inspect git status --short and git log --oneline -5, run git fetch origin main, confirm local HEAD equals origin/main, run the baseline validation, identify the current state, then choose the matching command.",
+            "Before acting, inspect git status --short and git log --oneline -5, run git fetch origin main, compare git rev-parse HEAD with git rev-parse origin/main, confirm local HEAD equals origin/main, run the baseline validation, identify the current state, then choose the matching command.",
             "Before acting, inspect git status --short and git log --oneline -5, run the baseline validation, identify the current state, then choose the matching command.",
         ),
         encoding="utf-8",
@@ -1183,6 +1183,22 @@ def test_agent_harness_fresh_checkout_must_verify_remote_freshness(tmp_path):
 
     assert "docs/agent-harness.md fresh checkout bootstrap must verify remote freshness: git fetch origin main" in errors
     assert "docs/agent-harness.md fresh checkout bootstrap must verify remote freshness: HEAD equals origin/main" in errors
+
+
+def test_agent_harness_fresh_checkout_must_include_remote_equality_commands(tmp_path):
+    write_minimal_repo(tmp_path)
+    harness = tmp_path / "docs" / "agent-harness.md"
+    harness.write_text(
+        harness.read_text(encoding="utf-8")
+        .replace("git rev-parse HEAD", "read local commit")
+        .replace("git rev-parse origin/main", "read remote commit"),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "docs/agent-harness.md fresh checkout bootstrap must verify remote freshness: git rev-parse HEAD" in errors
+    assert "docs/agent-harness.md fresh checkout bootstrap must verify remote freshness: git rev-parse origin/main" in errors
 
 
 def test_agent_harness_troubleshooting_must_cover_secret_like_value_recovery(tmp_path):

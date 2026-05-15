@@ -32,6 +32,8 @@ Before a new agent acts on this repo, make it prove the checkout state instead o
 git status --short
 git log --oneline -5
 git fetch origin main
+git rev-parse HEAD
+git rev-parse origin/main
 rm -rf scripts/__pycache__ tests/__pycache__
 python -m pytest -q
 python scripts/validate_repo.py
@@ -45,7 +47,7 @@ Use the results to answer five setup questions:
 
 1. Is the working tree clean or are there user changes that must be preserved?
 2. What is the latest committed harness behavior?
-3. Does the freshness check show HEAD equals origin/main so the agent is not editing a stale checkout?
+3. Do `git rev-parse HEAD` and `git rev-parse origin/main` match, proving HEAD equals origin/main so the agent is not editing a stale checkout?
 4. Do tests and validation pass before new work starts?
 5. Which state, command, skill, template, and schema should handle the request?
 

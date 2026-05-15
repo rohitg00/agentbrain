@@ -292,6 +292,8 @@ REQUIRED_AGENT_HARNESS_RESUME_TERMS = [
 ]
 REQUIRED_AGENT_HARNESS_FRESH_CHECKOUT_TERMS = [
     "git fetch origin main",
+    "git rev-parse HEAD",
+    "git rev-parse origin/main",
     "HEAD equals origin/main",
 ]
 REQUIRED_AGENT_HARNESS_NONINTERACTIVE_TERMS = [
