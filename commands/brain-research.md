@@ -31,7 +31,7 @@ If required inputs are missing, ask at most three blocking questions or state ex
 
 ## Output
 
-Required artifact: **Research Claim Ledger**.
+Required artifact: **Research Claim Ledger** using `templates/research-claim-ledger.md`.
 
 The output must include:
 

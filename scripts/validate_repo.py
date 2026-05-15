@@ -1571,6 +1571,10 @@ def validate(root: Path = ROOT) -> list[str]:
         required_artifact_template = command_required_artifact_template(text)
         if required_artifact_template:
             required_command_artifact_templates[f"/{command.stem}"] = required_artifact_template
+            if f"`{required_artifact_template}`" not in output_section:
+                errors.append(
+                    f"{rel(command, root)} output must cite required artifact template: {required_artifact_template}"
+                )
             if not (root / required_artifact_template).exists():
                 errors.append(
                     f"{rel(command, root)} required artifact lacks template: {required_artifact_template}"

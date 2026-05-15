@@ -31,7 +31,7 @@ If required inputs are missing, ask at most three blocking questions or state ex
 
 ## Output
 
-Required artifact: **Launch Checklist**.
+Required artifact: **Launch Checklist** using `templates/launch-checklist.md`.
 
 The output must include:
 

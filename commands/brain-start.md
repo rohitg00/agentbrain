@@ -34,7 +34,7 @@ If required inputs are missing, ask at most three blocking questions or state ex
 
 ## Output
 
-Required artifact: **Intake Summary**.
+Required artifact: **Intake Summary** using `templates/intake-summary.md`.
 
 The output must include:
 

@@ -32,7 +32,7 @@ If required inputs are missing, ask at most three blocking questions or state ex
 
 ## Output
 
-Required artifact: **QA Evidence**.
+Required artifact: **QA Evidence** using `templates/qa-evidence.md`.
 
 The output must include:
 

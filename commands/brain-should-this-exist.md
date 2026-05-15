@@ -31,7 +31,7 @@ If required inputs are missing, ask at most three blocking questions or state ex
 
 ## Output
 
-Required artifact: **Non-Agent Alternative Review**.
+Required artifact: **Non-Agent Alternative Review** using `templates/non-agent-alternative-review.md`.
 
 The output must include:
 

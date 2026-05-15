@@ -31,7 +31,7 @@ If required inputs are missing, ask at most three blocking questions or state ex
 
 ## Output
 
-Required artifact: **Implementation Plan**.
+Required artifact: **Implementation Plan** using `templates/implementation-plan.md`.
 
 The output must include:
 

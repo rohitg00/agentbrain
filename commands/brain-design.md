@@ -31,7 +31,7 @@ If required inputs are missing, ask at most three blocking questions or state ex
 
 ## Output
 
-Required artifact: **Design Brief**.
+Required artifact: **Design Brief** using `templates/design-brief.md`.
 
 The output must include:
 

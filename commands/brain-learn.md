@@ -32,7 +32,7 @@ If required inputs are missing, ask at most three blocking questions or state ex
 
 ## Output
 
-Required artifact: **Learning Capture**.
+Required artifact: **Learning Capture** using `templates/learning-capture.md`.
 
 The output must include:
 

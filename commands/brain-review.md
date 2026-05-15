@@ -31,7 +31,7 @@ If required inputs are missing, ask at most three blocking questions or state ex
 
 ## Output
 
-Required artifact: **Review Report**.
+Required artifact: **Review Report** using `templates/review-report.md`.
 
 The output must include:
 

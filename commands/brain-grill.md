@@ -33,7 +33,7 @@ If required inputs are missing, ask at most three blocking questions or state ex
 
 ## Output
 
-Required artifact: **Grill Report**.
+Required artifact: **Grill Report** using `templates/grill-report.md`.
 
 The output must include:
 

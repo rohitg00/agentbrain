@@ -387,7 +387,7 @@ def write_minimal_repo(root: Path) -> None:
             "## Workflow",
             "Inspect inputs and decide the next action.",
             "## Output",
-            "Required artifact: **Sample Routing Summary**. A concrete next action with decision, evidence, fresh validation proof, assumptions, risks, open questions, and next recommended state.",
+            "Required artifact: **Sample Routing Summary** using `templates/sample-routing-summary.md`. A concrete next action with decision, evidence, fresh validation proof, assumptions, risks, open questions, and next recommended state.",
             "## Stop conditions",
             "Stop when the request is unsafe.",
             "## Quality bar",
@@ -411,7 +411,7 @@ def write_minimal_repo(root: Path) -> None:
             "## Workflow",
             "Select cases, collect proof, compare behavior to expected outcomes.",
             "## Output",
-            "Required artifact: **Eval Report**. A concrete eval decision with evidence, fresh validation proof, assumptions, risks, open questions, and next recommended state.",
+            "Required artifact: **Eval Report** using `templates/eval-report.md`. A concrete eval decision with evidence, fresh validation proof, assumptions, risks, open questions, and next recommended state.",
             "## Stop conditions",
             "Stop when required proof is unavailable.",
             "## Quality bar",
@@ -1256,8 +1256,8 @@ def test_commands_must_include_handoff_fields_in_output(tmp_path):
     command = tmp_path / "commands" / "brain-sample.md"
     command.write_text(
         command.read_text(encoding="utf-8").replace(
-            "Required artifact: **Sample Routing Summary**. A concrete next action with decision, evidence, fresh validation proof, assumptions, risks, open questions, and next recommended state.",
-            "Required artifact: **Sample Routing Summary**. A concrete next action with evidence only.",
+            "Required artifact: **Sample Routing Summary** using `templates/sample-routing-summary.md`. A concrete next action with decision, evidence, fresh validation proof, assumptions, risks, open questions, and next recommended state.",
+            "Required artifact: **Sample Routing Summary** using `templates/sample-routing-summary.md`. A concrete next action with evidence only.",
         ),
         encoding="utf-8",
     )
@@ -1277,7 +1277,7 @@ def test_commands_must_name_required_output_artifact(tmp_path):
     command = tmp_path / "commands" / "brain-sample.md"
     command.write_text(
         command.read_text(encoding="utf-8").replace(
-            "Required artifact: **Sample Routing Summary**. ",
+            "Required artifact: **Sample Routing Summary** using `templates/sample-routing-summary.md`. ",
             "",
         ),
         encoding="utf-8",
@@ -1286,6 +1286,22 @@ def test_commands_must_name_required_output_artifact(tmp_path):
     errors = validate_repo.validate(tmp_path)
 
     assert "commands/brain-sample.md output must name a required artifact" in errors
+
+
+def test_command_output_must_name_exact_template_path(tmp_path):
+    write_minimal_repo(tmp_path)
+    command = tmp_path / "commands" / "brain-sample.md"
+    command.write_text(
+        command.read_text(encoding="utf-8").replace(
+            " using `templates/sample-routing-summary.md`",
+            "",
+        ),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "commands/brain-sample.md output must cite required artifact template: templates/sample-routing-summary.md" in errors
 
 
 def test_command_required_artifacts_must_be_listed_in_readme_routing_guide(tmp_path):
@@ -5942,8 +5958,8 @@ def test_command_required_artifacts_must_have_templates(tmp_path):
     command = tmp_path / "commands" / "brain-sample.md"
     command.write_text(
         command.read_text(encoding="utf-8").replace(
-            "Required artifact: **Sample Routing Summary**.",
-            "Required artifact: **Unmapped Decision Record**.",
+            "Required artifact: **Sample Routing Summary** using `templates/sample-routing-summary.md`.",
+            "Required artifact: **Unmapped Decision Record** using `templates/unmapped-decision-record.md`.",
         ),
         encoding="utf-8",
     )

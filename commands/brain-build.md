@@ -33,7 +33,7 @@ If required inputs are missing, ask at most three blocking questions or state ex
 
 ## Output
 
-Required artifact: **Changed artifact plus implementation notes**.
+Required artifact: **Changed artifact plus implementation notes** using `templates/changed-artifact-plus-implementation-notes.md`.
 
 The output must include:
 

@@ -32,7 +32,7 @@ If required inputs are missing, ask at most three blocking questions or state ex
 
 ## Output
 
-Required artifact: **Wiki Update**.
+Required artifact: **Wiki Update** using `templates/wiki-update.md`.
 
 The output must include:
 

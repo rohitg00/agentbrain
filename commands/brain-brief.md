@@ -31,7 +31,7 @@ If required inputs are missing, ask at most three blocking questions or state ex
 
 ## Output
 
-Required artifact: **Product Brief**.
+Required artifact: **Product Brief** using `templates/product-brief.md`.
 
 The output must include:
 
