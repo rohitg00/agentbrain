@@ -571,6 +571,8 @@ REQUIRED_ADAPTER_RUNTIME_SMOKE_COMMAND_FLAGS = [
     "--smoke-result",
     "--command-exit-status",
     "--transcript-path",
+    "--transcript-redaction-status",
+    "--validation-command",
 ]
 REQUIRED_ADAPTER_SAMPLE_ROUTING_PROBE_TERMS = [
     "sample request",
