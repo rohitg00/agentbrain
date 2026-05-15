@@ -12,24 +12,24 @@ Agent Brain skills are small, composable, runtime-neutral operating procedures. 
 
 ## Catalog
 
-- [`activity-recap`](activity-recap/SKILL.md) — summarize activity into evidence-backed next actions without turning temporary logs into durable memory.
-- [`agent-output-verifier`](agent-output-verifier/SKILL.md) — review agent output for evidence, safety, skipped checks, and handoff readiness.
-- [`ci-recovery`](ci-recovery/SKILL.md) — inspect failing CI, reproduce locally, fix the smallest cause, and re-check the remote run.
-- [`context-memory`](context-memory/SKILL.md) — decide whether context belongs in stable preferences, project docs, session recall, skills, or external indexes.
-- [`design-grill`](design-grill/SKILL.md) — challenge workflow, interface, state, and edge-case assumptions before design hardens.
-- [`domain-language`](domain-language/SKILL.md) — align project vocabulary so commands, skills, docs, tests, and handoffs use the same terms.
-- [`engineering-grill`](engineering-grill/SKILL.md) — pressure-test technical assumptions, constraints, failure modes, and verification before implementation.
-- [`evidence-research`](evidence-research/SKILL.md) — gather source-backed evidence and separate facts, assumptions, and recheck triggers.
-- [`intake`](intake/SKILL.md) — classify a raw request, inspect retrievable context, and choose the earliest safe harness state.
-- [`launch-gate`](launch-gate/SKILL.md) — check release readiness, rollback, monitoring, approvals, and go/no-go evidence.
-- [`learning-capture`](learning-capture/SKILL.md) — convert repeated outcomes into durable docs, skills, templates, evals, schemas, or validators.
-- [`market-grill`](market-grill/SKILL.md) — challenge market, user, distribution, and evidence assumptions before product commitment.
-- [`plan-slicing`](plan-slicing/SKILL.md) — split work into small vertical slices with acceptance checks and verification commands.
-- [`problem-grill`](problem-grill/SKILL.md) — challenge whether the problem is real, important, and best solved by an agent.
-- [`qa-evidence`](qa-evidence/SKILL.md) — collect proof from tests, validators, logs, screenshots, traces, citations, and diffs.
-- [`question-ladder`](question-ladder/SKILL.md) — narrow ambiguity with progressive questions while inspecting retrievable context first.
-- [`runtime-smoke`](runtime-smoke/SKILL.md) — check Agent Brain inside a real runtime or adapter and record smoke evidence honestly.
-- [`wiki-maintenance`](wiki-maintenance/SKILL.md) — update durable project knowledge with provenance, freshness, and stale-data review.
+- [`activity-recap`](activity-recap/SKILL.md) — Use when the user needs a standup-ready summary of recent project activity from local evidence.
+- [`agent-output-verifier`](agent-output-verifier/SKILL.md) — Use when agent-produced work needs a safety, evidence, and reliability check before handoff, merge, or trust.
+- [`ci-recovery`](ci-recovery/SKILL.md) — Use when local validation and remote workflow status must be reconciled before trust, merge, or shipment.
+- [`context-memory`](context-memory/SKILL.md) — Use when deciding what project context should be remembered, retrieved, updated, or deliberately forgotten.
+- [`design-grill`](design-grill/SKILL.md) — Use when a design needs pressure-testing for UX, information architecture, states, and accessibility.
+- [`domain-language`](domain-language/SKILL.md) — Use when project vocabulary is fuzzy, overloaded, disputed, or needed before naming docs, schemas, commands, skills, code, plans, or memory.
+- [`engineering-grill`](engineering-grill/SKILL.md) — Use when an engineering plan needs pressure-testing for architecture, complexity, data, risk, and operability.
+- [`evidence-research`](evidence-research/SKILL.md) — Use when sources need to be converted into a claim ledger with confidence levels.
+- [`intake`](intake/SKILL.md) — Use when raw intent must be captured and routed to the right next state.
+- [`launch-gate`](launch-gate/SKILL.md) — Use when a launch needs a go/no-go decision with rollback and monitoring evidence.
+- [`learning-capture`](learning-capture/SKILL.md) — Use when repeated wins or failures should become durable memory, wiki, or skill updates.
+- [`market-grill`](market-grill/SKILL.md) — Use when a product idea needs pressure-testing against alternatives, category, urgency, and distribution.
+- [`plan-slicing`](plan-slicing/SKILL.md) — Use when broad work needs to be broken into small verifiable slices.
+- [`problem-grill`](problem-grill/SKILL.md) — Use when a product or feature idea needs pressure-testing against problem, user, pain, success, and timing.
+- [`qa-evidence`](qa-evidence/SKILL.md) — Use when behavior needs concrete proof before review, merge, or shipment.
+- [`question-ladder`](question-ladder/SKILL.md) — Use when uncertainty remains and the minimum useful sequence of questions should be asked.
+- [`runtime-smoke`](runtime-smoke/SKILL.md) — Use when checking Agent Brain inside a real agent runtime or adapter before trusting harness usability.
+- [`wiki-maintenance`](wiki-maintenance/SKILL.md) — Use when source-backed project knowledge needs to be created, refreshed, or corrected.
 
 ## Quality bar for new skills
 

@@ -660,6 +660,25 @@ def test_skill_catalog_quality_bar_must_keep_runtime_checks(tmp_path: Path) -> N
     assert "skills/README.md quality bar must mention: verification is runnable or inspectable" in errors
 
 
+def test_skill_catalog_entries_must_include_frontmatter_trigger(tmp_path: Path) -> None:
+    write_minimal_repo(tmp_path)
+    catalog = tmp_path / "skills" / "README.md"
+    catalog.write_text(
+        catalog.read_text(encoding="utf-8").replace(
+            "- [`sample`](sample/SKILL.md) — Use when a sample request needs routing.\n",
+            "- [`sample`](sample/SKILL.md) — use for sample request routing.\n",
+        ),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert (
+        "skills/README.md catalog entry for sample must include frontmatter trigger: "
+        "Use when a sample request needs routing."
+    ) in errors
+
+
 def test_skill_examples_must_not_duplicate_another_skill(tmp_path: Path) -> None:
     write_minimal_repo(tmp_path)
     first = tmp_path / "skills" / "sample" / "SKILL.md"
@@ -1563,15 +1582,15 @@ def write_minimal_repo(root: Path) -> None:
         "# Skills\n\n"
         "Portable skills are small runtime-neutral procedures. Load only the skill named by the selected command, and keep examples, verification, and failure modes close to the workflow.\n\n"
         "## Catalog\n\n"
-        "- [`activity-recap`](activity-recap/SKILL.md) — use for activity recap synthesis.\n"
-        "- [`agent-output-verifier`](agent-output-verifier/SKILL.md) — use for output review before handoff.\n"
-        "- [`ci-recovery`](ci-recovery/SKILL.md) — use for CI failure recovery.\n"
-        "- [`context-memory`](context-memory/SKILL.md) — use for memory routing.\n"
-        "- [`domain-language`](domain-language/SKILL.md) — use for project vocabulary alignment.\n"
-        "- [`evidence-research`](evidence-research/SKILL.md) — use for source-backed evidence.\n"
-        "- [`qa-evidence`](qa-evidence/SKILL.md) — use for verification proof.\n"
-        "- [`runtime-smoke`](runtime-smoke/SKILL.md) — use for real-runtime smoke evidence.\n"
-        "- [`sample`](sample/SKILL.md) — use for sample request routing.\n\n"
+        "- [`activity-recap`](activity-recap/SKILL.md) — Use when recent work needs a summary from local project activity.\n"
+        "- [`agent-output-verifier`](agent-output-verifier/SKILL.md) — Use when agent output needs a safety and reliability check before handoff.\n"
+        "- [`ci-recovery`](ci-recovery/SKILL.md) — Use when local validation and remote workflow status must be reconciled.\n"
+        "- [`context-memory`](context-memory/SKILL.md) — Use when deciding what project context should be remembered, retrieved, updated, or forgotten.\n"
+        "- [`domain-language`](domain-language/SKILL.md) — Use when project vocabulary is fuzzy, overloaded, or needed before naming artifacts.\n"
+        "- [`evidence-research`](evidence-research/SKILL.md) — Use when collecting source-backed research evidence.\n"
+        "- [`qa-evidence`](qa-evidence/SKILL.md) — Use when collecting verification proof for review and shipping decisions.\n"
+        "- [`runtime-smoke`](runtime-smoke/SKILL.md) — Use when collecting real-runtime smoke evidence with sandbox, command-boundary, and blocked-command details.\n"
+        "- [`sample`](sample/SKILL.md) — Use when a sample request needs routing.\n\n"
         "## Quality bar for new skills\n\n"
         "- Description starts with a precise Use when trigger.\n"
         "- Procedure names concrete steps.\n"
@@ -7548,7 +7567,7 @@ def test_skills_readme_must_catalog_every_skill_with_links(tmp_path):
     skills_readme = tmp_path / "skills" / "README.md"
     skills_readme.write_text(
         skills_readme.read_text(encoding="utf-8").replace(
-            "- [`sample`](sample/SKILL.md) — use for sample request routing.",
+            "- [`sample`](sample/SKILL.md) — Use when a sample request needs routing.",
             "",
         ),
         encoding="utf-8",

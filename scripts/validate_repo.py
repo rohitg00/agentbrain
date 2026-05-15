@@ -1169,6 +1169,23 @@ def duplicate_command_catalog_entries(text: str) -> list[str]:
     return sorted(duplicates)
 
 
+def skill_catalog_entry_lines(text: str) -> dict[str, str]:
+    entries: dict[str, str] = {}
+    in_catalog = False
+    for line in text.splitlines():
+        if line == "## Catalog":
+            in_catalog = True
+            continue
+        if in_catalog and line.startswith("## "):
+            break
+        if not in_catalog:
+            continue
+        match = re.match(r"- \[`([a-z0-9]+(?:-[a-z0-9]+)*)`\]\([^)]+\) — (.+)$", line)
+        if match:
+            entries[match.group(1)] = match.group(2)
+    return entries
+
+
 def command_catalog_entry_skills(entry: str) -> set[str]:
     match = re.search(r"Skills: (.*?)(?:;|$)", entry)
     if not match:
@@ -2042,6 +2059,7 @@ def validate(root: Path = ROOT) -> list[str]:
     if skills_readme.exists():
         skills_readme_text = skills_readme.read_text(errors="ignore")
         skills_readme_text_lower = skills_readme_text.lower()
+        skill_catalog_entries = skill_catalog_entry_lines(skills_readme_text)
         for required_term in REQUIRED_SKILLS_README_QUALITY_BAR_TERMS:
             if required_term not in skills_readme_text_lower:
                 errors.append(f"skills/README.md quality bar must mention: {required_term}")
@@ -2050,6 +2068,13 @@ def validate(root: Path = ROOT) -> list[str]:
             expected_link = f"[`{skill_name}`]({skill_name}/SKILL.md)"
             if expected_link not in skills_readme_text:
                 errors.append(f"skills/README.md catalog missing skill link: {skill_name}")
+            frontmatter = parse_frontmatter(skill.read_text(errors="ignore"))
+            description = frontmatter.get("description", "")
+            catalog_entry = skill_catalog_entries.get(skill_name, "")
+            if description and description not in catalog_entry:
+                errors.append(
+                    f"skills/README.md catalog entry for {skill_name} must include frontmatter trigger: {description}"
+                )
 
     commands_readme = root / "commands" / "README.md"
     if commands_readme.exists():
