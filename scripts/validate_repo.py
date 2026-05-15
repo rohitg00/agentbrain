@@ -222,6 +222,7 @@ REQUIRED_AGENT_HARNESS_PROMPT_TERMS = [
     "skills",
     "templates/",
     "schemas/",
+    "rm -rf scripts/__pycache__ tests/__pycache__",
     "python -m pytest -q",
     "python scripts/validate_repo.py",
     "git diff --check",

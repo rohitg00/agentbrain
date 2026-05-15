@@ -144,7 +144,7 @@ Run baseline validation before editing.
 Preserve user changes before editing.
 Choose the matching command in commands/ and load only its listed skills.
 Use templates/ and schemas/ for structured artifacts when they fit.
-Run python -m pytest -q, python scripts/validate_repo.py, git diff --check, and a targeted exact-name scrub before claiming completion.
+Run rm -rf scripts/__pycache__ tests/__pycache__, python -m pytest -q, python scripts/validate_repo.py, git diff --check, and a targeted exact-name scrub before claiming completion.
 Stop and report blockers when evidence, approval, scope, tests, rollback, secrets handling, safety, or loop limits are missing.
 ```
 

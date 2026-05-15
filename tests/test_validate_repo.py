@@ -355,7 +355,7 @@ def write_minimal_repo(root: Path) -> None:
         "Preserve user changes before editing.\n"
         "Choose the matching command in commands/ and load only its listed skills.\n"
         "Use templates/ and schemas/ for structured artifacts when they fit.\n"
-        "Run python -m pytest -q, python scripts/validate_repo.py, git diff --check, and a targeted exact-name scrub before claiming completion.\n"
+        "Run rm -rf scripts/__pycache__ tests/__pycache__, python -m pytest -q, python scripts/validate_repo.py, git diff --check, and a targeted exact-name scrub before claiming completion.\n"
         "Stop and report blockers when evidence, approval, scope, tests, rollback, secrets handling, safety, or loop limits are missing.\n"
         "```\n\n"
         "## Using It With Coding Agents\n"
@@ -909,6 +909,7 @@ def test_agent_harness_validation_gate_must_include_cache_cleanup_and_exact_name
     harness.write_text(
         harness.read_text(encoding="utf-8")
         .replace("rm -rf scripts/__pycache__ tests/__pycache__\n", "")
+        .replace("rm -rf scripts/__pycache__ tests/__pycache__, ", "")
         .replace("targeted exact-name scrub", ""),
         encoding="utf-8",
     )
@@ -924,8 +925,8 @@ def test_agent_harness_prompt_must_require_exact_name_scrub(tmp_path):
     harness = tmp_path / "docs" / "agent-harness.md"
     harness.write_text(
         harness.read_text(encoding="utf-8").replace(
-            ", and a targeted exact-name scrub before claiming completion",
-            " before claiming completion",
+            "targeted exact-name scrub before claiming completion.",
+            "public-copy check before claiming completion.",
         ),
         encoding="utf-8",
     )
@@ -933,6 +934,22 @@ def test_agent_harness_prompt_must_require_exact_name_scrub(tmp_path):
     errors = validate_repo.validate(tmp_path)
 
     assert "docs/agent-harness.md copyable prompt must mention: targeted exact-name scrub" in errors
+
+
+def test_agent_harness_prompt_must_require_cache_cleanup_before_validation(tmp_path):
+    write_minimal_repo(tmp_path)
+    harness = tmp_path / "docs" / "agent-harness.md"
+    harness.write_text(
+        harness.read_text(encoding="utf-8").replace(
+            "Run rm -rf scripts/__pycache__ tests/__pycache__, python -m pytest -q, python scripts/validate_repo.py, git diff --check, and a targeted exact-name scrub before claiming completion.",
+            "Run python -m pytest -q, python scripts/validate_repo.py, git diff --check, and a targeted exact-name scrub before claiming completion.",
+        ),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "docs/agent-harness.md copyable prompt must mention: rm -rf scripts/__pycache__ tests/__pycache__" in errors
 
 
 def test_agent_harness_must_define_interrupted_handoff_resume_protocol(tmp_path):
@@ -3280,7 +3297,7 @@ def test_agent_harness_doc_must_include_copyable_harness_prompt(tmp_path):
             "Preserve user changes before editing.\n"
             "Choose the matching command in commands/ and load only its listed skills.\n"
             "Use templates/ and schemas/ for structured artifacts when they fit.\n"
-            "Run python -m pytest -q, python scripts/validate_repo.py, git diff --check, and a targeted exact-name scrub before claiming completion.\n"
+            "Run rm -rf scripts/__pycache__ tests/__pycache__, python -m pytest -q, python scripts/validate_repo.py, git diff --check, and a targeted exact-name scrub before claiming completion.\n"
             "Stop and report blockers when evidence, approval, scope, tests, rollback, secrets handling, safety, or loop limits are missing.\n"
             "```\n\n",
             "",
