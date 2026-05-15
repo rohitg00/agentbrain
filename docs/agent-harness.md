@@ -22,7 +22,7 @@ git diff --check
 python scripts/scrub_public_copy.py <exact-source-name> [more-exact-names...]
 ```
 
-Replace `<exact-source-name>` with any user-shared source name, internal tool name, or source-specific branding that must not leak into promoted copy. The harness is ready only when tests, validation, whitespace checks, and the scrub gate pass.
+Replace `<exact-source-name>` with any user-shared source name, internal tool name, or source-specific branding that must not leak into promoted copy. The scrub gate requires at least one non-blank exact source name; whitespace-only placeholders fail instead of creating false confidence. The harness is ready only when tests, validation, whitespace checks, and the scrub gate pass.
 
 ## Fresh Checkout Bootstrap
 

@@ -74,3 +74,15 @@ def test_scrub_requires_at_least_one_exact_name(tmp_path: Path) -> None:
 
     assert result.returncode == 2
     assert "Provide at least one exact source name" in result.stderr
+
+
+def test_scrub_rejects_whitespace_only_source_names(tmp_path: Path) -> None:
+    (tmp_path / "README.md").write_text(
+        "# Harness\n\nNeutral public copy.\n",
+        encoding="utf-8",
+    )
+
+    result = run_scrub(tmp_path, "   ", "\t")
+
+    assert result.returncode == 2
+    assert "Provide at least one exact source name" in result.stderr

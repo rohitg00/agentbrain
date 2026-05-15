@@ -51,8 +51,12 @@ def is_allowed_occurrence(path: Path, root: Path, lines: list[str], line_number:
     return readme_section_for_line(lines, line_number) in ALLOWED_README_SECTIONS
 
 
+def normalize_terms(terms: list[str]) -> list[str]:
+    return sorted({term.strip() for term in terms if term.strip()})
+
+
 def find_violations(root: Path, terms: list[str]) -> list[str]:
-    unique_terms = sorted({term for term in terms if term})
+    unique_terms = normalize_terms(terms)
     normalized_terms = [(term, term.casefold()) for term in unique_terms]
     violations: list[str] = []
     for path in iter_public_files(root):
@@ -79,11 +83,12 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> int:
     args = parse_args()
-    if not args.terms:
+    terms = normalize_terms(args.terms)
+    if not terms:
         print("Provide at least one exact source name to scrub.", file=sys.stderr)
         return 2
     root = Path(os.environ.get("AGENTBRAIN_SCRUB_ROOT", Path(__file__).resolve().parents[1])).resolve()
-    violations = find_violations(root, args.terms)
+    violations = find_violations(root, terms)
     if violations:
         print("Banned exact names found in public copy:")
         for violation in violations:
