@@ -6,6 +6,15 @@ from pathlib import Path
 from scripts import validate_repo
 
 
+def test_commands_directory_requires_catalog(tmp_path: Path) -> None:
+    write_minimal_repo(tmp_path)
+    (tmp_path / "commands" / "README.md").unlink()
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert any("missing commands/README.md" in error for error in errors)
+
+
 def test_adapter_requires_output_contract(tmp_path: Path) -> None:
     write_minimal_repo(tmp_path)
     adapter = tmp_path / "adapters" / "sample-adapter" / "README.md"
@@ -455,6 +464,14 @@ def write_minimal_repo(root: Path) -> None:
 
     command_dir = root / "commands"
     command_dir.mkdir()
+    (command_dir / "README.md").write_text(
+        "# Command Catalog\n\n"
+        "Use this catalog when a runtime cannot expose `/brain-*` entries as native commands. "
+        "Treat each command file as a markdown spec, load only the listed skills, and produce the named artifact.\n\n"
+        "- [`/brain-sample`](brain-sample.md) — route sample work through INTAKE.\n"
+        "- [`/brain-eval`](brain-eval.md) — score eval cases with verification evidence.\n",
+        encoding="utf-8",
+    )
     (command_dir / "brain-sample.md").write_text(
         "\n".join([
             "# /brain-sample",

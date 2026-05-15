@@ -20,6 +20,7 @@ REQUIRED_FILES = [
     "requirements-dev.txt",
     "scripts/scrub_public_copy.py",
     "scripts/runtime_smoke.py",
+    "commands/README.md",
     "skills/README.md",
 ]
 REQUIRED_DEV_REQUIREMENTS = ["jsonschema", "pytest"]
@@ -1416,6 +1417,12 @@ def validate(root: Path = ROOT) -> list[str]:
             if pattern not in gitignore_lines:
                 errors.append(f".gitignore must ignore local/generated Python artifacts: {pattern}")
 
+    command_files = [
+        command
+        for command in sorted((root / "commands").glob("*.md"))
+        if command.name != "README.md"
+    ]
+
     for required_path in REQUIRED_DOCS:
         if not (root / required_path).exists():
             errors.append(f"missing {required_path}")
@@ -1431,7 +1438,7 @@ def validate(root: Path = ROOT) -> list[str]:
                 errors.append(f"docs/state-machine.md states section missing state: {required_state}")
             elif required_state != "archive" and required_state not in mapped_states:
                 errors.append(f"docs/state-machine.md command mapping missing state: {required_state}")
-        for command in sorted((root / "commands").glob("*.md")):
+        for command in command_files:
             command_name = f"/{command.stem}"
             if command_name not in state_machine_refs:
                 errors.append(f"docs/state-machine.md command mapping missing command: {command_name}")
@@ -1495,7 +1502,7 @@ def validate(root: Path = ROOT) -> list[str]:
                     f"{term}"
                 )
         harness_command_refs = agent_harness_command_routing_references(agent_harness_text)
-        for command in sorted((root / "commands").glob("*.md")):
+        for command in command_files:
             command_name = f"/{command.stem}"
             if command_name not in harness_command_refs:
                 errors.append(f"docs/agent-harness.md command routing missing command: {command_name}")
@@ -1615,7 +1622,7 @@ def validate(root: Path = ROOT) -> list[str]:
     skills_loaded_by_commands: set[str] = set()
     skills_loaded_by_command: dict[str, set[str]] = {}
     required_command_artifact_templates: dict[str, str] = {}
-    for command in sorted((root / "commands").glob("*.md")):
+    for command in command_files:
         text = command.read_text(errors="ignore")
         expected_heading = f"# /{command.stem}"
         lines = text.splitlines()
@@ -1752,6 +1759,15 @@ def validate(root: Path = ROOT) -> list[str]:
             if expected_link not in skills_readme_text:
                 errors.append(f"skills/README.md catalog missing skill link: {skill_name}")
 
+    commands_readme = root / "commands" / "README.md"
+    if commands_readme.exists():
+        commands_readme_text = commands_readme.read_text(errors="ignore")
+        for command in command_files:
+            command_name = f"/{command.stem}"
+            expected_link = f"[`{command_name}`]({command.name})"
+            if expected_link not in commands_readme_text:
+                errors.append(f"commands/README.md catalog missing command link: {command_name}")
+
     readme = root / "README.md"
     if readme.exists():
         readme_text = readme.read_text(errors="ignore")
@@ -1793,7 +1809,7 @@ def validate(root: Path = ROOT) -> list[str]:
         core_command_links = readme_command_catalog_links(readme_text)
         command_selection_refs = readme_command_selection_references(readme_text)
         all_command_refs = readme_all_command_references(readme_text)
-        for command in sorted((root / "commands").glob("*.md")):
+        for command in command_files:
             command_name = f"/{command.stem}"
             if command_name not in core_command_refs:
                 errors.append(f"README.md core command catalog missing command: {command_name}")
