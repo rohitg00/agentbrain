@@ -381,6 +381,42 @@ def test_full_validation_runtime_smoke_requires_every_declared_command_skill(tmp
     assert any("selected command /brain-verify declared skill was not loaded: agent-output-verifier" in error for error in errors)
 
 
+def test_pass_read_only_runtime_smoke_rejects_loaded_skills_not_named_by_selected_command(tmp_path: Path):
+    commands_dir = tmp_path / "commands"
+    commands_dir.mkdir()
+    (commands_dir / "brain-start.md").write_text(
+        "# /brain-start\n\n"
+        "## Skills to load\n\n"
+        "Load `intake` to classify the request.\n",
+        encoding="utf-8",
+    )
+    for skill_name in ["intake", "runtime-smoke"]:
+        skill_dir = tmp_path / "skills" / skill_name
+        skill_dir.mkdir(parents=True)
+        (skill_dir / "SKILL.md").write_text(f"# {skill_name}\n", encoding="utf-8")
+    adapter_dir = tmp_path / "adapters" / "read-only-cli"
+    adapter_dir.mkdir(parents=True)
+    (adapter_dir / "README.md").write_text("# Read-only CLI adapter\n", encoding="utf-8")
+    report = runtime_smoke.build_report(
+        root=tmp_path,
+        runtime="generic-cli-runtime",
+        version="1.2.3",
+        sandbox_write_mode="read_only",
+        brain_command_mode="markdown_specs",
+        run_scope="read_only_smoke",
+        blocked_commands=[],
+        exact_command="python scripts/runtime_smoke.py --runtime generic-cli-runtime --version 1.2.3 --selected-command /brain-start --loaded-skill runtime-smoke",
+        smoke_result="pass",
+        selected_command="/brain-start",
+        loaded_skills=["runtime-smoke"],
+        adapter_path="adapters/read-only-cli/README.md",
+    )
+
+    errors = runtime_smoke.validate_report_against_schema(report, Path("schemas/runtime-smoke.schema.json"), root=tmp_path)
+
+    assert any("loaded skill is not named by selected command /brain-start: runtime-smoke" in error for error in errors)
+
+
 def test_pass_runtime_smoke_requires_routing_evidence(tmp_path: Path):
     report = runtime_smoke.build_report(
         root=tmp_path,

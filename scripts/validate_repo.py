@@ -134,6 +134,7 @@ REQUIRED_REAL_RUNTIME_SMOKE_EVIDENCE_FIELDS = [
     "blocked commands",
 ]
 REQUIRED_REAL_RUNTIME_SMOKE_READ_ONLY_TERMS = ["read-only", "full validation"]
+REQUIRED_RUNTIME_SMOKE_TEMPLATE_ROUTING_TERM = "loaded skills declared by selected command"
 REQUIRED_WORKFLOWS = [".github/workflows/quality.yml"]
 REQUIRED_QUALITY_WORKFLOW_RUNS = [
     "python -m pip install -r requirements-dev.txt",
@@ -1406,6 +1407,13 @@ def validate(root: Path = ROOT) -> list[str]:
                         errors.append(
                             f"templates/handoff-report.md resume protocol must mention: {required_term}"
                         )
+            if path.name == "runtime-smoke.schema.json":
+                template_text_lower = template_text.lower()
+                if REQUIRED_RUNTIME_SMOKE_TEMPLATE_ROUTING_TERM not in template_text_lower:
+                    errors.append(
+                        "templates/runtime-smoke.md must require pass artifacts to list only "
+                        "loaded skills declared by selected command"
+                    )
 
     for required_path in REQUIRED_ROOT:
         if not (root / required_path).exists():

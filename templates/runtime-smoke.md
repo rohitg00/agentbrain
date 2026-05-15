@@ -38,7 +38,7 @@ The helper exits non-zero if the generated artifact does not satisfy the schema.
 - **Sandbox/write mode:** `read_only`, `workspace_write`, `approval_gated`, `unrestricted`, or `unknown`. `full_validation` requires a write-capable mode; use `read_only_smoke` when the runtime cannot write or request approval for writes.
 - **Brain command mode:** Whether `/brain-*` entries were native commands, markdown specs, mixed, or unknown.
 - **Selected command:** The `/brain-*` command route the runtime chose. A `pass` artifact requires a selected `/brain-*` command; use `blocked` or `fail` instead of `pass` when command routing could not be proven.
-- **Loaded skills:** Skills the runtime loaded for the selected command; a `pass` artifact requires at least one loaded skill. For `full_validation`, every loaded skill must be named in the selected command's `## Skills to load` section so adapter runs cannot invent routes after the fact.
+- **Loaded skills:** Skills the runtime loaded for the selected command; a `pass` artifact requires at least one loaded skill, and every loaded skill must be named in the selected command's `## Skills to load` section so adapter runs cannot invent routes after the fact. In short: a pass artifact requires loaded skills declared by selected command.
 - **Adapter path:** Adapter README or integration note used to map Agent Brain into the runtime. A `pass` artifact requires a concrete adapter path; use `blocked` or `fail` instead of `pass` when no adapter boundary was available.
 - **Blocked commands:** Commands that could not run and why.
 - **Run scope:** `read_only_smoke` or `full_validation`.

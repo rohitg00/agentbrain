@@ -45,7 +45,7 @@ Do not use this skill when a simpler checklist, script, or existing command hand
 
 - Runtime, version, Python executable, writable temp-dir status, git freshness result, exact command, sandbox/write mode, command mode, blocked commands, run scope, and evidence are recorded.
 - The run scope distinguishes read-only smoke from full validation.
-- The runtime followed command routing and skill-loading boundaries or the failure is explicit.
+- The runtime followed command routing and skill-loading boundaries: any `pass` artifact names a selected command, at least one loaded skill, and only loaded skills declared by selected command.
 - Any generated JSON evidence validates against `schemas/runtime-smoke.schema.json`.
 - Public copy remains neutral and does not name private dogfood coordinators or source-specific branding.
 

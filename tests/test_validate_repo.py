@@ -70,6 +70,22 @@ def test_command_specs_require_when_not_to_use_section(tmp_path: Path) -> None:
     assert "commands/brain-sample.md missing ## When not to use" in errors
 
 
+def test_runtime_smoke_template_requires_loaded_skills_to_match_selected_command(tmp_path: Path) -> None:
+    write_minimal_repo(tmp_path)
+    runtime_template = tmp_path / "templates" / "runtime-smoke.md"
+    runtime_template.write_text(
+        runtime_template.read_text(encoding="utf-8").replace(
+            " A pass artifact requires loaded skills declared by selected command.",
+            "",
+        ),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "templates/runtime-smoke.md must require pass artifacts to list only loaded skills declared by selected command" in errors
+
+
 def test_handoff_template_requires_resume_protocol(tmp_path: Path) -> None:
     write_minimal_repo(tmp_path)
     handoff_template = tmp_path / "templates" / "handoff-report.md"
@@ -646,7 +662,7 @@ def write_minimal_repo(root: Path) -> None:
         encoding="utf-8",
     )
     (templates_dir / "runtime-smoke.md").write_text(
-        "# Runtime Smoke\n\nSchema fields: `runtime`, `version`, `python_executable`, `writable_temp_dir_status`, `git_freshness_result`, `exact_command`, `command_exit_status`, `smoke_result`, `transcript_path`, `sandbox_write_mode`, `brain_command_mode`, `selected_command`, `loaded_skills`, `adapter_path`, `blocked_commands`, `run_scope`, `evidence`.\n",
+        "# Runtime Smoke\n\nSchema fields: `runtime`, `version`, `python_executable`, `writable_temp_dir_status`, `git_freshness_result`, `exact_command`, `command_exit_status`, `smoke_result`, `transcript_path`, `sandbox_write_mode`, `brain_command_mode`, `selected_command`, `loaded_skills`, `adapter_path`, `blocked_commands`, `run_scope`, `evidence`. A pass artifact requires loaded skills declared by selected command.\n",
         encoding="utf-8",
     )
     (templates_dir / "sample-routing-summary.md").write_text(

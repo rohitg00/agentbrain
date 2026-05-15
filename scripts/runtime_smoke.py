@@ -211,7 +211,7 @@ def validate_report_against_schema(
                     skill_rel = f"skills/{skill}/SKILL.md"
                     if not (Path(root) / skill_rel).is_file():
                         errors.append(f"loaded skill file is missing: {skill_rel}")
-                    if report.get("run_scope") == "full_validation" and skill not in declared_skills:
+                    if skill not in declared_skills:
                         errors.append(f"loaded skill is not named by selected command {selected_command}: {skill}")
                 if report.get("run_scope") == "full_validation":
                     for missing_skill in sorted(declared_skills - loaded_skill_names):
