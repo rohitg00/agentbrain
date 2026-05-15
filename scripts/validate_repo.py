@@ -679,6 +679,11 @@ def title_from_slug(slug: str) -> str:
     return " ".join(titled_parts)
 
 
+def artifact_title_from_slug(slug: str) -> str:
+    acronym_words = {"qa": "QA", "ci": "CI"}
+    return " ".join(acronym_words.get(part, part.capitalize()) for part in slug.split("-"))
+
+
 def adapter_heading_from_slug(slug: str) -> str:
     title = title_from_slug(slug)
     if title.endswith(" Adapter"):
@@ -1157,8 +1162,11 @@ def validate(root: Path = ROOT) -> list[str]:
         properties = schema.get("properties", {})
         if not schema.get("$schema"):
             errors.append(f"{rel(path, root)} missing $schema dialect declaration")
+        expected_schema_title = artifact_title_from_slug(schema_slug)
         if not schema.get("title"):
             errors.append(f"{rel(path, root)} missing title")
+        elif schema.get("title") != expected_schema_title:
+            errors.append(f"{rel(path, root)} title must match filename: {expected_schema_title}")
         if path.name == "handoff-report.schema.json":
             state_schema = properties.get("state", {})
             if not isinstance(state_schema, dict) or state_schema.get("enum") != REQUIRED_STATE_MACHINE_VALUES:

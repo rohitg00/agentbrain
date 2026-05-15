@@ -6073,3 +6073,15 @@ def test_constitution_done_definition_requires_fresh_validation_gate(tmp_path):
     errors = validate_repo.validate(tmp_path)
 
     assert "AGENTBRAIN.md done definition must require fresh validation proof: fresh validation proof" in errors
+
+
+def test_schema_title_must_match_artifact_filename(tmp_path):
+    write_minimal_repo(tmp_path)
+    schema_path = tmp_path / "schemas" / "handoff-report.schema.json"
+    schema = json.loads(schema_path.read_text(encoding="utf-8"))
+    schema["title"] = "Ambiguous Artifact"
+    schema_path.write_text(json.dumps(schema), encoding="utf-8")
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "schemas/handoff-report.schema.json title must match filename: Handoff Report" in errors
