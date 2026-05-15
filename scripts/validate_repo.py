@@ -288,6 +288,13 @@ REQUIRED_CONSTITUTION_NONINTERACTIVE_TERMS = [
     "safest documented default",
     "stop with a blocker",
 ]
+REQUIRED_CONSTITUTION_DONE_DEFINITION_TERMS = [
+    "fresh validation proof",
+    "python -m pytest -q",
+    "python scripts/validate_repo.py",
+    "git diff --check",
+    "targeted exact-name scrub",
+]
 REQUIRED_AGENT_HARNESS_SECTIONS = [
     "## Install",
     "## Fresh Checkout Bootstrap",
@@ -1215,6 +1222,24 @@ def validate(root: Path = ROOT) -> list[str]:
     for required_path in REQUIRED_ARTIFACT_FILES:
         if not (root / required_path).exists():
             errors.append(f"missing {required_path}")
+
+    constitution = root / "AGENTBRAIN.md"
+    if constitution.exists():
+        constitution_text = constitution.read_text(errors="ignore")
+        constitution_text_lower = constitution_text.lower()
+        for term in REQUIRED_CONSTITUTION_NONINTERACTIVE_TERMS:
+            if term not in constitution_text_lower:
+                errors.append(
+                    "AGENTBRAIN.md must document noninteractive scheduled-run fallback guidance: "
+                    f"{term}"
+                )
+        done_definition = section_body(constitution_text, "## Done definition").lower()
+        for term in REQUIRED_CONSTITUTION_DONE_DEFINITION_TERMS:
+            if term not in done_definition:
+                errors.append(
+                    "AGENTBRAIN.md done definition must require fresh validation proof: "
+                    f"{term}"
+                )
 
     gitignore = root / ".gitignore"
     if not gitignore.exists():

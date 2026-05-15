@@ -135,6 +135,7 @@ A task is done only when:
 
 - the requested artifact exists,
 - evidence is attached,
+- fresh validation proof names the current commands and results, including `python -m pytest -q`, `python scripts/validate_repo.py`, `git diff --check`, and the targeted exact-name scrub for public-copy changes,
 - risks and assumptions are explicit,
 - review gates have passed or are intentionally deferred,
 - next state is clear,

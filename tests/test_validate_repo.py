@@ -17,7 +17,10 @@ def write_minimal_repo(root: Path) -> None:
     (root / "AGENTBRAIN.md").write_text(
         "# Agent Brain Constitution\n\n"
         "When running as a noninteractive scheduled run, the harness cannot ask questions. "
-        "Use the safest documented default or stop with a blocker when ambiguity changes the action.\n",
+        "Use the safest documented default or stop with a blocker when ambiguity changes the action.\n\n"
+        "## Done definition\n\n"
+        "A task is done only with fresh validation proof from python -m pytest -q, "
+        "python scripts/validate_repo.py, git diff --check, and targeted exact-name scrub.\n",
         encoding="utf-8",
     )
     (root / "CONTRIBUTING.md").write_text(
@@ -5958,3 +5961,21 @@ def test_agent_harness_troubleshooting_must_document_eval_case_recovery(tmp_path
     errors = validate_repo.validate(tmp_path)
 
     assert "docs/agent-harness.md troubleshooting must document eval case recovery: Harness route" in errors
+
+
+def test_constitution_done_definition_requires_fresh_validation_gate(tmp_path):
+    write_minimal_repo(tmp_path)
+    constitution = tmp_path / "AGENTBRAIN.md"
+    constitution.write_text(
+        "# Agent Brain Constitution\n\n"
+        "## Noninteractive scheduled runs\n\n"
+        "When running as a noninteractive scheduled run, the harness cannot ask questions. "
+        "Use the safest documented default or stop with a blocker when ambiguity changes the action.\n\n"
+        "## Done definition\n\n"
+        "A task is done when the requested artifact exists and risks are explicit.\n",
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "AGENTBRAIN.md done definition must require fresh validation proof: fresh validation proof" in errors
