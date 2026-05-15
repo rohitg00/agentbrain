@@ -16,7 +16,7 @@ REQUIRED_ROOT = [
     "ANTI_RATIONALIZATION.md",
     "CONTRIBUTING.md",
 ]
-REQUIRED_FILES = ["requirements-dev.txt"]
+REQUIRED_FILES = ["requirements-dev.txt", "scripts/scrub_public_copy.py"]
 REQUIRED_DEV_REQUIREMENTS = ["jsonschema", "pytest"]
 REQUIRED_DIRECTORIES = ["schemas"]
 REQUIRED_ARTIFACT_FILES = [
@@ -109,6 +109,7 @@ REQUIRED_README_QUICKSTART_COMMANDS = [
     "python -m pytest -q",
     "python scripts/validate_repo.py",
     "git diff --check",
+    "python scripts/scrub_public_copy.py",
 ]
 REQUIRED_README_QUICKSTART_TERMS = {
     "targeted exact-name scrub": "README.md Quickstart must include targeted exact-name scrub",

@@ -36,6 +36,10 @@ user-shared source names, internal tool names, and source-specific branding. Kee
 only neutral operator-pattern language unless the change is explicitly in an
 approved comparison or benchmark section.
 
+```bash
+python scripts/scrub_public_copy.py <exact-source-name> [more-exact-names...]
+```
+
 Expected result:
 
 ```text
