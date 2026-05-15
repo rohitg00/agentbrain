@@ -1,6 +1,7 @@
 {
   "name": "artifact-example-check",
   "description": "Use when maintaining schema examples for public harness artifacts.",
+  "lifecycle_stage": "VERIFY",
   "trigger": "A schema is added or changed and agents need a concrete valid example.",
   "inputs": [
     "schema file",
@@ -18,6 +19,7 @@
   "verification": [
     "python scripts/validate_repo.py"
   ],
+  "output_artifact": "Valid JSON example artifact that matches the published schema and template contract.",
   "failure_modes": [
     "Example omits required schema fields.",
     "Example adds fields not allowed by the closed schema."

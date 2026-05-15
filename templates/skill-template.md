@@ -6,6 +6,8 @@ version: 0.1.0
 
 # Skill Name
 
+Lifecycle stage: INTAKE | RESEARCH | CHALLENGE | DECIDE | DESIGN | PLAN | BUILD | VERIFY | REVIEW | SHIP | LEARN
+
 ## Trigger
 
 Use when ...

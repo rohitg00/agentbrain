@@ -2150,6 +2150,64 @@ def test_readme_handoff_contract_must_name_resume_ready_fields(tmp_path):
     assert "README.md handoff contract must mention: open questions" in errors
 
 
+def test_skill_schema_must_require_lifecycle_stage_and_output_artifact(tmp_path):
+    write_minimal_repo(tmp_path)
+    schema_path = tmp_path / "schemas" / "skill.schema.json"
+    schema_path.write_text(
+        json.dumps(
+            {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "title": "Skill",
+                "type": "object",
+                "additionalProperties": False,
+                "required": [
+                    "name",
+                    "description",
+                    "trigger",
+                    "inputs",
+                    "procedure",
+                    "verification",
+                    "failure_modes",
+                    "examples",
+                ],
+                "properties": {
+                    "name": {"type": "string"},
+                    "description": {"type": "string"},
+                    "trigger": {"type": "string"},
+                    "inputs": {"type": "array", "items": {"type": "string"}},
+                    "procedure": {"type": "array", "items": {"type": "string"}},
+                    "verification": {"type": "array", "items": {"type": "string"}},
+                    "failure_modes": {"type": "array", "items": {"type": "string"}},
+                    "examples": {"type": "array", "items": {"type": "string"}},
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
+    example_dir = tmp_path / "examples" / "artifacts"
+    example_dir.mkdir(parents=True, exist_ok=True)
+    (example_dir / "skill.example.json").write_text(
+        json.dumps(
+            {
+                "name": "sample-skill",
+                "description": "Use when a focused operator pattern is needed.",
+                "trigger": "A focused operator pattern is needed.",
+                "inputs": ["Request"],
+                "procedure": ["Run the smallest safe step."],
+                "verification": ["Fresh validation proof exists."],
+                "failure_modes": ["The skill owns unrelated work."],
+                "examples": ["Route a request through the matching command."],
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "schemas/skill.schema.json must require lifecycle_stage so skills declare their SDLC fit" in errors
+    assert "schemas/skill.schema.json must require output_artifact so skills name the handoff contract" in errors
+
+
 def test_handoff_schema_must_require_resume_ready_fields(tmp_path):
     write_minimal_repo(tmp_path)
     schema_path = tmp_path / "schemas" / "handoff-report.schema.json"

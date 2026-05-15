@@ -291,6 +291,10 @@ REQUIRED_HANDOFF_SCHEMA_RESUME_FIELDS = [
     "risks",
 ]
 REQUIRED_HANDOFF_SCHEMA_BLOCKED_RESUME_FIELDS = ["stop_conditions"]
+REQUIRED_SKILL_SCHEMA_FIELDS = [
+    "lifecycle_stage",
+    "output_artifact",
+]
 STALE_STATUS_COMPLETION_TERMS = [
     "complete",
     "done",
@@ -1235,6 +1239,14 @@ def validate(root: Path = ROOT) -> list[str]:
             errors.append(
                 "schemas/implementation-plan.schema.json must require rollback so every build slice has an explicit rollback path"
             )
+        if path.name == "skill.schema.json":
+            for field in REQUIRED_SKILL_SCHEMA_FIELDS:
+                if field not in required_fields:
+                    field_reason = {
+                        "lifecycle_stage": "so skills declare their SDLC fit",
+                        "output_artifact": "so skills name the handoff contract",
+                    }[field]
+                    errors.append(f"schemas/skill.schema.json must require {field} {field_reason}")
         if path.name == "handoff-report.schema.json":
             state_schema = properties.get("state", {})
             if not isinstance(state_schema, dict) or state_schema.get("enum") != REQUIRED_STATE_MACHINE_VALUES:

@@ -6,10 +6,12 @@
   "required": [
     "name",
     "description",
+    "lifecycle_stage",
     "trigger",
     "inputs",
     "procedure",
     "verification",
+    "output_artifact",
     "failure_modes",
     "examples"
   ],
@@ -21,6 +23,22 @@
     "description": {
       "type": "string",
       "minLength": 1
+    },
+    "lifecycle_stage": {
+      "type": "string",
+      "enum": [
+        "INTAKE",
+        "RESEARCH",
+        "CHALLENGE",
+        "DECIDE",
+        "DESIGN",
+        "PLAN",
+        "BUILD",
+        "VERIFY",
+        "REVIEW",
+        "SHIP",
+        "LEARN"
+      ]
     },
     "trigger": {
       "type": "string",
@@ -53,6 +71,10 @@
         "type": "string"
       },
       "default": []
+    },
+    "output_artifact": {
+      "type": "string",
+      "minLength": 1
     },
     "failure_modes": {
       "type": "array",
