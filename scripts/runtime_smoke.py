@@ -127,6 +127,8 @@ def validate_report_against_schema(report: dict[str, object], schema_path: Path)
         errors.append("blocked smoke_result must list at least one blocked command")
     if report.get("run_scope") == "full_validation" and report.get("smoke_result") != "pass":
         errors.append("full_validation requires smoke_result pass")
+    if report.get("run_scope") == "full_validation" and report.get("transcript_path") == "not_captured_stdout_only":
+        errors.append("full_validation requires a durable transcript_path instead of not_captured_stdout_only")
 
     return errors
 

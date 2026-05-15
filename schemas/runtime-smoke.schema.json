@@ -100,5 +100,28 @@
         "minLength": 1
       }
     }
-  }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "run_scope": {
+            "const": "full_validation"
+          }
+        },
+        "required": [
+          "run_scope"
+        ]
+      },
+      "then": {
+        "properties": {
+          "transcript_path": {
+            "not": {
+              "const": "not_captured_stdout_only"
+            }
+          }
+        }
+      }
+    }
+  ]
 }

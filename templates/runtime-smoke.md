@@ -30,7 +30,7 @@ The helper exits non-zero if the generated artifact does not satisfy the schema.
 - **Exact command:** Full command or prompt invocation used for the smoke run.
 - **Command exit status:** Numeric exit status from the smoke command or validation command.
 - **Smoke result:** `pass`, `blocked`, or `fail`; use `blocked` when sandbox or approval constraints prevented required proof.
-- **Transcript path:** Durable path, artifact location, or explicit `not_captured_stdout_only` marker for the smoke transcript/log.
+- **Transcript path:** Durable path or artifact location for the smoke transcript/log. `not_captured_stdout_only` is acceptable only for `read_only_smoke`; `full_validation` requires a durable transcript path.
 - **Sandbox/write mode:** `read_only`, `workspace_write`, `approval_gated`, `unrestricted`, or `unknown`.
 - **Brain command mode:** Whether `/brain-*` entries were native commands, markdown specs, mixed, or unknown.
 - **Blocked commands:** Commands that could not run and why.

@@ -78,6 +78,26 @@ def test_validate_report_against_schema_rejects_incomplete_smoke_artifact():
     assert any("run_scope" in error for error in errors)
 
 
+def test_runtime_smoke_schema_rejects_full_validation_without_durable_transcript(tmp_path: Path):
+    report = runtime_smoke.build_report(
+        root=tmp_path,
+        runtime="generic-cli-runtime",
+        version="1.2.3",
+        sandbox_write_mode="workspace_write",
+        brain_command_mode="markdown_specs",
+        run_scope="full_validation",
+        blocked_commands=[],
+        exact_command="python scripts/runtime_smoke.py --runtime generic-cli-runtime --version 1.2.3 --run-scope full_validation",
+        smoke_result="pass",
+        transcript_path="not_captured_stdout_only",
+    )
+    schema = json.loads(Path("schemas/runtime-smoke.schema.json").read_text(encoding="utf-8"))
+
+    errors = [error.message for error in Draft202012Validator(schema).iter_errors(report)]
+
+    assert any("not_captured_stdout_only" in error for error in errors)
+
+
 def test_full_validation_runtime_smoke_rejects_blocked_commands(tmp_path: Path):
     report = runtime_smoke.build_report(
         root=tmp_path,
@@ -111,6 +131,25 @@ def test_read_only_runtime_smoke_requires_blocker_when_smoke_is_blocked(tmp_path
     errors = runtime_smoke.validate_report_against_schema(report, Path("schemas/runtime-smoke.schema.json"))
 
     assert any("blocked smoke_result must list at least one blocked command" in error for error in errors)
+
+
+def test_full_validation_runtime_smoke_requires_durable_transcript_path(tmp_path: Path):
+    report = runtime_smoke.build_report(
+        root=tmp_path,
+        runtime="generic-cli-runtime",
+        version="1.2.3",
+        sandbox_write_mode="workspace_write",
+        brain_command_mode="markdown_specs",
+        run_scope="full_validation",
+        blocked_commands=[],
+        exact_command="python scripts/runtime_smoke.py --runtime generic-cli-runtime --version 1.2.3 --run-scope full_validation",
+        smoke_result="pass",
+        transcript_path="not_captured_stdout_only",
+    )
+
+    errors = runtime_smoke.validate_report_against_schema(report, Path("schemas/runtime-smoke.schema.json"))
+
+    assert any("full_validation requires a durable transcript_path" in error for error in errors)
 
 
 def test_main_rejects_schema_invalid_generated_smoke_artifact(monkeypatch, capsys):

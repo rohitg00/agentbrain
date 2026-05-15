@@ -28,7 +28,7 @@ Do not use this skill when a simpler checklist, script, or existing command hand
 2. Record runtime name, version, Python executable, writable temp-dir status, git freshness result, exact command, sandbox/write mode, whether `/brain-*` entries are native commands or markdown specs, and blocked commands.
 3. Run a read-only smoke first unless explicit approval allows full validation.
 4. Ask the runtime to load Agent Brain, choose the matching `/brain-*` command, load only the command-listed skills, and produce the expected artifact.
-5. Capture evidence in `templates/runtime-smoke.md` and, when JSON evidence is produced, validate it against `schemas/runtime-smoke.schema.json`.
+5. Capture evidence in `templates/runtime-smoke.md` and, when JSON evidence is produced, validate it against `schemas/runtime-smoke.schema.json`. For `full_validation`, capture a durable transcript path; stdout-only markers are only acceptable for read-only smoke.
 6. Route any setup, command-boundary, sandbox, or artifact-contract gap to the smallest follow-up hardening slice.
 7. Stop before claiming full validation if the runtime could only run read-only smoke checks.
 
