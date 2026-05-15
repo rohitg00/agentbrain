@@ -47,6 +47,8 @@ The output must include:
 
 Stop and ask for human input when:
 
+In noninteractive runs where the agent cannot ask questions, use the safest documented default only when it preserves scope and safety; otherwise stop with a blocker.
+
 - the claim cannot be grounded in primary or authoritative evidence,
 - the source requires login, paywalled/private context, or unverifiable social proof,
 - the research would introduce source branding or vendor names into public copy without an approved comparison section,

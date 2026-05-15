@@ -831,6 +831,39 @@ def test_commands_must_include_handoff_fields_in_output(tmp_path):
     assert "commands/brain-sample.md output must mention: fresh validation proof" in errors
 
 
+def test_command_stop_conditions_must_include_noninteractive_fallback_when_the_command_asks_users(tmp_path):
+    write_minimal_repo(tmp_path)
+    command = tmp_path / "commands" / "brain-sample.md"
+    command.write_text(
+        "\n".join([
+            "# /brain-sample",
+            "## Purpose",
+            "State: INTAKE",
+            "",
+            "Route sample work.",
+            "## When to use",
+            "Use for sample requests.",
+            "## Input contract",
+            "Ask the user for missing context. In noninteractive runs where the agent cannot ask questions, use the safest documented default or stop with a blocker when ambiguity changes the action.",
+            "## Skills to load",
+            "Load `sample` for sample routing.",
+            "## Workflow",
+            "Inspect inputs and decide the next action.",
+            "## Output",
+            "A concrete next action with decision, evidence, fresh validation proof, assumptions, risks, open questions, and next recommended state.",
+            "## Stop conditions",
+            "Stop and ask for human input when the required context is unavailable.",
+            "## Quality bar",
+            "Evidence is checked before output.",
+        ]),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "commands/brain-sample.md stop conditions must include noninteractive fallback guidance when asking for human input" in errors
+
+
 def test_build_command_requires_test_or_validator_first_proof(tmp_path):
     write_minimal_repo(tmp_path)
     command = tmp_path / "commands" / "brain-build.md"

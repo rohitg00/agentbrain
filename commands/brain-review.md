@@ -47,6 +47,8 @@ The output must include:
 
 Stop and ask for human input when:
 
+In noninteractive runs where the agent cannot ask questions, use the safest documented default only when it preserves scope and safety; otherwise stop with a blocker.
+
 - the diff, artifact, or intended behavior is unavailable,
 - a suspected issue needs runtime, security, or domain evidence the reviewer cannot access,
 - the review would approve generated work without checking tests, docs, and changed files,

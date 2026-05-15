@@ -47,6 +47,8 @@ The output must include:
 
 Stop and ask for human input when:
 
+In noninteractive runs where the agent cannot ask questions, use the safest documented default only when it preserves scope and safety; otherwise stop with a blocker.
+
 - the target user, decision owner, or success metric for the brief is unnamed,
 - the brief would depend on private customer, revenue, or analytics data that is not available,
 - evidence is too weak to choose a product direction,

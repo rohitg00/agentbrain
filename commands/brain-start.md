@@ -48,6 +48,8 @@ The output must include:
 
 Stop and ask for human input when:
 
+In noninteractive runs where the agent cannot ask questions, use the safest documented default only when it preserves scope and safety; otherwise stop with a blocker.
+
 - the request lacks enough context to choose an initial state or command,
 - repository evidence contradicts the user's stated status,
 - baseline validation fails in a way that changes the safe next action,

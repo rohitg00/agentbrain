@@ -48,6 +48,8 @@ The output must include:
 
 Stop and ask for human input when:
 
+In noninteractive runs where the agent cannot ask questions, use the safest documented default only when it preserves scope and safety; otherwise stop with a blocker.
+
 - the proposed wiki fact lacks a stable source, owner, or freshness date,
 - the update would expose private project context, secrets, customer data, or internal-only notes,
 - existing docs conflict and the durable source of truth is unclear,

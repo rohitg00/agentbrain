@@ -48,6 +48,8 @@ The output must include:
 
 Stop and ask for human input when:
 
+In noninteractive runs where the agent cannot ask questions, use the safest documented default only when it preserves scope and safety; otherwise stop with a blocker.
+
 - the implementation slice is not approved or lacks acceptance checks,
 - a failing test or baseline validation result cannot be produced for behavior changes,
 - the change requires credentials, production access, destructive migration, or external side effects,

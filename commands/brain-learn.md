@@ -48,6 +48,8 @@ The output must include:
 
 Stop and ask for human input when:
 
+In noninteractive runs where the agent cannot ask questions, use the safest documented default only when it preserves scope and safety; otherwise stop with a blocker.
+
 - the lesson is temporary task state rather than durable project behavior,
 - the source contains private data, secrets, credentials, or raw conversation content,
 - the pattern is too source-specific to become a neutral command, skill, template, or validator,

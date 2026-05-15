@@ -1182,6 +1182,11 @@ def validate(root: Path = ROOT) -> list[str]:
                 seen_quality_bars[quality_bar] = rel(command, root)
         stop_conditions = normalized_section_body(text, "## Stop conditions")
         if stop_conditions:
+            if any(term in command_text_lower for term in COMMAND_ASK_USER_TERMS):
+                if not all(term in stop_conditions for term in COMMAND_NONINTERACTIVE_FALLBACK_TERMS):
+                    errors.append(
+                        f"{rel(command, root)} stop conditions must include noninteractive fallback guidance when asking for human input"
+                    )
             if stop_conditions in seen_stop_conditions:
                 errors.append(
                     f"{rel(command, root)} stop conditions duplicate {seen_stop_conditions[stop_conditions]}"

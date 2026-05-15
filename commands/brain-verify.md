@@ -48,6 +48,8 @@ The output must include:
 
 Stop and ask for human input when:
 
+In noninteractive runs where the agent cannot ask questions, use the safest documented default only when it preserves scope and safety; otherwise stop with a blocker.
+
 - the artifact under test, expected behavior, or verification command is missing,
 - tests require credentials, paid services, production data, or destructive setup,
 - failures are flaky or unreproducible after the documented retry limit,

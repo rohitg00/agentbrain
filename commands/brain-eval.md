@@ -47,6 +47,8 @@ The output must include:
 
 Stop and ask for human input when:
 
+In noninteractive runs where the agent cannot ask questions, use the safest documented default only when it preserves scope and safety; otherwise stop with a blocker.
+
 - the eval target, rubric, fixture, or expected behavior is undefined,
 - the eval requires private traces, secrets, or unreleased model/provider data,
 - scoring would be based on subjective preference without a written quality bar,

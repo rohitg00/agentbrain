@@ -47,6 +47,8 @@ The output must include:
 
 Stop and ask for human input when:
 
+In noninteractive runs where the agent cannot ask questions, use the safest documented default only when it preserves scope and safety; otherwise stop with a blocker.
+
 - the user, scenario, constraints, or non-goals are missing,
 - research evidence conflicts and a product/design trade-off needs owner judgment,
 - the design would commit to public claims, brand direction, pricing, or irreversible IA,

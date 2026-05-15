@@ -47,6 +47,8 @@ The output must include:
 
 Stop and ask for human input when:
 
+In noninteractive runs where the agent cannot ask questions, use the safest documented default only when it preserves scope and safety; otherwise stop with a blocker.
+
 - validation, review, rollback, monitoring, or ownership evidence is missing,
 - the release includes migrations, data deletion, billing, credentials, or production access without explicit approval,
 - go/no-go criteria conflict with observed test, CI, or incident signals,

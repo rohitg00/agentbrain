@@ -49,6 +49,8 @@ The output must include:
 
 Stop and ask for human input when:
 
+In noninteractive runs where the agent cannot ask questions, use the safest documented default only when it preserves scope and safety; otherwise stop with a blocker.
+
 - code/docs cannot answer a blocking question and the user is unavailable,
 - the problem owner, target user, constraints, or decision deadline are unknown,
 - continuing would turn questioning into implementation without an approved spec,

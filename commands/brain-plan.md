@@ -47,6 +47,8 @@ The output must include:
 
 Stop and ask for human input when:
 
+In noninteractive runs where the agent cannot ask questions, use the safest documented default only when it preserves scope and safety; otherwise stop with a blocker.
+
 - objectives, constraints, owner, or acceptance criteria are not defined,
 - the plan cannot be sliced into independently verifiable steps,
 - the first slice needs approvals, credentials, production access, or irreversible migration,
