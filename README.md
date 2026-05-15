@@ -26,9 +26,13 @@ rm -rf scripts/__pycache__ tests/__pycache__
 python -m pytest -q
 python scripts/validate_repo.py
 git diff --check
+git fetch origin main
+git rev-parse HEAD
+git rev-parse origin/main
 ```
 
-Run baseline validation before editing so new failures are not blamed on old
+Confirm HEAD equals origin/main before using the checkout as a harness. Run
+baseline validation before editing so new failures are not blamed on old
 repository drift.
 
 Before committing public changes, also run a targeted exact-name scrub for

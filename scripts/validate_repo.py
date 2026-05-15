@@ -117,6 +117,12 @@ REQUIRED_README_QUICKSTART_TERMS = {
     "Python 3.11": "README.md Quickstart must document CI Python version: Python 3.11",
     "baseline validation before editing": "README.md Quickstart must require baseline validation before editing",
 }
+REQUIRED_README_REMOTE_FRESHNESS_TERMS = [
+    "git fetch origin main",
+    "git rev-parse HEAD",
+    "git rev-parse origin/main",
+    "HEAD equals origin/main",
+]
 REQUIRED_README_HARNESS_SECTIONS = [
     "## Quickstart",
     "## Run as an Agent Harness",
@@ -1346,6 +1352,12 @@ def validate(root: Path = ROOT) -> list[str]:
         for required_term, message in REQUIRED_README_QUICKSTART_TERMS.items():
             if required_term.lower() not in readme_quickstart_lower:
                 errors.append(message)
+        for required_term in REQUIRED_README_REMOTE_FRESHNESS_TERMS:
+            if required_term.lower() not in readme_quickstart_lower:
+                errors.append(
+                    "README.md Quickstart must verify remote freshness before editing: "
+                    f"{required_term}"
+                )
         readme_text_lower = readme_text.lower()
         for required_term, message in REQUIRED_README_VALIDATION_GATE_TERMS.items():
             if required_term.lower() not in readme_text_lower:
