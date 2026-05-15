@@ -38,6 +38,7 @@ The output must include:
 
 - decision or finding,
 - evidence,
+- fresh validation proof,
 - assumptions,
 - risks,
 - open questions,

@@ -351,6 +351,7 @@ REQUIRED_COMMAND_SECTIONS = [
 REQUIRED_COMMAND_OUTPUT_TERMS = [
     "decision",
     "evidence",
+    "fresh validation proof",
     "assumptions",
     "risks",
     "open questions",

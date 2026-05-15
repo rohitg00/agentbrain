@@ -309,7 +309,7 @@ def write_minimal_repo(root: Path) -> None:
             "## Workflow",
             "Inspect inputs and decide the next action.",
             "## Output",
-            "A concrete next action with decision, evidence, assumptions, risks, open questions, and next recommended state.",
+            "A concrete next action with decision, evidence, fresh validation proof, assumptions, risks, open questions, and next recommended state.",
             "## Stop conditions",
             "Stop when the request is unsafe.",
             "## Quality bar",
@@ -333,7 +333,7 @@ def write_minimal_repo(root: Path) -> None:
             "## Workflow",
             "Select cases, collect proof, compare behavior to expected outcomes.",
             "## Output",
-            "A concrete eval decision with evidence, assumptions, risks, open questions, and next recommended state.",
+            "A concrete eval decision with evidence, fresh validation proof, assumptions, risks, open questions, and next recommended state.",
             "## Stop conditions",
             "Stop when required proof is unavailable.",
             "## Quality bar",
@@ -815,7 +815,7 @@ def test_commands_must_include_handoff_fields_in_output(tmp_path):
     command = tmp_path / "commands" / "brain-sample.md"
     command.write_text(
         command.read_text(encoding="utf-8").replace(
-            "A concrete next action with decision, evidence, assumptions, risks, open questions, and next recommended state.",
+            "A concrete next action with decision, evidence, fresh validation proof, assumptions, risks, open questions, and next recommended state.",
             "A concrete next action with evidence only.",
         ),
         encoding="utf-8",
@@ -828,6 +828,7 @@ def test_commands_must_include_handoff_fields_in_output(tmp_path):
     assert "commands/brain-sample.md output must mention: risks" in errors
     assert "commands/brain-sample.md output must mention: open questions" in errors
     assert "commands/brain-sample.md output must mention: next recommended state" in errors
+    assert "commands/brain-sample.md output must mention: fresh validation proof" in errors
 
 
 def test_build_command_requires_test_or_validator_first_proof(tmp_path):
@@ -1741,7 +1742,7 @@ def test_command_quality_bars_must_not_be_reused_boilerplate(tmp_path):
             "## Workflow",
             "Inspect inputs and decide the next action.",
             "## Output",
-            "A concrete next action with decision, evidence, assumptions, risks, open questions, and next recommended state.",
+            "A concrete next action with decision, evidence, fresh validation proof, assumptions, risks, open questions, and next recommended state.",
             "## Stop conditions",
             "Stop when the request is unsafe.",
             "## Quality bar",
@@ -3178,7 +3179,7 @@ def test_command_filenames_must_be_lowercase_kebab_case(tmp_path):
             "## Workflow",
             "Inspect inputs and decide the next action.",
             "## Output",
-            "A concrete next action with decision, evidence, assumptions, risks, open questions, and next recommended state.",
+            "A concrete next action with decision, evidence, fresh validation proof, assumptions, risks, open questions, and next recommended state.",
             "## Stop conditions",
             "Stop when the request is unsafe.",
             "## Quality bar",
@@ -3210,7 +3211,7 @@ def test_command_filenames_must_use_brain_prefix(tmp_path):
             "## Workflow",
             "Inspect inputs and decide the next action.",
             "## Output",
-            "A concrete next action with decision, evidence, assumptions, risks, open questions, and next recommended state.",
+            "A concrete next action with decision, evidence, fresh validation proof, assumptions, risks, open questions, and next recommended state.",
             "## Stop conditions",
             "Stop when the request is unsafe.",
             "## Quality bar",
@@ -3242,7 +3243,7 @@ def test_commands_must_name_skills_to_load(tmp_path):
             "## Workflow",
             "Inspect inputs and decide the next action.",
             "## Output",
-            "A concrete next action with decision, evidence, assumptions, risks, open questions, and next recommended state.",
+            "A concrete next action with decision, evidence, fresh validation proof, assumptions, risks, open questions, and next recommended state.",
             "## Stop conditions",
             "Stop when the request is unsafe.",
             "## Quality bar",
