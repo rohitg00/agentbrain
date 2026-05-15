@@ -225,6 +225,11 @@ def validate_report_against_schema(
             report.get("exact_command"), "--run-scope", run_scope
         ):
             errors.append(f"exact_command must record run scope flag: --run-scope {run_scope}")
+        transcript_path = report.get("transcript_path")
+        if isinstance(transcript_path, str) and not exact_command_has_flag_value(
+            report.get("exact_command"), "--transcript-path", transcript_path
+        ):
+            errors.append(f"exact_command must record transcript path flag: --transcript-path {transcript_path}")
     if report.get("run_scope") == "full_validation" and report.get("smoke_result") != "pass":
         errors.append("full_validation requires smoke_result pass")
     if report.get("run_scope") == "full_validation" and report.get("sandbox_write_mode") == "read_only":

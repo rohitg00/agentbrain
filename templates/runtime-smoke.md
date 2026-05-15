@@ -16,7 +16,7 @@ python scripts/runtime_smoke.py \
   --adapter-path adapters/read-only-cli/README.md \
   --run-scope read_only_smoke \
   --command-exit-status 0 \
-  --smoke-result pass \
+  --smoke-result blocked \
   --transcript-path artifacts/runtime-smoke/generic-cli-runtime-2026-05-15.log \
   --blocked-command "python -m pytest -q blocked by read-only sandbox" \
   --output /tmp/runtime-smoke.json
@@ -40,7 +40,7 @@ The helper exits non-zero if the generated artifact does not satisfy the schema.
 - **Python executable:** Path and version used for repository checks, or blocker if Python could not run.
 - **Writable temp-dir status:** `writable`, `blocked`, or `not_checked`. `full_validation` requires `writable` so installs, pytest temp fixtures, generated artifacts, and runtime transcripts are not overstated from a read-only or partially blocked run.
 - **Git freshness result:** `git fetch origin main`, `git rev-parse HEAD`, and `git rev-parse origin/main` result. `full_validation` requires `HEAD` to equal `origin/main`; stale or unavailable freshness can only be reported as `read_only_smoke`.
-- **Exact command:** Full command or prompt invocation used for the smoke run. For `smoke_result: pass`, the recorded command must include the selected route (`--selected-command /brain-*`), every loaded skill (`--loaded-skill <skill>`), adapter path (`--adapter-path <path>`), sandbox write mode (`--sandbox-write-mode <mode>`), brain command mode (`--brain-command-mode <mode>`), and run scope (`--run-scope <scope>`) so runtime boundary evidence is reproducible instead of reconstructed after the fact.
+- **Exact command:** Full command or prompt invocation used for the smoke run. For `smoke_result: pass`, the recorded command must include the selected route (`--selected-command /brain-*`), every loaded skill (`--loaded-skill <skill>`), adapter path (`--adapter-path <path>`), sandbox write mode (`--sandbox-write-mode <mode>`), brain command mode (`--brain-command-mode <mode>`), run scope (`--run-scope <scope>`), and transcript path (`--transcript-path <path>`) so runtime boundary evidence is reproducible instead of reconstructed after the fact.
 - **Command exit status:** Numeric exit status from the smoke command or validation command.
 - **Smoke result:** `pass`, `blocked`, or `fail`; use `blocked` when sandbox or approval constraints prevented required proof.
 - **Transcript path:** Durable path or artifact location for the smoke transcript/log. `not_captured_stdout_only` is acceptable only for `read_only_smoke`; `full_validation` requires a durable transcript path. Store only a redacted transcript in public artifacts; remove secrets, tokens, private paths, and unrelated user data before preserving runtime transcripts.
