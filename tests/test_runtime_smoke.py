@@ -264,6 +264,41 @@ def test_pass_runtime_smoke_requires_transcript_path_in_exact_command(tmp_path: 
     )
 
 
+def test_pass_runtime_smoke_requires_result_and_redaction_flags_in_exact_command(tmp_path: Path):
+    report = runtime_smoke.build_report(
+        root=tmp_path,
+        runtime="generic-cli-runtime",
+        version="1.2.3",
+        sandbox_write_mode="read_only",
+        brain_command_mode="markdown_specs",
+        run_scope="read_only_smoke",
+        blocked_commands=[],
+        exact_command=(
+            "python scripts/runtime_smoke.py --runtime generic-cli-runtime --version 1.2.3 "
+            "--run-scope read_only_smoke --selected-command /brain-verify "
+            "--loaded-skill runtime-smoke --adapter-path adapters/read-only-cli/README.md "
+            "--sandbox-write-mode read_only --brain-command-mode markdown_specs "
+            "--transcript-path artifacts/runtime-smoke/generic-cli-runtime-2026-05-15.log"
+        ),
+        smoke_result="pass",
+        command_exit_status=0,
+        transcript_path="artifacts/runtime-smoke/generic-cli-runtime-2026-05-15.log",
+        transcript_redaction_status="redacted",
+        selected_command="/brain-verify",
+        loaded_skills=["runtime-smoke"],
+        adapter_path="adapters/read-only-cli/README.md",
+    )
+
+    errors = runtime_smoke.validate_report_against_schema(report, Path("schemas/runtime-smoke.schema.json"))
+
+    assert any("exact_command must record smoke result flag: --smoke-result pass" in error for error in errors)
+    assert any("exact_command must record command exit status flag: --command-exit-status 0" in error for error in errors)
+    assert any(
+        "exact_command must record transcript redaction status flag: --transcript-redaction-status redacted" in error
+        for error in errors
+    )
+
+
 def test_pass_runtime_smoke_rejects_blocked_commands(tmp_path: Path):
     report = runtime_smoke.build_report(
         root=tmp_path,
@@ -993,6 +1028,8 @@ def test_main_quotes_exact_command_values_for_full_validation_flags(monkeypatch,
             "pass",
             "--transcript-path",
             "artifacts/runtime-smoke/generic-cli-runtime-2026-05-15.log",
+            "--transcript-redaction-status",
+            "no_sensitive_content",
             "--validation-command",
             "rm -rf scripts/__pycache__ tests/__pycache__",
             "--validation-command",

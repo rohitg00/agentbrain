@@ -250,6 +250,27 @@ def validate_report_against_schema(
             report.get("exact_command"), "--transcript-path", transcript_path
         ):
             errors.append(f"exact_command must record transcript path flag: --transcript-path {transcript_path}")
+        smoke_result = report.get("smoke_result")
+        if isinstance(smoke_result, str) and not exact_command_has_flag_value(
+            report.get("exact_command"), "--smoke-result", smoke_result
+        ):
+            errors.append(f"exact_command must record smoke result flag: --smoke-result {smoke_result}")
+        command_exit_status = report.get("command_exit_status")
+        if isinstance(command_exit_status, int) and not exact_command_has_flag_value(
+            report.get("exact_command"), "--command-exit-status", str(command_exit_status)
+        ):
+            errors.append(
+                "exact_command must record command exit status flag: "
+                f"--command-exit-status {command_exit_status}"
+            )
+        transcript_redaction_status = report.get("transcript_redaction_status")
+        if isinstance(transcript_redaction_status, str) and not exact_command_has_flag_value(
+            report.get("exact_command"), "--transcript-redaction-status", transcript_redaction_status
+        ):
+            errors.append(
+                "exact_command must record transcript redaction status flag: "
+                f"--transcript-redaction-status {transcript_redaction_status}"
+            )
     if report.get("run_scope") == "full_validation" and report.get("smoke_result") != "pass":
         errors.append("full_validation requires smoke_result pass")
     if report.get("run_scope") == "full_validation" and report.get("sandbox_write_mode") == "read_only":
