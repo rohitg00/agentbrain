@@ -12,6 +12,8 @@ Each catalog entry preserves the command boundary for runtimes with or without n
 4. If the runtime has no native command support, read the command file directly and follow its input contract, skills, workflow, output artifact, stop conditions, and quality bar.
 5. Record the selected command, loaded skills, artifact path, validation evidence, blockers, stop condition, and next action in the handoff.
 
+Tie-break ambiguous routes by choosing the earliest safe lifecycle state, preferring `/brain-verify` for proof gaps, preferring `/brain-review` for trust gaps, and stopping when no command fits instead of inventing a route.
+
 ## Commands
 
 - [`/brain-brief`](brain-brief.md) — State: DESIGN; Use when: after intake, research, and grill have enough signal; Skills: `evidence-research`, `problem-grill`; Artifact: `templates/product-brief.md`; Stop: missing user/problem evidence, unresolved assumptions, or unsafe scope.

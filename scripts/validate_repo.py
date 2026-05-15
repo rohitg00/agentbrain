@@ -316,6 +316,12 @@ REQUIRED_README_COMMAND_SELECTION_ARTIFACT_TERMS = [
     "template",
     "command output contract",
 ]
+REQUIRED_COMMAND_ROUTING_TIE_BREAKER_TERMS = [
+    "earliest safe lifecycle state",
+    "proof gaps",
+    "trust gaps",
+    "no command fits",
+]
 REQUIRED_HANDOFF_SCHEMA_RESUME_FIELDS = [
     "artifact_paths",
     "facts",
@@ -2114,6 +2120,12 @@ def validate(root: Path = ROOT) -> list[str]:
             if required_term not in commands_readme_text_lower:
                 errors.append(
                     "commands/README.md must document command catalog contract: "
+                    f"{required_term}"
+                )
+        for required_term in REQUIRED_COMMAND_ROUTING_TIE_BREAKER_TERMS:
+            if required_term.lower() not in commands_readme_text_lower:
+                errors.append(
+                    "commands/README.md routing rules must define ambiguous route tie-breaker: "
                     f"{required_term}"
                 )
         for command in command_files:

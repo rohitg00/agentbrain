@@ -398,6 +398,31 @@ def test_command_catalog_requires_use_when_routing_signal(tmp_path: Path) -> Non
     )
 
 
+def test_command_catalog_requires_ambiguous_route_tie_breakers(tmp_path: Path) -> None:
+    write_minimal_repo(tmp_path)
+    commands_readme = tmp_path / "commands" / "README.md"
+    commands_readme.write_text(
+        commands_readme.read_text(encoding="utf-8").replace(
+            "Tie-break ambiguous routes by choosing the earliest safe lifecycle state, preferring verification for proof gaps, preferring review for trust gaps, and stopping when no command fits.\n\n",
+            "",
+        ),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert any(
+        "commands/README.md routing rules must define ambiguous route tie-breaker: earliest safe lifecycle state"
+        in error
+        for error in errors
+    )
+    assert any(
+        "commands/README.md routing rules must define ambiguous route tie-breaker: proof gaps"
+        in error
+        for error in errors
+    )
+
+
 def test_command_catalog_use_when_must_match_command_spec(tmp_path: Path) -> None:
     write_minimal_repo(tmp_path)
     commands_readme = tmp_path / "commands" / "README.md"
@@ -1324,6 +1349,7 @@ def write_minimal_repo(root: Path) -> None:
         "Treat each command file as a markdown spec, load only the listed skills, and produce the required artifact.\n\n"
         "Each catalog entry must preserve the lifecycle state, use-when routing signal, skills to load, required artifact, stop condition, "
         "and native command support boundary so markdown-only runtimes can route work without guessing.\n\n"
+        "Tie-break ambiguous routes by choosing the earliest safe lifecycle state, preferring verification for proof gaps, preferring review for trust gaps, and stopping when no command fits.\n\n"
         "## Commands\n\n"
         "- [`/brain-sample`](brain-sample.md) — State: INTAKE; Use when: sample requests; Skills: `sample`, `activity-recap`, `agent-output-verifier`, `ci-recovery`, `context-memory`, `domain-language`, `evidence-research`, `qa-evidence`, `runtime-smoke`; Artifact: `templates/sample-routing-summary.md`; Stop: unsafe request or missing evidence.\n"
         "- [`/brain-eval`](brain-eval.md) — State: VERIFY; Use when: eval cases need evidence-backed scoring; Skills: `agent-output-verifier`, `qa-evidence`, `ci-recovery`, `evidence-research`, `runtime-smoke`; Artifact: `templates/eval-report.md`; Stop: required proof unavailable.\n",
