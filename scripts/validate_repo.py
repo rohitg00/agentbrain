@@ -1942,9 +1942,13 @@ def validate(root: Path = ROOT) -> list[str]:
                 errors.append(
                     f"{rel(command, root)} example must cite selected command file: {command_file_ref}"
                 )
+            loaded_skill_names = command_skills_to_load(text)
+            for skill_name in loaded_skill_names:
+                if f"`{skill_name}`" not in example:
+                    errors.append(f"{rel(command, root)} example must mention loaded skill: {skill_name}")
             example_skill_files = {
                 skill_name
-                for skill_name in command_skills_to_load(text)
+                for skill_name in loaded_skill_names
                 if f"`skills/{skill_name}/SKILL.md`" in example
             }
             if not example_skill_files:
