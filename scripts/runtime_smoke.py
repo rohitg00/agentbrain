@@ -73,6 +73,7 @@ def build_report(
     transcript_path: str = "not_captured_stdout_only",
     selected_command: str = "unknown",
     loaded_skills: list[str] | None = None,
+    adapter_path: str = "unknown",
 ) -> dict[str, object]:
     root = Path(root)
     if sandbox_write_mode not in SANDBOX_WRITE_MODES:
@@ -94,6 +95,7 @@ def build_report(
         f"/brain-* command mode: {command_label}.",
         f"Selected command: {selected_command}",
         f"Loaded skills: {', '.join(loaded_skills) if loaded_skills else 'none'}",
+        f"Adapter path: {adapter_path}",
         f"Git freshness result: {freshness}",
         f"Command exit status: {command_exit_status}",
         f"Smoke result: {smoke_result}",
@@ -115,6 +117,7 @@ def build_report(
         "brain_command_mode": brain_command_mode,
         "selected_command": selected_command,
         "loaded_skills": loaded_skills,
+        "adapter_path": adapter_path,
         "blocked_commands": blocked_commands,
         "run_scope": run_scope,
         "evidence": evidence,
@@ -148,6 +151,7 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     parser.add_argument("--brain-command-mode", choices=sorted(BRAIN_COMMAND_MODES), default="markdown_specs")
     parser.add_argument("--selected-command", default="unknown", help="Agent Brain command route selected by the runtime, for example /brain-start")
     parser.add_argument("--loaded-skill", action="append", default=[], help="Skill loaded during the smoke run; repeat for multiple skills")
+    parser.add_argument("--adapter-path", default="unknown", help="Adapter README or integration note used for this smoke run, for example adapters/read-only-cli/README.md")
     parser.add_argument("--run-scope", choices=sorted(RUN_SCOPES), default="read_only_smoke")
     parser.add_argument("--command-exit-status", type=int, default=0, help="Exit status of the smoke command or validation command")
     parser.add_argument("--smoke-result", choices=sorted(SMOKE_RESULTS), default="pass")
@@ -176,6 +180,7 @@ def main(argv: list[str] | None = None) -> int:
         transcript_path=args.transcript_path,
         selected_command=args.selected_command,
         loaded_skills=args.loaded_skill,
+        adapter_path=args.adapter_path,
     )
     schema_path = args.schema or (args.root / "schemas" / "runtime-smoke.schema.json")
     errors = validate_report_against_schema(report, schema_path)

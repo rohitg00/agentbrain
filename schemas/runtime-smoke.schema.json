@@ -17,6 +17,7 @@
     "brain_command_mode",
     "selected_command",
     "loaded_skills",
+    "adapter_path",
     "blocked_commands",
     "run_scope",
     "evidence"
@@ -91,6 +92,11 @@
         "type": "string",
         "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
       }
+    },
+    "adapter_path": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(adapters/[a-z0-9-]+/README\\.md|unknown)$"
     },
     "blocked_commands": {
       "type": "array",

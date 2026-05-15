@@ -205,7 +205,7 @@ def write_minimal_repo(root: Path) -> None:
                 "title": "Runtime Smoke",
                 "type": "object",
                 "additionalProperties": False,
-                "required": ["runtime", "version", "python_executable", "writable_temp_dir_status", "git_freshness_result", "exact_command", "command_exit_status", "smoke_result", "transcript_path", "sandbox_write_mode", "brain_command_mode", "selected_command", "loaded_skills", "blocked_commands", "run_scope", "evidence"],
+                "required": ["runtime", "version", "python_executable", "writable_temp_dir_status", "git_freshness_result", "exact_command", "command_exit_status", "smoke_result", "transcript_path", "sandbox_write_mode", "brain_command_mode", "selected_command", "loaded_skills", "adapter_path", "blocked_commands", "run_scope", "evidence"],
                 "properties": {
                     "runtime": {"type": "string"},
                     "version": {"type": "string"},
@@ -220,6 +220,7 @@ def write_minimal_repo(root: Path) -> None:
                     "brain_command_mode": {"enum": ["native_commands", "markdown_specs", "mixed", "unknown"]},
                     "selected_command": {"type": "string"},
                     "loaded_skills": {"type": "array", "items": {"type": "string"}},
+                    "adapter_path": {"type": "string"},
                     "blocked_commands": {"type": "array", "items": {"type": "string"}},
                     "run_scope": {"enum": ["read_only_smoke", "full_validation"]},
                     "evidence": {"type": "array", "minItems": 1, "items": {"type": "string"}},
@@ -295,6 +296,7 @@ def write_minimal_repo(root: Path) -> None:
                 "brain_command_mode": "markdown_specs",
                 "selected_command": "/brain-start",
                 "loaded_skills": ["intake", "agent-output-verifier"],
+                "adapter_path": "adapters/read-only-cli/README.md",
                 "blocked_commands": [],
                 "run_scope": "read_only_smoke",
                 "evidence": ["opened commands/brain-start.md"],
@@ -323,7 +325,7 @@ def write_minimal_repo(root: Path) -> None:
         encoding="utf-8",
     )
     (templates_dir / "runtime-smoke.md").write_text(
-        "# Runtime Smoke\n\nSchema fields: `runtime`, `version`, `python_executable`, `writable_temp_dir_status`, `git_freshness_result`, `exact_command`, `command_exit_status`, `smoke_result`, `transcript_path`, `sandbox_write_mode`, `brain_command_mode`, `selected_command`, `loaded_skills`, `blocked_commands`, `run_scope`, `evidence`.\n",
+        "# Runtime Smoke\n\nSchema fields: `runtime`, `version`, `python_executable`, `writable_temp_dir_status`, `git_freshness_result`, `exact_command`, `command_exit_status`, `smoke_result`, `transcript_path`, `sandbox_write_mode`, `brain_command_mode`, `selected_command`, `loaded_skills`, `adapter_path`, `blocked_commands`, `run_scope`, `evidence`.\n",
         encoding="utf-8",
     )
     (templates_dir / "sample-routing-summary.md").write_text(
@@ -914,7 +916,7 @@ def write_minimal_repo(root: Path) -> None:
         encoding="utf-8",
     )
     (case_dir / "real-runtime-smoke-test.md").write_text(
-        "# Eval Case: Real Runtime Smoke Test\n\n## User request\nUse Agent Brain in a real agent runtime and report whether the harness is usable.\n\n## Expected behavior\nStart from a clean checkout, preserve user changes, run the baseline validation, choose the matching command and skills, ask the runtime for a small no-write or sandboxed task, then capture the runtime, version, Python executable, writable temp-dir status, git freshness result, exact command, command exit status, smoke result, transcript path, sandbox/write mode, /brain-* native commands or markdown specs, selected command, loaded skills, blocked commands, evidence, failure points, and follow-up DevEx fixes. If the runtime is read-only, do not claim full validation; record blocked commands and safe checks instead.\n\n## Harness route\nRun `/brain-eval` with `agent-output-verifier` and `qa-evidence` to check runtime evidence.\n\n## Failure if\nThe agent only validates fixtures, skips the real runtime, hides auth or sandbox blockers, edits without approval, or reports developer experience quality without command output.\n",
+        "# Eval Case: Real Runtime Smoke Test\n\n## User request\nUse Agent Brain in a real agent runtime and report whether the harness is usable.\n\n## Expected behavior\nStart from a clean checkout, preserve user changes, run the baseline validation, choose the matching command and skills, ask the runtime for a small no-write or sandboxed task, then capture the runtime, version, Python executable, writable temp-dir status, git freshness result, exact command, command exit status, smoke result, transcript path, sandbox/write mode, /brain-* native commands or markdown specs, selected command, loaded skills, adapter path, blocked commands, evidence, failure points, and follow-up DevEx fixes. If the runtime is read-only, do not claim full validation; record blocked commands and safe checks instead.\n\n## Harness route\nRun `/brain-eval` with `agent-output-verifier` and `qa-evidence` to check runtime evidence.\n\n## Failure if\nThe agent only validates fixtures, skips the real runtime, hides auth or sandbox blockers, edits without approval, or reports developer experience quality without command output.\n",
         encoding="utf-8",
     )
     (case_dir / "native-command-assumption.md").write_text(

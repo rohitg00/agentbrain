@@ -90,6 +90,26 @@ def test_build_report_records_command_route_and_loaded_skills_for_runtime_handof
     assert "Loaded skills: intake, agent-output-verifier" in evidence
 
 
+def test_build_report_records_adapter_path_for_runtime_boundary_evidence(tmp_path: Path):
+    report = runtime_smoke.build_report(
+        root=tmp_path,
+        runtime="generic-cli-runtime",
+        version="1.2.3",
+        sandbox_write_mode="read_only",
+        brain_command_mode="markdown_specs",
+        run_scope="read_only_smoke",
+        blocked_commands=["python -m pytest -q"],
+        exact_command="python scripts/runtime_smoke.py --runtime generic-cli-runtime --version 1.2.3",
+        adapter_path="adapters/read-only-cli/README.md",
+    )
+
+    schema = json.loads(Path("schemas/runtime-smoke.schema.json").read_text(encoding="utf-8"))
+    Draft202012Validator(schema).validate(report)
+
+    assert report["adapter_path"] == "adapters/read-only-cli/README.md"
+    assert "Adapter path: adapters/read-only-cli/README.md" in report["evidence"]
+
+
 def test_validate_report_against_schema_rejects_incomplete_smoke_artifact():
     incomplete_report = {
         "runtime": "generic-cli-runtime",

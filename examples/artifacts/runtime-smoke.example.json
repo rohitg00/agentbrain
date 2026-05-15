@@ -15,6 +15,7 @@
     "intake",
     "agent-output-verifier"
   ],
+  "adapter_path": "adapters/read-only-cli/README.md",
   "blocked_commands": [
     "python -m pytest -q was blocked by read-only sandbox"
   ],
@@ -23,6 +24,7 @@
     "Runtime opened AGENTBRAIN.md and commands/brain-start.md",
     "Selected command: /brain-start",
     "Loaded skills: intake, agent-output-verifier",
+    "Adapter path: adapters/read-only-cli/README.md",
     "Command exit status: 0",
     "Smoke result: pass",
     "Transcript path: artifacts/runtime-smoke/cli-runtime-example.log",

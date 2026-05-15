@@ -128,6 +128,7 @@ REQUIRED_REAL_RUNTIME_SMOKE_EVIDENCE_FIELDS = [
     "/brain-* native commands or markdown specs",
     "selected command",
     "loaded skills",
+    "adapter path",
     "blocked commands",
 ]
 REQUIRED_REAL_RUNTIME_SMOKE_READ_ONLY_TERMS = ["read-only", "full validation"]

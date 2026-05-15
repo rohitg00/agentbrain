@@ -1,6 +1,6 @@
 # Runtime Smoke
 
-Schema fields: `runtime`, `version`, `python_executable`, `writable_temp_dir_status`, `git_freshness_result`, `exact_command`, `command_exit_status`, `smoke_result`, `transcript_path`, `sandbox_write_mode`, `brain_command_mode`, `selected_command`, `loaded_skills`, `blocked_commands`, `run_scope`, `evidence`.
+Schema fields: `runtime`, `version`, `python_executable`, `writable_temp_dir_status`, `git_freshness_result`, `exact_command`, `command_exit_status`, `smoke_result`, `transcript_path`, `sandbox_write_mode`, `brain_command_mode`, `selected_command`, `loaded_skills`, `adapter_path`, `blocked_commands`, `run_scope`, `evidence`.
 
 Use this artifact when checking Agent Brain in a real agent runtime rather than only repository fixtures. Record direct evidence so the next maintainer can tell whether the run was a read-only smoke or full validation. Prefer the helper so the JSON artifact is validated against `schemas/runtime-smoke.schema.json` before it is trusted:
 
@@ -13,6 +13,7 @@ python scripts/runtime_smoke.py \
   --selected-command /brain-start \
   --loaded-skill intake \
   --loaded-skill agent-output-verifier \
+  --adapter-path adapters/read-only-cli/README.md \
   --run-scope read_only_smoke \
   --command-exit-status 0 \
   --smoke-result pass \
@@ -38,6 +39,7 @@ The helper exits non-zero if the generated artifact does not satisfy the schema.
 - **Brain command mode:** Whether `/brain-*` entries were native commands, markdown specs, mixed, or unknown.
 - **Selected command:** The `/brain-*` command route the runtime chose, or `unknown` when command routing could not be proven.
 - **Loaded skills:** Skills the runtime loaded for the selected command; leave empty only when the smoke run never reached skill loading.
+- **Adapter path:** Adapter README or integration note used to map Agent Brain into the runtime, or `unknown` with evidence when no adapter was available.
 - **Blocked commands:** Commands that could not run and why.
 - **Run scope:** `read_only_smoke` or `full_validation`.
 - **Evidence:** Logs, outputs, files inspected, command results, and blockers.
