@@ -438,6 +438,17 @@ REQUIRED_ADAPTER_SECTIONS = [
     "## Validation",
     "## Failure Modes",
 ]
+REQUIRED_ADAPTER_CAPABILITY_MATRIX_TERMS = [
+    "read files",
+    "write files",
+    "run shell commands",
+    "request approvals",
+    "reach the network",
+    "native commands",
+    "emit",
+    "blocked commands",
+    "unknown",
+]
 REQUIRED_ADAPTER_VALIDATION_COMMANDS = [
     "python3 -m pip install -r requirements-dev.txt",
     "rm -rf scripts/__pycache__ tests/__pycache__",
@@ -2027,6 +2038,12 @@ def validate(root: Path = ROOT) -> list[str]:
             for required_section in REQUIRED_ADAPTER_SECTIONS:
                 if required_section not in adapter_text:
                     errors.append(f"{rel(markdown_file, root)} missing adapter section: {required_section}")
+            capability_matrix_body = section_body(adapter_text, "## Capability Matrix").lower()
+            for required_term in REQUIRED_ADAPTER_CAPABILITY_MATRIX_TERMS:
+                if required_term.lower() not in capability_matrix_body:
+                    errors.append(
+                        f"{rel(markdown_file, root)} capability matrix must document runtime boundary: {required_term}"
+                    )
             for run_command in REQUIRED_ADAPTER_VALIDATION_COMMANDS:
                 if run_command not in adapter_text:
                     errors.append(f"{rel(markdown_file, root)} validation section must document: {run_command}")
