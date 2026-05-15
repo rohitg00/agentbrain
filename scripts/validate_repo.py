@@ -136,6 +136,8 @@ REQUIRED_REAL_RUNTIME_SMOKE_EVIDENCE_FIELDS = [
 REQUIRED_REAL_RUNTIME_SMOKE_READ_ONLY_TERMS = ["read-only", "full validation"]
 REQUIRED_RUNTIME_SMOKE_TEMPLATE_ROUTING_TERM = "loaded skills declared by selected command"
 REQUIRED_RUNTIME_SMOKE_EXACT_COMMAND_TERMS = [
+    "runtime label",
+    "runtime version",
     "adapter path",
     "sandbox write mode",
     "brain command mode",

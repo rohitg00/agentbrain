@@ -215,6 +215,8 @@ def test_runtime_smoke_template_requires_exact_command_boundary_flags(tmp_path: 
     runtime_template = tmp_path / "templates" / "runtime-smoke.md"
     runtime_template.write_text(
         runtime_template.read_text(encoding="utf-8")
+        .replace("runtime label", "runtime name")
+        .replace("runtime version", "version string")
         .replace("adapter path", "adapter location")
         .replace("sandbox write mode", "sandbox mode")
         .replace("brain command mode", "command mode")
@@ -224,6 +226,8 @@ def test_runtime_smoke_template_requires_exact_command_boundary_flags(tmp_path: 
 
     errors = validate_repo.validate(tmp_path)
 
+    assert "templates/runtime-smoke.md exact command guidance must mention: runtime label" in errors
+    assert "templates/runtime-smoke.md exact command guidance must mention: runtime version" in errors
     assert "templates/runtime-smoke.md exact command guidance must mention: adapter path" in errors
     assert "templates/runtime-smoke.md exact command guidance must mention: sandbox write mode" in errors
     assert "templates/runtime-smoke.md exact command guidance must mention: brain command mode" in errors
@@ -842,7 +846,7 @@ def write_minimal_repo(root: Path) -> None:
         encoding="utf-8",
     )
     (templates_dir / "runtime-smoke.md").write_text(
-        "# Runtime Smoke\n\nSchema fields: `runtime`, `version`, `python_executable`, `writable_temp_dir_status`, `git_freshness_result`, `exact_command`, `command_exit_status`, `smoke_result`, `transcript_path`, `sandbox_write_mode`, `brain_command_mode`, `selected_command`, `loaded_skills`, `adapter_path`, `blocked_commands`, `run_scope`, `evidence`. A pass artifact requires loaded skills declared by selected command. Exact command guidance must record adapter path, sandbox write mode, brain command mode, and run scope.\n",
+        "# Runtime Smoke\n\nSchema fields: `runtime`, `version`, `python_executable`, `writable_temp_dir_status`, `git_freshness_result`, `exact_command`, `command_exit_status`, `smoke_result`, `transcript_path`, `sandbox_write_mode`, `brain_command_mode`, `selected_command`, `loaded_skills`, `adapter_path`, `blocked_commands`, `run_scope`, `evidence`. A pass artifact requires loaded skills declared by selected command. Exact command guidance must record runtime label, runtime version, adapter path, sandbox write mode, brain command mode, and run scope.\n",
         encoding="utf-8",
     )
     (templates_dir / "sample-routing-summary.md").write_text(

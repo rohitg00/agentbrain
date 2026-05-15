@@ -193,6 +193,16 @@ def validate_report_against_schema(
     if report.get("smoke_result") == "pass" and report.get("command_exit_status") != 0:
         errors.append("pass smoke_result requires command_exit_status 0")
     if report.get("smoke_result") == "pass":
+        runtime = report.get("runtime")
+        if isinstance(runtime, str) and not exact_command_has_flag_value(
+            report.get("exact_command"), "--runtime", runtime
+        ):
+            errors.append(f"exact_command must record runtime flag: --runtime {runtime}")
+        version = report.get("version")
+        if isinstance(version, str) and not exact_command_has_flag_value(
+            report.get("exact_command"), "--version", version
+        ):
+            errors.append(f"exact_command must record version flag: --version {version}")
         selected_command = report.get("selected_command")
         if not (isinstance(selected_command, str) and selected_command.startswith("/brain-")):
             errors.append("pass smoke_result requires a selected /brain-* command")

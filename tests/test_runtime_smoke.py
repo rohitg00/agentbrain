@@ -188,6 +188,35 @@ def test_runtime_smoke_schema_rejects_full_validation_without_writable_temp_dir(
     assert any("writable" in error for error in errors)
 
 
+def test_pass_runtime_smoke_requires_exact_command_to_record_runtime_identity(tmp_path: Path):
+    report = runtime_smoke.build_report(
+        root=tmp_path,
+        runtime="generic-cli-runtime",
+        version="1.2.3",
+        sandbox_write_mode="read_only",
+        brain_command_mode="markdown_specs",
+        run_scope="read_only_smoke",
+        blocked_commands=[],
+        exact_command=(
+            "python scripts/runtime_smoke.py --run-scope read_only_smoke "
+            "--selected-command /brain-verify --loaded-skill runtime-smoke "
+            "--adapter-path adapters/read-only-cli/README.md "
+            "--sandbox-write-mode read_only --brain-command-mode markdown_specs "
+            "--transcript-path artifacts/runtime-smoke/generic-cli-runtime-2026-05-15.log"
+        ),
+        smoke_result="pass",
+        transcript_path="artifacts/runtime-smoke/generic-cli-runtime-2026-05-15.log",
+        selected_command="/brain-verify",
+        loaded_skills=["runtime-smoke"],
+        adapter_path="adapters/read-only-cli/README.md",
+    )
+
+    errors = runtime_smoke.validate_report_against_schema(report, Path("schemas/runtime-smoke.schema.json"))
+
+    assert any("exact_command must record runtime flag: --runtime generic-cli-runtime" in error for error in errors)
+    assert any("exact_command must record version flag: --version 1.2.3" in error for error in errors)
+
+
 def test_pass_runtime_smoke_requires_transcript_path_in_exact_command(tmp_path: Path):
     report = runtime_smoke.build_report(
         root=tmp_path,
