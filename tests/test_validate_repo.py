@@ -210,6 +210,22 @@ def test_runtime_smoke_template_requires_exact_command_boundary_flags(tmp_path: 
     assert "templates/runtime-smoke.md exact command guidance must mention: run scope" in errors
 
 
+def test_skill_template_rejects_interactive_questions_section(tmp_path: Path) -> None:
+    write_minimal_repo(tmp_path)
+    skill_template = tmp_path / "templates" / "skill-template.md"
+    skill_template.write_text(
+        skill_template.read_text(encoding="utf-8").replace(
+            "## Verification\n",
+            "## Questions to ask\n\n- Ask the user what this skill should do.\n\n## Verification\n",
+        ),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "templates/skill-template.md must not include interactive Questions to ask; put retrievable needs in Inputs and noninteractive blockers in Failure Modes" in errors
+
+
 def test_handoff_template_requires_resume_protocol(tmp_path: Path) -> None:
     write_minimal_repo(tmp_path)
     handoff_template = tmp_path / "templates" / "handoff-report.md"

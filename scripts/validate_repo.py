@@ -1489,6 +1489,24 @@ def validate(root: Path = ROOT) -> list[str]:
         if not (root / required_path).exists():
             errors.append(f"missing {required_path}")
 
+    skill_template = root / "templates" / "skill-template.md"
+    if skill_template.exists():
+        skill_template_text = skill_template.read_text(errors="ignore")
+        if "## Questions to ask" in skill_template_text:
+            errors.append(
+                "templates/skill-template.md must not include interactive Questions to ask; "
+                "put retrievable needs in Inputs and noninteractive blockers in Failure Modes"
+            )
+        skill_template_lines = skill_template_text.splitlines()
+        for section in REQUIRED_SKILL_TEMPLATE_SECTIONS:
+            section_count = skill_template_lines.count(section)
+            if section_count == 0:
+                errors.append(f"templates/skill-template.md missing {section}")
+            elif section_count > 1:
+                errors.append(f"templates/skill-template.md section must appear exactly once: {section}")
+        if not sections_are_in_order(skill_template_text, REQUIRED_SKILL_TEMPLATE_SECTIONS):
+            errors.append("templates/skill-template.md sections must appear in canonical order")
+
     constitution = root / "AGENTBRAIN.md"
     if constitution.exists():
         constitution_text = constitution.read_text(errors="ignore")

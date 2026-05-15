@@ -21,11 +21,8 @@ Do not use this skill when a simpler checklist, script, or existing command hand
 
 ## Procedure
 
-1. ...
-
-## Questions to ask
-
-- ...
+1. Inspect retrievable docs, commands, schemas, templates, and prior artifacts before deciding the skill shape.
+2. Capture missing human decisions as blockers or safest documented defaults when running noninteractive.
 
 ## Anti-Rationalization
 
