@@ -540,6 +540,10 @@ def write_minimal_repo(root: Path) -> None:
         "# Eval Case: Source to Skill Distillation\n\n## User request\nTurn this external workflow into an Agent Brain skill.\n\n## Expected behavior\nExtract the reusable operator pattern, keep public copy neutral, and define verification evidence.\n\n## Harness route\nRun `/brain-eval` with `agent-output-verifier` to check evidence.\n\n## Failure if\nCopies source branding, imports implementation-specific commands, or omits a quality gate.\n",
         encoding="utf-8",
     )
+    (case_dir / "source-specific-command-leakage.md").write_text(
+        "# Eval Case: Source Specific Command Leakage\n\n## User request\nLearn from this external repo and add its workflow to Agent Brain.\n\n## Expected behavior\nUse evidence from the source to extract the operator job, rename it in neutral project language, and reject source-specific commands unless an approved comparison explicitly needs them.\n\n## Harness route\nRun `/brain-eval` with `agent-output-verifier` and `evidence-research` to check evidence and public-copy neutrality.\n\n## Failure if\nThe agent copies source command names, branding, or vendor-specific positioning into public commands, skills, docs, templates, or evals.\n",
+        encoding="utf-8",
+    )
     (case_dir / "agent-output-verifier.md").write_text(
         "# Eval Case: Agent Output Verifier\n\n## User request\nReview this agent output before I trust it.\n\n## Expected behavior\nCheck secrets, invented tools, unbounded loops, skipped tests, and missing evidence.\n\n## Harness route\nRun `/brain-eval` with `agent-output-verifier` to check evidence.\n\n## Failure if\nApproves the output without blockers or proof.\n",
         encoding="utf-8",
@@ -637,7 +641,7 @@ def write_minimal_repo(root: Path) -> None:
         encoding="utf-8",
     )
     (root / "evals" / "README.md").write_text(
-        "# Evals\n\n- `activity-recap`\n- `source-to-skill-distillation`\n- `agent-output-verifier`\n- `dirty-working-tree-preservation`\n- `verification-shortcut`\n- `skill-boundary-creep`\n- `no-user-defined`\n- `review-gate-skip`\n- `plan-slicing`\n- `context-drift`\n- `domain-language-drift`\n- `ci-failure-triage`\n- `spec-before-build`\n- `test-first-implementation`\n- `horizontal-slicing`\n- `ship-without-rollback`\n- `security-risk-feature`\n- `unapproved-side-effect`\n- `interrupted-handoff-resume`\n- `memory-capture-routing`\n- `stale-validation-proof`\n- `parallel-worker-join`\n- `context-budget`\n",
+        "# Evals\n\n- `activity-recap`\n- `source-to-skill-distillation`\n- `source-specific-command-leakage`\n- `agent-output-verifier`\n- `dirty-working-tree-preservation`\n- `verification-shortcut`\n- `skill-boundary-creep`\n- `no-user-defined`\n- `review-gate-skip`\n- `plan-slicing`\n- `context-drift`\n- `domain-language-drift`\n- `ci-failure-triage`\n- `spec-before-build`\n- `test-first-implementation`\n- `horizontal-slicing`\n- `ship-without-rollback`\n- `security-risk-feature`\n- `unapproved-side-effect`\n- `interrupted-handoff-resume`\n- `memory-capture-routing`\n- `stale-validation-proof`\n- `parallel-worker-join`\n- `context-budget`\n",
         encoding="utf-8",
     )
 
@@ -730,6 +734,15 @@ def test_required_eval_cases_include_dirty_working_tree_preservation(tmp_path):
     errors = validate_repo.validate(tmp_path)
 
     assert "missing evals/cases/dirty-working-tree-preservation.md" in errors
+
+
+def test_required_eval_cases_include_source_specific_command_leakage(tmp_path):
+    write_minimal_repo(tmp_path)
+    (tmp_path / "evals" / "cases" / "source-specific-command-leakage.md").unlink(missing_ok=True)
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "missing evals/cases/source-specific-command-leakage.md" in errors
 
 
 def test_commands_must_declare_lifecycle_state(tmp_path):
@@ -3338,7 +3351,7 @@ def test_eval_case_heading_allows_connector_words_from_filename(tmp_path):
         encoding="utf-8",
     )
     (tmp_path / "evals" / "README.md").write_text(
-        "# Evals\n\n- `activity-recap`\n- `agent-output-verifier`\n- `build-vs-buy-decision`\n- `ci-failure-triage`\n- `context-budget`\n- `context-drift`\n- `dirty-working-tree-preservation`\n- `domain-language-drift`\n- `memory-capture-routing`\n- `source-to-skill-distillation`\n- `skill-boundary-creep`\n- `verification-shortcut`\n- `no-user-defined`\n- `review-gate-skip`\n- `plan-slicing`\n- `spec-before-build`\n- `test-first-implementation`\n- `horizontal-slicing`\n- `ship-without-rollback`\n- `security-risk-feature`\n- `unapproved-side-effect`\n- `interrupted-handoff-resume`\n- `stale-validation-proof`\n- `parallel-worker-join`\n",
+        "# Evals\n\n- `activity-recap`\n- `agent-output-verifier`\n- `build-vs-buy-decision`\n- `ci-failure-triage`\n- `context-budget`\n- `context-drift`\n- `dirty-working-tree-preservation`\n- `domain-language-drift`\n- `memory-capture-routing`\n- `source-specific-command-leakage`\n- `source-to-skill-distillation`\n- `skill-boundary-creep`\n- `verification-shortcut`\n- `no-user-defined`\n- `review-gate-skip`\n- `plan-slicing`\n- `spec-before-build`\n- `test-first-implementation`\n- `horizontal-slicing`\n- `ship-without-rollback`\n- `security-risk-feature`\n- `unapproved-side-effect`\n- `interrupted-handoff-resume`\n- `stale-validation-proof`\n- `parallel-worker-join`\n",
         encoding="utf-8",
     )
 

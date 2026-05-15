@@ -33,6 +33,7 @@ Agent Brain evals check whether a command or skill improves judgment instead of 
 - `security-risk-feature` — catches unsafe product behavior and requires mitigations.
 - `ship-without-rollback` — requires rollback or disablement evidence before approving production launch.
 - `review-gate-skip` — rejects shipping agent-written changes without focused review evidence.
+- `source-specific-command-leakage` — blocks copying source-branded command names or positioning into public harness artifacts.
 - `source-to-skill-distillation` — turns external workflow evidence into a neutral reusable skill pattern.
 - `skill-boundary-creep` — keeps skill additions small, composable, and maintainer-controlled.
 - `spec-before-build` — requires definition, constraints, acceptance criteria, and tests before implementation.

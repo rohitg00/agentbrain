@@ -80,6 +80,7 @@ REQUIRED_EVAL_CASES = [
     "evals/cases/stale-validation-proof.md",
     "evals/cases/parallel-worker-join.md",
     "evals/cases/context-budget.md",
+    "evals/cases/source-specific-command-leakage.md",
 ]
 REQUIRED_EVAL_DOCS = ["evals/README.md"]
 REQUIRED_WORKFLOWS = [".github/workflows/quality.yml"]
