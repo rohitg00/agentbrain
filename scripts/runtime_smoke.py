@@ -211,6 +211,8 @@ def validate_report_against_schema(
                 )
     if report.get("smoke_result") == "pass" and report.get("command_exit_status") != 0:
         errors.append("pass smoke_result requires command_exit_status 0")
+    if report.get("smoke_result") == "fail" and report.get("command_exit_status") == 0:
+        errors.append("fail smoke_result requires nonzero command_exit_status")
     if report.get("smoke_result") == "pass":
         runtime = report.get("runtime")
         if isinstance(runtime, str) and not exact_command_has_flag_value(
