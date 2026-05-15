@@ -155,6 +155,10 @@ def build_report(
     }
 
 
+def adapter_path_is_adapter_readme(adapter_path: str) -> bool:
+    return re.fullmatch(r"adapters/[a-z0-9-]+/README\.md", adapter_path) is not None
+
+
 def exact_command_has_flag_value(exact_command: object, flag: str, value: str) -> bool:
     if not isinstance(exact_command, str):
         return False
@@ -262,8 +266,11 @@ def validate_report_against_schema(
                 errors.append(f"full_validation must record successful local gate command: {required_command}")
     if root is not None and report.get("smoke_result") == "pass":
         adapter_path = report.get("adapter_path")
-        if isinstance(adapter_path, str) and adapter_path != "unknown" and not (Path(root) / adapter_path).is_file():
-            errors.append(f"adapter file is missing: {adapter_path}")
+        if isinstance(adapter_path, str) and adapter_path != "unknown":
+            if not adapter_path_is_adapter_readme(adapter_path):
+                errors.append("adapter_path must point to adapters/<adapter>/README.md")
+            elif not (Path(root) / adapter_path).is_file():
+                errors.append(f"adapter file is missing: {adapter_path}")
         selected_command = report.get("selected_command")
         if isinstance(selected_command, str) and selected_command.startswith("/brain-"):
             command_rel = f"commands/{selected_command.removeprefix('/')}.md"
