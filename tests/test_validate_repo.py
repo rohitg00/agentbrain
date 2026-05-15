@@ -39,9 +39,11 @@ def write_minimal_repo(root: Path) -> None:
         "Use this adapter in a sample runtime.\n\n"
         "## Validation\n\n"
         "python3 -m pip install -r requirements-dev.txt\n"
+        "rm -rf scripts/__pycache__ tests/__pycache__\n"
         "python -m pytest -q\n"
         "python scripts/validate_repo.py\n"
-        "git diff --check\n\n"
+        "git diff --check\n"
+        "Run a targeted exact-name scrub before public adapter copy changes.\n\n"
         "## Failure Modes\n\n"
         "Stop if the runtime cannot load files.\n",
         encoding="utf-8",
@@ -2081,6 +2083,29 @@ def test_adapter_readme_heading_must_match_adapter_directory(tmp_path):
     errors = validate_repo.validate(tmp_path)
 
     assert "adapters/sample-adapter/README.md heading must be # Sample Adapter" in errors
+
+
+def test_adapter_validation_must_include_cache_cleanup_and_exact_name_scrub(tmp_path):
+    write_minimal_repo(tmp_path)
+    adapter = tmp_path / "adapters" / "sample-adapter" / "README.md"
+    adapter.write_text(
+        "# Sample Adapter\n\n"
+        "## Install\n\n"
+        "Use this adapter in a sample runtime.\n\n"
+        "## Validation\n\n"
+        "python3 -m pip install -r requirements-dev.txt\n"
+        "python -m pytest -q\n"
+        "python scripts/validate_repo.py\n"
+        "git diff --check\n\n"
+        "## Failure Modes\n\n"
+        "Stop if the runtime cannot load files.\n",
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "adapters/sample-adapter/README.md validation section must document: rm -rf scripts/__pycache__ tests/__pycache__" in errors
+    assert "adapters/sample-adapter/README.md validation section must document: targeted exact-name scrub" in errors
 
 
 def test_schema_directory_is_required(tmp_path):

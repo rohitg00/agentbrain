@@ -18,10 +18,15 @@ After wiring the adapter into a workspace, run the same harness gate from the re
 
 ```bash
 python3 -m pip install -r requirements-dev.txt
+rm -rf scripts/__pycache__ tests/__pycache__
 python -m pytest -q
 python scripts/validate_repo.py
 git diff --check
 ```
+
+Run a targeted exact-name scrub before public adapter copy changes so source
+names, internal tools, or one-off branding do not leak into reusable harness
+instructions.
 
 Then perform one dry run with a low-risk request and confirm the agent names the chosen command, loaded skills, evidence checked, stop conditions, and next action.
 

@@ -320,9 +320,11 @@ REQUIRED_AGENT_HARNESS_MAINTAINER_TERMS = [
 REQUIRED_ADAPTER_SECTIONS = ["## Install", "## Validation", "## Failure Modes"]
 REQUIRED_ADAPTER_VALIDATION_COMMANDS = [
     "python3 -m pip install -r requirements-dev.txt",
+    "rm -rf scripts/__pycache__ tests/__pycache__",
     "python -m pytest -q",
     "python scripts/validate_repo.py",
     "git diff --check",
+    "targeted exact-name scrub",
 ]
 REQUIRED_CONTRIBUTING_VALIDATION_COMMANDS = ["pytest -q", "git diff --check"]
 RESEARCH_WATCHLIST_REQUIRED_SOURCES = [

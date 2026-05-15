@@ -23,10 +23,15 @@ Because this adapter has no native skill loader, validate both the repository an
 
 ```bash
 python3 -m pip install -r requirements-dev.txt
+rm -rf scripts/__pycache__ tests/__pycache__
 python -m pytest -q
 python scripts/validate_repo.py
 git diff --check
 ```
+
+Run a targeted exact-name scrub before public adapter copy changes so source
+names, internal tools, or one-off branding do not leak into reusable harness
+instructions.
 
 Then ask the agent to classify one sample request and confirm it cites the command file, skill file, artifact contract, evidence checked, and stop condition it used.
 
