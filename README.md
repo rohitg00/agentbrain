@@ -558,6 +558,8 @@ git diff --check
 
 Then inspect `.github/workflows/quality.yml` for Python 3.11 drift plus missing install, test, validation, timeout, or read-only permission settings.
 
+Keep the cleanup step in this replay. A CI mismatch can be caused by tracked or generated Python cache files, so the exact local replay includes `rm -rf scripts/__pycache__ tests/__pycache__` before `python -m pytest -q`, `python scripts/validate_repo.py`, and `git diff --check`.
+
 ### Dependency bootstrap fails
 
 If validation fails with `ModuleNotFoundError` or a missing package before repository checks run, fix the setup path rather than editing around the missing dependency:

@@ -217,6 +217,7 @@ REQUIRED_README_SECRET_TROUBLESHOOTING_TERMS = ["secret-like values"]
 REQUIRED_README_CI_TROUBLESHOOTING_TERMS = [
     "Tests pass locally but CI fails",
     "exact CI sequence locally",
+    "rm -rf scripts/__pycache__ tests/__pycache__",
     ".github/workflows/quality.yml",
 ]
 REQUIRED_README_DEPENDENCY_TROUBLESHOOTING_TERMS = [

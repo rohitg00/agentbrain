@@ -240,7 +240,7 @@ Treat secret-like values as a blocker, not as normal copy. Remove the value from
 
 ### Tests pass locally but CI fails
 
-Run the exact CI sequence locally with Python 3.11, including install, tests, repository validation, and whitespace checks. Inspect `.github/workflows/quality.yml` for Python version, dependency, permission, trigger, or timeout drift before changing production docs or code.
+Run the exact CI sequence locally with Python 3.11, including install, `rm -rf scripts/__pycache__ tests/__pycache__`, tests, repository validation, and whitespace checks. Inspect `.github/workflows/quality.yml` for Python version, dependency, permission, trigger, or timeout drift before changing production docs or code.
 
 ### Dependency bootstrap fails
 
