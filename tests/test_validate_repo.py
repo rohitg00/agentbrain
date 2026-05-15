@@ -1473,13 +1473,13 @@ def write_minimal_repo(root: Path) -> None:
             "## Workflow",
             "Select cases, collect proof, compare behavior to expected outcomes.",
             "## Output",
-            "Required artifact: **Eval Report** using `templates/eval-report.md`. A concrete eval decision with evidence, fresh validation proof, assumptions, risks, open questions, and next recommended state.",
+            "Required artifact: **Eval Report** using `templates/eval-report.md` and `schemas/eval-report.schema.json`. A concrete eval decision with evidence, fresh validation proof, assumptions, risks, open questions, and next recommended state.",
             "## Stop conditions",
             "Stop when required proof is unavailable.",
             "## Quality bar",
             "Eval evidence is checked before acceptance. Fresh validation proof is captured before handoff.",
             "## Example",
-            "User request: score one eval case. Selected command: `/brain-eval`. Command file: `commands/brain-eval.md`. Loaded skills: `agent-output-verifier`, `qa-evidence`, `ci-recovery`, `evidence-research`, and `runtime-smoke`. Skill files: `skills/agent-output-verifier/SKILL.md`, `skills/qa-evidence/SKILL.md`, `skills/ci-recovery/SKILL.md`, `skills/evidence-research/SKILL.md`, and `skills/runtime-smoke/SKILL.md`. Artifact: write `templates/eval-report.md`. Verification: record the rubric decision with fresh validation proof. Stop condition: stop if required proof is unavailable. Next state: REVIEW.",
+            "User request: score one eval case. Selected command: `/brain-eval`. Command file: `commands/brain-eval.md`. Loaded skills: `agent-output-verifier`, `qa-evidence`, `ci-recovery`, `evidence-research`, and `runtime-smoke`. Skill files: `skills/agent-output-verifier/SKILL.md`, `skills/qa-evidence/SKILL.md`, `skills/ci-recovery/SKILL.md`, `skills/evidence-research/SKILL.md`, and `skills/runtime-smoke/SKILL.md`. Artifact: write `templates/eval-report.md`. Artifact schema: `schemas/eval-report.schema.json`. Verification: record the rubric decision with fresh validation proof. Stop condition: stop if required proof is unavailable. Next state: REVIEW.",
         ]),
         encoding="utf-8",
     )
@@ -2457,6 +2457,38 @@ def test_command_output_must_name_exact_template_path(tmp_path):
     errors = validate_repo.validate(tmp_path)
 
     assert "commands/brain-sample.md output must cite required artifact template: templates/sample-routing-summary.md" in errors
+
+
+def test_command_output_must_name_matching_schema_when_template_has_one(tmp_path):
+    write_minimal_repo(tmp_path)
+    command = tmp_path / "commands" / "brain-eval.md"
+    command.write_text(
+        command.read_text(encoding="utf-8").replace(
+            " using `templates/eval-report.md` and `schemas/eval-report.schema.json`",
+            " using `templates/eval-report.md`",
+        ),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "commands/brain-eval.md output must cite matching artifact schema: schemas/eval-report.schema.json" in errors
+
+
+def test_command_example_must_name_matching_schema_when_template_has_one(tmp_path):
+    write_minimal_repo(tmp_path)
+    command = tmp_path / "commands" / "brain-eval.md"
+    command.write_text(
+        command.read_text(encoding="utf-8").replace(
+            " Artifact schema: `schemas/eval-report.schema.json`.",
+            "",
+        ),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "commands/brain-eval.md example must cite matching artifact schema: schemas/eval-report.schema.json" in errors
 
 
 def test_command_required_artifacts_must_be_listed_in_readme_routing_guide(tmp_path):

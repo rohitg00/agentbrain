@@ -35,7 +35,7 @@ If required inputs are missing, ask at most three blocking questions or state ex
 
 ## Output
 
-Required artifact: **Implementation Plan** using `templates/implementation-plan.md`.
+Required artifact: **Implementation Plan** using `templates/implementation-plan.md` and `schemas/implementation-plan.schema.json`.
 
 The output must include:
 
@@ -65,4 +65,4 @@ A good `/brain-plan` run decomposes approved work into ordered vertical slices, 
 
 ## Example
 
-User request: turn an approved design into implementation slices. Selected command: `/brain-plan`. Command file: `commands/brain-plan.md`. Loaded skills: `plan-slicing` and `engineering-grill`. Skill files: `skills/plan-slicing/SKILL.md` and `skills/engineering-grill/SKILL.md`. Artifact: write `templates/implementation-plan.md`. Verification: give each slice an acceptance check, verification command, risks, fresh validation proof, and route only the next slice to `/brain-build`. Stop condition: stop if the slice lacks acceptance checks, a verification command, or rollback path. Next state: BUILD.
+User request: turn an approved design into implementation slices. Selected command: `/brain-plan`. Command file: `commands/brain-plan.md`. Loaded skills: `plan-slicing` and `engineering-grill`. Skill files: `skills/plan-slicing/SKILL.md` and `skills/engineering-grill/SKILL.md`. Artifact: write `templates/implementation-plan.md`. Artifact schema: `schemas/implementation-plan.schema.json`. Verification: give each slice an acceptance check, verification command, risks, fresh validation proof, and route only the next slice to `/brain-build`. Stop condition: stop if the slice lacks acceptance checks, a verification command, or rollback path. Next state: BUILD.

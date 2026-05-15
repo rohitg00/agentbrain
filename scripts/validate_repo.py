@@ -1365,6 +1365,13 @@ def command_required_artifact_template(text: str) -> str:
     return f"templates/{artifact_slug}.md" if artifact_slug else ""
 
 
+def matching_artifact_schema(template_path: str, root: Path) -> str:
+    if not template_path.startswith("templates/") or not template_path.endswith(".md"):
+        return ""
+    schema_path = f"schemas/{Path(template_path).stem}.schema.json"
+    return schema_path if (root / schema_path).exists() else ""
+
+
 def normalized_section_body(text: str, section: str) -> str:
     return re.sub(r"\s+", " ", section_body(text, section).strip().lower())
 
@@ -2024,6 +2031,13 @@ def validate(root: Path = ROOT) -> list[str]:
                 errors.append(
                     f"{rel(command, root)} required artifact lacks template: {required_artifact_template}"
                 )
+            required_artifact_schema = matching_artifact_schema(required_artifact_template, root)
+            if required_artifact_schema and f"`{required_artifact_schema}`" not in output_section:
+                errors.append(
+                    f"{rel(command, root)} output must cite matching artifact schema: {required_artifact_schema}"
+                )
+        else:
+            required_artifact_schema = ""
         for required_term in REQUIRED_COMMAND_OUTPUT_TERMS:
             if required_term not in output_body:
                 errors.append(f"{rel(command, root)} output must mention: {required_term}")
@@ -2074,6 +2088,10 @@ def validate(root: Path = ROOT) -> list[str]:
             if required_artifact_template and f"`{required_artifact_template}`" not in example:
                 errors.append(
                     f"{rel(command, root)} example must cite required artifact template: {required_artifact_template}"
+                )
+            if required_artifact_schema and f"`{required_artifact_schema}`" not in example:
+                errors.append(
+                    f"{rel(command, root)} example must cite matching artifact schema: {required_artifact_schema}"
                 )
         stop_conditions = normalized_section_body(text, "## Stop conditions")
         if stop_conditions:

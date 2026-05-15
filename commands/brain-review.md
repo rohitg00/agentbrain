@@ -35,7 +35,7 @@ If required inputs are missing, ask at most three blocking questions or state ex
 
 ## Output
 
-Required artifact: **Review Report** using `templates/review-report.md`.
+Required artifact: **Review Report** using `templates/review-report.md` and `schemas/review-report.schema.json`.
 
 The output must include:
 
@@ -65,4 +65,4 @@ A good `/brain-review` run identifies blocking correctness, security, maintainab
 
 ## Example
 
-User request: review changed artifacts before trust or release. Selected command: `/brain-review`. Command file: `commands/brain-review.md`. Loaded skills: `agent-output-verifier` and `engineering-grill`. Skill files: `skills/agent-output-verifier/SKILL.md` and `skills/engineering-grill/SKILL.md`. Artifact: write `templates/review-report.md`. Verification: check correctness, security, maintainability, proof gaps, risks, and fresh validation proof before routing blockers to `/brain-build` or verified work to `/brain-ship`. Stop condition: stop if diff, evidence, security, maintainability, or side-effect scope is unchecked. Next state: SHIP.
+User request: review changed artifacts before trust or release. Selected command: `/brain-review`. Command file: `commands/brain-review.md`. Loaded skills: `agent-output-verifier` and `engineering-grill`. Skill files: `skills/agent-output-verifier/SKILL.md` and `skills/engineering-grill/SKILL.md`. Artifact: write `templates/review-report.md`. Artifact schema: `schemas/review-report.schema.json`. Verification: check correctness, security, maintainability, proof gaps, risks, and fresh validation proof before routing blockers to `/brain-build` or verified work to `/brain-ship`. Stop condition: stop if diff, evidence, security, maintainability, or side-effect scope is unchecked. Next state: SHIP.

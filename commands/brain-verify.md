@@ -37,7 +37,7 @@ If required inputs are missing, ask at most three blocking questions or state ex
 
 ## Output
 
-Required artifact: **QA Evidence** using `templates/qa-evidence.md`.
+Required artifact: **QA Evidence** using `templates/qa-evidence.md` and `schemas/qa-evidence.schema.json`.
 
 The output must include:
 
@@ -67,4 +67,4 @@ A good `/brain-verify` run checks the actual artifact against tests, logs, diffs
 
 ## Example
 
-User request: verify an artifact or recent build. Selected command: `/brain-verify`. Command file: `commands/brain-verify.md`. Loaded skills: `qa-evidence`, `runtime-smoke`, `ci-recovery`, and `agent-output-verifier` as needed. Skill files: `skills/qa-evidence/SKILL.md`, `skills/runtime-smoke/SKILL.md`, `skills/ci-recovery/SKILL.md`, and `skills/agent-output-verifier/SKILL.md`. Artifact: write `templates/qa-evidence.md`. Verification: run the requested quality gate, capture exact command output and artifact paths, classify failures, record fresh validation proof, and route fixes through `/brain-build` or `/brain-review`. Stop condition: stop if proof is stale, missing, unverifiable, or prose-only. Next state: REVIEW.
+User request: verify an artifact or recent build. Selected command: `/brain-verify`. Command file: `commands/brain-verify.md`. Loaded skills: `qa-evidence`, `runtime-smoke`, `ci-recovery`, and `agent-output-verifier` as needed. Skill files: `skills/qa-evidence/SKILL.md`, `skills/runtime-smoke/SKILL.md`, `skills/ci-recovery/SKILL.md`, and `skills/agent-output-verifier/SKILL.md`. Artifact: write `templates/qa-evidence.md`. Artifact schema: `schemas/qa-evidence.schema.json`. Verification: run the requested quality gate, capture exact command output and artifact paths, classify failures, record fresh validation proof, and route fixes through `/brain-build` or `/brain-review`. Stop condition: stop if proof is stale, missing, unverifiable, or prose-only. Next state: REVIEW.

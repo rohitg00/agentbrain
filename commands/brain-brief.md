@@ -35,7 +35,7 @@ If required inputs are missing, ask at most three blocking questions or state ex
 
 ## Output
 
-Required artifact: **Product Brief** using `templates/product-brief.md`.
+Required artifact: **Product Brief** using `templates/product-brief.md` and `schemas/product-brief.schema.json`.
 
 The output must include:
 
@@ -65,4 +65,4 @@ A good `/brain-brief` run produces a schema-aligned product brief with a named u
 
 ## Example
 
-User request: turn accepted intake facts into product scope. Selected command: `/brain-brief`. Command file: `commands/brain-brief.md`. Loaded skills: `problem-grill` and `evidence-research`. Skill files: `skills/problem-grill/SKILL.md` and `skills/evidence-research/SKILL.md`. Artifact: write `templates/product-brief.md`. Verification: cite checked evidence, assumptions, risks, and fresh validation proof before routing to `/brain-design` or stopping with a blocker. Stop condition: stop if user/problem evidence or acceptance criteria are missing. Next state: DESIGN.
+User request: turn accepted intake facts into product scope. Selected command: `/brain-brief`. Command file: `commands/brain-brief.md`. Loaded skills: `problem-grill` and `evidence-research`. Skill files: `skills/problem-grill/SKILL.md` and `skills/evidence-research/SKILL.md`. Artifact: write `templates/product-brief.md`. Artifact schema: `schemas/product-brief.schema.json`. Verification: cite checked evidence, assumptions, risks, and fresh validation proof before routing to `/brain-design` or stopping with a blocker. Stop condition: stop if user/problem evidence or acceptance criteria are missing. Next state: DESIGN.
