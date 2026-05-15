@@ -887,6 +887,74 @@ def test_full_validation_runtime_smoke_requires_routing_evidence(monkeypatch, tm
     assert any("full_validation requires an adapter_path" in error for error in errors)
 
 
+def test_main_quotes_exact_command_values_for_full_validation_flags(monkeypatch, tmp_path: Path):
+    commands_dir = tmp_path / "commands"
+    commands_dir.mkdir()
+    (commands_dir / "brain-verify.md").write_text(
+        "# /brain-verify\n\n"
+        "## Skills to load\n\n"
+        "Load `runtime-smoke` to capture runtime evidence.\n",
+        encoding="utf-8",
+    )
+    skill_dir = tmp_path / "skills" / "runtime-smoke"
+    skill_dir.mkdir(parents=True)
+    (skill_dir / "SKILL.md").write_text("# runtime-smoke\n", encoding="utf-8")
+    adapter_dir = tmp_path / "adapters" / "read-only-cli"
+    adapter_dir.mkdir(parents=True)
+    (adapter_dir / "README.md").write_text("# Read-only CLI Adapter\n", encoding="utf-8")
+    output_path = tmp_path / "runtime-smoke.json"
+    monkeypatch.setattr(runtime_smoke, "git_freshness_result", lambda _root: "fresh: HEAD equals origin/main at abc123")
+    monkeypatch.setattr(runtime_smoke, "writable_temp_dir_status", lambda _root: "writable")
+
+    exit_code = runtime_smoke.main(
+        [
+            "--root",
+            str(tmp_path),
+            "--schema",
+            str(Path("schemas/runtime-smoke.schema.json")),
+            "--runtime",
+            "generic-cli-runtime",
+            "--version",
+            "1.2.3",
+            "--sandbox-write-mode",
+            "workspace_write",
+            "--brain-command-mode",
+            "markdown_specs",
+            "--selected-command",
+            "/brain-verify",
+            "--loaded-skill",
+            "runtime-smoke",
+            "--adapter-path",
+            "adapters/read-only-cli/README.md",
+            "--run-scope",
+            "full_validation",
+            "--command-exit-status",
+            "0",
+            "--smoke-result",
+            "pass",
+            "--transcript-path",
+            "artifacts/runtime-smoke/generic-cli-runtime-2026-05-15.log",
+            "--validation-command",
+            "rm -rf scripts/__pycache__ tests/__pycache__",
+            "--validation-command",
+            "python -m pytest -q",
+            "--validation-command",
+            "python scripts/validate_repo.py",
+            "--validation-command",
+            "git diff --check",
+            "--output",
+            str(output_path),
+        ]
+    )
+
+    assert exit_code == 0
+    report = json.loads(output_path.read_text(encoding="utf-8"))
+    assert (
+        "--validation-command 'python -m pytest -q'" in report["exact_command"]
+        or '--validation-command "python -m pytest -q"' in report["exact_command"]
+    )
+
+
 def test_main_rejects_schema_invalid_generated_smoke_artifact(monkeypatch, capsys):
     def invalid_report(**_kwargs):
         return {"runtime": "generic-cli-runtime", "version": "1.2.3"}

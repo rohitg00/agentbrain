@@ -343,7 +343,8 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
 
 def main(argv: list[str] | None = None) -> int:
     args = parse_args(sys.argv[1:] if argv is None else argv)
-    exact_command = "python scripts/runtime_smoke.py " + " ".join(sys.argv[1:] if argv is None else argv)
+    raw_argv = sys.argv[1:] if argv is None else argv
+    exact_command = "python scripts/runtime_smoke.py " + " ".join(shlex.quote(arg) for arg in raw_argv)
     report = build_report(
         root=args.root,
         runtime=args.runtime,
