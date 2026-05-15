@@ -737,6 +737,11 @@ def readme_documentation_guide_entries(text: str) -> list[str]:
     return sorted(entries)
 
 
+def readme_adapter_guide_entries(text: str) -> list[str]:
+    body = section_body(text, "## Adapter Guide")
+    return sorted(set(re.findall(r"`(adapters/[a-z0-9-]+/README\.md)`", body)))
+
+
 def readme_artifact_routing_entries(text: str, prefix: str) -> list[str]:
     body = section_body(text, "## Artifact Routing Guide")
     escaped_prefix = re.escape(prefix)
@@ -1158,6 +1163,14 @@ def validate(root: Path = ROOT) -> list[str]:
         for doc_ref in readme_docs:
             if not (root / doc_ref).exists():
                 errors.append(f"README.md documentation guide entry points to missing file: {doc_ref}")
+        readme_adapters = readme_adapter_guide_entries(readme_text)
+        for adapter in sorted((root / "adapters").glob("*/README.md")):
+            adapter_ref = rel(adapter, root)
+            if adapter_ref not in readme_adapters:
+                errors.append(f"README.md adapter guide missing adapter: {adapter_ref}")
+        for adapter_ref in readme_adapters:
+            if not (root / adapter_ref).exists():
+                errors.append(f"README.md adapter guide entry points to missing file: {adapter_ref}")
         artifact_schema_refs = readme_artifact_routing_entries(readme_text, "schemas")
         artifact_template_refs = readme_artifact_routing_entries(readme_text, "templates")
         for template_ref in artifact_template_refs:

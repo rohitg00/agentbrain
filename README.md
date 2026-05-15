@@ -292,6 +292,13 @@ Do not summarize intent as if it were evidence. If the handoff cannot name proof
 - `question-ladder` — ask staged questions that narrow ambiguity without overloading the user.
 - `wiki-maintenance` — maintain project knowledge from checked sources.
 
+## Adapter Guide
+
+Use adapters when the runtime cannot load Agent Brain directly. Each adapter must keep the same setup, evidence, stop-condition, and validation contracts as the core harness.
+
+- `adapters/hermes/README.md` — wire Agent Brain into a tool-enabled skill runtime while preserving portable command and skill contracts.
+- `adapters/plain-markdown/README.md` — run Agent Brain in agents that can only read markdown files and need manual command/skill routing.
+
 ## Edge Cases and Stop Conditions
 
 Agent Brain is strict because most agent failures are not syntax errors. They are process errors.
