@@ -31,6 +31,7 @@ Agent Brain evals check whether a command or skill improves judgment instead of 
 - `overengineered-feature` — reduces unnecessary complexity before planning.
 - `parallel-worker-join` — requires coordinator evidence review, accepted and rejected outputs, and conflict checks before trusting parallel work.
 - `plan-slicing` — splits broad work into vertical slices with acceptance checks instead of big-bang plans.
+- `real-runtime-smoke-test` — proves the setup and validation path in an actual runtime before trusting harness docs.
 - `security-risk-feature` — catches unsafe product behavior and requires mitigations.
 - `ship-without-rollback` — requires rollback or disablement evidence before approving production launch.
 - `review-gate-skip` — rejects shipping agent-written changes without focused review evidence.

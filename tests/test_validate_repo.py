@@ -25,7 +25,7 @@ def write_minimal_repo(root: Path) -> None:
         encoding="utf-8",
     )
     (root / "README.md").write_text(
-        "# required\n\n## Quickstart\nInstall and run validation with Python 3.11 to match CI.\n\n```bash\npython3 --version  # expect Python 3.11.x\npython3 -m venv .venv\nsource .venv/bin/activate\npython3 -m pip install -r requirements-dev.txt\nrm -rf scripts/__pycache__ tests/__pycache__\npython -m pytest -q\npython scripts/validate_repo.py\ngit diff --check\ngit fetch origin main\ngit rev-parse HEAD\ngit rev-parse origin/main\n```\nConfirm HEAD equals origin/main before using the checkout as a harness.\nRun baseline validation before editing so new failures are not blamed on old repository drift.\nRun a targeted exact-name scrub for at least one exact source name before committing; it is case-insensitive:\npython scripts/scrub_public_copy.py <exact-source-name>\n\n## Run as an Agent Harness\nLoad the repo as operating instructions.\n\n## Command Selection Guide\n\n- Raw request -> `/brain-sample`\n- Eval quality check -> `/brain-eval`\n\nIf no command fits, do not invent a new route silently; stop with the closest existing state, the missing contract, and the next validator-backed improvement.\n\nOutput artifact: use the closest template or command output contract.\n\n## Handoff Contract\nState the decision, evidence checked, fresh validation proof, facts, assumptions, open questions, risks, blockers, and next action. Previous handoff notes are stale until checked; resume only the named next action after fresh validation proof confirms the current files, risks, and blockers.\n\n## Evidence Freshness Rules\n\nFresh proof must name the command, result, date or commit, artifact checked, source provenance, recheck trigger, expiry, and stale validation proof. Do not reuse stale validation proof after code, docs, schemas, templates, commands, skills, evals, CI, or dependencies change.\n\n## Edge Cases and Stop Conditions\nStop on missing evidence, explicit approval before side effects, secrets handling, rollback, loop limits, and unverified output.\n\n## Troubleshooting\nRun validation and inspect errors. If git status --short shows a dirty working tree, preserve user changes before editing. If secret-like values are reported, remove the value, rotate it outside the repo, and keep only a redacted placeholder. If Tests pass locally but CI fails, run the exact CI sequence locally and inspect .github/workflows/quality.yml for Python 3.11 parity gaps. If dependency bootstrap fails with ModuleNotFoundError, create or refresh a Python 3.11 virtual environment, rerun python3 -m pip install -r requirements-dev.txt, and do not edit around missing dependencies. If validation reports a generated Python cache file, delete the cache directory and rerun the full quality gate before committing. If a schema/template mismatch appears, update the schema contract, matching template field tokens, and README artifact routing together before rerunning validation.\n\n## Weakest Failure Mode Audit\nCheck commands, skills, schemas, templates, evals, CI, public copy, handoff, and install docs before choosing the next hardening slice.\n\n## Maintainer Checklist\nBefore release, confirm README bootstraps a new agent, commands and skills are cataloged, evals cover current failure modes, validation passes, CI mirrors local checks, public copy is neutral, caches are untracked, and the remote branch is verified.\n\n## Maintainer Loop\nFind the weakest uncovered failure mode, add or update an eval or validator first, run rm -rf scripts/__pycache__ tests/__pycache__, python -m pytest -q, python scripts/validate_repo.py, git diff --check, and a targeted exact-name scrub, commit a small coherent chunk, git push, git fetch origin main, and verify HEAD equals origin/main before repeating.\n\n## Minimal Harness Prompt\n\n```text\nRead AGENTBRAIN.md, PRINCIPLES.md, ANTI_RATIONALIZATION.md, and docs/state-machine.md before acting.\nInspect git status --short and git log --oneline -5 before choosing work.\nRun baseline validation before editing.\nIf running noninteractively as a scheduled run, do not ask questions; use the safest documented default or stop with a blocker when the ambiguity changes the action.\nPreserve user changes before editing.\nChoose the matching command in commands/ and load only the required skills/ entry.\nUse templates/ and schemas/ for structured artifacts when they fit.\nRun rm -rf scripts/__pycache__ tests/__pycache__, python -m pytest -q, python scripts/validate_repo.py, git diff --check, and a targeted exact-name scrub before claiming completion.\nStop when evidence, approval, secrets handling, or loop limits are missing.\n```\n\n## Core Commands\n\n- [`/brain-sample`](commands/brain-sample.md) — sample command.\n- [`/brain-eval`](commands/brain-eval.md) — eval command.\n\n## Core Skills\n\n- `sample` — sample skill.\n- `activity-recap` — activity skill.\n- `agent-output-verifier` — verifier skill.\n- `ci-recovery` — CI recovery skill.\n- `context-memory` — memory routing skill.\n- `domain-language` — vocabulary routing skill.\n- `evidence-research` — source-backed research skill.\n- `qa-evidence` — verification proof skill.\n\n## Adapter Guide\n\n- `adapters/sample-adapter/README.md` — sample runtime adapter.\n\n## Repository Map\n\n```text\nrequirements-dev.txt           # local validation dependencies\n.github/workflows/             # CI quality gate\ncommands/                      # command specs\nskills/                        # portable skills\nschemas/                       # artifact schemas\ntemplates/                     # artifact templates\ndocs/                          # supporting docs\n```\n\n## Documentation Guide\n\n- `docs/agent-harness.md` — how to run the repo as an agent harness.\n- `docs/autonomous-goals.md` — autonomous goal scope and stop conditions.\n- `docs/decision-records.md` — decision record discipline.\n- `docs/ci-recovery.md` — CI recovery discipline.\n- `docs/research-watchlist.md` — source classes to review without copying branding.\n- `docs/shared-language.md` — glossary discipline.\n- `docs/skill-distillation.md` — how to convert sources into neutral skills.\n- `docs/state-machine.md` — executable harness states and command mapping.\n\n## Artifact Routing Guide\n\n- `schemas/artifact.schema.json` — sample artifact schema.\n- `schemas/eval-report.schema.json` — sample eval report schema.\n- `schemas/handoff-report.schema.json` — sample handoff schema.\n- `schemas/memory-decision.schema.json` — sample memory decision schema.\n- `templates/eval-report.md` — sample eval report template.\n- `templates/handoff-report.md` — sample handoff template.\n- `templates/memory-decision.md` — sample memory decision template.\n- `templates/qa-evidence.md` — sample QA evidence template.\n- `templates/skill-template.md` — sample skill template.\n\n## Validation\n\n```bash\npython3 -m pip install -r requirements-dev.txt\nrm -rf scripts/__pycache__ tests/__pycache__\npython -m pytest -q\npython scripts/validate_repo.py\ngit diff --check\npython scripts/scrub_public_copy.py <exact-source-name>\n```\n",
+        "# required\n\n## Quickstart\nInstall and run validation with Python 3.11 to match CI.\n\n```bash\npython3 --version  # expect Python 3.11.x\npython3 -m venv .venv\nsource .venv/bin/activate\npython3 -m pip install -r requirements-dev.txt\nrm -rf scripts/__pycache__ tests/__pycache__\npython -m pytest -q\npython scripts/validate_repo.py\ngit diff --check\ngit fetch origin main\ngit rev-parse HEAD\ngit rev-parse origin/main\n```\nConfirm HEAD equals origin/main before using the checkout as a harness.\nRun baseline validation before editing so new failures are not blamed on old repository drift.\nRun a targeted exact-name scrub for at least one exact source name before committing; it is case-insensitive:\npython scripts/scrub_public_copy.py <exact-source-name>\n\n## Run as an Agent Harness\nLoad the repo as operating instructions.\n\n## Command Selection Guide\n\n- Raw request -> `/brain-sample`\n- Eval quality check -> `/brain-eval`\n\nIf no command fits, do not invent a new route silently; stop with the closest existing state, the missing contract, and the next validator-backed improvement.\n\nOutput artifact: use the closest template or command output contract.\n\n## Handoff Contract\nState the decision, evidence checked, fresh validation proof, facts, assumptions, open questions, risks, blockers, and next action. Previous handoff notes are stale until checked; resume only the named next action after fresh validation proof confirms the current files, risks, and blockers.\n\n## Evidence Freshness Rules\n\nFresh proof must name the command, result, date or commit, artifact checked, source provenance, recheck trigger, expiry, and stale validation proof. Do not reuse stale validation proof after code, docs, schemas, templates, commands, skills, evals, CI, or dependencies change.\n\n## Edge Cases and Stop Conditions\nStop on missing evidence, explicit approval before side effects, secrets handling, rollback, loop limits, and unverified output.\n\n## Troubleshooting\nRun validation and inspect errors. If git status --short shows a dirty working tree, preserve user changes before editing. If secret-like values are reported, remove the value, rotate it outside the repo, and keep only a redacted placeholder. If Tests pass locally but CI fails, run the exact CI sequence locally and inspect .github/workflows/quality.yml for Python 3.11 parity gaps. If dependency bootstrap fails with ModuleNotFoundError, create or refresh a Python 3.11 virtual environment, rerun python3 -m pip install -r requirements-dev.txt, and do not edit around missing dependencies. If validation reports a generated Python cache file, delete the cache directory and rerun the full quality gate before committing. If a schema/template mismatch appears, update the schema contract, matching template field tokens, and README artifact routing together before rerunning validation.\n\n## Weakest Failure Mode Audit\nCheck commands, skills, schemas, templates, evals, CI, public copy, handoff, and install docs before choosing the next hardening slice.\n\n## Maintainer Checklist\nBefore release, confirm README bootstraps a new agent, commands and skills are cataloged, evals cover current failure modes, validation passes, CI mirrors local checks, public copy is neutral, caches are untracked, and the remote branch is verified.\n\n## Maintainer Loop\nFind the weakest uncovered failure mode, add or update an eval or validator first, run rm -rf scripts/__pycache__ tests/__pycache__, python -m pytest -q, python scripts/validate_repo.py, git diff --check, and a targeted exact-name scrub, commit a small coherent chunk, git push, git fetch origin main, and verify HEAD equals origin/main before repeating.\n\n## Minimal Harness Prompt\n\n```text\nRead AGENTBRAIN.md, PRINCIPLES.md, ANTI_RATIONALIZATION.md, and docs/state-machine.md before acting.\nInspect git status --short and git log --oneline -5 before choosing work.\nRun baseline validation before editing.\nIf running noninteractively as a scheduled run, do not ask questions; use the safest documented default or stop with a blocker when the ambiguity changes the action.\nPreserve user changes before editing.\nChoose the matching command in commands/ and load only the required skills/ entry.\nUse templates/ and schemas/ for structured artifacts when they fit.\nRun rm -rf scripts/__pycache__ tests/__pycache__, python -m pytest -q, python scripts/validate_repo.py, git diff --check, and a targeted exact-name scrub before claiming completion.\nStop when evidence, approval, secrets handling, or loop limits are missing.\n```\n\n## Core Commands\n\n- [`/brain-sample`](commands/brain-sample.md) — sample command.\n- [`/brain-eval`](commands/brain-eval.md) — eval command.\n\n## Core Skills\n\n- `sample` — sample skill.\n- `activity-recap` — activity skill.\n- `agent-output-verifier` — verifier skill.\n- `ci-recovery` — CI recovery skill.\n- `context-memory` — memory routing skill.\n- `domain-language` — vocabulary routing skill.\n- `evidence-research` — source-backed research skill.\n- `qa-evidence` — verification proof skill.\n\n## Adapter Guide\n\n- `adapters/sample-adapter/README.md` — sample runtime adapter.\n\n## Repository Map\n\n```text\nrequirements-dev.txt           # local validation dependencies\n.github/workflows/             # CI quality gate\ncommands/                      # command specs\nskills/                        # portable skills\nschemas/                       # artifact schemas\ntemplates/                     # artifact templates\ndocs/                          # supporting docs\n```\n\n## Documentation Guide\n\n- `docs/agent-harness.md` — how to run the repo as an agent harness.\n- `docs/autonomous-goals.md` — autonomous goal scope and stop conditions.\n- `docs/devex-engineering.md` — real-runtime smoke tests and developer experience engineering checks.\n- `docs/decision-records.md` — decision record discipline.\n- `docs/ci-recovery.md` — CI recovery discipline.\n- `docs/research-watchlist.md` — source classes to review without copying branding.\n- `docs/shared-language.md` — glossary discipline.\n- `docs/skill-distillation.md` — how to convert sources into neutral skills.\n- `docs/state-machine.md` — executable harness states and command mapping.\n\n## Artifact Routing Guide\n\n- `schemas/artifact.schema.json` — sample artifact schema.\n- `schemas/eval-report.schema.json` — sample eval report schema.\n- `schemas/handoff-report.schema.json` — sample handoff schema.\n- `schemas/memory-decision.schema.json` — sample memory decision schema.\n- `templates/eval-report.md` — sample eval report template.\n- `templates/handoff-report.md` — sample handoff template.\n- `templates/memory-decision.md` — sample memory decision template.\n- `templates/qa-evidence.md` — sample QA evidence template.\n- `templates/sample-routing-summary.md` — sample routing summary template.\n- `templates/skill-template.md` — sample skill template.\n\n## Validation\n\n```bash\npython3 -m pip install -r requirements-dev.txt\nrm -rf scripts/__pycache__ tests/__pycache__\npython -m pytest -q\npython scripts/validate_repo.py\ngit diff --check\npython scripts/scrub_public_copy.py <exact-source-name>\n```\n",
         encoding="utf-8",
     )
     (root / "requirements-dev.txt").write_text("pytest\njsonschema\n", encoding="utf-8")
@@ -178,6 +178,10 @@ def write_minimal_repo(root: Path) -> None:
     )
     (templates_dir / "qa-evidence.md").write_text(
         "# Qa Evidence\n\nSchema fields: `checks`. Each check records a name, method, result, and evidence.\n",
+        encoding="utf-8",
+    )
+    (templates_dir / "sample-routing-summary.md").write_text(
+        "# Sample Routing Summary\n\nSchema fields: `decision`, `evidence`, `fresh_validation_proof`, `assumptions`, `risks`, `open_questions`, `next_recommended_state`.\n",
         encoding="utf-8",
     )
     (templates_dir / "skill-template.md").write_text(
@@ -388,8 +392,20 @@ def write_minimal_repo(root: Path) -> None:
         "# Decision Records\n\nCreate records only for hard-to-reverse, surprising trade-offs.\n",
         encoding="utf-8",
     )
+    (docs_dir / "devex-engineering.md").write_text(
+        "# Devex Engineering\n\nKeep setup, validation, artifact routing, and recovery commands copyable and test-backed.\n",
+        encoding="utf-8",
+    )
     (docs_dir / "autonomous-goals.md").write_text(
         "# Autonomous Goals\n\n/goal\nmeasurable end state\nconstraints\n", encoding="utf-8"
+    )
+    (docs_dir / "devex-engineering.md").write_text(
+        "# Devex Engineering\n\n"
+        "## Purpose\nMake the harness easy to run in real coding-agent workspaces, not just in isolated validators.\n\n"
+        "## Runtime Smoke Tests\nRun a real coding-agent CLI against a clean checkout when changing commands, skills, adapters, or harness prompts. The smoke test must record the command, sandbox mode, repo state, validation proof, and whether the agent followed the state machine before editing.\n\n"
+        "## Engineering Checklist\nCheck bootstrap friction, copyable commands, fixture drift, validation failure clarity, adapter instructions, and handoff quality.\n\n"
+        "## Stop Conditions\nStop if auth, sandbox permissions, secrets handling, dirty user changes, or missing approval would make the runtime test unsafe.\n",
+        encoding="utf-8",
     )
     (docs_dir / "agent-harness.md").write_text(
         "# Agent Harness\n\n"
@@ -725,12 +741,16 @@ def write_minimal_repo(root: Path) -> None:
         "# Eval Case: Context Budget\n\n## User request\nRead the whole repo and then decide what to do.\n\n## Expected behavior\nUse local evidence to load only the smallest relevant governance docs, command, skill, and artifacts needed for the current state.\n\n## Harness route\nRun `/brain-eval` with `agent-output-verifier` to check evidence.\n\n## Failure if\nLoads unrelated files by default, skips command routing, or summarizes broad context instead of acting on the selected slice.\n",
         encoding="utf-8",
     )
+    (case_dir / "real-runtime-smoke-test.md").write_text(
+        "# Eval Case: Real Runtime Smoke Test\n\n## User request\nUse Agent Brain in a real coding-agent runtime and report whether the harness is usable.\n\n## Expected behavior\nStart from a clean checkout, preserve user changes, run the baseline validation, choose the matching command and skills, ask the runtime for a small no-write or sandboxed task, then capture the exact command, sandbox mode, evidence, failure points, and follow-up DevEx fixes.\n\n## Harness route\nRun `/brain-eval` with `agent-output-verifier` and `qa-evidence` to check runtime evidence.\n\n## Failure if\nThe agent only validates fixtures, skips the real runtime, hides auth or sandbox blockers, edits without approval, or reports developer experience quality without command output.\n",
+        encoding="utf-8",
+    )
     (root / "evals" / "README.md").write_text(
         "# Evals\n\n"
         "## Running evals\n\n"
         "Pick a case, run the target command or skill, confirm the existing command or skill route, score with the rubric, record the evidence, pass/fail decision, and fresh validation proof.\n\n"
         "## Case catalog\n\n"
-        "- `activity-recap`\n- `artifact-contract-drift`\n- `source-to-skill-distillation`\n- `source-specific-command-leakage`\n- `agent-output-verifier`\n- `dirty-working-tree-preservation`\n- `verification-shortcut`\n- `skill-boundary-creep`\n- `source-branded-skill-name`\n- `no-user-defined`\n- `review-gate-skip`\n- `plan-slicing`\n- `context-drift`\n- `domain-language-drift`\n- `ci-failure-triage`\n- `spec-before-build`\n- `test-first-implementation`\n- `horizontal-slicing`\n- `ship-without-rollback`\n- `security-risk-feature`\n- `unapproved-side-effect`\n- `interrupted-handoff-resume`\n- `memory-capture-routing`\n- `stale-validation-proof`\n- `parallel-worker-join`\n- `context-budget`\n\n"
+        "- `activity-recap`\n- `artifact-contract-drift`\n- `source-to-skill-distillation`\n- `source-specific-command-leakage`\n- `agent-output-verifier`\n- `dirty-working-tree-preservation`\n- `verification-shortcut`\n- `skill-boundary-creep`\n- `source-branded-skill-name`\n- `no-user-defined`\n- `review-gate-skip`\n- `plan-slicing`\n- `context-drift`\n- `domain-language-drift`\n- `ci-failure-triage`\n- `spec-before-build`\n- `test-first-implementation`\n- `horizontal-slicing`\n- `ship-without-rollback`\n- `security-risk-feature`\n- `unapproved-side-effect`\n- `interrupted-handoff-resume`\n- `memory-capture-routing`\n- `stale-validation-proof`\n- `parallel-worker-join`\n- `context-budget`\n- `real-runtime-smoke-test`\n\n"
         "## Rubric catalog\n\n"
         "- `agent-brain-rubric`\n",
         encoding="utf-8",
@@ -1002,6 +1022,15 @@ def test_required_eval_cases_include_source_specific_command_leakage(tmp_path):
     errors = validate_repo.validate(tmp_path)
 
     assert "missing evals/cases/source-specific-command-leakage.md" in errors
+
+
+def test_required_eval_cases_include_real_runtime_smoke_test(tmp_path):
+    write_minimal_repo(tmp_path)
+    (tmp_path / "evals" / "cases" / "real-runtime-smoke-test.md").unlink(missing_ok=True)
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "missing evals/cases/real-runtime-smoke-test.md" in errors
 
 
 def test_required_eval_cases_include_source_branded_skill_name(tmp_path):
@@ -2455,7 +2484,7 @@ def test_readme_documentation_guide_must_cover_every_doc(tmp_path):
     readme = tmp_path / "README.md"
     readme.write_text(
         readme.read_text(encoding="utf-8").replace(
-            "- `docs/autonomous-goals.md` — autonomous goal scope and stop conditions.\n",
+            "- `docs/autonomous-goals.md` — autonomous goal scope and stop conditions.\n- `docs/devex-engineering.md` — real-runtime smoke tests and developer experience engineering checks.\n",
             "",
         ),
         encoding="utf-8",
@@ -4059,7 +4088,7 @@ def test_eval_case_heading_allows_connector_words_from_filename(tmp_path):
         "## Running evals\n\n"
         "Pick a case, run the target command or skill, confirm the existing command or skill route, score with the rubric, record the evidence, pass/fail decision, and fresh validation proof.\n\n"
         "## Case catalog\n\n"
-        "- `activity-recap`\n- `artifact-contract-drift`\n- `agent-output-verifier`\n- `build-vs-buy-decision`\n- `ci-failure-triage`\n- `context-budget`\n- `context-drift`\n- `dirty-working-tree-preservation`\n- `domain-language-drift`\n- `memory-capture-routing`\n- `source-branded-skill-name`\n- `source-specific-command-leakage`\n- `source-to-skill-distillation`\n- `skill-boundary-creep`\n- `verification-shortcut`\n- `no-user-defined`\n- `review-gate-skip`\n- `plan-slicing`\n- `spec-before-build`\n- `test-first-implementation`\n- `horizontal-slicing`\n- `ship-without-rollback`\n- `security-risk-feature`\n- `unapproved-side-effect`\n- `interrupted-handoff-resume`\n- `stale-validation-proof`\n- `parallel-worker-join`\n\n"
+        "- `activity-recap`\n- `artifact-contract-drift`\n- `agent-output-verifier`\n- `build-vs-buy-decision`\n- `ci-failure-triage`\n- `context-budget`\n- `context-drift`\n- `dirty-working-tree-preservation`\n- `domain-language-drift`\n- `memory-capture-routing`\n- `source-branded-skill-name`\n- `source-specific-command-leakage`\n- `source-to-skill-distillation`\n- `skill-boundary-creep`\n- `verification-shortcut`\n- `no-user-defined`\n- `review-gate-skip`\n- `plan-slicing`\n- `spec-before-build`\n- `test-first-implementation`\n- `horizontal-slicing`\n- `ship-without-rollback`\n- `security-risk-feature`\n- `unapproved-side-effect`\n- `interrupted-handoff-resume`\n- `stale-validation-proof`\n- `parallel-worker-join`\n- `real-runtime-smoke-test`\n\n"
         "## Rubric catalog\n\n"
         "- `agent-brain-rubric`\n",
         encoding="utf-8",
@@ -4146,6 +4175,15 @@ def test_skill_distillation_doc_is_required(tmp_path):
     errors = validate_repo.validate(tmp_path)
 
     assert "missing docs/skill-distillation.md" in errors
+
+
+def test_devex_engineering_doc_is_required(tmp_path):
+    write_minimal_repo(tmp_path)
+    (tmp_path / "docs" / "devex-engineering.md").unlink(missing_ok=True)
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "missing docs/devex-engineering.md" in errors
 
 
 def test_agent_harness_doc_is_required(tmp_path):
@@ -5688,6 +5726,22 @@ def test_readme_artifact_routing_must_not_point_to_missing_templates(tmp_path):
     errors = validate_repo.validate(tmp_path)
 
     assert "README.md artifact routing guide entry points to missing template: templates/missing-template.md" in errors
+
+
+def test_command_required_artifacts_must_have_templates(tmp_path):
+    write_minimal_repo(tmp_path)
+    command = tmp_path / "commands" / "brain-sample.md"
+    command.write_text(
+        command.read_text(encoding="utf-8").replace(
+            "Required artifact: **Sample Routing Summary**.",
+            "Required artifact: **Unmapped Decision Record**.",
+        ),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "commands/brain-sample.md required artifact lacks template: templates/unmapped-decision-record.md" in errors
 
 
 def test_adapter_docs_must_include_fresh_checkout_bootstrap(tmp_path):

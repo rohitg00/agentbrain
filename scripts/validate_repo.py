@@ -45,6 +45,7 @@ REQUIRED_GITIGNORE_PATTERNS = ["__pycache__/", "*.py[cod]", ".pytest_cache/", ".
 REQUIRED_DOCS = [
     "docs/agent-harness.md",
     "docs/autonomous-goals.md",
+    "docs/devex-engineering.md",
     "docs/shared-language.md",
     "docs/decision-records.md",
     "docs/ci-recovery.md",
@@ -101,6 +102,7 @@ REQUIRED_EVAL_CASES = [
     "evals/cases/parallel-worker-join.md",
     "evals/cases/context-budget.md",
     "evals/cases/source-specific-command-leakage.md",
+    "evals/cases/real-runtime-smoke-test.md",
 ]
 REQUIRED_EVAL_DOCS = ["evals/README.md"]
 REQUIRED_WORKFLOWS = [".github/workflows/quality.yml"]
@@ -1014,6 +1016,20 @@ def command_lifecycle_state(text: str) -> str:
     return match.group(1) if match else ""
 
 
+def slug_from_title(title: str) -> str:
+    slug = re.sub(r"[^a-z0-9]+", "-", title.lower()).strip("-")
+    return slug
+
+
+def command_required_artifact_template(text: str) -> str:
+    output_body = section_body(text, "## Output")
+    match = re.search(r"Required artifact:\s*\*\*([^*]+)\*\*", output_body)
+    if not match:
+        return ""
+    artifact_slug = slug_from_title(match.group(1))
+    return f"templates/{artifact_slug}.md" if artifact_slug else ""
+
+
 def normalized_section_body(text: str, section: str) -> str:
     return re.sub(r"\s+", " ", section_body(text, section).strip().lower())
 
@@ -1462,6 +1478,11 @@ def validate(root: Path = ROOT) -> list[str]:
         output_body = output_section.lower()
         if "required artifact:" not in output_body:
             errors.append(f"{rel(command, root)} output must name a required artifact")
+        required_artifact_template = command_required_artifact_template(text)
+        if required_artifact_template and not (root / required_artifact_template).exists():
+            errors.append(
+                f"{rel(command, root)} required artifact lacks template: {required_artifact_template}"
+            )
         for required_term in REQUIRED_COMMAND_OUTPUT_TERMS:
             if required_term not in output_body:
                 errors.append(f"{rel(command, root)} output must mention: {required_term}")

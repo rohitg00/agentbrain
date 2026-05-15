@@ -174,6 +174,7 @@ Use this guide to choose the supporting doc before loading commands or skills:
 - `docs/autonomous-goals.md` — how to scope long-running goals with measurable end states and loop limits.
 - `docs/shared-language.md` — glossary discipline for project terms, aliases, and naming conflicts.
 - `docs/decision-records.md` — when and how to record durable trade-offs without turning chat into history.
+- `docs/devex-engineering.md` — setup, validation, command routing, and recovery guidance for maintainable agent workflows.
 - `docs/ci-recovery.md` — inspect, reproduce, fix, and re-check remote workflow failures.
 - `docs/claims-we-reject.md` — claims and shortcuts the harness refuses without evidence.
 - `docs/ecosystem-review.md` — neutral ecosystem review criteria for evaluating external patterns.
@@ -247,14 +248,23 @@ Use this guide when a command says to produce an artifact. Start with the comman
 
 | Work product | Use this file | Schema / contract |
 | --- | --- | --- |
-| New or revised skill | `templates/skill-template.md` | `schemas/skill.schema.json` |
+| Intake routing | `templates/intake-summary.md` | Command output contract |
+| Should-this-exist decision | `templates/non-agent-alternative-review.md` | Command output contract |
+| Source-backed research | `templates/research-claim-ledger.md` | Command output contract |
+| Challenge questions | `templates/grill-report.md` | Command output contract |
 | Product scope | `templates/product-brief.md` | `schemas/product-brief.schema.json` |
+| Interface or workflow design | `templates/design-brief.md` | Command output contract |
 | Implementation slices | `templates/implementation-plan.md` | `schemas/implementation-plan.schema.json` |
+| Changed artifact and build notes | `templates/changed-artifact-plus-implementation-notes.md` | Command output contract |
 | QA or verification proof | `templates/qa-evidence.md` | `schemas/qa-evidence.schema.json` |
-| Eval case run or rubric check | `templates/eval-report.md` | `schemas/eval-report.schema.json` |
 | Trust review before handoff | `templates/review-report.md` | `schemas/review-report.schema.json` |
+| Launch or merge readiness | `templates/launch-checklist.md` | Command output contract |
+| Durable learning capture | `templates/learning-capture.md` | Command output contract |
+| Project knowledge update | `templates/wiki-update.md` | Command output contract |
+| Eval case run or rubric check | `templates/eval-report.md` | `schemas/eval-report.schema.json` |
 | Run handoff or blocked stop | `templates/handoff-report.md` | `schemas/handoff-report.schema.json` |
 | Memory write, update, retrieval, or rejection | `templates/memory-decision.md` | `schemas/memory-decision.schema.json` |
+| New or revised skill | `templates/skill-template.md` | `schemas/skill.schema.json` |
 | Decision or killed path | `docs/state-machine.md` archive state | `schemas/decision-log.schema.json` |
 | Unknowns and assumptions | `docs/grilling-protocol.md` | `schemas/assumption-ledger.schema.json` |
 
