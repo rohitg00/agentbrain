@@ -51,6 +51,8 @@ Then ask the agent to classify one sample request and confirm it cites the comma
 
 Promote read-only smoke to full validation only when write access, shell access, dependency install, and the full local gate are available; otherwise keep the result marked read-only smoke with blockers.
 
+Before full validation writes, set a write fence that names allowed paths, disallowed paths, user-owned files, and rollback command.
+
 ## Output Contract
 
 Runtime adapter output must report state, selected command, loaded skills, capability matrix, run scope, artifact path, transcript path, command exit status, template, schema, validation evidence, freshness, blockers, stop condition, and next action. If any field is unknown, say `unknown` with evidence instead of inferring capability.

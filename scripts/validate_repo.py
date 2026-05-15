@@ -596,6 +596,13 @@ REQUIRED_ADAPTER_SMOKE_PROMOTION_TERMS = [
     "full local gate",
     "blockers",
 ]
+REQUIRED_ADAPTER_WRITE_FENCE_TERMS = [
+    "write fence",
+    "allowed paths",
+    "disallowed paths",
+    "user-owned files",
+    "rollback command",
+]
 REQUIRED_ADAPTER_FAILURE_MODE_TERMS = [
     "native command",
     "unrestricted execution",
@@ -2568,6 +2575,11 @@ def validate(root: Path = ROOT) -> list[str]:
                 if promotion_term not in adapter_validation_body_lower:
                     errors.append(
                         f"{rel(markdown_file, root)} validation must document read-only smoke promotion criteria: {promotion_term}"
+                    )
+            for write_fence_term in REQUIRED_ADAPTER_WRITE_FENCE_TERMS:
+                if write_fence_term not in adapter_validation_body_lower:
+                    errors.append(
+                        f"{rel(markdown_file, root)} validation must document write fence before full validation: {write_fence_term}"
                     )
             adapter_output_contract_body = section_body(adapter_text, "## Output Contract").lower()
             for output_term in REQUIRED_ADAPTER_OUTPUT_CONTRACT_TERMS:

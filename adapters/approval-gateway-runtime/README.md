@@ -50,6 +50,8 @@ After validation, classify one sample request and confirm the runtime cites the 
 
 Promote read-only smoke to full validation only when write access, shell access, dependency install, and the full local gate are available; otherwise keep the result marked read-only smoke with blockers.
 
+Before full validation writes, set a write fence that names allowed paths, disallowed paths, user-owned files, and rollback command.
+
 For an approval-gated runtime smoke test, also record gateway/embedded fallback status, the selected agent id, approval settings checked, skill-loading strategy, and whether the run was read-only or allowed to write.
 
 ## Output Contract

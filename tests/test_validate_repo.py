@@ -215,6 +215,26 @@ def test_adapter_validation_requires_read_only_to_full_validation_promotion_crit
     )
 
 
+def test_adapter_validation_requires_write_fence_before_full_validation(tmp_path: Path) -> None:
+    write_minimal_repo(tmp_path)
+    adapter = tmp_path / "adapters" / "sample-adapter" / "README.md"
+    adapter.write_text(
+        adapter.read_text(encoding="utf-8").replace(
+            "Before full validation writes, set a write fence that names allowed paths, disallowed paths, user-owned files, and rollback command.\n\n",
+            "",
+        ),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert any(
+        "adapters/sample-adapter/README.md validation must document write fence before full validation: allowed paths"
+        in error
+        for error in errors
+    )
+
+
 def test_adapter_runtime_smoke_command_must_include_boundary_flags(tmp_path: Path) -> None:
     write_minimal_repo(tmp_path)
     adapter = tmp_path / "adapters" / "sample-adapter" / "README.md"
@@ -917,6 +937,7 @@ def write_minimal_repo(root: Path) -> None:
         "Python executable, smoke result, command exit status, selected command, loaded skills, transcript path, and redacted transcript.\n\n"
         "After validation, classify one sample request and confirm the runtime cites the command file, skill file, artifact contract, evidence checked, and stop condition it used.\n\n"
         "Promote read-only smoke to full validation only when write access, shell access, dependency install, and the full local gate are available; otherwise keep the result marked read-only smoke with blockers.\n\n"
+        "Before full validation writes, set a write fence that names allowed paths, disallowed paths, user-owned files, and rollback command.\n\n"
         "## Output Contract\n\n"
         "Runtime adapter output must report state, selected command, loaded skills, capability matrix, run scope, artifact path, transcript path, command exit status, template, schema, validation evidence, freshness, blockers, stop condition, and next action.\n\n"
         "## Failure Modes\n\n"

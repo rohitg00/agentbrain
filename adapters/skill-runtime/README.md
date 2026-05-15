@@ -52,6 +52,8 @@ After validation, classify one sample request and confirm the runtime cites the 
 
 Promote read-only smoke to full validation only when write access, shell access, dependency install, and the full local gate are available; otherwise keep the result marked read-only smoke with blockers.
 
+Before full validation writes, set a write fence that names allowed paths, disallowed paths, user-owned files, and rollback command.
+
 Then perform one dry run with a low-risk request and confirm the agent names the chosen command, loaded skills, evidence checked, stop conditions, and next action.
 
 ## Recommended skill-runtime flow
