@@ -969,22 +969,49 @@ def evals_readme_catalog_entries(text: str, section: str) -> list[str]:
 
 
 def local_markdown_links(text: str) -> list[str]:
-    links: list[str] = []
+    return [target for target, _anchor in local_markdown_link_targets(text)]
+
+
+def local_markdown_link_targets(text: str) -> list[tuple[str, str]]:
+    links: list[tuple[str, str]] = []
     for match in re.finditer(r"!?\[[^\]]*\]\(([^)]+)\)", text):
         target = match.group(1).strip()
         if not target:
             continue
         if target.startswith("<") and target.endswith(">"):
             target = target[1:-1].strip()
-        target = target.split()[0].split("#", 1)[0]
-        if not target:
+        target = target.split()[0]
+        path_part, separator, anchor_part = target.partition("#")
+        if not path_part and not separator:
             continue
-        if re.match(r"^[a-z][a-z0-9+.-]*:", target, flags=re.IGNORECASE):
+        if re.match(r"^[a-z][a-z0-9+.-]*:", path_part, flags=re.IGNORECASE):
             continue
-        if target.startswith("//"):
+        if path_part.startswith("//"):
             continue
-        links.append(target)
+        links.append((path_part, anchor_part if separator else ""))
     return links
+
+
+def github_markdown_slug(heading_text: str) -> str:
+    heading = heading_text.strip().lower()
+    heading = re.sub(r"^[#]+\s*", "", heading)
+    heading = re.sub(r"[^\w\s-]", "", heading, flags=re.UNICODE)
+    return re.sub(r"\s+", "-", heading.strip())
+
+
+def markdown_heading_anchors(text: str) -> set[str]:
+    anchors: set[str] = set()
+    in_fenced_code = False
+    for line in text.splitlines():
+        if line.startswith("```") or line.startswith("~~~"):
+            in_fenced_code = not in_fenced_code
+            continue
+        if in_fenced_code or not line.startswith("#"):
+            continue
+        if not re.match(r"^#{1,6}\s+", line):
+            continue
+        anchors.add(github_markdown_slug(line))
+    return anchors
 
 
 def validate(root: Path = ROOT) -> list[str]:
@@ -1797,7 +1824,7 @@ def validate(root: Path = ROOT) -> list[str]:
                 errors.append(f"{rel(public_copy_file, root)} contains banned public-copy term: {term}")
 
         if public_copy_file.suffix == ".md":
-            for link_target in local_markdown_links(text):
+            for link_target, link_anchor in local_markdown_link_targets(text):
                 link_path = (public_copy_file.parent / link_target).resolve()
                 try:
                     link_path.relative_to(root.resolve())
@@ -1807,6 +1834,14 @@ def validate(root: Path = ROOT) -> list[str]:
                     errors.append(
                         f"{rel(public_copy_file, root)} local markdown link points to missing file: {link_target}"
                     )
+                    continue
+                if link_anchor:
+                    link_text = link_path.read_text(errors="ignore")
+                    if link_anchor not in markdown_heading_anchors(link_text):
+                        target_display = f"{link_target}#{link_anchor}"
+                        errors.append(
+                            f"{rel(public_copy_file, root)} local markdown link points to missing anchor: {target_display}"
+                        )
 
     return errors
 

@@ -5359,6 +5359,22 @@ def test_public_copy_scan_ignores_local_dependency_directories(tmp_path):
     assert errors == []
 
 
+def test_local_markdown_links_must_point_to_existing_anchor(tmp_path):
+    write_minimal_repo(tmp_path)
+    (tmp_path / "docs" / "anchor-target.md").write_text(
+        "# Anchor Target\n\n## Existing Section\n\nUse this section.\n",
+        encoding="utf-8",
+    )
+    (tmp_path / "docs" / "source.md").write_text(
+        "# Source\n\n[Broken anchor](anchor-target.md#missing-section)\n",
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "docs/source.md local markdown link points to missing anchor: anchor-target.md#missing-section" in errors
+
+
 def test_template_must_not_list_schema_fields_that_do_not_exist(tmp_path):
     write_minimal_repo(tmp_path)
     (tmp_path / "templates" / "eval-report.md").write_text(
