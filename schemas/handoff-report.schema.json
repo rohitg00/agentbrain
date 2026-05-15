@@ -8,6 +8,7 @@
     "decision",
     "evidence_checked",
     "fresh_validation_proof",
+    "coordination_review",
     "next_action"
   ],
   "properties": {
@@ -49,6 +50,11 @@
       "type": "string",
       "minLength": 1,
       "description": "Current-run validation command, exit status, and relevant output; use blocked when proof cannot be produced."
+    },
+    "coordination_review": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Single-agent or parallel-worker join review covering worker scopes, accepted evidence, rejected or stale outputs, conflicts, and resolution."
     },
     "facts": {
       "type": "array",

@@ -1,6 +1,6 @@
 # Handoff Report
 
-Schema fields: `state`, `decision`, `evidence_checked`, `fresh_validation_proof`, `facts`, `assumptions`, `open_questions`, `risks`, `next_action`.
+Schema fields: `state`, `decision`, `evidence_checked`, `fresh_validation_proof`, `coordination_review`, `facts`, `assumptions`, `open_questions`, `risks`, `next_action`.
 
 Use this when ending a run, handing work to another operator, or stopping on a blocker. Keep it evidence-first: if a statement was not checked, put it under assumptions or open questions instead of facts.
 
@@ -25,6 +25,10 @@ List exact files, commands, logs, sources, screenshots, traces, or diffs inspect
 ## Fresh Validation Proof
 
 Name the current-run command, exit status, and relevant output that prove the claim. If proof is missing or stale, set the decision to `blocked` and route to verification before continuing.
+
+## Coordination Review
+
+State whether this was a single-agent run or a parallel-worker join. For parallel work, name worker scopes, evidence accepted, outputs rejected as stale, unsupported, or out-of-scope, conflicts found, and how the coordinator resolved them before trusting the handoff.
 
 ## Facts
 

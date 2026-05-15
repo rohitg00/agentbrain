@@ -95,6 +95,7 @@ State: <current Agent Brain state>
 Artifact: <brief, plan, QA evidence, review, launch decision, learning note>
 Evidence checked: <commands, files, sources, logs, screenshots, traces>
 Fresh validation proof: <command, exit status, and relevant output from the current run>
+Coordination review: <single-agent note or parallel-worker join review with worker scopes, accepted outputs, rejected outputs, conflict check, and resolution>
 Facts: <verified statements>
 Assumptions: <explicit assumptions>
 Open questions: <unknowns that change the decision>
@@ -161,6 +162,8 @@ For large work, split into worker scopes. Each worker scope must name its eviden
 - learner: durable lessons and skill updates.
 
 No worker should approve its own unsupported claims, and every worker handoff should include checked evidence, blockers, residual risks, and the smallest safe next action.
+
+The coordinator must perform a parallel-worker join gate before accepting delegated results: map each worker scope to accepted outputs, list rejected outputs that were stale, unsupported, duplicated, or out-of-scope, run a conflict check across worker claims, and record the resolution in the handoff coordination review.
 
 ## Edge Cases
 

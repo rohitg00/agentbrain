@@ -78,6 +78,7 @@ REQUIRED_EVAL_CASES = [
     "evals/cases/unapproved-side-effect.md",
     "evals/cases/interrupted-handoff-resume.md",
     "evals/cases/stale-validation-proof.md",
+    "evals/cases/parallel-worker-join.md",
 ]
 REQUIRED_EVAL_DOCS = ["evals/README.md"]
 REQUIRED_WORKFLOWS = [".github/workflows/quality.yml"]
@@ -223,13 +224,18 @@ REQUIRED_AGENT_HARNESS_WORKER_CONTRACT_TERMS = {
     "evidence": "docs/agent-harness.md worker guidance must require evidence",
     "stop condition": "docs/agent-harness.md worker guidance must require stop conditions",
     "handoff": "docs/agent-harness.md worker guidance must require handoff contracts",
+    "coordinator": "docs/agent-harness.md worker guidance must require coordinator join review",
+    "worker scope": "docs/agent-harness.md worker guidance must require worker scope mapping",
+    "accepted outputs": "docs/agent-harness.md worker guidance must require accepted output review",
+    "rejected outputs": "docs/agent-harness.md worker guidance must require rejected output review",
+    "conflict check": "docs/agent-harness.md worker guidance must require conflict checks",
 }
 REQUIRED_AGENT_HARNESS_RESUME_TERMS = [
     "previous handoff",
     "stale",
     "resume only the named next action",
 ]
-REQUIRED_AGENT_HARNESS_HANDOFF_TERMS = ["fresh validation proof"]
+REQUIRED_AGENT_HARNESS_HANDOFF_TERMS = ["fresh validation proof", "coordination review"]
 REQUIRED_AGENT_HARNESS_TROUBLESHOOTING_TERMS = {
     "dirty working tree": "docs/agent-harness.md troubleshooting must document dirty working tree recovery",
     "git status --short": "docs/agent-harness.md troubleshooting must document dirty working tree recovery",
@@ -806,6 +812,8 @@ def validate(root: Path = ROOT) -> list[str]:
                 errors.append("schemas/handoff-report.schema.json state must enumerate Agent Brain state machine values")
             if "fresh_validation_proof" not in required_fields:
                 errors.append("schemas/handoff-report.schema.json must require fresh_validation_proof")
+            if "coordination_review" not in required_fields:
+                errors.append("schemas/handoff-report.schema.json must require coordination_review")
         for field in required_fields:
             if field not in properties:
                 errors.append(f"{rel(path, root)} required field lacks property definition: {field}")
@@ -921,7 +929,7 @@ def validate(root: Path = ROOT) -> list[str]:
         handoff_contract = section_body(agent_harness_text, "## Handoff Contract").lower()
         for term in REQUIRED_AGENT_HARNESS_HANDOFF_TERMS:
             if term not in handoff_contract:
-                errors.append("docs/agent-harness.md handoff contract must require fresh validation proof")
+                errors.append(f"docs/agent-harness.md handoff contract must require {term}")
         harness_troubleshooting = section_body(agent_harness_text, "## Troubleshooting")
         harness_troubleshooting_lower = harness_troubleshooting.lower()
         for required_term, message in REQUIRED_AGENT_HARNESS_TROUBLESHOOTING_TERMS.items():

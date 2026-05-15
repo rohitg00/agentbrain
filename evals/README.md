@@ -27,6 +27,7 @@ Agent Brain evals check whether a command or skill improves judgment instead of 
 - `memory-capture-routing` — routes candidate memories to the right tier while rejecting noise, secrets, and stale progress.
 - `no-user-defined` — refuses to design without a concrete user definition.
 - `overengineered-feature` — reduces unnecessary complexity before planning.
+- `parallel-worker-join` — requires coordinator evidence review, accepted and rejected outputs, and conflict checks before trusting parallel work.
 - `plan-slicing` — splits broad work into vertical slices with acceptance checks instead of big-bang plans.
 - `security-risk-feature` — catches unsafe product behavior and requires mitigations.
 - `ship-without-rollback` — requires rollback or disablement evidence before approving production launch.
