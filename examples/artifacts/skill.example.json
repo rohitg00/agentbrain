@@ -1,0 +1,28 @@
+{
+  "name": "artifact-example-check",
+  "description": "Use when maintaining schema examples for public harness artifacts.",
+  "trigger": "A schema is added or changed and agents need a concrete valid example.",
+  "inputs": [
+    "schema file",
+    "matching template",
+    "current validation output"
+  ],
+  "procedure": [
+    "Create or update the matching example artifact.",
+    "Validate the example against the schema.",
+    "Run the repository quality gate."
+  ],
+  "anti_rationalization": [
+    "Do not assume prose examples are enough when a schema exists."
+  ],
+  "verification": [
+    "python scripts/validate_repo.py"
+  ],
+  "failure_modes": [
+    "Example omits required schema fields.",
+    "Example adds fields not allowed by the closed schema."
+  ],
+  "examples": [
+    "Add examples/artifacts/handoff-report.example.json for schemas/handoff-report.schema.json."
+  ]
+}

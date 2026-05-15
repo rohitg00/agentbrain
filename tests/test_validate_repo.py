@@ -164,6 +164,57 @@ def write_minimal_repo(root: Path) -> None:
         ),
         encoding="utf-8",
     )
+    examples_dir = root / "examples" / "artifacts"
+    examples_dir.mkdir(parents=True)
+    (examples_dir / "artifact.example.json").write_text("{}\n", encoding="utf-8")
+    (examples_dir / "handoff-report.example.json").write_text(
+        json.dumps(
+            {
+                "state": "VERIFY",
+                "decision": "continue",
+                "evidence_checked": ["python -m pytest -q exited 0"],
+                "fresh_validation_proof": "python -m pytest -q exited 0 at current commit",
+                "coordination_review": "single-writer slice; no parallel outputs accepted",
+                "facts": ["validation command passed"],
+                "assumptions": [],
+                "open_questions": [],
+                "risks": [],
+                "stop_conditions": [],
+                "next_action": "commit the verified slice",
+            }
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    (examples_dir / "memory-decision.example.json").write_text(
+        json.dumps(
+            {
+                "candidate": "Remember the validation command",
+                "decision": "write",
+                "target_tier": "project",
+                "evidence": ["CONTRIBUTING.md documents the command"],
+                "freshness": {"scope": "current repository"},
+                "privacy_review": {"action": "safe to store"},
+                "rejected_material": [],
+                "next_use": "future validation runs",
+            }
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    (examples_dir / "eval-report.example.json").write_text(
+        json.dumps(
+            {
+                "target": "/brain-verify",
+                "cases": [],
+                "decision": "pass",
+                "evidence_checked": ["eval case inspected"],
+                "next_action": "record the verified result",
+            }
+        )
+        + "\n",
+        encoding="utf-8",
+    )
     templates_dir = root / "templates"
     templates_dir.mkdir(exist_ok=True)
     (templates_dir / "handoff-report.md").write_text(
@@ -764,6 +815,33 @@ def test_valid_minimal_repo_has_no_errors(tmp_path):
     write_minimal_repo(tmp_path)
 
     assert validate_repo.validate(tmp_path) == []
+
+
+def test_each_schema_requires_a_matching_valid_example(tmp_path):
+    write_minimal_repo(tmp_path)
+    (tmp_path / "examples" / "artifacts" / "artifact.example.json").unlink()
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "schemas/artifact.schema.json missing example artifact: examples/artifacts/artifact.example.json" in errors
+
+
+def test_schema_examples_must_validate_against_their_schema(tmp_path):
+    write_minimal_repo(tmp_path)
+    (tmp_path / "examples" / "artifacts" / "handoff-report.example.json").write_text(
+        json.dumps({"state": "VERIFY"}) + "\n",
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert any(
+        error.startswith(
+            "examples/artifacts/handoff-report.example.json must validate against schemas/handoff-report.schema.json:"
+        )
+        and "'decision' is a required property" in error
+        for error in errors
+    )
 
 
 def test_markdown_links_must_point_to_existing_local_files(tmp_path):

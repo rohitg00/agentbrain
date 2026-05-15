@@ -1,0 +1,13 @@
+{
+  "decisions": [
+    {
+      "decision": "Use the existing command route before creating a new workflow.",
+      "reason": "The request fits an existing harness state and should not create one-off process drift.",
+      "date": "2026-05-15",
+      "alternatives_considered": [
+        "Create a new command immediately",
+        "Proceed without a recorded route"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "assumptions": [
+    {
+      "claim": "The request needs source-backed research before build work.",
+      "confidence": "medium",
+      "validation_path": "Run /brain-research and capture inspected sources before planning."
+    }
+  ]
+}

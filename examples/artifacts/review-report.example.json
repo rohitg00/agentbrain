@@ -1,0 +1,12 @@
+{
+  "summary": "The slice is small, validator-backed, and keeps public copy neutral.",
+  "findings": [
+    {
+      "severity": "note",
+      "area": "validation",
+      "finding": "The new rule is covered by targeted tests and the full validation gate.",
+      "recommendation": "Keep examples updated when schemas change."
+    }
+  ],
+  "decision": "approve"
+}

@@ -1,0 +1,18 @@
+{
+  "title": "Validator-backed artifact examples",
+  "target_user": "A coding agent adopting the harness from a fresh checkout",
+  "problem": "The agent needs concrete schema-shaped examples instead of guessing artifact structure from prose.",
+  "evidence": [
+    "schemas/ contains artifact contracts",
+    "templates/ contains markdown output templates"
+  ],
+  "success_metric": "Every schema has a matching example that validates locally.",
+  "non_goals": [
+    "Replace the markdown templates",
+    "Create runtime-specific commands"
+  ],
+  "open_questions": [],
+  "risks": [
+    "Examples can become stale if schemas change without validation."
+  ]
+}

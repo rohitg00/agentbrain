@@ -1,0 +1,22 @@
+{
+  "candidate": "Store the current validation gate as project memory.",
+  "decision": "write",
+  "target_tier": "project-doc",
+  "evidence": [
+    "README.md Quickstart lists the gate commands.",
+    "CONTRIBUTING.md documents the validation workflow."
+  ],
+  "freshness": {
+    "scope": "current repository validation workflow",
+    "expires_or_review_after": "when requirements-dev.txt, CI, tests, or validator scripts change"
+  },
+  "privacy_review": {
+    "contains_secret": false,
+    "contains_sensitive_personal_data": false,
+    "action": "Safe to document as public project workflow."
+  },
+  "rejected_material": [],
+  "written_update": "Run pytest, validate_repo, diff check, and targeted exact-name scrub before public changes.",
+  "next_use": "Use before claiming a future harness change is complete.",
+  "follow_up": []
+}

@@ -158,6 +158,7 @@ requirements-dev.txt           # Local validation dependencies
 commands/                      # Slash command specs
 skills/                        # Portable agent skills
 schemas/                       # Machine-checkable artifact schemas
+examples/artifacts/            # Valid JSON examples for each published schema
 docs/                          # Architecture, state, memory, research, gates
 templates/                     # Artifact templates
 evals/                         # Cases and rubrics
@@ -244,7 +245,7 @@ If no command fits, do not invent a new route silently. Stop with the closest ex
 
 ## Artifact Routing Guide
 
-Use this guide when a command says to produce an artifact. Start with the command output, then choose the closest template and validate against the matching schema when one exists.
+Use this guide when a command says to produce an artifact. Start with the command output, then choose the closest template and validate against the matching schema when one exists. For JSON-shaped artifacts, inspect `examples/artifacts/<schema-name>.example.json` before inventing field names; the validator keeps every example aligned with its schema.
 
 | Work product | Use this file | Schema / contract |
 | --- | --- | --- |

@@ -1132,6 +1132,28 @@ def validate(root: Path = ROOT) -> list[str]:
             errors.append(f"invalid json schema {rel(path, root)}: {exc}")
             continue
 
+        example_path = root / "examples" / "artifacts" / path.name.replace(".schema.json", ".example.json")
+        if not example_path.exists():
+            errors.append(
+                f"{rel(path, root)} missing example artifact: {rel(example_path, root)}"
+            )
+        else:
+            try:
+                example = json.loads(
+                    example_path.read_text(encoding="utf-8"),
+                    object_pairs_hook=reject_duplicate_json_keys,
+                )
+                instance_validator = schema_validator(schema)
+                example_errors = sorted(instance_validator.iter_errors(example), key=lambda error: list(error.path))
+                for example_error in example_errors:
+                    errors.append(
+                        f"{rel(example_path, root)} must validate against {rel(path, root)}: {example_error.message}"
+                    )
+            except Exception as exc:
+                errors.append(
+                    f"{rel(example_path, root)} must contain valid JSON for {rel(path, root)}: {exc}"
+                )
+
         properties = schema.get("properties", {})
         if not schema.get("$schema"):
             errors.append(f"{rel(path, root)} missing $schema dialect declaration")

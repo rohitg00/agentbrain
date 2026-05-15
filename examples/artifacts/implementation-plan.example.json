@@ -1,0 +1,26 @@
+{
+  "goal": "Add a validator-backed documentation hardening slice.",
+  "tasks": [
+    {
+      "id": "slice-1",
+      "description": "Add a failing validator test for the missing harness contract, then implement the smallest passing rule.",
+      "acceptance_criteria": [
+        "The targeted test fails before implementation and passes after implementation.",
+        "The full validation gate passes."
+      ],
+      "files": [
+        "tests/test_validate_repo.py",
+        "scripts/validate_repo.py"
+      ],
+      "depends_on": []
+    }
+  ],
+  "validation": [
+    "python -m pytest -q",
+    "python scripts/validate_repo.py",
+    "git diff --check"
+  ],
+  "rollback": [
+    "Revert the slice commit if validation or CI fails in a way that cannot be fixed narrowly."
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "checks": [
+    {
+      "name": "Repository validation",
+      "method": "Run python scripts/validate_repo.py from the repository root.",
+      "result": "pass",
+      "evidence": "Validation passed in the current run."
+    }
+  ]
+}
