@@ -128,6 +128,10 @@ def build_report(
     loaded_skills: list[str] | None = None,
     adapter_path: str = "unknown",
     validation_commands: list[str] | None = None,
+    write_fence_allowed_paths: list[str] | None = None,
+    write_fence_disallowed_paths: list[str] | None = None,
+    write_fence_user_owned_files: list[str] | None = None,
+    write_fence_rollback_command: str = "not_applicable",
 ) -> dict[str, object]:
     root = Path(root)
     if sandbox_write_mode not in SANDBOX_WRITE_MODES:
@@ -145,6 +149,12 @@ def build_report(
     command_label = brain_command_mode.replace("_", " ")
     loaded_skills = loaded_skills or []
     validation_commands = validation_commands or []
+    write_fence = {
+        "allowed_paths": write_fence_allowed_paths or [],
+        "disallowed_paths": write_fence_disallowed_paths or [],
+        "user_owned_files": write_fence_user_owned_files or [],
+        "rollback_command": write_fence_rollback_command,
+    }
     fetch_result = git_fetch_result(root)
     freshness = git_freshness_result(root)
     evidence = [
@@ -162,6 +172,11 @@ def build_report(
         f"Transcript redaction status: {transcript_redaction_status}",
         f"Blocked commands recorded: {', '.join(blocked_commands) if blocked_commands else 'none'}.",
         f"Validation commands: {', '.join(validation_commands) if validation_commands else 'none'}.",
+        "Write fence: "
+        f"allowed={', '.join(write_fence['allowed_paths']) if write_fence['allowed_paths'] else 'none'}; "
+        f"disallowed={', '.join(write_fence['disallowed_paths']) if write_fence['disallowed_paths'] else 'none'}; "
+        f"user-owned={', '.join(write_fence['user_owned_files']) if write_fence['user_owned_files'] else 'none'}; "
+        f"rollback={write_fence_rollback_command}.",
     ]
 
     return {
@@ -184,6 +199,7 @@ def build_report(
         "blocked_commands": blocked_commands,
         "run_scope": run_scope,
         "validation_commands": validation_commands,
+        "write_fence": write_fence,
         "evidence": evidence,
     }
 
@@ -236,7 +252,7 @@ def validate_report_against_schema(
     validator = Draft202012Validator(schema)
     errors = [error.message for error in sorted(validator.iter_errors(report), key=lambda error: list(error.path))]
 
-    for field in ["exact_command", "transcript_path", "blocked_commands", "validation_commands", "evidence"]:
+    for field in ["exact_command", "transcript_path", "blocked_commands", "validation_commands", "write_fence", "evidence"]:
         if contains_secret_like_value(report.get(field)):
             errors.append(f"runtime smoke artifact contains secret-like value in {field}; redact before output")
 
@@ -392,6 +408,36 @@ def validate_report_against_schema(
                     "exact_command must record validation command flag: "
                     f"--validation-command {validation_command}"
                 )
+        write_fence = report.get("write_fence")
+        if not isinstance(write_fence, dict):
+            errors.append("full_validation requires write_fence with allowed_paths")
+            errors.append("full_validation requires write_fence with rollback_command")
+        else:
+            required_list_fields = [
+                ("allowed_paths", "--write-fence-allowed-path"),
+                ("disallowed_paths", "--write-fence-disallowed-path"),
+                ("user_owned_files", "--write-fence-user-owned-file"),
+            ]
+            for field_name, flag in required_list_fields:
+                values = write_fence.get(field_name)
+                if not (isinstance(values, list) and any(isinstance(value, str) and value for value in values)):
+                    errors.append(f"full_validation requires write_fence with {field_name}")
+                    continue
+                for value in values:
+                    if isinstance(value, str) and value and not exact_command_has_flag_value(
+                        report.get("exact_command"), flag, value
+                    ):
+                        errors.append(f"exact_command must record write fence flag: {flag} {value}")
+            rollback_command = write_fence.get("rollback_command")
+            if not (isinstance(rollback_command, str) and rollback_command.strip() and rollback_command != "not_applicable"):
+                errors.append("full_validation requires write_fence with rollback_command")
+            elif not exact_command_has_flag_value(
+                report.get("exact_command"), "--write-fence-rollback-command", rollback_command
+            ):
+                errors.append(
+                    "exact_command must record write fence flag: "
+                    f"--write-fence-rollback-command {rollback_command}"
+                )
     if root is not None and report.get("smoke_result") == "pass":
         adapter_path = report.get("adapter_path")
         if isinstance(adapter_path, str) and adapter_path != "unknown":
@@ -451,6 +497,29 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
         default=[],
         help="Successful local gate command completed during full validation; repeat for each gate command",
     )
+    parser.add_argument(
+        "--write-fence-allowed-path",
+        action="append",
+        default=[],
+        help="Path the full-validation runtime was allowed to write; repeat for each path",
+    )
+    parser.add_argument(
+        "--write-fence-disallowed-path",
+        action="append",
+        default=[],
+        help="Path the full-validation runtime was forbidden to write; repeat for each path",
+    )
+    parser.add_argument(
+        "--write-fence-user-owned-file",
+        action="append",
+        default=[],
+        help="User-owned file or dirty path preserved by the write fence; repeat for each path",
+    )
+    parser.add_argument(
+        "--write-fence-rollback-command",
+        default="not_applicable",
+        help="Rollback command for full-validation writes",
+    )
     parser.add_argument("--root", type=Path, default=Path.cwd(), help="Repository root to inspect")
     parser.add_argument("--schema", type=Path, help="Runtime-smoke schema path; defaults to <root>/schemas/runtime-smoke.schema.json")
     parser.add_argument("--output", type=Path, help="Optional JSON output path; stdout is used when omitted")
@@ -478,6 +547,10 @@ def main(argv: list[str] | None = None) -> int:
         loaded_skills=args.loaded_skill,
         adapter_path=args.adapter_path,
         validation_commands=args.validation_command,
+        write_fence_allowed_paths=args.write_fence_allowed_path,
+        write_fence_disallowed_paths=args.write_fence_disallowed_path,
+        write_fence_user_owned_files=args.write_fence_user_owned_file,
+        write_fence_rollback_command=args.write_fence_rollback_command,
     )
     schema_path = args.schema or (args.root / "schemas" / "runtime-smoke.schema.json")
     errors = validate_report_against_schema(report, schema_path, root=args.root)

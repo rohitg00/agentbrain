@@ -1,6 +1,6 @@
 # Runtime Smoke
 
-Schema fields: `runtime`, `version`, `python_executable`, `writable_temp_dir_status`, `git_fetch_result`, `git_freshness_result`, `exact_command`, `command_exit_status`, `smoke_result`, `transcript_path`, `transcript_redaction_status`, `sandbox_write_mode`, `brain_command_mode`, `selected_command`, `loaded_skills`, `adapter_path`, `blocked_commands`, `run_scope`, `validation_commands`, `evidence`.
+Schema fields: `runtime`, `version`, `python_executable`, `writable_temp_dir_status`, `git_fetch_result`, `git_freshness_result`, `exact_command`, `command_exit_status`, `smoke_result`, `transcript_path`, `transcript_redaction_status`, `sandbox_write_mode`, `brain_command_mode`, `selected_command`, `loaded_skills`, `adapter_path`, `blocked_commands`, `run_scope`, `validation_commands`, `write_fence`, `evidence`.
 
 Use this artifact when checking Agent Brain in a real agent runtime rather than only repository fixtures. Record direct evidence so the next maintainer can tell whether the run was a read-only smoke or full validation. Prefer the helper so the JSON artifact is validated against `schemas/runtime-smoke.schema.json` before it is trusted:
 
@@ -29,7 +29,11 @@ For `full_validation`, repeat `--validation-command` for each successful local g
 --validation-command "rm -rf scripts/__pycache__ tests/__pycache__" \
 --validation-command "python -m pytest -q" \
 --validation-command "python scripts/validate_repo.py" \
---validation-command "git diff --check"
+--validation-command "git diff --check" \
+--write-fence-allowed-path "artifacts/runtime-smoke/" \
+--write-fence-disallowed-path ".git/" \
+--write-fence-user-owned-file "README.md if dirty before the run" \
+--write-fence-rollback-command "git restore --staged . && git restore artifacts/runtime-smoke/"
 ```
 
 The helper exits non-zero if the generated artifact does not satisfy the schema. Do not paste or hand-edit runtime-smoke JSON around that check unless the runtime cannot execute Python; in that case, mark the run as `read_only_smoke`, list the blocked command, and route follow-up through `/brain-verify`.
@@ -55,8 +59,9 @@ The helper exits non-zero if the generated artifact does not satisfy the schema.
 - **Blocked commands:** Commands that could not run and why. Any artifact with blocked commands must use `smoke_result: blocked` or `smoke_result: fail`; never mark a run as `pass` while required commands are blocked. Use `blocked` for policy/sandbox/approval limits and `fail` for a command that returned a non-zero exit status.
 - **Run scope:** `read_only_smoke` or `full_validation`.
 - **Validation commands:** Successful local gate commands run during `full_validation`; include `rm -rf scripts/__pycache__ tests/__pycache__`, `python -m pytest -q`, `python scripts/validate_repo.py`, and `git diff --check`. Leave empty for read-only smoke.
+- **Write fence:** Object that records `allowed_paths`, `disallowed_paths`, `user_owned_files`, and `rollback_command`. `full_validation` requires all four so a write-capable runtime proves the intended write boundary before it edits artifacts, avoids user-owned dirty files, and leaves a concrete rollback command.
 - **Evidence:** Logs, outputs, files inspected, command results, and blockers.
 
 ## Review Notes
 
-Do not claim full validation when sandboxing blocked installs, temp files, tests, repository writes, command routing, skill loading, adapter mapping, transcript capture/redaction review, or the runtime is read-only. Any `smoke_result: pass` artifact must point to an existing selected command file and an existing adapter README when validated with `--root`; otherwise the helper rejects it as unproven routing. Any `smoke_result: fail` artifact must record a non-zero `command_exit_status`; use `blocked` instead when a policy, sandbox, or approval gate prevented the command from running. A `full_validation` artifact must have `smoke_result: pass`, no `blocked_commands`, `writable_temp_dir_status: writable`, successful `git fetch origin main` evidence, a durable transcript path, transcript redaction status of `redacted` or `no_sensitive_content`, a fresh checkout, a write-capable sandbox/write mode, proven `/brain-*` command mode, a selected `/brain-*` command, at least one loaded skill that is declared by that command, a concrete adapter path, and recorded successful validation commands for cache cleanup, pytest, repository validation, and whitespace diff checking; otherwise the helper rejects it. Mark blocked or read-only runs as `read_only_smoke`, list the blocked commands, and route the follow-up through `/brain-verify` or `/brain-review` before trusting the runtime adapter.
+Do not claim full validation when sandboxing blocked installs, temp files, tests, repository writes, command routing, skill loading, adapter mapping, transcript capture/redaction review, or the runtime is read-only. Any `smoke_result: pass` artifact must point to an existing selected command file and an existing adapter README when validated with `--root`; otherwise the helper rejects it as unproven routing. Any `smoke_result: fail` artifact must record a non-zero `command_exit_status`; use `blocked` instead when a policy, sandbox, or approval gate prevented the command from running. A `full_validation` artifact must have `smoke_result: pass`, no `blocked_commands`, `writable_temp_dir_status: writable`, successful `git fetch origin main` evidence, a durable transcript path, transcript redaction status of `redacted` or `no_sensitive_content`, a fresh checkout, a write-capable sandbox/write mode, proven `/brain-*` command mode, a selected `/brain-*` command, at least one loaded skill that is declared by that command, a concrete adapter path, recorded successful validation commands for cache cleanup, pytest, repository validation, and whitespace diff checking, plus a write fence with allowed paths, disallowed paths, user-owned files, and rollback command; otherwise the helper rejects it. Mark blocked or read-only runs as `read_only_smoke`, list the blocked commands, and route the follow-up through `/brain-verify` or `/brain-review` before trusting the runtime adapter.

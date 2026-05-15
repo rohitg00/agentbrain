@@ -79,6 +79,47 @@ def test_build_report_emits_schema_valid_runtime_smoke_for_plain_checkout(tmp_pa
     assert "markdown specs" in "\n".join(report["evidence"]).lower()
 
 
+def test_full_validation_requires_write_fence_for_runtime_writes(monkeypatch, tmp_path: Path):
+    monkeypatch.setattr(runtime_smoke, "git_freshness_result", lambda _root: "fresh: HEAD equals origin/main at abc123")
+    monkeypatch.setattr(runtime_smoke, "git_fetch_result", lambda _root: "fetched: git fetch origin main succeeded")
+    transcript = tmp_path / "artifacts" / "runtime-smoke" / "generic-cli-runtime-2026-05-15.log"
+    transcript.parent.mkdir(parents=True)
+    transcript.write_text("redacted runtime transcript\n", encoding="utf-8")
+    command = (
+        "python scripts/runtime_smoke.py --runtime generic-cli-runtime --version 1.2.3 "
+        "--run-scope full_validation --selected-command /brain-verify "
+        "--loaded-skill runtime-smoke --adapter-path adapters/read-only-cli/README.md "
+        "--sandbox-write-mode workspace_write --brain-command-mode markdown_specs "
+        "--transcript-path artifacts/runtime-smoke/generic-cli-runtime-2026-05-15.log "
+        "--smoke-result pass --command-exit-status 0 --transcript-redaction-status redacted "
+    ) + " ".join(
+        f"--validation-command '{validation_command}'"
+        for validation_command in runtime_smoke.FULL_VALIDATION_GATE_COMMANDS
+    )
+    report = runtime_smoke.build_report(
+        root=tmp_path,
+        runtime="generic-cli-runtime",
+        version="1.2.3",
+        sandbox_write_mode="workspace_write",
+        brain_command_mode="markdown_specs",
+        run_scope="full_validation",
+        blocked_commands=[],
+        exact_command=command,
+        smoke_result="pass",
+        transcript_path="artifacts/runtime-smoke/generic-cli-runtime-2026-05-15.log",
+        transcript_redaction_status="redacted",
+        selected_command="/brain-verify",
+        loaded_skills=["runtime-smoke"],
+        adapter_path="adapters/read-only-cli/README.md",
+        validation_commands=runtime_smoke.FULL_VALIDATION_GATE_COMMANDS,
+    )
+
+    errors = runtime_smoke.validate_report_against_schema(report, Path("schemas/runtime-smoke.schema.json"))
+
+    assert any("full_validation requires write_fence with allowed_paths" in error for error in errors)
+    assert any("full_validation requires write_fence with rollback_command" in error for error in errors)
+
+
 def test_full_validation_requires_git_fetch_evidence(monkeypatch, tmp_path: Path):
     monkeypatch.setattr(runtime_smoke, "git_freshness_result", lambda _root: "fresh: HEAD equals origin/main at abc123")
     monkeypatch.setattr(runtime_smoke, "git_fetch_result", lambda _root: "unavailable: fetch was blocked")
@@ -1354,6 +1395,14 @@ def test_main_quotes_exact_command_values_for_full_validation_flags(monkeypatch,
             "python scripts/validate_repo.py",
             "--validation-command",
             "git diff --check",
+            "--write-fence-allowed-path",
+            "artifacts/runtime-smoke/",
+            "--write-fence-disallowed-path",
+            ".git/",
+            "--write-fence-user-owned-file",
+            "README.md if dirty before the run",
+            "--write-fence-rollback-command",
+            "git restore --staged . && git restore artifacts/runtime-smoke/",
             "--output",
             str(output_path),
         ]

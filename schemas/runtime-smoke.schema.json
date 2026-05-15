@@ -23,6 +23,7 @@
     "blocked_commands",
     "run_scope",
     "validation_commands",
+    "write_fence",
     "evidence"
   ],
   "properties": {
@@ -132,6 +133,43 @@
       "items": {
         "type": "string",
         "minLength": 1
+      }
+    },
+    "write_fence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "allowed_paths",
+        "disallowed_paths",
+        "user_owned_files",
+        "rollback_command"
+      ],
+      "properties": {
+        "allowed_paths": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "disallowed_paths": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "user_owned_files": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "rollback_command": {
+          "type": "string",
+          "minLength": 1
+        }
       }
     },
     "evidence": {

@@ -23,6 +23,12 @@
   ],
   "run_scope": "read_only_smoke",
   "validation_commands": [],
+  "write_fence": {
+    "allowed_paths": [],
+    "disallowed_paths": [],
+    "user_owned_files": [],
+    "rollback_command": "not_applicable"
+  },
   "evidence": [
     "Runtime opened AGENTBRAIN.md and commands/brain-start.md",
     "Selected command: /brain-start",
