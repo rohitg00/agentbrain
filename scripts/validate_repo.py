@@ -304,6 +304,12 @@ REQUIRED_CONSTITUTION_DONE_DEFINITION_TERMS = [
     "git diff --check",
     "targeted exact-name scrub",
 ]
+REQUIRED_CONSTITUTION_PUBLIC_COPY_TERMS = [
+    "external sources",
+    "neutral operator pattern",
+    "public copy neutral",
+    "targeted exact-name scrub",
+]
 REQUIRED_AGENT_HARNESS_SECTIONS = [
     "## Install",
     "## Fresh Checkout Bootstrap",
@@ -1285,6 +1291,13 @@ def validate(root: Path = ROOT) -> list[str]:
             if term not in done_definition:
                 errors.append(
                     "AGENTBRAIN.md done definition must require fresh validation proof: "
+                    f"{term}"
+                )
+        public_copy_neutrality = section_body(constitution_text, "## Public copy neutrality").lower()
+        for term in REQUIRED_CONSTITUTION_PUBLIC_COPY_TERMS:
+            if term not in public_copy_neutrality:
+                errors.append(
+                    "AGENTBRAIN.md must document public-copy neutrality for source distillation: "
                     f"{term}"
                 )
 

@@ -116,6 +116,10 @@ Use the speed fallback:
 
 When Agent Brain is used in a noninteractive scheduled run, the agent cannot ask questions or wait for follow-up. It should use the safest documented default only when the ambiguity does not change the action. If the ambiguity affects scope, safety, side effects, secrets, rollback, or user approval, stop with a blocker and name the missing evidence instead of guessing.
 
+## Public copy neutrality
+
+When learning from external sources, distill the neutral operator pattern, keep public copy neutral, and run the targeted exact-name scrub before promoted docs, commands, skills, templates, schemas, or evals change. Public repo copy should describe reusable jobs, evidence, failure modes, and verification gates instead of preserving source branding or source-specific command names.
+
 ## When the user wants a big vision
 
 Split the vision into:

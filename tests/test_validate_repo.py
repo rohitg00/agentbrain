@@ -18,6 +18,9 @@ def write_minimal_repo(root: Path) -> None:
         "# Agent Brain Constitution\n\n"
         "When running as a noninteractive scheduled run, the harness cannot ask questions. "
         "Use the safest documented default or stop with a blocker when ambiguity changes the action.\n\n"
+        "## Public copy neutrality\n\n"
+        "When learning from external sources, distill the neutral operator pattern, keep public copy neutral, "
+        "and run the targeted exact-name scrub before promoted docs, commands, skills, templates, schemas, or evals change.\n\n"
         "## Done definition\n\n"
         "A task is done only with fresh validation proof from python -m pytest -q, "
         "python scripts/validate_repo.py, git diff --check, and targeted exact-name scrub.\n",
@@ -6182,6 +6185,23 @@ def test_constitution_done_definition_requires_fresh_validation_gate(tmp_path):
     errors = validate_repo.validate(tmp_path)
 
     assert "AGENTBRAIN.md done definition must require fresh validation proof: fresh validation proof" in errors
+
+
+def test_constitution_requires_public_copy_neutrality_contract(tmp_path):
+    write_minimal_repo(tmp_path)
+    constitution = tmp_path / "AGENTBRAIN.md"
+    constitution.write_text(
+        constitution.read_text(encoding="utf-8").replace(
+            "When learning from external sources, distill the neutral operator pattern, keep public copy neutral, "
+            "and run the targeted exact-name scrub before promoted docs, commands, skills, templates, schemas, or evals change.\n\n",
+            "Use external sources when useful.\n\n",
+        ),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "AGENTBRAIN.md must document public-copy neutrality for source distillation: neutral operator pattern" in errors
 
 
 def test_schema_title_must_match_artifact_filename(tmp_path):
