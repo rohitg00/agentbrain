@@ -1584,11 +1584,12 @@ def validate(root: Path = ROOT) -> list[str]:
                 if not (root / "commands" / f"{command_file}.md").exists():
                     errors.append(f"{rel(case, root)} harness route references missing command: {command_name}")
             route_skill_refs = set(re.findall(r"`([a-z0-9]+(?:-[a-z0-9]+)*)`", harness_route))
-            existing_route_skill_refs = [
-                skill_name
-                for skill_name in route_skill_refs
-                if (root / "skills" / skill_name / "SKILL.md").exists()
-            ]
+            existing_route_skill_refs = []
+            for skill_name in sorted(route_skill_refs):
+                if (root / "skills" / skill_name / "SKILL.md").exists():
+                    existing_route_skill_refs.append(skill_name)
+                else:
+                    errors.append(f"{rel(case, root)} harness route references missing skill: {skill_name}")
             if not existing_route_skill_refs:
                 errors.append(f"{rel(case, root)} harness route must name at least one existing skill")
 
