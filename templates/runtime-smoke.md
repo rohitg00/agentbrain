@@ -37,7 +37,7 @@ The helper exits non-zero if the generated artifact does not satisfy the schema.
 ## Required Fields
 
 - **Runtime:** Neutral runtime label, such as CLI runtime, approval-gated runtime, subagent runtime, or skill runtime.
-- **Version:** Exact runtime version or `unknown` with evidence explaining why it could not be checked.
+- **Version:** Exact runtime version. A `pass` artifact cannot use `unknown`, `not_checked`, or other placeholders; if the runtime version cannot be checked, mark the smoke as `blocked` or `fail` and explain the version lookup blocker in evidence.
 - **Python executable:** Path and version used for repository checks, or blocker if Python could not run.
 - **Writable temp-dir status:** `writable`, `blocked`, or `not_checked`. `full_validation` requires `writable` so installs, pytest temp fixtures, generated artifacts, and runtime transcripts are not overstated from a read-only or partially blocked run.
 - **Git fetch result:** Direct `git fetch origin main` result captured during the smoke run. `full_validation` requires successful fetch evidence so a stale local `origin/main` cache cannot masquerade as fresh.

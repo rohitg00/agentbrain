@@ -222,6 +222,13 @@ def contains_secret_like_value(value: object) -> bool:
     return False
 
 
+def version_is_concrete(value: object) -> bool:
+    if not isinstance(value, str):
+        return False
+    normalized = value.strip().lower()
+    return normalized not in {"", "unknown", "n/a", "na", "not_checked", "not checked", "unavailable"}
+
+
 def validate_report_against_schema(
     report: dict[str, object], schema_path: Path, *, root: Path | None = None
 ) -> list[str]:
@@ -255,6 +262,8 @@ def validate_report_against_schema(
     if report.get("smoke_result") == "fail" and report.get("command_exit_status") == 0:
         errors.append("fail smoke_result requires nonzero command_exit_status")
     if report.get("smoke_result") == "pass":
+        if not version_is_concrete(report.get("version")):
+            errors.append("pass smoke_result requires a concrete runtime version")
         runtime = report.get("runtime")
         if isinstance(runtime, str) and not exact_command_has_flag_value(
             report.get("exact_command"), "--runtime", runtime
