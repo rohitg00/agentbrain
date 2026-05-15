@@ -128,6 +128,7 @@ REQUIRED_README_MINIMAL_HARNESS_PROMPT_TERMS = [
     "git status --short",
     "git log --oneline -5",
     "baseline validation",
+    "rm -rf scripts/__pycache__ tests/__pycache__",
     "Preserve user changes",
     "commands/",
     "skills/",
