@@ -1553,6 +1553,7 @@ def validate(root: Path = ROOT) -> list[str]:
     seen_quality_bars: dict[str, str] = {}
     seen_stop_conditions: dict[str, str] = {}
     skills_loaded_by_commands: set[str] = set()
+    skills_loaded_by_command: dict[str, set[str]] = {}
     required_command_artifact_templates: dict[str, str] = {}
     for command in sorted((root / "commands").glob("*.md")):
         text = command.read_text(errors="ignore")
@@ -1661,6 +1662,7 @@ def validate(root: Path = ROOT) -> list[str]:
             else:
                 seen_stop_conditions[stop_conditions] = rel(command, root)
         skill_names = command_skills_to_load(text)
+        skills_loaded_by_command[f"/{command.stem}"] = set(skill_names)
         skills_loaded_by_commands.update(skill_names)
         if not skill_names:
             errors.append(f"{rel(command, root)} skills-to-load section must name at least one skill")
@@ -1976,6 +1978,15 @@ def validate(root: Path = ROOT) -> list[str]:
                     errors.append(f"{rel(case, root)} harness route references missing skill: {skill_name}")
             if not existing_route_skill_refs:
                 errors.append(f"{rel(case, root)} harness route must name at least one existing skill")
+            if route_command_refs and existing_route_skill_refs:
+                route_command_skills = set().union(
+                    *(skills_loaded_by_command.get(command_name, set()) for command_name in route_command_refs)
+                )
+                for skill_name in sorted(existing_route_skill_refs):
+                    if skill_name not in route_command_skills:
+                        errors.append(
+                            f"{rel(case, root)} harness route references skill not loaded by any referenced command: {skill_name}"
+                        )
 
     evals_readme = root / "evals" / "README.md"
     if evals_readme.exists():

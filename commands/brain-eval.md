@@ -20,6 +20,9 @@ If required inputs are missing, ask at most three blocking questions or state ex
 
 - `agent-output-verifier` to evaluate whether the tested output is safe to trust.
 - `qa-evidence` to tie eval conclusions to concrete logs, cases, and rubric evidence.
+- `ci-recovery` when eval evidence depends on remote workflow status.
+- `evidence-research` when eval evidence depends on source-backed claims.
+- `runtime-smoke` when eval evidence depends on a real agent runtime, adapter, sandbox, or `/brain-*` command boundary.
 
 ## Workflow
 

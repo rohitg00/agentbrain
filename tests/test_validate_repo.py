@@ -464,6 +464,10 @@ def write_minimal_repo(root: Path) -> None:
             "Eval target, case list, known facts, assumptions, constraints, evidence, and approval state.",
             "## Skills to load",
             "Load `agent-output-verifier` before trusting generated output.",
+            "Load `qa-evidence` to tie eval conclusions to concrete logs, cases, and rubric evidence.",
+            "Load `ci-recovery` when eval evidence depends on remote workflow status.",
+            "Load `evidence-research` when eval evidence depends on source-backed claims.",
+            "Load `runtime-smoke` when eval evidence depends on a real agent runtime, adapter, sandbox, or command boundary.",
             "## Workflow",
             "Select cases, collect proof, compare behavior to expected outcomes.",
             "## Output",
@@ -1027,6 +1031,22 @@ def test_eval_case_harness_route_must_reference_existing_skills(tmp_path):
     errors = validate_repo.validate(tmp_path)
 
     assert "evals/cases/activity-recap.md harness route references missing skill: missing-skill" in errors
+
+
+def test_eval_case_harness_route_skills_must_be_loaded_by_referenced_commands(tmp_path):
+    write_minimal_repo(tmp_path)
+    eval_case = tmp_path / "evals" / "cases" / "activity-recap.md"
+    eval_case.write_text(
+        eval_case.read_text(encoding="utf-8").replace("agent-output-verifier", "sample"),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert (
+        "evals/cases/activity-recap.md harness route references skill not loaded by any referenced command: sample"
+        in errors
+    )
 
 
 def test_state_machine_command_mapping_must_cover_each_command(tmp_path):
