@@ -652,6 +652,22 @@ def test_valid_minimal_repo_has_no_errors(tmp_path):
     assert validate_repo.validate(tmp_path) == []
 
 
+def test_docs_must_not_contain_stale_repository_bootstrap_instructions(tmp_path):
+    write_minimal_repo(tmp_path)
+    (tmp_path / "docs" / "implementation-plan.md").write_text(
+        "# Implementation Plan\n\n"
+        "## Immediate next tasks\n\n"
+        "1. Approve creating the GitHub repository under the owner account.\n"
+        "2. Push the docs-only v0.1.\n",
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "docs/implementation-plan.md contains stale repository bootstrap instruction: approve creating the github repository" in errors
+    assert "docs/implementation-plan.md contains stale repository bootstrap instruction: push the docs-only" in errors
+
+
 def test_skills_must_name_when_not_to_use_the_workflow(tmp_path):
     write_minimal_repo(tmp_path)
     skill = tmp_path / "skills" / "sample" / "SKILL.md"

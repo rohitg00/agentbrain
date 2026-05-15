@@ -1,50 +1,49 @@
 # Implementation Plan
 
-> For agents: implement this repo task-by-task. Do not push to a remote until the owner approves.
+This plan is a living maintainer guide for hardening Agent Brain as a self-setup harness. It should describe the next useful slices, not historical bootstrap tasks.
 
 ## Goal
 
-Create a portable brain for AI agents that guides product creation, planning, review, QA, shipping, and learning through reusable Markdown skills and templates.
+Make the repo usable by another capable coding agent without private context: install dependencies, understand the operating loop, choose commands and skills, create artifacts, verify evidence, recover from failures, and hand off safely.
 
-## Milestone 1 — Portable docs pack
+## Operating Rules
 
-- Create constitution
-- Create command specs
-- Create core skills
-- Create product/planning/review templates
-- Create memory model
-- Create contribution rules
+- Start every slice from `git status --short` and `git log --oneline -5` evidence.
+- Add or update a test, eval, validator rule, or schema check before changing protected behavior.
+- Keep public copy neutral when distilling external sources into reusable operator patterns.
+- Run the full local quality gate before commit: cache cleanup, tests, repository validation, and whitespace check.
+- Push only when the requested workflow authorizes remote side effects, then fetch and confirm local HEAD matches `origin/main`.
 
-## Milestone 2 — Installer and adapters
+## Current Hardening Themes
 
-- Add install script to copy skills into supported runtimes
-- Add runtime adapter interface
-- Add validation command for skill shape
-- Add docs generation
+### 1. Harness bootstrap and routing
 
-## Milestone 3 — Evaluation
+Keep `README.md` and `docs/agent-harness.md` strong enough for fresh-checkout setup, command selection, edge-case handling, troubleshooting, and handoff without chat history.
 
-- Add scenario tests for every skill
-- Add rubric-based review for outputs
-- Add examples of good and bad interactions
-- Add regression fixtures for known agent failure modes
+### 2. Validator-backed structure
 
-## Milestone 4 — Runtime memory integration
+Prefer structural checks over prose reminders. When the repo learns a failure mode, encode it in `scripts/validate_repo.py`, a focused test, or an eval case so future runs cannot silently regress.
 
-- Add optional local markdown knowledge base
-- Add optional search index
-- Add memory write policy and linting
-- Add skill creation workflow
+### 3. Skill and command quality
 
-## Milestone 5 — Team workflow
+Keep skills small, trigger-driven, and composable. Keep commands tied to one lifecycle state with explicit inputs, loaded skills, workflow, output contract, stop conditions, and quality bar.
 
-- Add role bundles: product, design, engineering, QA, launch
-- Add orchestration guide for multiple agents
-- Add dashboard/status spec
+### 4. Evidence and review
 
-## Immediate next tasks
+Require proof before trust: test output, validation logs, source citations, diffs, screenshots, traces, approval records, or CI run evidence depending on the task.
 
-1. Review this draft for naming and public positioning.
-2. Approve creating the GitHub repository under the owner account.
-3. Push the docs-only v0.1.
-4. Open issues for installer, adapters, and eval harness.
+### 5. Learning and memory hygiene
+
+Route durable lessons into docs, skills, templates, schemas, evals, or validator rules. Reject temporary task logs, stale status notes, raw private data, and secrets as memory.
+
+## Next Slice Selection
+
+Choose the weakest uncovered failure mode in this order:
+
+1. A setup or validation gap that would block a fresh agent.
+2. A stale doc, command, skill, template, or schema contract that could route work incorrectly.
+3. A missing eval for a repeated agent failure mode.
+4. A public-copy neutrality gap around external source distillation.
+5. A maintainability gap in tests, validators, or CI.
+
+For each slice, record the failing proof, implement the smallest fix, run the targeted proof, run the full quality gate, inspect the diff, then commit with a conventional message.

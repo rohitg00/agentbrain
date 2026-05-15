@@ -193,6 +193,11 @@ STALE_STATUS_COMPLETION_TERMS = [
     "finished",
     "no more hardening",
 ]
+STALE_REPOSITORY_BOOTSTRAP_TERMS = [
+    "approve creating the github repository",
+    "push the docs-only",
+    "open issues for installer",
+]
 REQUIRED_AGENT_HARNESS_SECTIONS = [
     "## Install",
     "## Fresh Checkout Bootstrap",
@@ -1429,10 +1434,17 @@ def validate(root: Path = ROOT) -> list[str]:
         if single_h1_error:
             errors.append(single_h1_error)
         if markdown_file.parent == root / "docs":
+            markdown_text = markdown_file.read_text(errors="ignore")
             expected_heading = f"# {title_from_slug(markdown_file.stem)}"
-            first_line = markdown_file.read_text(errors="ignore").splitlines()[0]
+            first_line = markdown_text.splitlines()[0]
             if first_line != expected_heading:
                 errors.append(f"{rel(markdown_file, root)} heading must be {expected_heading}")
+            markdown_text_lower = markdown_text.lower()
+            for stale_term in STALE_REPOSITORY_BOOTSTRAP_TERMS:
+                if stale_term in markdown_text_lower:
+                    errors.append(
+                        f"{rel(markdown_file, root)} contains stale repository bootstrap instruction: {stale_term}"
+                    )
         if markdown_file.parent == root / "templates" and markdown_file.name != "skill-template.md":
             expected_heading = f"# {title_from_slug(markdown_file.stem)}"
             first_line = markdown_file.read_text(errors="ignore").splitlines()[0]
