@@ -149,6 +149,9 @@ REQUIRED_README_MINIMAL_HARNESS_PROMPT_TERMS = [
     "approval",
     "secrets",
     "loop limits",
+    "noninteractive",
+    "scheduled run",
+    "do not ask questions",
 ]
 REQUIRED_README_REPOSITORY_MAP_PATHS = [
     "requirements-dev.txt",
