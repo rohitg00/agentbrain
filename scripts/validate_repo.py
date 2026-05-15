@@ -364,6 +364,17 @@ REQUIRED_BUILD_COMMAND_PROOF_TERMS = [
     "failing test before implementation",
     "validator-first proof",
 ]
+COMMAND_ASK_USER_TERMS = [
+    "ask at most",
+    "ask for human input",
+    "ask the user",
+]
+COMMAND_NONINTERACTIVE_FALLBACK_TERMS = [
+    "noninteractive",
+    "cannot ask questions",
+    "safest documented default",
+    "blocker",
+]
 VALID_COMMAND_LIFECYCLE_STATES = set(REQUIRED_STATE_MACHINE_VALUES)
 REQUIRED_EVAL_CASE_SECTIONS = [
     "## User request",
@@ -1141,6 +1152,14 @@ def validate(root: Path = ROOT) -> list[str]:
                 errors.append(
                     f"{rel(command, root)} BUILD workflow must require failing test before implementation or validator-first proof"
                 )
+        command_text_lower = text.lower()
+        if any(term in command_text_lower for term in COMMAND_ASK_USER_TERMS):
+            for required_term in COMMAND_NONINTERACTIVE_FALLBACK_TERMS:
+                if required_term not in command_text_lower:
+                    errors.append(
+                        f"{rel(command, root)} mentions asking the user but must include noninteractive fallback guidance"
+                    )
+                    break
         output_body = section_body(text, "## Output").lower()
         for required_term in REQUIRED_COMMAND_OUTPUT_TERMS:
             if required_term not in output_body:

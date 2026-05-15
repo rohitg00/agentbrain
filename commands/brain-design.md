@@ -14,7 +14,7 @@ Use when a product brief needs UX or interaction design before planning.
 
 Product Brief, user flow, constraints, risk list.
 
-If required inputs are missing, ask at most three blocking questions or state explicit assumptions and risk.
+If required inputs are missing, ask at most three blocking questions or state explicit assumptions and risk. In noninteractive runs where the agent cannot ask questions, use the safest documented default or stop with a blocker when ambiguity changes the action.
 
 ## Skills to load
 

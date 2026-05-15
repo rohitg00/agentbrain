@@ -4966,3 +4966,19 @@ def test_readme_quickstart_requires_baseline_validation_before_editing(tmp_path)
     errors = validate_repo.validate(tmp_path)
 
     assert "README.md Quickstart must require baseline validation before editing" in errors
+
+
+def test_commands_that_ask_questions_require_noninteractive_fallback(tmp_path):
+    write_minimal_repo(tmp_path)
+    command = tmp_path / "commands" / "brain-sample.md"
+    command.write_text(
+        command.read_text(encoding="utf-8").replace(
+            "Stop when the request is unsafe.",
+            "Ask the user for clarification when evidence is missing.",
+        ),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "commands/brain-sample.md mentions asking the user but must include noninteractive fallback guidance" in errors

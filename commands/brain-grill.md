@@ -14,7 +14,7 @@ Use when the idea, brief, design, or plan has unresolved assumptions.
 
 Artifact to challenge plus known constraints and evidence.
 
-If required inputs are missing, ask at most three blocking questions or state explicit assumptions and risk.
+If required inputs are missing, ask at most three blocking questions or state explicit assumptions and risk. In noninteractive runs where the agent cannot ask questions, use the safest documented default or stop with a blocker when ambiguity changes the action.
 
 ## Skills to load
 
