@@ -1913,6 +1913,18 @@ def validate(root: Path = ROOT) -> list[str]:
             for required_term in REQUIRED_COMMAND_EXAMPLE_TERMS:
                 if required_term not in example_lower:
                     errors.append(f"{rel(command, root)} example must mention: {required_term}")
+            command_file_ref = f"commands/{command.name}"
+            if f"`{command_file_ref}`" not in example:
+                errors.append(
+                    f"{rel(command, root)} example must cite selected command file: {command_file_ref}"
+                )
+            example_skill_files = {
+                skill_name
+                for skill_name in command_skills_to_load(text)
+                if f"`skills/{skill_name}/SKILL.md`" in example
+            }
+            if not example_skill_files:
+                errors.append(f"{rel(command, root)} example must cite at least one loaded skill file")
             if required_artifact_template and f"`{required_artifact_template}`" not in example:
                 errors.append(
                     f"{rel(command, root)} example must cite required artifact template: {required_artifact_template}"
