@@ -314,6 +314,7 @@ REQUIRED_AGENT_HARNESS_WORKER_CONTRACT_TERMS = {
     "handoff": "docs/agent-harness.md worker guidance must require handoff contracts",
     "coordinator": "docs/agent-harness.md worker guidance must require coordinator join review",
     "worker scope": "docs/agent-harness.md worker guidance must require worker scope mapping",
+    "single writer": "docs/agent-harness.md worker guidance must require a single writer for parallel work",
     "accepted outputs": "docs/agent-harness.md worker guidance must require accepted output review",
     "rejected outputs": "docs/agent-harness.md worker guidance must require rejected output review",
     "conflict check": "docs/agent-harness.md worker guidance must require conflict checks",

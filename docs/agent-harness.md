@@ -172,6 +172,8 @@ For large work, split into worker scopes. Each worker scope must name its eviden
 
 No worker should approve its own unsupported claims, and every worker handoff should include checked evidence, blockers, residual risks, and the smallest safe next action.
 
+Keep parallel work read-only unless a coordinator has assigned a single writer for the next patch. The single writer owns the merge order, applies accepted outputs one slice at a time, rejects stale or conflicting worker changes, and reruns validation after each write so parallel exploration cannot corrupt the working tree.
+
 The coordinator must perform a parallel-worker join gate before accepting delegated results: map each worker scope to accepted outputs, list rejected outputs that were stale, unsupported, duplicated, or out-of-scope, run a conflict check across worker claims, and record the resolution in the handoff coordination review.
 
 ## Edge Cases

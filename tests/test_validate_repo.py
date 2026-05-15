@@ -396,7 +396,7 @@ def write_minimal_repo(root: Path) -> None:
         "Stop and report blockers when evidence, approval, scope, tests, rollback, secrets handling, safety, or loop limits are missing.\n"
         "```\n\n"
         "## Using It With Coding Agents\n"
-        "For large work, split worker scopes into researcher, planner, builder, verifier, reviewer, shipper, and learner roles. Each worker scope must name evidence, a stop condition, and a handoff contract. The coordinator must map accepted outputs, rejected outputs, and a conflict check into the coordination review.\n\n"
+        "For large work, split worker scopes into researcher, planner, builder, verifier, reviewer, shipper, and learner roles. Each worker scope must name evidence, a stop condition, and a handoff contract. Keep parallel work read-only unless the coordinator assigns a single writer for the next patch. The coordinator must map accepted outputs, rejected outputs, and a conflict check into the coordination review.\n\n"
         "## Troubleshooting\n"
         "Inspect validation errors before continuing. If git status --short shows a dirty working tree, preserve user changes before editing. If secret-like values appear, remove them, rotate them outside the repo, and keep only redacted placeholders. If Tests pass locally but CI fails, run the exact CI sequence locally and inspect .github/workflows/quality.yml for Python 3.11 parity gaps. If dependency bootstrap fails with ModuleNotFoundError, create or refresh a Python 3.11 virtual environment before rerunning install. If validation reports a generated Python cache file, delete cache directories and rerun validation. If validation reports a schema/template mismatch, update the schema fields, matching template tokens, and routing docs together before rerunning validation.\n"
         "\n## Maintainer Checklist\n"
@@ -5648,3 +5648,19 @@ def test_readme_quickstart_requires_remote_freshness_check(tmp_path):
     errors = validate_repo.validate(tmp_path)
 
     assert "README.md Quickstart must verify remote freshness before editing: git fetch origin main" in errors
+
+
+def test_agent_harness_requires_single_writer_parallel_coordination(tmp_path):
+    write_minimal_repo(tmp_path)
+    harness = tmp_path / "docs" / "agent-harness.md"
+    harness.write_text(
+        harness.read_text(encoding="utf-8").replace(
+            "Keep parallel work read-only unless the coordinator assigns a single writer for the next patch. ",
+            "",
+        ),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "docs/agent-harness.md worker guidance must require a single writer for parallel work" in errors
