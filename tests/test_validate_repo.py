@@ -4889,6 +4889,18 @@ def test_public_copy_scan_ignores_local_dependency_directories(tmp_path):
     assert errors == []
 
 
+def test_template_must_not_list_schema_fields_that_do_not_exist(tmp_path):
+    write_minimal_repo(tmp_path)
+    (tmp_path / "templates" / "eval-report.md").write_text(
+        "# Eval Report\n\nSchema fields: `target`, `cases`, `decision`, `evidence_checked`, `risks`, `open_questions`, `next_action`, `imagined_status`.\n",
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "templates/eval-report.md references unknown schema field from schemas/eval-report.schema.json: imagined_status" in errors
+
+
 def test_skill_template_description_must_start_with_trigger(tmp_path):
     write_minimal_repo(tmp_path)
     templates_dir = tmp_path / "templates"

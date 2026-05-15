@@ -858,6 +858,15 @@ def readme_artifact_routing_entries(text: str, prefix: str) -> list[str]:
     return sorted(set(re.findall(pattern, body)))
 
 
+def template_schema_field_references(text: str) -> set[str]:
+    refs: set[str] = set()
+    for line in text.splitlines():
+        if "schema fields" not in line.lower():
+            continue
+        refs.update(re.findall(r"`([A-Za-z_][A-Za-z0-9_]*)`", line))
+    return refs
+
+
 def command_skills_to_load(text: str) -> list[str]:
     body = section_body(text, "## Skills to load")
     return sorted(set(re.findall(r"`([a-z0-9]+(?:-[a-z0-9]+)*)`", body)))
@@ -950,6 +959,8 @@ def validate(root: Path = ROOT) -> list[str]:
         template = root / "templates" / path.name.replace(".schema.json", ".md")
         if template.exists():
             template_text = template.read_text(errors="ignore")
+            template_field_refs = template_schema_field_references(template_text)
+            schema_field_names = set(properties)
             for field in required_fields:
                 if f"`{field}`" not in template_text:
                     errors.append(f"{rel(template, root)} missing required schema field reference: {field}")
@@ -958,6 +969,10 @@ def validate(root: Path = ROOT) -> list[str]:
                     continue
                 if f"`{field}`" not in template_text:
                     errors.append(f"{rel(template, root)} missing schema field reference: {field}")
+            for field in sorted(template_field_refs - schema_field_names):
+                errors.append(
+                    f"{rel(template, root)} references unknown schema field from {rel(path, root)}: {field}"
+                )
 
     for required_path in REQUIRED_ROOT:
         if not (root / required_path).exists():
