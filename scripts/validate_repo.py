@@ -49,6 +49,23 @@ REQUIRED_DOCS = [
     "docs/decision-records.md",
     "docs/ci-recovery.md",
     "docs/skill-distillation.md",
+    "docs/state-machine.md",
+]
+REQUIRED_STATE_MACHINE_DOC_STATES = [
+    "raw_request",
+    "intake",
+    "should_this_exist",
+    "research",
+    "grill",
+    "brief",
+    "design",
+    "plan",
+    "build",
+    "verify",
+    "review",
+    "ship",
+    "learn",
+    "archive",
 ]
 REQUIRED_SKILLS = [
     "skills/activity-recap/SKILL.md",
@@ -922,6 +939,11 @@ def state_machine_command_mapping_references(text: str) -> list[str]:
     return sorted(set(re.findall(r"`(/brain-[a-z0-9-]+)`", body)))
 
 
+def state_machine_states(text: str) -> list[str]:
+    body = section_body(text, "## States")
+    return sorted(set(re.findall(r"^([a-z][a-z0-9_]+)$", body, flags=re.MULTILINE)))
+
+
 def readme_skill_catalog_entries(text: str) -> list[str]:
     entries: set[str] = set()
     in_core_skills = False
@@ -1187,9 +1209,12 @@ def validate(root: Path = ROOT) -> list[str]:
 
     state_machine = root / "docs" / "state-machine.md"
     if state_machine.exists():
-        state_machine_refs = state_machine_command_mapping_references(
-            state_machine.read_text(errors="ignore")
-        )
+        state_machine_text = state_machine.read_text(errors="ignore")
+        state_machine_refs = state_machine_command_mapping_references(state_machine_text)
+        listed_states = state_machine_states(state_machine_text)
+        for required_state in REQUIRED_STATE_MACHINE_DOC_STATES:
+            if required_state not in listed_states:
+                errors.append(f"docs/state-machine.md states section missing state: {required_state}")
         for command in sorted((root / "commands").glob("*.md")):
             command_name = f"/{command.stem}"
             if command_name not in state_machine_refs:
