@@ -95,6 +95,7 @@ REQUIRED_EVAL_CASES = [
     "evals/cases/memory-capture-routing.md",
     "evals/cases/domain-language-drift.md",
     "evals/cases/ci-failure-triage.md",
+    "evals/cases/command-routing-drift.md",
     "evals/cases/verification-shortcut.md",
     "evals/cases/skill-boundary-creep.md",
     "evals/cases/source-branded-skill-name.md",
