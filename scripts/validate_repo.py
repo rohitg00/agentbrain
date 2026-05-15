@@ -1329,6 +1329,18 @@ def command_skills_to_load(text: str) -> list[str]:
     return sorted(set(re.findall(r"`([a-z0-9]+(?:-[a-z0-9]+)*)`", body)))
 
 
+def command_example_loaded_skills(example: str) -> list[str]:
+    loaded_skill_blocks = re.findall(
+        r"loaded skills?:\s*([^.]*)",
+        example,
+        flags=re.IGNORECASE,
+    )
+    loaded_skills: set[str] = set()
+    for block in loaded_skill_blocks:
+        loaded_skills.update(re.findall(r"`([a-z0-9]+(?:-[a-z0-9]+)*)`", block))
+    return sorted(loaded_skills)
+
+
 def command_lifecycle_state(text: str) -> str:
     purpose_body = section_body(text, "## Purpose")
     match = re.search(r"^State: ([A-Z]+)$", purpose_body, flags=re.MULTILINE)
@@ -2044,6 +2056,11 @@ def validate(root: Path = ROOT) -> list[str]:
                 if f"`{expected_skill_file}`" not in example:
                     errors.append(
                         f"{rel(command, root)} example must cite loaded skill file: {expected_skill_file}"
+                    )
+            for skill_name in command_example_loaded_skills(example):
+                if skill_name not in loaded_skill_names:
+                    errors.append(
+                        f"{rel(command, root)} example lists undeclared loaded skill: {skill_name}"
                     )
             if required_artifact_template and f"`{required_artifact_template}`" not in example:
                 errors.append(

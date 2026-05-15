@@ -101,6 +101,26 @@ def test_command_examples_must_cite_every_loaded_skill_file(tmp_path: Path) -> N
     )
 
 
+def test_command_examples_must_not_claim_undeclared_loaded_skill(tmp_path: Path) -> None:
+    write_minimal_repo(tmp_path)
+    command = tmp_path / "commands" / "brain-sample.md"
+    command.write_text(
+        command.read_text(encoding="utf-8").replace(
+            "Loaded skills: `sample`, `activity-recap`,",
+            "Loaded skills: `launch-gate`, `sample`, `activity-recap`,",
+        ),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert any(
+        "commands/brain-sample.md example lists undeclared loaded skill: launch-gate"
+        in error
+        for error in errors
+    )
+
+
 def test_adapter_requires_output_contract(tmp_path: Path) -> None:
     write_minimal_repo(tmp_path)
     adapter = tmp_path / "adapters" / "sample-adapter" / "README.md"
