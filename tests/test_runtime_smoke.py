@@ -908,6 +908,44 @@ def test_full_validation_runtime_smoke_requires_routing_evidence(monkeypatch, tm
     assert any("full_validation requires an adapter_path" in error for error in errors)
 
 
+def test_main_creates_parent_directories_for_runtime_smoke_output(monkeypatch, tmp_path: Path):
+    output_path = tmp_path / "artifacts" / "runtime-smoke" / "generic-cli-runtime.json"
+
+    exit_code = runtime_smoke.main(
+        [
+            "--root",
+            str(tmp_path),
+            "--schema",
+            str(Path("schemas/runtime-smoke.schema.json")),
+            "--runtime",
+            "generic-cli-runtime",
+            "--version",
+            "1.2.3",
+            "--sandbox-write-mode",
+            "read_only",
+            "--brain-command-mode",
+            "markdown_specs",
+            "--run-scope",
+            "read_only_smoke",
+            "--command-exit-status",
+            "1",
+            "--smoke-result",
+            "blocked",
+            "--transcript-path",
+            "not_captured_stdout_only",
+            "--transcript-redaction-status",
+            "not_captured",
+            "--blocked-command",
+            "python -m pytest -q blocked by read-only sandbox",
+            "--output",
+            str(output_path),
+        ]
+    )
+
+    assert exit_code == 0
+    assert output_path.is_file()
+
+
 def test_main_quotes_exact_command_values_for_full_validation_flags(monkeypatch, tmp_path: Path):
     commands_dir = tmp_path / "commands"
     commands_dir.mkdir()
