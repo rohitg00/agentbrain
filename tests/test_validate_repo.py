@@ -61,7 +61,8 @@ def write_minimal_repo(root: Path) -> None:
         "Run a targeted exact-name scrub before public adapter copy changes.\n\n"
         "Record every real-runtime smoke run with `templates/runtime-smoke.md` and "
         "validate the JSON evidence against `schemas/runtime-smoke.schema.json` before "
-        "trusting adapter behavior.\n\n"
+        "trusting adapter behavior. Keep the artifact honest about blocked commands, "
+        "command mode, sandbox/write mode, git freshness, runtime version, and Python executable.\n\n"
         "## Failure Modes\n\n"
         "Stop if the runtime cannot load files.\n",
         encoding="utf-8",
@@ -6229,6 +6230,22 @@ def test_adapter_readmes_must_include_minimal_instruction(tmp_path):
     errors = validate_repo.validate(tmp_path)
 
     assert "adapters/sample-adapter/README.md missing adapter section: ## Minimal instruction" in errors
+
+
+def test_adapter_runtime_smoke_contract_must_name_blocked_commands(tmp_path):
+    write_minimal_repo(tmp_path)
+    adapter = tmp_path / "adapters" / "sample-adapter" / "README.md"
+    adapter.write_text(
+        adapter.read_text(encoding="utf-8").replace(
+            "blocked commands, command mode, sandbox/write mode, git freshness, runtime version, and Python executable.",
+            "command mode, sandbox/write mode, git freshness, runtime version, and Python executable.",
+        ),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "adapters/sample-adapter/README.md validation section must document runtime smoke evidence field: blocked commands" in errors
 
 
 def test_readme_quickstart_requires_remote_freshness_check(tmp_path):

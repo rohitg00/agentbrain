@@ -463,6 +463,14 @@ REQUIRED_ADAPTER_RUNTIME_SMOKE_ARTIFACT_TERMS = [
     "templates/runtime-smoke.md",
     "schemas/runtime-smoke.schema.json",
 ]
+REQUIRED_ADAPTER_RUNTIME_SMOKE_EVIDENCE_TERMS = [
+    "blocked commands",
+    "command mode",
+    "sandbox/write mode",
+    "git freshness",
+    "runtime version",
+    "python executable",
+]
 REQUIRED_CONTRIBUTING_VALIDATION_COMMANDS = [
     "pytest -q",
     "rm -rf scripts/__pycache__ tests/__pycache__",
@@ -2027,6 +2035,12 @@ def validate(root: Path = ROOT) -> list[str]:
                 if artifact_term not in adapter_validation_body:
                     errors.append(
                         f"{rel(markdown_file, root)} validation section must document runtime smoke artifact contract: {artifact_term}"
+                    )
+            adapter_validation_body_lower = adapter_validation_body.lower()
+            for evidence_term in REQUIRED_ADAPTER_RUNTIME_SMOKE_EVIDENCE_TERMS:
+                if evidence_term not in adapter_validation_body_lower:
+                    errors.append(
+                        f"{rel(markdown_file, root)} validation section must document runtime smoke evidence field: {evidence_term}"
                     )
 
     for rubric in sorted((root / "evals" / "rubrics").glob("*.md")):
