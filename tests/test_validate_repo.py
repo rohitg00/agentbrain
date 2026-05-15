@@ -2256,6 +2256,69 @@ def test_skill_schema_must_require_lifecycle_stage_and_output_artifact(tmp_path)
     assert "schemas/skill.schema.json must require output_artifact so skills name the handoff contract" in errors
 
 
+def test_skill_schema_array_fields_must_require_real_content(tmp_path):
+    write_minimal_repo(tmp_path)
+    schema_path = tmp_path / "schemas" / "skill.schema.json"
+    schema = {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "title": "Skill",
+        "type": "object",
+        "additionalProperties": False,
+        "required": [
+            "name",
+            "description",
+            "lifecycle_stage",
+            "trigger",
+            "inputs",
+            "procedure",
+            "verification",
+            "output_artifact",
+            "failure_modes",
+            "examples",
+        ],
+        "properties": {
+            "name": {"type": "string"},
+            "description": {"type": "string"},
+            "lifecycle_stage": {"type": "string", "enum": ["BUILD"]},
+            "trigger": {"type": "string"},
+            "inputs": {"type": "array", "items": {"type": "string"}},
+            "procedure": {"type": "array", "items": {"type": "string"}},
+            "verification": {"type": "array", "items": {"type": "string"}},
+            "output_artifact": {"type": "string"},
+            "failure_modes": {"type": "array", "items": {"type": "string"}},
+            "examples": {"type": "array", "items": {"type": "string"}},
+        },
+    }
+    schema_path.write_text(json.dumps(schema), encoding="utf-8")
+    example_dir = tmp_path / "examples" / "artifacts"
+    example_dir.mkdir(parents=True, exist_ok=True)
+    (example_dir / "skill.example.json").write_text(
+        json.dumps(
+            {
+                "name": "sample-skill",
+                "description": "Use when a focused operator pattern is needed.",
+                "lifecycle_stage": "BUILD",
+                "trigger": "A focused operator pattern is needed.",
+                "inputs": [],
+                "procedure": [],
+                "verification": [],
+                "output_artifact": "Skill",
+                "failure_modes": [],
+                "examples": [],
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "schemas/skill.schema.json inputs must require at least one concrete item" in errors
+    assert "schemas/skill.schema.json procedure must require at least one concrete item" in errors
+    assert "schemas/skill.schema.json verification must require at least one concrete item" in errors
+    assert "schemas/skill.schema.json failure_modes must require at least one concrete item" in errors
+    assert "schemas/skill.schema.json examples must require at least one concrete item" in errors
+
+
 def test_handoff_schema_must_require_resume_ready_fields(tmp_path):
     write_minimal_repo(tmp_path)
     schema_path = tmp_path / "schemas" / "handoff-report.schema.json"

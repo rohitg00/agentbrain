@@ -49,6 +49,7 @@
       "items": {
         "type": "string"
       },
+      "minItems": 1,
       "default": []
     },
     "procedure": {
@@ -56,6 +57,7 @@
       "items": {
         "type": "string"
       },
+      "minItems": 1,
       "default": []
     },
     "anti_rationalization": {
@@ -70,6 +72,7 @@
       "items": {
         "type": "string"
       },
+      "minItems": 1,
       "default": []
     },
     "output_artifact": {
@@ -81,6 +84,7 @@
       "items": {
         "type": "string"
       },
+      "minItems": 1,
       "default": []
     },
     "examples": {
@@ -88,6 +92,7 @@
       "items": {
         "type": "string"
       },
+      "minItems": 1,
       "default": []
     }
   }

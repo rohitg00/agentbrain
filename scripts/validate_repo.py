@@ -302,6 +302,13 @@ REQUIRED_SKILL_SCHEMA_FIELDS = [
     "lifecycle_stage",
     "output_artifact",
 ]
+REQUIRED_SKILL_SCHEMA_NONEMPTY_ARRAY_FIELDS = [
+    "inputs",
+    "procedure",
+    "verification",
+    "failure_modes",
+    "examples",
+]
 STALE_STATUS_COMPLETION_TERMS = [
     "complete",
     "done",
@@ -1282,6 +1289,12 @@ def validate(root: Path = ROOT) -> list[str]:
                         "output_artifact": "so skills name the handoff contract",
                     }[field]
                     errors.append(f"schemas/skill.schema.json must require {field} {field_reason}")
+            for field in REQUIRED_SKILL_SCHEMA_NONEMPTY_ARRAY_FIELDS:
+                field_schema = properties.get(field, {})
+                if not isinstance(field_schema, dict) or field_schema.get("minItems", 0) < 1:
+                    errors.append(
+                        f"schemas/skill.schema.json {field} must require at least one concrete item"
+                    )
         if path.name == "handoff-report.schema.json":
             state_schema = properties.get("state", {})
             if not isinstance(state_schema, dict) or state_schema.get("enum") != REQUIRED_STATE_MACHINE_VALUES:
