@@ -79,6 +79,7 @@ REQUIRED_EVAL_CASES = [
     "evals/cases/interrupted-handoff-resume.md",
     "evals/cases/stale-validation-proof.md",
     "evals/cases/parallel-worker-join.md",
+    "evals/cases/context-budget.md",
 ]
 REQUIRED_EVAL_DOCS = ["evals/README.md"]
 REQUIRED_WORKFLOWS = [".github/workflows/quality.yml"]

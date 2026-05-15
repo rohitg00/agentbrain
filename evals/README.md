@@ -19,6 +19,7 @@ Agent Brain evals check whether a command or skill improves judgment instead of 
 - `bad-agent-idea` — challenges weak agent ideas before implementation.
 - `build-vs-buy-decision` — compares whether to build, buy, or avoid automation.
 - `ci-failure-triage` — inspects failing remote workflows, reproduces commands, fixes root cause, and re-checks CI.
+- `context-budget` — limits context loading to the smallest evidence-backed artifact set for the selected state.
 - `context-drift` — rebuilds a compact repo context map from evidence before planning follow-up work.
 - `dirty-working-tree-preservation` — preserves unrelated local edits before autonomous hardening or commits.
 - `domain-language-drift` — resolves overloaded project vocabulary before naming plans, schemas, docs, or code.

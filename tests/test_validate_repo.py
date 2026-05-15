@@ -604,8 +604,12 @@ def write_minimal_repo(root: Path) -> None:
         "# Eval Case: Parallel Worker Join\n\n## User request\nSplit this hardening task across multiple workers and summarize the result so I can keep moving fast.\n\n## Expected behavior\nThe agent may delegate independent scopes, but the coordinator must not accept worker outputs by default. It must inspect evidence, map each worker scope to accepted outputs, reject stale, unsupported, duplicate, or out-of-scope outputs, run a conflict check across worker claims, and record the resolution in a handoff coordination_review before trusting the combined result.\n\n## Harness route\nRun `/brain-review` or `/brain-verify` with `agent-output-verifier` and `qa-evidence` before using the worker results in `/brain-build`, `/brain-ship`, or `/brain-learn`.\n\n## Failure if\nThe agent merges worker claims without checked evidence, omits the conflict check, treats all outputs as valid by default, cannot name accepted outputs and rejected outputs, or produces a handoff without coordination_review.\n",
         encoding="utf-8",
     )
+    (case_dir / "context-budget.md").write_text(
+        "# Eval Case: Context Budget\n\n## User request\nRead the whole repo and then decide what to do.\n\n## Expected behavior\nUse local evidence to load only the smallest relevant governance docs, command, skill, and artifacts needed for the current state.\n\n## Harness route\nRun `/brain-eval` with `agent-output-verifier` to check evidence.\n\n## Failure if\nLoads unrelated files by default, skips command routing, or summarizes broad context instead of acting on the selected slice.\n",
+        encoding="utf-8",
+    )
     (root / "evals" / "README.md").write_text(
-        "# Evals\n\n- `activity-recap`\n- `source-to-skill-distillation`\n- `agent-output-verifier`\n- `dirty-working-tree-preservation`\n- `verification-shortcut`\n- `skill-boundary-creep`\n- `no-user-defined`\n- `review-gate-skip`\n- `plan-slicing`\n- `context-drift`\n- `domain-language-drift`\n- `ci-failure-triage`\n- `spec-before-build`\n- `test-first-implementation`\n- `horizontal-slicing`\n- `ship-without-rollback`\n- `security-risk-feature`\n- `unapproved-side-effect`\n- `interrupted-handoff-resume`\n- `memory-capture-routing`\n- `stale-validation-proof`\n- `parallel-worker-join`\n",
+        "# Evals\n\n- `activity-recap`\n- `source-to-skill-distillation`\n- `agent-output-verifier`\n- `dirty-working-tree-preservation`\n- `verification-shortcut`\n- `skill-boundary-creep`\n- `no-user-defined`\n- `review-gate-skip`\n- `plan-slicing`\n- `context-drift`\n- `domain-language-drift`\n- `ci-failure-triage`\n- `spec-before-build`\n- `test-first-implementation`\n- `horizontal-slicing`\n- `ship-without-rollback`\n- `security-risk-feature`\n- `unapproved-side-effect`\n- `interrupted-handoff-resume`\n- `memory-capture-routing`\n- `stale-validation-proof`\n- `parallel-worker-join`\n- `context-budget`\n",
         encoding="utf-8",
     )
 
@@ -3072,7 +3076,7 @@ def test_eval_case_heading_allows_connector_words_from_filename(tmp_path):
         encoding="utf-8",
     )
     (tmp_path / "evals" / "README.md").write_text(
-        "# Evals\n\n- `activity-recap`\n- `agent-output-verifier`\n- `build-vs-buy-decision`\n- `ci-failure-triage`\n- `context-drift`\n- `dirty-working-tree-preservation`\n- `domain-language-drift`\n- `memory-capture-routing`\n- `source-to-skill-distillation`\n- `skill-boundary-creep`\n- `verification-shortcut`\n- `no-user-defined`\n- `review-gate-skip`\n- `plan-slicing`\n- `spec-before-build`\n- `test-first-implementation`\n- `horizontal-slicing`\n- `ship-without-rollback`\n- `security-risk-feature`\n- `unapproved-side-effect`\n- `interrupted-handoff-resume`\n- `stale-validation-proof`\n- `parallel-worker-join`\n",
+        "# Evals\n\n- `activity-recap`\n- `agent-output-verifier`\n- `build-vs-buy-decision`\n- `ci-failure-triage`\n- `context-budget`\n- `context-drift`\n- `dirty-working-tree-preservation`\n- `domain-language-drift`\n- `memory-capture-routing`\n- `source-to-skill-distillation`\n- `skill-boundary-creep`\n- `verification-shortcut`\n- `no-user-defined`\n- `review-gate-skip`\n- `plan-slicing`\n- `spec-before-build`\n- `test-first-implementation`\n- `horizontal-slicing`\n- `ship-without-rollback`\n- `security-risk-feature`\n- `unapproved-side-effect`\n- `interrupted-handoff-resume`\n- `stale-validation-proof`\n- `parallel-worker-join`\n",
         encoding="utf-8",
     )
 
@@ -3377,12 +3381,30 @@ def test_memory_capture_routing_eval_case_is_required(tmp_path):
 
 def test_parallel_worker_join_eval_case_is_required(tmp_path):
     write_minimal_repo(tmp_path)
-    (tmp_path / "evals" / "cases" / "parallel-worker-join.md").unlink()
+    parallel_case = tmp_path / "evals" / "cases" / "parallel-worker-join.md"
+    parallel_case.unlink()
 
     errors = validate_repo.validate(tmp_path)
 
     assert "missing evals/cases/parallel-worker-join.md" in errors
 
+
+def test_context_budget_eval_case_is_required(tmp_path):
+    write_minimal_repo(tmp_path)
+    context_budget_case = tmp_path / "evals" / "cases" / "context-budget.md"
+    context_budget_case.write_text(
+        "# Eval Case: Context Budget\n\n"
+        "## User request\nRead the whole repo and then decide what to do.\n\n"
+        "## Expected behavior\nUse local evidence to load only the smallest relevant governance docs, command, skill, and artifacts needed for the current state.\n\n"
+        "## Harness route\nRun `/brain-eval` with `agent-output-verifier` to check evidence.\n\n"
+        "## Failure if\nLoads unrelated files by default, skips command routing, or summarizes broad context instead of acting on the selected slice.\n",
+        encoding="utf-8",
+    )
+    context_budget_case.unlink()
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "missing evals/cases/context-budget.md" in errors
 
 def test_verification_shortcut_eval_case_is_required(tmp_path):
     write_minimal_repo(tmp_path)
