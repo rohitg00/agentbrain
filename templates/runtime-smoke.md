@@ -29,7 +29,7 @@ The helper exits non-zero if the generated artifact does not satisfy the schema.
 - **Runtime:** Neutral runtime label, such as CLI runtime, approval-gated runtime, subagent runtime, or skill runtime.
 - **Version:** Exact runtime version or `unknown` with evidence explaining why it could not be checked.
 - **Python executable:** Path and version used for repository checks, or blocker if Python could not run.
-- **Writable temp-dir status:** `writable`, `blocked`, or `not_checked`.
+- **Writable temp-dir status:** `writable`, `blocked`, or `not_checked`. `full_validation` requires `writable` so installs, pytest temp fixtures, generated artifacts, and runtime transcripts are not overstated from a read-only or partially blocked run.
 - **Git freshness result:** `git fetch origin main`, `git rev-parse HEAD`, and `git rev-parse origin/main` result. `full_validation` requires `HEAD` to equal `origin/main`; stale or unavailable freshness can only be reported as `read_only_smoke`.
 - **Exact command:** Full command or prompt invocation used for the smoke run.
 - **Command exit status:** Numeric exit status from the smoke command or validation command.
@@ -46,4 +46,4 @@ The helper exits non-zero if the generated artifact does not satisfy the schema.
 
 ## Review Notes
 
-Do not claim full validation when sandboxing blocked installs, temp files, tests, repository writes, command routing, skill loading, adapter mapping, or the runtime is read-only. A `full_validation` artifact must have `smoke_result: pass`, no `blocked_commands`, a durable transcript path, a fresh checkout, a write-capable sandbox/write mode, proven `/brain-*` command mode, a selected `/brain-*` command, at least one loaded skill, and a concrete adapter path; otherwise the helper rejects it. Mark blocked or read-only runs as `read_only_smoke`, list the blocked commands, and route the follow-up through `/brain-verify` or `/brain-review` before trusting the runtime adapter.
+Do not claim full validation when sandboxing blocked installs, temp files, tests, repository writes, command routing, skill loading, adapter mapping, or the runtime is read-only. A `full_validation` artifact must have `smoke_result: pass`, no `blocked_commands`, `writable_temp_dir_status: writable`, a durable transcript path, a fresh checkout, a write-capable sandbox/write mode, proven `/brain-*` command mode, a selected `/brain-*` command, at least one loaded skill, and a concrete adapter path; otherwise the helper rejects it. Mark blocked or read-only runs as `read_only_smoke`, list the blocked commands, and route the follow-up through `/brain-verify` or `/brain-review` before trusting the runtime adapter.

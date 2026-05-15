@@ -143,6 +143,9 @@
             "not": {
               "const": "read_only"
             }
+          },
+          "writable_temp_dir_status": {
+            "const": "writable"
           }
         }
       }

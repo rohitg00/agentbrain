@@ -159,6 +159,8 @@ def validate_report_against_schema(report: dict[str, object], schema_path: Path)
         isinstance(git_freshness, str) and git_freshness.startswith("fresh: HEAD equals origin/main")
     ):
         errors.append("full_validation requires fresh git checkout with HEAD equal to origin/main")
+    if report.get("run_scope") == "full_validation" and report.get("writable_temp_dir_status") != "writable":
+        errors.append("full_validation requires writable temporary directory evidence")
 
     return errors
 
