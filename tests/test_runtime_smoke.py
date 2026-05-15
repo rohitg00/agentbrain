@@ -168,6 +168,35 @@ def test_validate_report_against_schema_rejects_incomplete_smoke_artifact():
     assert any("run_scope" in error for error in errors)
 
 
+def test_runtime_smoke_schema_rejects_duplicate_loaded_skills():
+    report = runtime_smoke.build_report(
+        root=Path.cwd(),
+        runtime="generic-cli-runtime",
+        version="1.2.3",
+        sandbox_write_mode="read_only",
+        brain_command_mode="markdown_specs",
+        run_scope="read_only_smoke",
+        blocked_commands=[],
+        exact_command=(
+            "python scripts/runtime_smoke.py --runtime generic-cli-runtime --version 1.2.3 "
+            "--run-scope read_only_smoke --selected-command /brain-verify "
+            "--loaded-skill runtime-smoke --loaded-skill runtime-smoke "
+            "--adapter-path adapters/read-only-cli/README.md --sandbox-write-mode read_only "
+            "--brain-command-mode markdown_specs --transcript-path not_captured_stdout_only "
+            "--smoke-result pass --command-exit-status 0 --transcript-redaction-status not_captured"
+        ),
+        smoke_result="pass",
+        selected_command="/brain-verify",
+        loaded_skills=["runtime-smoke", "runtime-smoke"],
+        adapter_path="adapters/read-only-cli/README.md",
+    )
+    schema = json.loads(Path("schemas/runtime-smoke.schema.json").read_text(encoding="utf-8"))
+
+    errors = [error.message for error in Draft202012Validator(schema).iter_errors(report)]
+
+    assert any("non-unique elements" in error for error in errors)
+
+
 def test_runtime_smoke_schema_rejects_full_validation_without_durable_transcript(tmp_path: Path):
     report = runtime_smoke.build_report(
         root=tmp_path,
