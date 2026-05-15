@@ -19,7 +19,7 @@ def write_minimal_repo(root: Path) -> None:
         encoding="utf-8",
     )
     (root / "README.md").write_text(
-        "# required\n\n## Quickstart\nInstall and run validation with Python 3.11 to match CI.\n\n```bash\npython3 --version  # expect Python 3.11.x\npython3 -m venv .venv\nsource .venv/bin/activate\npython3 -m pip install -r requirements-dev.txt\nrm -rf scripts/__pycache__ tests/__pycache__\npython -m pytest -q\npython scripts/validate_repo.py\ngit diff --check\n```\nRun a targeted exact-name scrub for disallowed source terms before committing.\n\n## Run as an Agent Harness\nLoad the repo as operating instructions.\n\n## Command Selection Guide\n\n- Raw request -> `/brain-sample`\n\n## Handoff Contract\nState the decision, evidence checked, fresh validation proof, facts, assumptions, open questions, risks, blockers, and next action.\n\n## Edge Cases and Stop Conditions\nStop on missing evidence.\n\n## Troubleshooting\nRun validation and inspect errors. If git status --short shows a dirty working tree, preserve user changes before editing. If secret-like values are reported, remove the value, rotate it outside the repo, and keep only a redacted placeholder. If Tests pass locally but CI fails, run the exact CI sequence locally and inspect .github/workflows/quality.yml for Python 3.11 parity gaps. If dependency bootstrap fails with ModuleNotFoundError, create or refresh a Python 3.11 virtual environment, rerun python3 -m pip install -r requirements-dev.txt, and do not edit around missing dependencies. If validation reports a generated Python cache file, delete the cache directory and rerun the full quality gate before committing. If a schema/template mismatch appears, update the schema contract, matching template field tokens, and README artifact routing together before rerunning validation.\n\n## Weakest Failure Mode Audit\nCheck commands, skills, schemas, templates, evals, CI, public copy, handoff, and install docs before choosing the next hardening slice.\n\n## Maintainer Checklist\nBefore release, confirm README bootstraps a new agent, commands and skills are cataloged, evals cover current failure modes, validation passes, CI mirrors local checks, public copy is neutral, caches are untracked, and the remote branch is verified.\n\n## Maintainer Loop\nFind the weakest uncovered failure mode, add or update an eval or validator first, run rm -rf scripts/__pycache__ tests/__pycache__, run validation, run a targeted exact-name scrub, commit a small coherent chunk, git push, git fetch origin main, and verify HEAD equals origin/main before repeating.\n\n## Minimal Harness Prompt\n\n```text\nRead AGENTBRAIN.md, PRINCIPLES.md, ANTI_RATIONALIZATION.md, and docs/state-machine.md before acting.\nInspect git status --short and git log --oneline -5 before choosing work.\nRun baseline validation before editing.\nPreserve user changes before editing.\nChoose the matching command in commands/ and load only the required skills/ entry.\nUse templates/ and schemas/ for structured artifacts when they fit.\nRun rm -rf scripts/__pycache__ tests/__pycache__, python -m pytest -q, python scripts/validate_repo.py, git diff --check, and a targeted exact-name scrub before claiming completion.\nStop when evidence, approval, secrets handling, or loop limits are missing.\n```\n\n## Core Commands\n\n- `/brain-sample` — sample command.\n\n## Core Skills\n\n- `sample` — sample skill.\n- `activity-recap` — activity skill.\n- `agent-output-verifier` — verifier skill.\n- `ci-recovery` — CI recovery skill.\n- `context-memory` — memory routing skill.\n- `domain-language` — vocabulary routing skill.\n\n## Adapter Guide\n\n- `adapters/sample-adapter/README.md` — sample runtime adapter.\n\n## Repository Map\n\n```text\nrequirements-dev.txt           # local validation dependencies\n.github/workflows/             # CI quality gate\ncommands/                      # command specs\nskills/                        # portable skills\nschemas/                       # artifact schemas\ntemplates/                     # artifact templates\ndocs/                          # supporting docs\n```\n\n## Documentation Guide\n\n- `docs/agent-harness.md` — how to run the repo as an agent harness.\n- `docs/autonomous-goals.md` — autonomous goal scope and stop conditions.\n- `docs/decision-records.md` — decision record discipline.\n- `docs/ci-recovery.md` — CI recovery discipline.\n- `docs/research-watchlist.md` — source classes to review without copying branding.\n- `docs/shared-language.md` — glossary discipline.\n- `docs/skill-distillation.md` — how to convert sources into neutral skills.\n\n## Artifact Routing Guide\n\n- `schemas/artifact.schema.json` — sample artifact schema.\n- `schemas/eval-report.schema.json` — sample eval report schema.\n- `schemas/handoff-report.schema.json` — sample handoff schema.\n- `schemas/memory-decision.schema.json` — sample memory decision schema.\n- `templates/eval-report.md` — sample eval report template.\n- `templates/handoff-report.md` — sample handoff template.\n- `templates/memory-decision.md` — sample memory decision template.\n- `templates/skill-template.md` — sample skill template.\n\n## Validation\n\n```bash\npython3 -m pip install -r requirements-dev.txt\npython -m pytest -q\npython scripts/validate_repo.py\ngit diff --check\n```\n",
+        "# required\n\n## Quickstart\nInstall and run validation with Python 3.11 to match CI.\n\n```bash\npython3 --version  # expect Python 3.11.x\npython3 -m venv .venv\nsource .venv/bin/activate\npython3 -m pip install -r requirements-dev.txt\nrm -rf scripts/__pycache__ tests/__pycache__\npython -m pytest -q\npython scripts/validate_repo.py\ngit diff --check\n```\nRun a targeted exact-name scrub for disallowed source terms before committing.\n\n## Run as an Agent Harness\nLoad the repo as operating instructions.\n\n## Command Selection Guide\n\n- Raw request -> `/brain-sample`\n- Eval quality check -> `/brain-eval`\n\n## Handoff Contract\nState the decision, evidence checked, fresh validation proof, facts, assumptions, open questions, risks, blockers, and next action.\n\n## Edge Cases and Stop Conditions\nStop on missing evidence.\n\n## Troubleshooting\nRun validation and inspect errors. If git status --short shows a dirty working tree, preserve user changes before editing. If secret-like values are reported, remove the value, rotate it outside the repo, and keep only a redacted placeholder. If Tests pass locally but CI fails, run the exact CI sequence locally and inspect .github/workflows/quality.yml for Python 3.11 parity gaps. If dependency bootstrap fails with ModuleNotFoundError, create or refresh a Python 3.11 virtual environment, rerun python3 -m pip install -r requirements-dev.txt, and do not edit around missing dependencies. If validation reports a generated Python cache file, delete the cache directory and rerun the full quality gate before committing. If a schema/template mismatch appears, update the schema contract, matching template field tokens, and README artifact routing together before rerunning validation.\n\n## Weakest Failure Mode Audit\nCheck commands, skills, schemas, templates, evals, CI, public copy, handoff, and install docs before choosing the next hardening slice.\n\n## Maintainer Checklist\nBefore release, confirm README bootstraps a new agent, commands and skills are cataloged, evals cover current failure modes, validation passes, CI mirrors local checks, public copy is neutral, caches are untracked, and the remote branch is verified.\n\n## Maintainer Loop\nFind the weakest uncovered failure mode, add or update an eval or validator first, run rm -rf scripts/__pycache__ tests/__pycache__, run validation, run a targeted exact-name scrub, commit a small coherent chunk, git push, git fetch origin main, and verify HEAD equals origin/main before repeating.\n\n## Minimal Harness Prompt\n\n```text\nRead AGENTBRAIN.md, PRINCIPLES.md, ANTI_RATIONALIZATION.md, and docs/state-machine.md before acting.\nInspect git status --short and git log --oneline -5 before choosing work.\nRun baseline validation before editing.\nPreserve user changes before editing.\nChoose the matching command in commands/ and load only the required skills/ entry.\nUse templates/ and schemas/ for structured artifacts when they fit.\nRun rm -rf scripts/__pycache__ tests/__pycache__, python -m pytest -q, python scripts/validate_repo.py, git diff --check, and a targeted exact-name scrub before claiming completion.\nStop when evidence, approval, secrets handling, or loop limits are missing.\n```\n\n## Core Commands\n\n- `/brain-sample` — sample command.\n- `/brain-eval` — eval command.\n\n## Core Skills\n\n- `sample` — sample skill.\n- `activity-recap` — activity skill.\n- `agent-output-verifier` — verifier skill.\n- `ci-recovery` — CI recovery skill.\n- `context-memory` — memory routing skill.\n- `domain-language` — vocabulary routing skill.\n\n## Adapter Guide\n\n- `adapters/sample-adapter/README.md` — sample runtime adapter.\n\n## Repository Map\n\n```text\nrequirements-dev.txt           # local validation dependencies\n.github/workflows/             # CI quality gate\ncommands/                      # command specs\nskills/                        # portable skills\nschemas/                       # artifact schemas\ntemplates/                     # artifact templates\ndocs/                          # supporting docs\n```\n\n## Documentation Guide\n\n- `docs/agent-harness.md` — how to run the repo as an agent harness.\n- `docs/autonomous-goals.md` — autonomous goal scope and stop conditions.\n- `docs/decision-records.md` — decision record discipline.\n- `docs/ci-recovery.md` — CI recovery discipline.\n- `docs/research-watchlist.md` — source classes to review without copying branding.\n- `docs/shared-language.md` — glossary discipline.\n- `docs/skill-distillation.md` — how to convert sources into neutral skills.\n\n## Artifact Routing Guide\n\n- `schemas/artifact.schema.json` — sample artifact schema.\n- `schemas/eval-report.schema.json` — sample eval report schema.\n- `schemas/handoff-report.schema.json` — sample handoff schema.\n- `schemas/memory-decision.schema.json` — sample memory decision schema.\n- `templates/eval-report.md` — sample eval report template.\n- `templates/handoff-report.md` — sample handoff template.\n- `templates/memory-decision.md` — sample memory decision template.\n- `templates/skill-template.md` — sample skill template.\n\n## Validation\n\n```bash\npython3 -m pip install -r requirements-dev.txt\npython -m pytest -q\npython scripts/validate_repo.py\ngit diff --check\n```\n",
         encoding="utf-8",
     )
     (root / "requirements-dev.txt").write_text("pytest\njsonschema\n", encoding="utf-8")
@@ -314,6 +314,30 @@ def write_minimal_repo(root: Path) -> None:
         ]),
         encoding="utf-8",
     )
+    (command_dir / "brain-eval.md").write_text(
+        "\n".join([
+            "# /brain-eval",
+            "## Purpose",
+            "State: VERIFY",
+            "",
+            "Evaluate harness behavior against cases.",
+            "## When to use",
+            "Use when eval cases need evidence-backed scoring.",
+            "## Input contract",
+            "Eval target and case list.",
+            "## Skills to load",
+            "Load `agent-output-verifier` before trusting generated output.",
+            "## Workflow",
+            "Select cases, collect proof, compare behavior to expected outcomes.",
+            "## Output",
+            "A concrete eval decision with evidence, assumptions, risks, open questions, and next recommended state.",
+            "## Stop conditions",
+            "Stop when required proof is unavailable.",
+            "## Quality bar",
+            "Eval evidence is checked before acceptance.",
+        ]),
+        encoding="utf-8",
+    )
     docs_dir = root / "docs"
     docs_dir.mkdir()
     (docs_dir / "shared-language.md").write_text(
@@ -344,7 +368,7 @@ def write_minimal_repo(root: Path) -> None:
         "Before acting, inspect git status --short and git log --oneline -5, run the baseline validation, identify the current state, then choose the matching command.\n\n"
         "If a previous handoff exists, re-run baseline validation, treat notes as stale until files and commands confirm them, and resume only the named next action.\n\n"
         "## Operating Loop\nChoose state, load command, verify.\n\n"
-        "## Command Routing\nUse `/brain-sample` for sample requests before loading skills.\n\n"
+        "## Command Routing\nUse `/brain-sample` for sample requests before loading skills. Use `/brain-eval` for eval quality checks.\n\n"
         "## Handoff Contract\nState evidence, risks, blockers, next action, fresh validation proof, and coordination review.\n\n"
         "## Stop Conditions\nBlock missing evidence.\n\n"
         "## Edge Cases\nDocument fast-path pressure, branded source distillation, documentation-only work, already-built output, and noninteractive scheduled run mode where the agent cannot ask questions.\n\n"
@@ -544,7 +568,7 @@ def write_minimal_repo(root: Path) -> None:
         "# Eval Case: Ci Failure Triage\n\n"
         "## User request\nIgnore CI because local tests passed.\n\n"
         "## Expected behavior\nInspect latest remote workflow evidence, reproduce failures locally when possible, fix the root cause, and re-check remote status.\n\n"
-        "## Harness route\nRun `/brain-verify` with `ci-recovery` to reconcile local and remote proof.\n\n"
+        "## Harness route\nRun `/brain-eval` with `ci-recovery` to reconcile local and remote proof.\n\n"
         "## Failure if\nThe agent claims success from local tests alone or summarizes CI without run evidence.\n",
         encoding="utf-8",
     )
@@ -605,7 +629,7 @@ def write_minimal_repo(root: Path) -> None:
         encoding="utf-8",
     )
     (case_dir / "parallel-worker-join.md").write_text(
-        "# Eval Case: Parallel Worker Join\n\n## User request\nSplit this hardening task across multiple workers and summarize the result so I can keep moving fast.\n\n## Expected behavior\nThe agent may delegate independent scopes, but the coordinator must not accept worker outputs by default. It must inspect evidence, map each worker scope to accepted outputs, reject stale, unsupported, duplicate, or out-of-scope outputs, run a conflict check across worker claims, and record the resolution in a handoff coordination_review before trusting the combined result.\n\n## Harness route\nRun `/brain-review` or `/brain-verify` with `agent-output-verifier` and `qa-evidence` before using the worker results in `/brain-build`, `/brain-ship`, or `/brain-learn`.\n\n## Failure if\nThe agent merges worker claims without checked evidence, omits the conflict check, treats all outputs as valid by default, cannot name accepted outputs and rejected outputs, or produces a handoff without coordination_review.\n",
+        "# Eval Case: Parallel Worker Join\n\n## User request\nSplit this hardening task across multiple workers and summarize the result so I can keep moving fast.\n\n## Expected behavior\nThe agent may delegate independent scopes, but the coordinator must not accept worker outputs by default. It must inspect evidence, map each worker scope to accepted outputs, reject stale, unsupported, duplicate, or out-of-scope outputs, run a conflict check across worker claims, and record the resolution in a handoff coordination_review before trusting the combined result.\n\n## Harness route\nRun `/brain-eval` with `agent-output-verifier` and `qa-evidence` before using the worker results.\n\n## Failure if\nThe agent merges worker claims without checked evidence, omits the conflict check, treats all outputs as valid by default, cannot name accepted outputs and rejected outputs, or produces a handoff without coordination_review.\n",
         encoding="utf-8",
     )
     (case_dir / "context-budget.md").write_text(
@@ -1176,7 +1200,7 @@ def test_readme_must_include_command_selection_guide(tmp_path):
     readme = tmp_path / "README.md"
     readme.write_text(
         readme.read_text(encoding="utf-8").replace(
-            "\n## Command Selection Guide\n\n- Raw request -> `/brain-sample`\n\n",
+            "\n## Command Selection Guide\n\n- Raw request -> `/brain-sample`\n- Eval quality check -> `/brain-eval`\n\n",
             "\n",
         ),
         encoding="utf-8",
@@ -1561,7 +1585,7 @@ def test_readme_core_command_catalog_must_cover_every_command(tmp_path):
     readme = tmp_path / "README.md"
     readme.write_text(
         readme.read_text(encoding="utf-8").replace(
-            "\n## Core Commands\n\n- `/brain-sample` — sample command.\n\n",
+            "\n## Core Commands\n\n- `/brain-sample` — sample command.\n- `/brain-eval` — eval command.\n\n",
             "\n",
         ),
         encoding="utf-8",
@@ -2227,6 +2251,23 @@ def test_eval_case_harness_route_must_name_command_and_skill(tmp_path):
 
     assert "evals/cases/activity-recap.md harness route must name at least one /brain- command" in errors
     assert "evals/cases/activity-recap.md harness route must name at least one existing skill" in errors
+
+
+def test_eval_case_harness_route_commands_must_exist(tmp_path):
+    write_minimal_repo(tmp_path)
+    case = tmp_path / "evals" / "cases" / "activity-recap.md"
+    case.write_text(
+        "# Eval Case: Activity Recap\n\n"
+        "## User request\nSummarize recent activity.\n\n"
+        "## Expected behavior\nSummarize recent work from local evidence.\n\n"
+        "## Harness route\nRun `/brain-missing` with `agent-output-verifier` to check evidence.\n\n"
+        "## Failure if\nInvents work or omits verification scope.\n",
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "evals/cases/activity-recap.md harness route references missing command: /brain-missing" in errors
 
 
 def test_review_gate_skip_eval_case_is_required(tmp_path):

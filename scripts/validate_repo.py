@@ -1372,8 +1372,13 @@ def validate(root: Path = ROOT) -> list[str]:
             errors.append(f"{rel(case, root)} expected behavior must name evidence")
         harness_route = section_body(text, "## Harness route")
         if harness_route.strip():
-            if not re.search(r"`/brain-[a-z0-9-]+`", harness_route):
+            route_command_refs = set(re.findall(r"`(/brain-[a-z0-9-]+)`", harness_route))
+            if not route_command_refs:
                 errors.append(f"{rel(case, root)} harness route must name at least one /brain- command")
+            for command_name in sorted(route_command_refs):
+                command_file = command_name.removeprefix("/")
+                if not (root / "commands" / f"{command_file}.md").exists():
+                    errors.append(f"{rel(case, root)} harness route references missing command: {command_name}")
             route_skill_refs = set(re.findall(r"`([a-z0-9]+(?:-[a-z0-9]+)*)`", harness_route))
             existing_route_skill_refs = [
                 skill_name
