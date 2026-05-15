@@ -17,6 +17,7 @@ jobs:
         with:
           python-version: '3.11'
       - run: python -m pip install -r requirements-dev.txt
+      - run: rm -rf scripts/__pycache__ tests/__pycache__
       - run: python -m pytest -q
       - run: python scripts/validate_repo.py
       - run: git diff --check

@@ -559,6 +559,7 @@ def write_minimal_repo(root: Path) -> None:
             "        with:",
             "          python-version: '3.11'",
             "      - run: python -m pip install -r requirements-dev.txt",
+            "      - run: rm -rf scripts/__pycache__ tests/__pycache__",
             "      - run: python -m pytest -q",
             "      - run: python scripts/validate_repo.py",
             "      - run: git diff --check",
@@ -4242,6 +4243,38 @@ def test_quality_workflow_must_run_pytest(tmp_path):
     errors = validate_repo.validate(tmp_path)
 
     assert ".github/workflows/quality.yml must run: python -m pytest -q" in errors
+
+
+def test_quality_workflow_must_clean_generated_python_caches_before_tests(tmp_path):
+    write_minimal_repo(tmp_path)
+    (tmp_path / ".github" / "workflows" / "quality.yml").write_text(
+        "\n".join([
+            "name: Quality",
+            "on:",
+            "  push:",
+            "  pull_request:",
+            "permissions:",
+            "  contents: read",
+            "jobs:",
+            "  validate:",
+            "    runs-on: ubuntu-latest",
+            "    timeout-minutes: 10",
+            "    steps:",
+            "      - uses: actions/checkout@v4",
+            "      - uses: actions/setup-python@v5",
+            "        with:",
+            "          python-version: '3.11'",
+            "      - run: python -m pip install -r requirements-dev.txt",
+            "      - run: python -m pytest -q",
+            "      - run: python scripts/validate_repo.py",
+            "      - run: git diff --check",
+        ]),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert ".github/workflows/quality.yml must run: rm -rf scripts/__pycache__ tests/__pycache__" in errors
 
 
 def test_quality_workflow_must_run_whitespace_check(tmp_path):

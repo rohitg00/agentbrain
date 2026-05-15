@@ -88,6 +88,7 @@ REQUIRED_EVAL_DOCS = ["evals/README.md"]
 REQUIRED_WORKFLOWS = [".github/workflows/quality.yml"]
 REQUIRED_QUALITY_WORKFLOW_RUNS = [
     "python -m pip install -r requirements-dev.txt",
+    "rm -rf scripts/__pycache__ tests/__pycache__",
     "python -m pytest -q",
     "python scripts/validate_repo.py",
     "git diff --check",
