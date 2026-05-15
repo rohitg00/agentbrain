@@ -172,6 +172,16 @@ REQUIRED_README_MAINTAINER_LOOP_TERMS = [
     "git fetch origin main",
     "HEAD equals origin/main",
 ]
+REQUIRED_README_HANDOFF_TERMS = [
+    "decision",
+    "evidence checked",
+    "fresh validation proof",
+    "facts",
+    "assumptions",
+    "open questions",
+    "risks",
+    "next action",
+]
 STALE_STATUS_COMPLETION_TERMS = [
     "complete",
     "done",
@@ -1234,6 +1244,10 @@ def validate(root: Path = ROOT) -> list[str]:
                     "README.md troubleshooting must document generated cache recovery: "
                     f"{required_term}"
                 )
+        handoff_body = section_body(readme_text, "## Handoff Contract").lower()
+        for required_term in REQUIRED_README_HANDOFF_TERMS:
+            if required_term.lower() not in handoff_body:
+                errors.append(f"README.md handoff contract must mention: {required_term}")
         maintainer_loop_body = section_body(readme_text, "## Maintainer Loop")
         for required_term in REQUIRED_README_MAINTAINER_LOOP_TERMS:
             if required_term not in maintainer_loop_body:
