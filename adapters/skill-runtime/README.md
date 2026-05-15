@@ -62,7 +62,7 @@ Then perform one dry run with a low-risk request and confirm the agent names the
 
 ## Output Contract
 
-Runtime adapter output must report state, selected command, loaded skills, capability matrix, run scope, artifact path, template, schema, validation evidence, freshness, blockers, stop condition, and next action. If any field is unknown, say `unknown` with evidence instead of inferring capability.
+Runtime adapter output must report state, selected command, loaded skills, capability matrix, run scope, artifact path, transcript path, command exit status, template, schema, validation evidence, freshness, blockers, stop condition, and next action. If any field is unknown, say `unknown` with evidence instead of inferring capability.
 
 ## Failure Modes
 

@@ -475,6 +475,8 @@ REQUIRED_ADAPTER_OUTPUT_CONTRACT_TERMS = [
     "capability matrix",
     "run scope",
     "artifact path",
+    "transcript path",
+    "command exit status",
     "template",
     "schema",
     "validation evidence",
