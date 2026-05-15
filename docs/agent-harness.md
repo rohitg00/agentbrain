@@ -242,4 +242,5 @@ Before a harness release or major push:
 - CI mirrors local validation.
 - Public copy uses neutral pattern names.
 - No generated cache files are tracked.
-- Latest commit is verified on the remote branch.
+- Changes are pushed with `git push`, then checked with `git fetch origin main`.
+- Latest local HEAD equals origin/main before the run claims the remote branch is current.

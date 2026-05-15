@@ -269,6 +269,11 @@ REQUIRED_AGENT_HARNESS_TROUBLESHOOTING_TERMS = {
     "virtual environment": "docs/agent-harness.md troubleshooting must document dependency bootstrap recovery",
     "generated Python cache file": "docs/agent-harness.md troubleshooting must document generated cache recovery",
 }
+REQUIRED_AGENT_HARNESS_MAINTAINER_TERMS = [
+    "git push",
+    "git fetch origin main",
+    "HEAD equals origin/main",
+]
 REQUIRED_ADAPTER_SECTIONS = ["## Install", "## Validation", "## Failure Modes"]
 REQUIRED_ADAPTER_VALIDATION_COMMANDS = [
     "python3 -m pip install -r requirements-dev.txt",
@@ -961,6 +966,10 @@ def validate(root: Path = ROOT) -> list[str]:
         for required_term, message in REQUIRED_AGENT_HARNESS_TROUBLESHOOTING_TERMS.items():
             if required_term.lower() not in harness_troubleshooting_lower:
                 errors.append(f"{message}: {required_term}")
+        harness_maintainer_checklist = section_body(agent_harness_text, "## Maintainer Checklist")
+        for required_term in REQUIRED_AGENT_HARNESS_MAINTAINER_TERMS:
+            if required_term not in harness_maintainer_checklist:
+                errors.append(f"docs/agent-harness.md maintainer checklist must mention: {required_term}")
 
     for required_path in REQUIRED_SKILLS:
         if not (root / required_path).exists():
