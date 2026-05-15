@@ -153,6 +153,12 @@ def build_report(
     }
 
 
+def exact_command_has_flag_value(exact_command: object, flag: str, value: str) -> bool:
+    if not isinstance(exact_command, str):
+        return False
+    return f"{flag} {value}" in exact_command or f"{flag}={value}" in exact_command
+
+
 def validate_report_against_schema(
     report: dict[str, object], schema_path: Path, *, root: Path | None = None
 ) -> list[str]:
@@ -172,9 +178,17 @@ def validate_report_against_schema(
         selected_command = report.get("selected_command")
         if not (isinstance(selected_command, str) and selected_command.startswith("/brain-")):
             errors.append("pass smoke_result requires a selected /brain-* command")
+        elif not exact_command_has_flag_value(report.get("exact_command"), "--selected-command", selected_command):
+            errors.append(f"exact_command must record selected command flag: --selected-command {selected_command}")
         loaded_skills = report.get("loaded_skills")
         if not (isinstance(loaded_skills, list) and any(isinstance(skill, str) and skill for skill in loaded_skills)):
             errors.append("pass smoke_result requires at least one loaded skill")
+        elif isinstance(loaded_skills, list):
+            for skill in loaded_skills:
+                if isinstance(skill, str) and skill and not exact_command_has_flag_value(
+                    report.get("exact_command"), "--loaded-skill", skill
+                ):
+                    errors.append(f"exact_command must record loaded skill flag: --loaded-skill {skill}")
         if report.get("adapter_path") == "unknown":
             errors.append("pass smoke_result requires an adapter_path")
     if report.get("run_scope") == "full_validation" and report.get("smoke_result") != "pass":
