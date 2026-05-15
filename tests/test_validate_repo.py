@@ -780,6 +780,28 @@ def test_commands_must_declare_lifecycle_state(tmp_path):
     assert "commands/brain-sample.md purpose must declare valid lifecycle state" in errors
 
 
+def test_state_machine_doc_must_map_each_command_entrypoint(tmp_path):
+    write_minimal_repo(tmp_path)
+    (tmp_path / "docs" / "state-machine.md").write_text(
+        "# State Machine\n\n"
+        "## Command Mapping\n\n"
+        "- `intake` -> route raw requests.\n",
+        encoding="utf-8",
+    )
+    readme = tmp_path / "README.md"
+    readme.write_text(
+        readme.read_text(encoding="utf-8").replace(
+            "## Documentation Guide\n",
+            "## Documentation Guide\n- `docs/state-machine.md` — state and command mapping.\n",
+        ),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "docs/state-machine.md command mapping missing command: /brain-sample" in errors
+
+
 def test_commands_must_not_reuse_the_same_workflow_body(tmp_path):
     write_minimal_repo(tmp_path)
     command_dir = tmp_path / "commands"

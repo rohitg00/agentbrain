@@ -202,6 +202,24 @@ Exit criteria:
 
 Allowed next states: none.
 
+## Command Mapping
+
+Use the earliest command that matches the current unsafe gap. These mappings keep the state machine executable instead of leaving future agents to infer entrypoints from prose:
+
+- `raw_request` -> `/brain-start` to classify the request and choose the first safe state.
+- `intake` -> `/brain-start` to preserve facts, constraints, blockers, and the recommended next command.
+- `should_this_exist` -> `/brain-should-this-exist` to compare agent work against safer non-agent alternatives.
+- `research` -> `/brain-research` to collect source-backed evidence before claims, briefs, or plans.
+- `grill` -> `/brain-grill` to challenge weak assumptions and missing evidence.
+- `brief` -> `/brain-brief` to turn the problem into scope, acceptance criteria, and non-goals.
+- `design` -> `/brain-design` to define flows, edge cases, and failure states.
+- `plan` -> `/brain-plan` to create small vertical slices with verification commands.
+- `build` -> `/brain-build` to implement only the selected slice with test-first or validator-first proof.
+- `verify` -> `/brain-verify` for proof collection and `/brain-eval` when command, skill, or artifact behavior needs rubric evidence.
+- `review` -> `/brain-review` to decide whether the artifact is safe to trust.
+- `ship` -> `/brain-ship` to require rollback, monitoring, approvals, and go/no-go evidence.
+- `learn` -> `/brain-learn` for reusable skills, templates, evals, validators, or memory updates, and `/brain-wiki` for durable project knowledge maintenance.
+
 ## Gate rule
 
 A state cannot advance when its required artifact is missing unless the agent records an explicit assumption and risk.

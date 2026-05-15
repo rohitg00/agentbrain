@@ -809,6 +809,11 @@ def agent_harness_command_routing_references(text: str) -> list[str]:
     return sorted(set(re.findall(r"`(/brain-[a-z0-9-]+)`", body)))
 
 
+def state_machine_command_mapping_references(text: str) -> list[str]:
+    body = section_body(text, "## Command Mapping")
+    return sorted(set(re.findall(r"`(/brain-[a-z0-9-]+)`", body)))
+
+
 def readme_skill_catalog_entries(text: str) -> list[str]:
     entries: set[str] = set()
     in_core_skills = False
@@ -992,6 +997,22 @@ def validate(root: Path = ROOT) -> list[str]:
     for required_path in REQUIRED_DOCS:
         if not (root / required_path).exists():
             errors.append(f"missing {required_path}")
+
+    state_machine = root / "docs" / "state-machine.md"
+    if state_machine.exists():
+        state_machine_refs = state_machine_command_mapping_references(
+            state_machine.read_text(errors="ignore")
+        )
+        for command in sorted((root / "commands").glob("*.md")):
+            command_name = f"/{command.stem}"
+            if command_name not in state_machine_refs:
+                errors.append(f"docs/state-machine.md command mapping missing command: {command_name}")
+        for command_name in state_machine_refs:
+            command_file = root / "commands" / f"{command_name.removeprefix('/')}.md"
+            if not command_file.exists():
+                errors.append(
+                    f"docs/state-machine.md command mapping points to missing command: {command_name}"
+                )
 
     agent_harness = root / "docs" / "agent-harness.md"
     if agent_harness.exists():
