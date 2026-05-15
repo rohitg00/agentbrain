@@ -188,6 +188,59 @@ def test_runtime_smoke_schema_rejects_full_validation_without_durable_transcript
     assert any("not_captured_stdout_only" in error for error in errors)
 
 
+def test_full_validation_requires_local_transcript_path_to_exist(tmp_path: Path, monkeypatch):
+    adapter = tmp_path / "adapters" / "read-only-cli" / "README.md"
+    adapter.parent.mkdir(parents=True)
+    adapter.write_text("# Adapter\n", encoding="utf-8")
+    command = tmp_path / "commands" / "brain-verify.md"
+    command.parent.mkdir(parents=True)
+    command.write_text("# /brain-verify\n\n## Skills to load\n\n- `runtime-smoke`\n", encoding="utf-8")
+    skill = tmp_path / "skills" / "runtime-smoke" / "SKILL.md"
+    skill.parent.mkdir(parents=True)
+    skill.write_text("# runtime-smoke\n", encoding="utf-8")
+    monkeypatch.setattr(
+        runtime_smoke,
+        "git_freshness_result",
+        lambda _root: "fresh: HEAD equals origin/main at abc123",
+    )
+    transcript_path = "artifacts/runtime-smoke/generic-cli-runtime-2026-05-15.log"
+    report = runtime_smoke.build_report(
+        root=tmp_path,
+        runtime="generic-cli-runtime",
+        version="1.2.3",
+        sandbox_write_mode="workspace_write",
+        brain_command_mode="markdown_specs",
+        run_scope="full_validation",
+        blocked_commands=[],
+        exact_command=(
+            "python scripts/runtime_smoke.py --runtime generic-cli-runtime --version 1.2.3 "
+            "--run-scope full_validation --selected-command /brain-verify "
+            "--loaded-skill runtime-smoke --adapter-path adapters/read-only-cli/README.md "
+            "--sandbox-write-mode workspace_write --brain-command-mode markdown_specs "
+            f"--transcript-path {transcript_path} --transcript-redaction-status redacted "
+            "--smoke-result pass --command-exit-status 0 "
+            "--validation-command 'rm -rf scripts/__pycache__ tests/__pycache__' "
+            "--validation-command 'python -m pytest -q' "
+            "--validation-command 'python scripts/validate_repo.py' "
+            "--validation-command 'git diff --check'"
+        ),
+        command_exit_status=0,
+        smoke_result="pass",
+        transcript_path=transcript_path,
+        transcript_redaction_status="redacted",
+        selected_command="/brain-verify",
+        loaded_skills=["runtime-smoke"],
+        adapter_path="adapters/read-only-cli/README.md",
+        validation_commands=runtime_smoke.FULL_VALIDATION_GATE_COMMANDS,
+    )
+
+    errors = runtime_smoke.validate_report_against_schema(
+        report, Path("schemas/runtime-smoke.schema.json"), root=tmp_path
+    )
+
+    assert any("full_validation transcript file is missing" in error for error in errors)
+
+
 def test_runtime_smoke_schema_rejects_full_validation_without_writable_temp_dir(monkeypatch, tmp_path: Path):
     monkeypatch.setattr(runtime_smoke, "writable_temp_dir_status", lambda _root: "blocked")
     report = runtime_smoke.build_report(
@@ -1063,6 +1116,9 @@ def test_main_quotes_exact_command_values_for_full_validation_flags(monkeypatch,
     adapter_dir = tmp_path / "adapters" / "read-only-cli"
     adapter_dir.mkdir(parents=True)
     (adapter_dir / "README.md").write_text("# Read-only CLI Adapter\n", encoding="utf-8")
+    transcript = tmp_path / "artifacts" / "runtime-smoke" / "generic-cli-runtime-2026-05-15.log"
+    transcript.parent.mkdir(parents=True)
+    transcript.write_text("redacted runtime transcript\n", encoding="utf-8")
     output_path = tmp_path / "runtime-smoke.json"
     monkeypatch.setattr(runtime_smoke, "git_freshness_result", lambda _root: "fresh: HEAD equals origin/main at abc123")
     monkeypatch.setattr(runtime_smoke, "writable_temp_dir_status", lambda _root: "writable")

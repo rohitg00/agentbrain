@@ -165,6 +165,10 @@ def adapter_path_is_adapter_readme(adapter_path: str) -> bool:
     return re.fullmatch(r"adapters/[a-z0-9-]+/README\.md", adapter_path) is not None
 
 
+def transcript_path_is_external_reference(transcript_path: str) -> bool:
+    return re.match(r"^[a-z][a-z0-9+.-]*://", transcript_path, flags=re.IGNORECASE) is not None
+
+
 def exact_command_has_flag_value(exact_command: object, flag: str, value: str) -> bool:
     if not isinstance(exact_command, str):
         return False
@@ -286,6 +290,11 @@ def validate_report_against_schema(
         errors.append("full_validation requires a write-capable sandbox; use read_only_smoke for read_only runs")
     if report.get("run_scope") == "full_validation" and report.get("transcript_path") == "not_captured_stdout_only":
         errors.append("full_validation requires a durable transcript_path instead of not_captured_stdout_only")
+    if report.get("run_scope") == "full_validation" and isinstance(report.get("transcript_path"), str):
+        transcript_path = report["transcript_path"]
+        if root is not None and not transcript_path_is_external_reference(transcript_path):
+            if not (Path(root) / transcript_path).is_file():
+                errors.append(f"full_validation transcript file is missing: {transcript_path}")
     if report.get("run_scope") == "full_validation" and report.get("transcript_redaction_status") not in {
         "redacted",
         "no_sensitive_content",
