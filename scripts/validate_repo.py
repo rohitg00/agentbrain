@@ -497,6 +497,8 @@ REQUIRED_ADAPTER_RUNTIME_SMOKE_EVIDENCE_TERMS = [
     "git freshness",
     "runtime version",
     "python executable",
+    "smoke result",
+    "command exit status",
 ]
 REQUIRED_CONTRIBUTING_VALIDATION_COMMANDS = [
     "pytest -q",

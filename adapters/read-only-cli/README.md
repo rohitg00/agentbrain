@@ -42,7 +42,7 @@ Record every real-runtime smoke run with `templates/runtime-smoke.md` and valida
 the JSON evidence against `schemas/runtime-smoke.schema.json` before trusting
 adapter behavior. Keep the artifact honest about read-only smoke versus full
 validation, blocked commands, command mode, sandbox/write mode, git freshness,
-runtime version, and Python executable.
+runtime version, Python executable, smoke result, and command exit status.
 
 For a read-only smoke test, do not fake the full gate. Record the blocked command and run only checks that do not require writes. If pytest cannot create a temporary directory, report that as a runtime blocker and continue with document routing checks, schema/template inspection, `git rev-parse HEAD`, `git rev-parse origin/main`, and `python scripts/validate_repo.py` only when Python 3.11 and dependencies are already available.
 

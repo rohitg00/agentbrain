@@ -64,7 +64,8 @@ def write_minimal_repo(root: Path) -> None:
         "Record every real-runtime smoke run with `templates/runtime-smoke.md` and "
         "validate the JSON evidence against `schemas/runtime-smoke.schema.json` before "
         "trusting adapter behavior. Keep the artifact honest about blocked commands, "
-        "command mode, sandbox/write mode, git freshness, runtime version, and Python executable.\n\n"
+        "command mode, sandbox/write mode, git freshness, runtime version, "
+        "Python executable, smoke result, and command exit status.\n\n"
         "## Failure Modes\n\n"
         "Stop if the runtime cannot load files.\n",
         encoding="utf-8",
@@ -6367,8 +6368,8 @@ def test_adapter_runtime_smoke_contract_must_name_blocked_commands(tmp_path):
     adapter = tmp_path / "adapters" / "sample-adapter" / "README.md"
     adapter.write_text(
         adapter.read_text(encoding="utf-8").replace(
-            "blocked commands, command mode, sandbox/write mode, git freshness, runtime version, and Python executable.",
-            "command mode, sandbox/write mode, git freshness, runtime version, and Python executable.",
+            "blocked commands, command mode, sandbox/write mode, git freshness, runtime version, Python executable, smoke result, and command exit status.",
+            "command mode, sandbox/write mode, git freshness, runtime version, Python executable, smoke result, and command exit status.",
         ),
         encoding="utf-8",
     )
@@ -6493,6 +6494,22 @@ def test_runtime_smoke_script_is_required_for_real_runtime_evidence(tmp_path):
     errors = validate_repo.validate(tmp_path)
 
     assert "missing scripts/runtime_smoke.py" in errors
+
+
+def test_adapter_runtime_smoke_contract_must_name_smoke_result(tmp_path):
+    write_minimal_repo(tmp_path)
+    adapter = tmp_path / "adapters" / "sample-adapter" / "README.md"
+    adapter.write_text(
+        adapter.read_text(encoding="utf-8").replace(
+            "command mode, sandbox/write mode, git freshness, runtime version, Python executable, smoke result, and command exit status.",
+            "command mode, sandbox/write mode, git freshness, runtime version, Python executable, and command exit status.",
+        ),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "adapters/sample-adapter/README.md validation section must document runtime smoke evidence field: smoke result" in errors
 
 
 def test_skills_readme_is_required_as_runtime_catalog(tmp_path):

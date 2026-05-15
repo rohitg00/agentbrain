@@ -44,7 +44,7 @@ Record every real-runtime smoke run with `templates/runtime-smoke.md` and valida
 the JSON evidence against `schemas/runtime-smoke.schema.json` before trusting
 adapter behavior. Keep the artifact honest about read-only smoke versus full
 validation, blocked commands, command mode, sandbox/write mode, git freshness,
-runtime version, and Python executable.
+runtime version, Python executable, smoke result, and command exit status.
 
 Then perform one dry run with a low-risk request and confirm the agent names the chosen command, loaded skills, evidence checked, stop conditions, and next action.
 
