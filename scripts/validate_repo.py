@@ -204,6 +204,11 @@ REQUIRED_README_GENERATED_CACHE_TROUBLESHOOTING_TERMS = ["generated Python cache
 REQUIRED_README_ARTIFACT_TROUBLESHOOTING_TERMS = ["schema/template mismatch"]
 REQUIRED_README_EDGE_CASE_APPROVAL_TERMS = ["approval", "side effect"]
 REQUIRED_README_MAINTAINER_LOOP_TERMS = [
+    "rm -rf scripts/__pycache__ tests/__pycache__",
+    "python -m pytest -q",
+    "python scripts/validate_repo.py",
+    "git diff --check",
+    "targeted exact-name scrub",
     "git push",
     "git fetch origin main",
     "HEAD equals origin/main",

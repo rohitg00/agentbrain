@@ -609,11 +609,12 @@ Use this loop for continuous improvement:
 1. Find the weakest uncovered failure mode.
 2. Add or update an eval or validator first.
 3. Improve the smallest doc, skill, template, or schema that closes the gap.
-4. Run validation.
-5. Commit a small coherent chunk.
-6. `git push` the verified chunk.
-7. Run `git fetch origin main` and confirm HEAD equals origin/main.
-8. Repeat.
+4. Run the full local gate: rm -rf scripts/__pycache__ tests/__pycache__ && python -m pytest -q && python scripts/validate_repo.py && git diff --check.
+5. Run a targeted exact-name scrub for user-shared/source names before public copy or commits.
+6. Commit a small coherent chunk.
+7. `git push` the verified chunk.
+8. Run `git fetch origin main` and confirm HEAD equals origin/main.
+9. Repeat.
 ```
 
 High-priority hardening targets:
