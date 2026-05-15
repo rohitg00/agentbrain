@@ -360,6 +360,13 @@ REQUIRED_AGENT_HARNESS_TROUBLESHOOTING_TERMS = {
     "generated Python cache file": "docs/agent-harness.md troubleshooting must document generated cache recovery",
     "schema/template mismatch": "docs/agent-harness.md troubleshooting must document schema/template mismatch recovery",
 }
+REQUIRED_AGENT_HARNESS_EVAL_TROUBLESHOOTING_TERMS = [
+    "eval case",
+    "User request",
+    "Expected behavior",
+    "Harness route",
+    "Failure if",
+]
 REQUIRED_AGENT_HARNESS_MAINTAINER_TERMS = [
     "git push",
     "git fetch origin main",
@@ -1244,6 +1251,12 @@ def validate(root: Path = ROOT) -> list[str]:
         for required_term, message in REQUIRED_AGENT_HARNESS_TROUBLESHOOTING_TERMS.items():
             if required_term.lower() not in harness_troubleshooting_lower:
                 errors.append(f"{message}: {required_term}")
+        for required_term in REQUIRED_AGENT_HARNESS_EVAL_TROUBLESHOOTING_TERMS:
+            if required_term.lower() not in harness_troubleshooting_lower:
+                errors.append(
+                    "docs/agent-harness.md troubleshooting must document eval case recovery: "
+                    f"{required_term}"
+                )
         harness_maintainer_checklist = section_body(agent_harness_text, "## Maintainer Checklist")
         for required_term in REQUIRED_AGENT_HARNESS_MAINTAINER_TERMS:
             if required_term not in harness_maintainer_checklist:

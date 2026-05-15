@@ -246,6 +246,10 @@ Run the exact CI sequence locally with Python 3.11, including install, tests, re
 
 If validation fails with `ModuleNotFoundError`, create or refresh a Python 3.11 virtual environment, rerun `python3 -m pip install -r requirements-dev.txt`, and retry the quality gate. Do not edit around missing dependencies or assume global packages match CI.
 
+### Eval case validation fails
+
+If validation reports an eval case mismatch, repair the eval case as executable harness evidence, not prose. Confirm the file has one H1, `## User request`, `## Expected behavior`, `## Harness route`, and `## Failure if`; the Harness route must name at least one existing command and skill, and Expected behavior must name evidence before rerunning validation.
+
 ### Generated cache files appear
 
 If validation reports a generated Python cache file, delete `__pycache__/`, `.pytest_cache/`, or tracked bytecode artifacts, then rerun the full quality gate. Generated caches are local execution residue and should not become harness state.

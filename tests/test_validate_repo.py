@@ -408,7 +408,7 @@ def write_minimal_repo(root: Path) -> None:
         "## Using It With Coding Agents\n"
         "For large work, split worker scopes into researcher, planner, builder, verifier, reviewer, shipper, and learner roles. Each worker scope must name evidence, a stop condition, and a handoff contract. Keep parallel work read-only unless the coordinator assigns a single writer for the next patch. The coordinator must map accepted outputs, rejected outputs, and a conflict check into the coordination review.\n\n"
         "## Troubleshooting\n"
-        "Inspect validation errors before continuing. If git status --short shows a dirty working tree, preserve user changes before editing. If secret-like values appear, remove them, rotate them outside the repo, and keep only redacted placeholders. If Tests pass locally but CI fails, run the exact CI sequence locally and inspect .github/workflows/quality.yml for Python 3.11 parity gaps. If dependency bootstrap fails with ModuleNotFoundError, create or refresh a Python 3.11 virtual environment before rerunning install. If validation reports a generated Python cache file, delete cache directories and rerun validation. If validation reports a schema/template mismatch, update the schema fields, matching template tokens, and routing docs together before rerunning validation.\n"
+        "Inspect validation errors before continuing. If validation reports an eval case mismatch, repair the eval case sections by checking User request, Expected behavior, Harness route, and Failure if before rerunning validation. If git status --short shows a dirty working tree, preserve user changes before editing. If secret-like values appear, remove them, rotate them outside the repo, and keep only redacted placeholders. If Tests pass locally but CI fails, run the exact CI sequence locally and inspect .github/workflows/quality.yml for Python 3.11 parity gaps. If dependency bootstrap fails with ModuleNotFoundError, create or refresh a Python 3.11 virtual environment before rerunning install. If validation reports a generated Python cache file, delete cache directories and rerun validation. If validation reports a schema/template mismatch, update the schema fields, matching template tokens, and routing docs together before rerunning validation.\n"
         "\n## Maintainer Checklist\n"
         "After validation, run git push, git fetch origin main, and verify HEAD equals origin/main before handing off.\n",
         encoding="utf-8",
@@ -5777,3 +5777,19 @@ def test_constitution_requires_noninteractive_scheduled_run_guidance(tmp_path):
     errors = validate_repo.validate(tmp_path)
 
     assert "AGENTBRAIN.md must document noninteractive scheduled-run fallback guidance: noninteractive" in errors
+
+
+def test_agent_harness_troubleshooting_must_document_eval_case_recovery(tmp_path):
+    write_minimal_repo(tmp_path)
+    harness = tmp_path / "docs" / "agent-harness.md"
+    harness.write_text(
+        harness.read_text(encoding="utf-8").replace(
+            "If validation reports an eval case mismatch, repair the eval case sections by checking User request, Expected behavior, Harness route, and Failure if before rerunning validation. ",
+            "",
+        ),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "docs/agent-harness.md troubleshooting must document eval case recovery: Harness route" in errors
