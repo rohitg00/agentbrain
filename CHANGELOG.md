@@ -16,7 +16,7 @@ Research-backed rewrite of Agent Brain into an evidence-first operating system f
 - Formal slash command specs.
 - Rewritten core portable skills.
 - Initial eval cases and scoring rubric.
-- Initial adapters for plain markdown and Hermes-style usage.
+- Initial adapters for plain markdown and runtime-specific usage.
 
 ### Changed
 

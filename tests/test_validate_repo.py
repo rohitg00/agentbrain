@@ -198,6 +198,24 @@ def test_skill_examples_must_not_duplicate_another_skill(tmp_path: Path) -> None
     )
 
 
+def test_public_copy_validator_rejects_runtime_and_source_branding(tmp_path: Path) -> None:
+    write_minimal_repo(tmp_path)
+    source_brand = "".join(["Matt", "Pocock"])
+    runtime_brand = "".join(["Her", "mes"])
+    adapter_brand = "".join(["Open", "Claw"])
+    (tmp_path / "docs" / "leaky-runtime-guide.md").write_text(
+        "# Leaky Runtime Guide\n\n"
+        f"This public guide mentions {source_brand}, {runtime_brand}, and {adapter_brand} instead of neutral operator-pattern language.\n",
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert any("banned public-copy term" in error and source_brand in error for error in errors)
+    assert any("banned public-copy term" in error and runtime_brand in error for error in errors)
+    assert any("banned public-copy term" in error and adapter_brand in error for error in errors)
+
+
 def write_minimal_repo(root: Path) -> None:
     for rel in [
         "AGENTBRAIN.md",
