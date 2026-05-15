@@ -417,6 +417,14 @@ REQUIRED_EVAL_CASE_SECTIONS = [
     "## Failure if",
 ]
 REQUIRED_EVAL_RUBRIC_SECTIONS = ["## Dimensions", "## Interpretation"]
+REQUIRED_EVALS_README_RUN_CONTRACT_TERMS = [
+    "case",
+    "target command or skill",
+    "rubric",
+    "evidence",
+    "pass/fail decision",
+    "fresh validation proof",
+]
 BANNED_PUBLIC_COPY_TERMS = [
     "G" + "arry",
     "G" + "Brain",
@@ -1530,6 +1538,12 @@ def validate(root: Path = ROOT) -> list[str]:
     evals_readme = root / "evals" / "README.md"
     if evals_readme.exists():
         evals_readme_text = evals_readme.read_text(errors="ignore")
+        evals_readme_run_contract = section_body(evals_readme_text, "## Running evals").lower()
+        if not evals_readme_run_contract.strip():
+            errors.append("evals/README.md missing eval run contract section: ## Running evals")
+        for required_term in REQUIRED_EVALS_README_RUN_CONTRACT_TERMS:
+            if required_term.lower() not in evals_readme_run_contract:
+                errors.append(f"evals/README.md run contract must mention: {required_term}")
         eval_case_entries = evals_readme_catalog_entries(evals_readme_text, "## Case catalog")
         eval_rubric_entries = evals_readme_catalog_entries(evals_readme_text, "## Rubric catalog")
         for case in eval_cases:

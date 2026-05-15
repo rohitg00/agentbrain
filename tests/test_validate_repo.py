@@ -649,7 +649,13 @@ def write_minimal_repo(root: Path) -> None:
         encoding="utf-8",
     )
     (root / "evals" / "README.md").write_text(
-        "# Evals\n\n- `activity-recap`\n- `source-to-skill-distillation`\n- `source-specific-command-leakage`\n- `agent-output-verifier`\n- `dirty-working-tree-preservation`\n- `verification-shortcut`\n- `skill-boundary-creep`\n- `no-user-defined`\n- `review-gate-skip`\n- `plan-slicing`\n- `context-drift`\n- `domain-language-drift`\n- `ci-failure-triage`\n- `spec-before-build`\n- `test-first-implementation`\n- `horizontal-slicing`\n- `ship-without-rollback`\n- `security-risk-feature`\n- `unapproved-side-effect`\n- `interrupted-handoff-resume`\n- `memory-capture-routing`\n- `stale-validation-proof`\n- `parallel-worker-join`\n- `context-budget`\n",
+        "# Evals\n\n"
+        "## Running evals\n\n"
+        "Pick a case, run the target command or skill, score with the rubric, record the evidence, pass/fail decision, and fresh validation proof.\n\n"
+        "## Case catalog\n\n"
+        "- `activity-recap`\n- `source-to-skill-distillation`\n- `source-specific-command-leakage`\n- `agent-output-verifier`\n- `dirty-working-tree-preservation`\n- `verification-shortcut`\n- `skill-boundary-creep`\n- `no-user-defined`\n- `review-gate-skip`\n- `plan-slicing`\n- `context-drift`\n- `domain-language-drift`\n- `ci-failure-triage`\n- `spec-before-build`\n- `test-first-implementation`\n- `horizontal-slicing`\n- `ship-without-rollback`\n- `security-risk-feature`\n- `unapproved-side-effect`\n- `interrupted-handoff-resume`\n- `memory-capture-routing`\n- `stale-validation-proof`\n- `parallel-worker-join`\n- `context-budget`\n\n"
+        "## Rubric catalog\n\n"
+        "- `agent-brain-rubric`\n",
         encoding="utf-8",
     )
 
@@ -658,6 +664,24 @@ def test_valid_minimal_repo_has_no_errors(tmp_path):
     write_minimal_repo(tmp_path)
 
     assert validate_repo.validate(tmp_path) == []
+
+
+def test_evals_readme_must_explain_run_contract(tmp_path):
+    write_minimal_repo(tmp_path)
+    evals_readme = tmp_path / "evals" / "README.md"
+    evals_readme.write_text(
+        evals_readme.read_text(encoding="utf-8").replace(
+            "Pick a case, run the target command or skill, score with the rubric, record the evidence, pass/fail decision, and fresh validation proof.",
+            "Pick a case and read it.",
+        ),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "evals/README.md run contract must mention: target command or skill" in errors
+    assert "evals/README.md run contract must mention: pass/fail decision" in errors
+    assert "evals/README.md run contract must mention: fresh validation proof" in errors
 
 
 def test_docs_must_not_contain_stale_repository_bootstrap_instructions(tmp_path):
@@ -3569,7 +3593,13 @@ def test_eval_case_heading_allows_connector_words_from_filename(tmp_path):
         encoding="utf-8",
     )
     (tmp_path / "evals" / "README.md").write_text(
-        "# Evals\n\n- `activity-recap`\n- `agent-output-verifier`\n- `build-vs-buy-decision`\n- `ci-failure-triage`\n- `context-budget`\n- `context-drift`\n- `dirty-working-tree-preservation`\n- `domain-language-drift`\n- `memory-capture-routing`\n- `source-specific-command-leakage`\n- `source-to-skill-distillation`\n- `skill-boundary-creep`\n- `verification-shortcut`\n- `no-user-defined`\n- `review-gate-skip`\n- `plan-slicing`\n- `spec-before-build`\n- `test-first-implementation`\n- `horizontal-slicing`\n- `ship-without-rollback`\n- `security-risk-feature`\n- `unapproved-side-effect`\n- `interrupted-handoff-resume`\n- `stale-validation-proof`\n- `parallel-worker-join`\n",
+        "# Evals\n\n"
+        "## Running evals\n\n"
+        "Pick a case, run the target command or skill, score with the rubric, record the evidence, pass/fail decision, and fresh validation proof.\n\n"
+        "## Case catalog\n\n"
+        "- `activity-recap`\n- `agent-output-verifier`\n- `build-vs-buy-decision`\n- `ci-failure-triage`\n- `context-budget`\n- `context-drift`\n- `dirty-working-tree-preservation`\n- `domain-language-drift`\n- `memory-capture-routing`\n- `source-specific-command-leakage`\n- `source-to-skill-distillation`\n- `skill-boundary-creep`\n- `verification-shortcut`\n- `no-user-defined`\n- `review-gate-skip`\n- `plan-slicing`\n- `spec-before-build`\n- `test-first-implementation`\n- `horizontal-slicing`\n- `ship-without-rollback`\n- `security-risk-feature`\n- `unapproved-side-effect`\n- `interrupted-handoff-resume`\n- `stale-validation-proof`\n- `parallel-worker-join`\n\n"
+        "## Rubric catalog\n\n"
+        "- `agent-brain-rubric`\n",
         encoding="utf-8",
     )
 
@@ -4724,8 +4754,14 @@ def test_evals_readme_case_catalog_entries_must_be_backticked(tmp_path):
 
 def test_evals_readme_case_catalog_entries_must_point_to_existing_files(tmp_path):
     write_minimal_repo(tmp_path)
-    with (tmp_path / "evals" / "README.md").open("a", encoding="utf-8") as readme:
-        readme.write("- `missing-case`\n")
+    evals_readme = tmp_path / "evals" / "README.md"
+    evals_readme.write_text(
+        evals_readme.read_text(encoding="utf-8").replace(
+            "## Rubric catalog",
+            "- `missing-case`\n\n## Rubric catalog",
+        ),
+        encoding="utf-8",
+    )
 
     errors = validate_repo.validate(tmp_path)
 

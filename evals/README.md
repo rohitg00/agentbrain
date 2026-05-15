@@ -47,10 +47,11 @@ Agent Brain evals check whether a command or skill improves judgment instead of 
 
 - `agent-brain-rubric` — scores judgment quality across evidence, challenge, planning, and verification.
 
-## How to use
+## Running evals
 
 1. Pick a case from `evals/cases/`.
 2. Confirm the case's expected behavior names the evidence the agent must collect or request.
-3. Run the target command or skill.
-4. Score with `evals/rubrics/agent-brain-rubric.md`.
-5. Save useful outputs under `evals/expected-artifacts/` only when they become golden examples.
+3. Run the target command or skill against the user request in the case.
+4. Score with the rubric in `evals/rubrics/agent-brain-rubric.md`.
+5. Record the evidence checked, a pass/fail decision, risks, open questions, and fresh validation proof.
+6. Save useful outputs under `evals/expected-artifacts/` only when they become golden examples.
