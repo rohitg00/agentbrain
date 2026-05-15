@@ -698,7 +698,7 @@ def write_minimal_repo(root: Path) -> None:
     (root / "evals" / "README.md").write_text(
         "# Evals\n\n"
         "## Running evals\n\n"
-        "Pick a case, run the target command or skill, score with the rubric, record the evidence, pass/fail decision, and fresh validation proof.\n\n"
+        "Pick a case, run the target command or skill, confirm the existing command or skill route, score with the rubric, record the evidence, pass/fail decision, and fresh validation proof.\n\n"
         "## Case catalog\n\n"
         "- `activity-recap`\n- `artifact-contract-drift`\n- `source-to-skill-distillation`\n- `source-specific-command-leakage`\n- `agent-output-verifier`\n- `dirty-working-tree-preservation`\n- `verification-shortcut`\n- `skill-boundary-creep`\n- `source-branded-skill-name`\n- `no-user-defined`\n- `review-gate-skip`\n- `plan-slicing`\n- `context-drift`\n- `domain-language-drift`\n- `ci-failure-triage`\n- `spec-before-build`\n- `test-first-implementation`\n- `horizontal-slicing`\n- `ship-without-rollback`\n- `security-risk-feature`\n- `unapproved-side-effect`\n- `interrupted-handoff-resume`\n- `memory-capture-routing`\n- `stale-validation-proof`\n- `parallel-worker-join`\n- `context-budget`\n\n"
         "## Rubric catalog\n\n"
@@ -718,7 +718,7 @@ def test_evals_readme_must_explain_run_contract(tmp_path):
     evals_readme = tmp_path / "evals" / "README.md"
     evals_readme.write_text(
         evals_readme.read_text(encoding="utf-8").replace(
-            "Pick a case, run the target command or skill, score with the rubric, record the evidence, pass/fail decision, and fresh validation proof.",
+            "Pick a case, run the target command or skill, confirm the existing command or skill route, score with the rubric, record the evidence, pass/fail decision, and fresh validation proof.",
             "Pick a case and read it.",
         ),
         encoding="utf-8",
@@ -729,6 +729,48 @@ def test_evals_readme_must_explain_run_contract(tmp_path):
     assert "evals/README.md run contract must mention: target command or skill" in errors
     assert "evals/README.md run contract must mention: pass/fail decision" in errors
     assert "evals/README.md run contract must mention: fresh validation proof" in errors
+
+
+def test_evals_readme_must_document_route_integrity_gate(tmp_path):
+    write_minimal_repo(tmp_path)
+    evals_readme = tmp_path / "evals" / "README.md"
+    evals_readme.write_text(
+        evals_readme.read_text(encoding="utf-8").replace(
+            "existing command or skill route, ",
+            "",
+        ),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "evals/README.md run contract must mention: existing command or skill route" in errors
+
+
+def test_eval_case_harness_route_must_reference_existing_commands(tmp_path):
+    write_minimal_repo(tmp_path)
+    eval_case = tmp_path / "evals" / "cases" / "activity-recap.md"
+    eval_case.write_text(
+        eval_case.read_text(encoding="utf-8").replace("/brain-eval", "/brain-missing"),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "evals/cases/activity-recap.md harness route references missing command: /brain-missing" in errors
+
+
+def test_eval_case_harness_route_must_reference_existing_skills(tmp_path):
+    write_minimal_repo(tmp_path)
+    eval_case = tmp_path / "evals" / "cases" / "activity-recap.md"
+    eval_case.write_text(
+        eval_case.read_text(encoding="utf-8").replace("agent-output-verifier", "missing-skill"),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "evals/cases/activity-recap.md harness route references missing skill: missing-skill" in errors
 
 
 def test_docs_must_not_contain_stale_repository_bootstrap_instructions(tmp_path):
@@ -3836,7 +3878,7 @@ def test_eval_case_heading_allows_connector_words_from_filename(tmp_path):
     (tmp_path / "evals" / "README.md").write_text(
         "# Evals\n\n"
         "## Running evals\n\n"
-        "Pick a case, run the target command or skill, score with the rubric, record the evidence, pass/fail decision, and fresh validation proof.\n\n"
+        "Pick a case, run the target command or skill, confirm the existing command or skill route, score with the rubric, record the evidence, pass/fail decision, and fresh validation proof.\n\n"
         "## Case catalog\n\n"
         "- `activity-recap`\n- `artifact-contract-drift`\n- `agent-output-verifier`\n- `build-vs-buy-decision`\n- `ci-failure-triage`\n- `context-budget`\n- `context-drift`\n- `dirty-working-tree-preservation`\n- `domain-language-drift`\n- `memory-capture-routing`\n- `source-branded-skill-name`\n- `source-specific-command-leakage`\n- `source-to-skill-distillation`\n- `skill-boundary-creep`\n- `verification-shortcut`\n- `no-user-defined`\n- `review-gate-skip`\n- `plan-slicing`\n- `spec-before-build`\n- `test-first-implementation`\n- `horizontal-slicing`\n- `ship-without-rollback`\n- `security-risk-feature`\n- `unapproved-side-effect`\n- `interrupted-handoff-resume`\n- `stale-validation-proof`\n- `parallel-worker-join`\n\n"
         "## Rubric catalog\n\n"

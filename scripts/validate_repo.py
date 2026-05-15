@@ -472,6 +472,7 @@ REQUIRED_EVAL_RUBRIC_SECTIONS = ["## Dimensions", "## Interpretation"]
 REQUIRED_EVALS_README_RUN_CONTRACT_TERMS = [
     "case",
     "target command or skill",
+    "existing command or skill route",
     "rubric",
     "evidence",
     "pass/fail decision",
