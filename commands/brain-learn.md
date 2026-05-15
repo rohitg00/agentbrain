@@ -58,4 +58,4 @@ In noninteractive runs where the agent cannot ask questions, use the safest docu
 
 ## Quality bar
 
-A good `/brain-learn` run distills a durable operator lesson into neutral guidance, updates the smallest relevant skill, doc, template, or eval, and avoids storing source-specific branding as project doctrine.
+A good `/brain-learn` run distills a durable operator lesson into neutral guidance, updates the smallest relevant skill, doc, template, or eval, includes fresh validation proof, and avoids storing source-specific branding as project doctrine.

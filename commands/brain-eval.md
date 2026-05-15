@@ -57,4 +57,4 @@ In noninteractive runs where the agent cannot ask questions, use the safest docu
 
 ## Quality bar
 
-A good `/brain-eval` run turns a repeated failure mode into a concrete eval case or rubric entry with expected behavior, failure criteria, and catalog coverage before relying on prose assurances.
+A good `/brain-eval` run turns a repeated failure mode into a concrete eval case or rubric entry with expected behavior, failure criteria, catalog coverage, and fresh validation proof before relying on prose assurances.

@@ -57,4 +57,4 @@ In noninteractive runs where the agent cannot ask questions, use the safest docu
 
 ## Quality bar
 
-A good `/brain-review` run identifies blocking correctness, security, maintainability, test, and evidence issues with file or artifact references, then separates required fixes from optional polish.
+A good `/brain-review` run identifies blocking correctness, security, maintainability, test, and evidence issues with file or artifact references, includes fresh validation proof, then separates required fixes from optional polish.

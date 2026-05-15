@@ -387,6 +387,7 @@ REQUIRED_COMMAND_OUTPUT_TERMS = [
     "open questions",
     "next recommended state",
 ]
+REQUIRED_COMMAND_QUALITY_BAR_TERMS = ["fresh validation proof"]
 REQUIRED_BUILD_COMMAND_PROOF_TERMS = [
     "failing test before implementation",
     "validator-first proof",
@@ -1201,6 +1202,9 @@ def validate(root: Path = ROOT) -> list[str]:
                 seen_workflows[workflow] = rel(command, root)
         quality_bar = normalized_section_body(text, "## Quality bar")
         if quality_bar:
+            for required_term in REQUIRED_COMMAND_QUALITY_BAR_TERMS:
+                if required_term not in quality_bar:
+                    errors.append(f"{rel(command, root)} quality bar must mention: {required_term}")
             if quality_bar in seen_quality_bars:
                 errors.append(
                     f"{rel(command, root)} quality bar duplicates {seen_quality_bars[quality_bar]}"

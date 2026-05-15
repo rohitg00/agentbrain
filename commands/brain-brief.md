@@ -57,4 +57,4 @@ In noninteractive runs where the agent cannot ask questions, use the safest docu
 
 ## Quality bar
 
-A good `/brain-brief` run produces a schema-aligned product brief with a named user, source-backed problem evidence, explicit non-goals, acceptance criteria, and unresolved risks before any build work starts.
+A good `/brain-brief` run produces a schema-aligned product brief with a named user, source-backed problem evidence, explicit non-goals, acceptance criteria, unresolved risks, and fresh validation proof before any build work starts.

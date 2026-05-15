@@ -58,4 +58,4 @@ In noninteractive runs where the agent cannot ask questions, use the safest docu
 
 ## Quality bar
 
-A good `/brain-verify` run checks the actual artifact against tests, logs, diffs, traces, screenshots, source citations, or approvals, and refuses claims that lack reproducible evidence.
+A good `/brain-verify` run checks the actual artifact against tests, logs, diffs, traces, screenshots, source citations, approvals, and fresh validation proof, and refuses claims that lack reproducible evidence.

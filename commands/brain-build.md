@@ -58,4 +58,4 @@ In noninteractive runs where the agent cannot ask questions, use the safest docu
 
 ## Quality bar
 
-A good `/brain-build` run implements one approved slice, preserves the planned scope, records the failing-then-passing verification evidence when behavior changes, and stops before unrelated cleanup.
+A good `/brain-build` run implements one approved slice, preserves the planned scope, records the failing-then-passing verification evidence when behavior changes, captures fresh validation proof, and stops before unrelated cleanup.

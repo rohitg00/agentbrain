@@ -58,4 +58,4 @@ In noninteractive runs where the agent cannot ask questions, use the safest docu
 
 ## Quality bar
 
-A good `/brain-wiki` run updates durable project knowledge only after evidence is checked, links it to the relevant command or skill, and avoids turning temporary session context into permanent doctrine.
+A good `/brain-wiki` run updates durable project knowledge only after evidence and fresh validation proof are checked, links it to the relevant command or skill, and avoids turning temporary session context into permanent doctrine.

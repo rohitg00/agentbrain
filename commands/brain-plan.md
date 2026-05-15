@@ -57,4 +57,4 @@ In noninteractive runs where the agent cannot ask questions, use the safest docu
 
 ## Quality bar
 
-A good `/brain-plan` run decomposes approved work into ordered vertical slices, gives each slice acceptance checks and rollback notes, and keeps unverified assumptions out of the build queue.
+A good `/brain-plan` run decomposes approved work into ordered vertical slices, gives each slice acceptance checks and rollback notes, records fresh validation proof, and keeps unverified assumptions out of the build queue.

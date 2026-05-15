@@ -57,4 +57,4 @@ In noninteractive runs where the agent cannot ask questions, use the safest docu
 
 ## Quality bar
 
-A good `/brain-design` run compares viable approaches, names trade-offs and constraints, rejects unnecessary agentic complexity, and leaves the next implementation slice small enough to verify.
+A good `/brain-design` run compares viable approaches, names trade-offs and constraints, rejects unnecessary agentic complexity, captures fresh validation proof, and leaves the next implementation slice small enough to verify.

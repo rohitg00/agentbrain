@@ -58,4 +58,4 @@ In noninteractive runs where the agent cannot ask questions, use the safest docu
 
 ## Quality bar
 
-A good `/brain-start` run classifies the request into the earliest safe state, names missing inputs and evidence, selects the next command and skills, and avoids jumping directly to implementation.
+A good `/brain-start` run classifies the request into the earliest safe state, names missing inputs and evidence, selects the next command and skills, records fresh validation proof, and avoids jumping directly to implementation.

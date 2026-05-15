@@ -315,7 +315,7 @@ def write_minimal_repo(root: Path) -> None:
             "## Stop conditions",
             "Stop when the request is unsafe.",
             "## Quality bar",
-            "Evidence is checked before output.",
+            "Evidence is checked before output. Fresh validation proof is captured before handoff.",
         ]),
         encoding="utf-8",
     )
@@ -339,7 +339,7 @@ def write_minimal_repo(root: Path) -> None:
             "## Stop conditions",
             "Stop when required proof is unavailable.",
             "## Quality bar",
-            "Eval evidence is checked before acceptance.",
+            "Eval evidence is checked before acceptance. Fresh validation proof is captured before handoff.",
         ]),
         encoding="utf-8",
     )
@@ -803,7 +803,7 @@ def test_commands_must_not_reuse_the_same_workflow_body(tmp_path):
                 "## Stop conditions",
                 "Stop when the request is unsafe.",
                 "## Quality bar",
-                f"Evidence is checked before {stem} output.",
+                f"Evidence is checked before {stem} output. Fresh validation proof is captured before handoff.",
             ]),
             encoding="utf-8",
         )
@@ -857,7 +857,7 @@ def test_command_stop_conditions_must_include_noninteractive_fallback_when_the_c
             "## Stop conditions",
             "Stop and ask for human input when the required context is unavailable.",
             "## Quality bar",
-            "Evidence is checked before output.",
+            "Evidence is checked before output. Fresh validation proof is captured before handoff.",
         ]),
         encoding="utf-8",
     )
@@ -890,7 +890,7 @@ def test_build_command_requires_test_or_validator_first_proof(tmp_path):
             "## Stop conditions",
             "Stop when the request is unsafe.",
             "## Quality bar",
-            "Evidence is checked before output.",
+            "Evidence is checked before output. Fresh validation proof is captured before handoff.",
         ]),
         encoding="utf-8",
     )
@@ -1851,7 +1851,7 @@ def test_command_quality_bars_must_not_be_reused_boilerplate(tmp_path):
             "## Stop conditions",
             "Stop when the request is unsafe.",
             "## Quality bar",
-            "Evidence is checked before output.",
+            "Evidence is checked before output. Fresh validation proof is captured before handoff.",
         ]),
         encoding="utf-8",
     )
@@ -1895,7 +1895,7 @@ def test_command_stop_conditions_must_not_be_reused_boilerplate(tmp_path):
             "## Stop conditions",
             "Stop when the request is unsafe.",
             "## Quality bar",
-            "Evidence is checked before other output.",
+            "Evidence is checked before other output. Fresh validation proof is captured before handoff.",
         ]),
         encoding="utf-8",
     )
@@ -1940,6 +1940,22 @@ def test_plan_slicing_skill_must_require_acceptance_checks_and_verification_comm
 
     assert "skills/plan-slicing/SKILL.md must require each slice to name acceptance checks" in errors
     assert "skills/plan-slicing/SKILL.md must require each slice to name a verification command" in errors
+
+
+def test_command_quality_bar_must_require_fresh_validation_proof(tmp_path):
+    write_minimal_repo(tmp_path)
+    command = tmp_path / "commands" / "brain-sample.md"
+    command.write_text(
+        command.read_text(encoding="utf-8").replace(
+            "Evidence is checked before output. Fresh validation proof is captured before handoff.",
+            "Evidence is checked before output.",
+        ),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "commands/brain-sample.md quality bar must mention: fresh validation proof" in errors
 
 
 def test_readme_skill_catalog_entries_must_point_to_existing_files(tmp_path):
@@ -3311,7 +3327,7 @@ def test_command_filenames_must_be_lowercase_kebab_case(tmp_path):
             "## Stop conditions",
             "Stop when the request is unsafe.",
             "## Quality bar",
-            "Evidence is checked before output.",
+            "Evidence is checked before output. Fresh validation proof is captured before handoff.",
         ]),
         encoding="utf-8",
     )
@@ -3343,7 +3359,7 @@ def test_command_filenames_must_use_brain_prefix(tmp_path):
             "## Stop conditions",
             "Stop when the request is unsafe.",
             "## Quality bar",
-            "Evidence is checked before output.",
+            "Evidence is checked before output. Fresh validation proof is captured before handoff.",
         ]),
         encoding="utf-8",
     )
@@ -3375,7 +3391,7 @@ def test_commands_must_name_skills_to_load(tmp_path):
             "## Stop conditions",
             "Stop when the request is unsafe.",
             "## Quality bar",
-            "Evidence is checked before output.",
+            "Evidence is checked before output. Fresh validation proof is captured before handoff.",
         ]),
         encoding="utf-8",
     )
@@ -3756,7 +3772,7 @@ def test_agent_harness_command_routing_must_cover_every_command(tmp_path):
             "## Stop conditions",
             "Stop when the extra request is unsafe.",
             "## Quality bar",
-            "Extra evidence is checked before output.",
+            "Extra evidence is checked before output. Fresh validation proof is captured before handoff.",
         ]),
         encoding="utf-8",
     )
@@ -4420,7 +4436,7 @@ def test_command_required_sections_must_keep_canonical_order(tmp_path):
             "## Stop conditions",
             "Stop if unsafe.",
             "## Quality bar",
-            "Evidence is checked before output.",
+            "Evidence is checked before output. Fresh validation proof is captured before handoff.",
         ]),
         encoding="utf-8",
     )
@@ -4450,7 +4466,7 @@ def test_command_required_sections_must_not_be_duplicated(tmp_path):
             "## Stop conditions",
             "Stop if unsafe.",
             "## Quality bar",
-            "Evidence is checked before output.",
+            "Evidence is checked before output. Fresh validation proof is captured before handoff.",
         ]),
         encoding="utf-8",
     )
