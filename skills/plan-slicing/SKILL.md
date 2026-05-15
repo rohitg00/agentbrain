@@ -52,7 +52,7 @@ Do not use this skill when a simpler checklist, script, or existing command hand
 
 Implementation Plan
 
-The artifact should be concise, auditable, and include evidence, blockers, and next action so another agent can resume. Each slice should be independently runnable by another agent without private context.
+Use `templates/implementation-plan.md`. The artifact should be concise, auditable, and include evidence, blockers, and next action so another agent can resume. Each slice should be independently runnable by another agent without private context.
 
 ## Failure Modes
 

@@ -1282,6 +1282,22 @@ def normalized_section_body(text: str, section: str) -> str:
     return re.sub(r"\s+", " ", section_body(text, section).strip().lower())
 
 
+def first_nonblank_line(text: str) -> str:
+    for line in text.splitlines():
+        if line.strip():
+            return line.strip()
+    return ""
+
+
+def skill_output_artifact_template(output_artifact: str, root: Path) -> str:
+    artifact_name = first_nonblank_line(output_artifact)
+    if not artifact_name:
+        return ""
+    artifact_slug = slug_from_title(artifact_name)
+    template_path = root / "templates" / f"{artifact_slug}.md"
+    return rel(template_path, root) if template_path.exists() else ""
+
+
 def evals_readme_catalog_entries(text: str, section: str) -> list[str]:
     body = section_body(text, section)
     if not body.strip() and section == "## Case catalog":
@@ -1788,7 +1804,13 @@ def validate(root: Path = ROOT) -> list[str]:
                     errors.append(f"{rel(skill, root)} section has no body: {section}")
         if not sections_are_in_order(text, REQUIRED_SKILL_SECTIONS):
             errors.append(f"{rel(skill, root)} sections must appear in canonical order")
-        output_artifact = section_body(text, "## Output Artifact").lower()
+        output_artifact_text = section_body(text, "## Output Artifact")
+        output_artifact = output_artifact_text.lower()
+        matching_template = skill_output_artifact_template(output_artifact_text, root)
+        if matching_template and f"`{matching_template}`" not in output_artifact_text:
+            errors.append(
+                f"{rel(skill, root)} output artifact must cite matching template: {matching_template}"
+            )
         for required_term in REQUIRED_SKILL_OUTPUT_ARTIFACT_RESUME_FIELDS:
             if required_term not in output_artifact:
                 errors.append(

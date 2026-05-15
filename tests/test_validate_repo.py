@@ -15,6 +15,26 @@ def test_commands_directory_requires_catalog(tmp_path: Path) -> None:
     assert any("missing commands/README.md" in error for error in errors)
 
 
+def test_skill_output_artifact_must_cite_matching_template(tmp_path: Path) -> None:
+    write_minimal_repo(tmp_path)
+    skill = tmp_path / "skills" / "sample" / "SKILL.md"
+    skill.write_text(
+        skill.read_text(encoding="utf-8").replace(
+            "`templates/sample-routing-summary.md`",
+            "missing-template-reference",
+        ),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert any(
+        "skills/sample/SKILL.md output artifact must cite matching template: templates/sample-routing-summary.md"
+        in error
+        for error in errors
+    )
+
+
 def test_adapter_requires_output_contract(tmp_path: Path) -> None:
     write_minimal_repo(tmp_path)
     adapter = tmp_path / "adapters" / "sample-adapter" / "README.md"
@@ -1043,7 +1063,8 @@ def write_minimal_repo(root: Path) -> None:
             "## Verification",
             "Confirm evidence.",
             "## Output Artifact",
-            "Structured result with status, evidence, blockers, and next action.",
+            "Sample Routing Summary",
+            "Use `templates/sample-routing-summary.md` for structured result with status, evidence, blockers, and next action.",
             "## Failure Modes",
             "Stop if evidence is missing.",
             "## Example",
@@ -4204,7 +4225,7 @@ def test_skill_must_define_output_artifact_for_handoff(tmp_path):
     skill = tmp_path / "skills" / "sample" / "SKILL.md"
     skill.write_text(
         skill.read_text(encoding="utf-8").replace(
-            "\n## Output Artifact\nStructured result with status, evidence, blockers, and next action.\n",
+            "\n## Output Artifact\nSample Routing Summary\nUse `templates/sample-routing-summary.md` for structured result with status, evidence, blockers, and next action.\n",
             "\n",
         ),
         encoding="utf-8",
@@ -4220,7 +4241,7 @@ def test_skill_output_artifact_must_be_resume_ready(tmp_path):
     skill = tmp_path / "skills" / "sample" / "SKILL.md"
     skill.write_text(
         skill.read_text(encoding="utf-8").replace(
-            "Structured result with status, evidence, blockers, and next action.",
+            "Use `templates/sample-routing-summary.md` for structured result with status, evidence, blockers, and next action.",
             "Structured result.",
         ),
         encoding="utf-8",
