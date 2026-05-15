@@ -606,6 +606,14 @@ REQUIRED_COMMAND_EXAMPLE_TERMS = [
     "artifact",
     "verification",
 ]
+REQUIRED_COMMAND_CATALOG_CONTRACT_TERMS = [
+    "lifecycle state",
+    "required artifact",
+    "skills to load",
+    "native command support",
+    "markdown spec",
+    "stop condition",
+]
 REQUIRED_BUILD_COMMAND_PROOF_TERMS = [
     "failing test before implementation",
     "validator-first proof",
@@ -1762,6 +1770,13 @@ def validate(root: Path = ROOT) -> list[str]:
     commands_readme = root / "commands" / "README.md"
     if commands_readme.exists():
         commands_readme_text = commands_readme.read_text(errors="ignore")
+        commands_readme_text_lower = commands_readme_text.lower()
+        for required_term in REQUIRED_COMMAND_CATALOG_CONTRACT_TERMS:
+            if required_term not in commands_readme_text_lower:
+                errors.append(
+                    "commands/README.md must document command catalog contract: "
+                    f"{required_term}"
+                )
         for command in command_files:
             command_name = f"/{command.stem}"
             expected_link = f"[`{command_name}`]({command.name})"

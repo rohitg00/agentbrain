@@ -1,6 +1,8 @@
 # Command Catalog
 
-Use this catalog when an agent runtime cannot expose `/brain-*` entries as native commands. Treat each command file as a markdown spec, load only the skills listed by that command, produce the named artifact, and stop instead of inventing unsupported routes.
+Use this catalog when an agent runtime cannot expose `/brain-*` entries as native commands. Treat each command file as a markdown spec, load only the skills listed by that command, produce the required artifact, and stop instead of inventing unsupported routes.
+
+Each catalog entry preserves the command boundary for runtimes with or without native command support: lifecycle state, skills to load, required artifact, stop condition, and link to the markdown spec. If those fields are missing, the harness cannot prove command routing or artifact handoff behavior in a real runtime smoke.
 
 ## Routing rules
 

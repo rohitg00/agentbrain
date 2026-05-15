@@ -35,6 +35,22 @@ def test_adapter_requires_output_contract(tmp_path: Path) -> None:
     )
 
 
+def test_command_catalog_requires_artifact_contract(tmp_path: Path) -> None:
+    write_minimal_repo(tmp_path)
+    catalog = tmp_path / "commands" / "README.md"
+    catalog.write_text(
+        catalog.read_text(encoding="utf-8").replace("required artifact", "output"),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert any(
+        "commands/README.md must document command catalog contract: required artifact" in error
+        for error in errors
+    )
+
+
 def write_minimal_repo(root: Path) -> None:
     for rel in [
         "AGENTBRAIN.md",
@@ -467,7 +483,9 @@ def write_minimal_repo(root: Path) -> None:
     (command_dir / "README.md").write_text(
         "# Command Catalog\n\n"
         "Use this catalog when a runtime cannot expose `/brain-*` entries as native commands. "
-        "Treat each command file as a markdown spec, load only the listed skills, and produce the named artifact.\n\n"
+        "Treat each command file as a markdown spec, load only the listed skills, and produce the required artifact.\n\n"
+        "Each catalog entry must preserve the lifecycle state, skills to load, required artifact, stop condition, "
+        "and native command support boundary so markdown-only runtimes can route work without guessing.\n\n"
         "- [`/brain-sample`](brain-sample.md) — route sample work through INTAKE.\n"
         "- [`/brain-eval`](brain-eval.md) — score eval cases with verification evidence.\n",
         encoding="utf-8",
