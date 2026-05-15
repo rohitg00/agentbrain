@@ -4,6 +4,8 @@ This adapter explains how to use Agent Brain with a tool-enabled skill runtime w
 
 ## Install
 
+Before wiring a runtime, run `git status --short` and `git log --oneline -5`, run baseline validation before editing, and preserve user changes before changing adapter instructions.
+
 1. Keep Agent Brain as a project repository.
 2. Let the runtime read `AGENTBRAIN.md` and relevant command specs.
 3. Convert stable `skills/*/SKILL.md` files into local runtime skills when they prove useful.

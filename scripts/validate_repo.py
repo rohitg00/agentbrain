@@ -342,6 +342,12 @@ REQUIRED_ADAPTER_VALIDATION_COMMANDS = [
     "git diff --check",
     "targeted exact-name scrub",
 ]
+REQUIRED_ADAPTER_BOOTSTRAP_COMMANDS = [
+    "git status --short",
+    "git log --oneline -5",
+    "baseline validation before editing",
+    "preserve user changes",
+]
 REQUIRED_CONTRIBUTING_VALIDATION_COMMANDS = [
     "pytest -q",
     "rm -rf scripts/__pycache__ tests/__pycache__",
@@ -1620,6 +1626,7 @@ def validate(root: Path = ROOT) -> list[str]:
         if markdown_file.parent.parent == root / "adapters" and markdown_file.name == "README.md":
             expected_heading = adapter_heading_from_slug(markdown_file.parent.name)
             adapter_text = markdown_file.read_text(errors="ignore")
+            adapter_text_lower = adapter_text.lower()
             first_line = adapter_text.splitlines()[0]
             if first_line != expected_heading:
                 errors.append(f"{rel(markdown_file, root)} heading must be {expected_heading}")
@@ -1629,6 +1636,9 @@ def validate(root: Path = ROOT) -> list[str]:
             for run_command in REQUIRED_ADAPTER_VALIDATION_COMMANDS:
                 if run_command not in adapter_text:
                     errors.append(f"{rel(markdown_file, root)} validation section must document: {run_command}")
+            for run_command in REQUIRED_ADAPTER_BOOTSTRAP_COMMANDS:
+                if run_command.lower() not in adapter_text_lower:
+                    errors.append(f"{rel(markdown_file, root)} bootstrap section must document: {run_command}")
 
     for rubric in sorted((root / "evals" / "rubrics").glob("*.md")):
         text = rubric.read_text(errors="ignore")
