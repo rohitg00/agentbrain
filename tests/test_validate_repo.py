@@ -313,6 +313,22 @@ def test_required_eval_cases_include_adapter_capability_overclaim(tmp_path: Path
     assert "missing evals/cases/adapter-capability-overclaim.md" in errors
 
 
+def test_quality_workflow_opts_into_current_javascript_action_runtime(tmp_path: Path) -> None:
+    write_minimal_repo(tmp_path)
+    workflow = tmp_path / ".github" / "workflows" / "quality.yml"
+    workflow.write_text(
+        workflow.read_text(encoding="utf-8").replace(
+            "FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true\n",
+            "",
+        ),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert ".github/workflows/quality.yml must opt into current JavaScript action runtime: FORCE_JAVASCRIPT_ACTIONS_TO_NODE24" in errors
+
+
 def write_minimal_repo(root: Path) -> None:
     for rel in [
         "AGENTBRAIN.md",
@@ -1088,6 +1104,8 @@ def write_minimal_repo(root: Path) -> None:
             "  pull_request:",
             "permissions:",
             "  contents: read",
+            "env:",
+            "  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true",
             "jobs:",
             "  validate:",
             "    runs-on: ubuntu-latest",

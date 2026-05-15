@@ -142,6 +142,7 @@ REQUIRED_QUALITY_WORKFLOW_RUNS = [
     "python scripts/validate_repo.py",
     "git diff --check",
 ]
+REQUIRED_WORKFLOW_JAVASCRIPT_RUNTIME_ENV = "FORCE_JAVASCRIPT_ACTIONS_TO_NODE24"
 REQUIRED_WORKFLOW_TRIGGERS = ["push", "pull_request"]
 REQUIRED_README_VALIDATION_COMMANDS = [
     "pip install -r requirements-dev.txt",
@@ -1622,6 +1623,14 @@ def validate(root: Path = ROOT) -> list[str]:
             errors.append(f"{rel(workflow, root)} must set permissions to contents: read")
         if "timeout-minutes:" not in workflow_text:
             errors.append(f"{rel(workflow, root)} must set timeout-minutes")
+        if (
+            "uses: actions/" in workflow_text
+            and REQUIRED_WORKFLOW_JAVASCRIPT_RUNTIME_ENV not in workflow_text
+        ):
+            errors.append(
+                f"{rel(workflow, root)} must opt into current JavaScript action runtime: "
+                f"{REQUIRED_WORKFLOW_JAVASCRIPT_RUNTIME_ENV}"
+            )
         for permission in find_write_workflow_permissions(workflow_text):
             errors.append(f"{rel(workflow, root)} must not request write repository permissions: {permission}")
         for trigger in REQUIRED_WORKFLOW_TRIGGERS:
