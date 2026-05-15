@@ -460,6 +460,7 @@ REQUIRED_ADAPTER_VALIDATION_COMMANDS = [
     "python -m pytest -q",
     "python scripts/validate_repo.py",
     "git diff --check",
+    "python scripts/runtime_smoke.py",
     "targeted exact-name scrub",
 ]
 REQUIRED_ADAPTER_BOOTSTRAP_COMMANDS = [
