@@ -15,7 +15,7 @@ Before wiring the approval-gated runtime to the harness, run `git status --short
 ## Minimal instruction
 
 ```text
-Use Agent Brain as the operating harness. In an approval-gated runtime, read AGENTBRAIN.md, choose the matching markdown spec from commands/, load only the relevant skills from skills/, produce the required artifact from templates/, check schemas/, and stop before side effects unless approval evidence is present. /brain-* labels are repo command specs, not native runtime commands by default.
+Use Agent Brain as the operating harness. In an approval-gated runtime, read AGENTBRAIN.md, choose the matching markdown spec from commands/, load only the relevant skills from skills/, produce the required artifact from templates/, check schemas/, and stop before side effects unless approval evidence is present. /brain-* labels are repo command specs, not native runtime commands by default. Treat /brain-* entries as markdown specs unless this runtime maps them to native commands; do not invent unsupported command routes.
 ```
 
 ## Validation

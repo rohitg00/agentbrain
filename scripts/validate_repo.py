@@ -453,6 +453,11 @@ REQUIRED_ADAPTER_MINIMAL_INSTRUCTION_ARTIFACTS = [
     "templates/",
     "schemas/",
 ]
+REQUIRED_ADAPTER_COMMAND_BOUNDARY_TERMS = [
+    "markdown specs",
+    "native commands",
+    "do not invent",
+]
 REQUIRED_ADAPTER_RUNTIME_SMOKE_ARTIFACT_TERMS = [
     "templates/runtime-smoke.md",
     "schemas/runtime-smoke.schema.json",
@@ -2005,10 +2010,16 @@ def validate(root: Path = ROOT) -> list[str]:
                         f"{rel(markdown_file, root)} bootstrap section must verify remote freshness: {required_term}"
                     )
             minimal_instruction_body = section_body(adapter_text, "## Minimal instruction")
+            minimal_instruction_body_lower = minimal_instruction_body.lower()
             for artifact in REQUIRED_ADAPTER_MINIMAL_INSTRUCTION_ARTIFACTS:
                 if artifact not in minimal_instruction_body:
                     errors.append(
                         f"{rel(markdown_file, root)} minimal instruction must name harness artifact: {artifact}"
+                    )
+            for required_term in REQUIRED_ADAPTER_COMMAND_BOUNDARY_TERMS:
+                if required_term not in minimal_instruction_body_lower:
+                    errors.append(
+                        f"{rel(markdown_file, root)} minimal instruction must document command boundary: {required_term}"
                     )
             adapter_validation_body = section_body(adapter_text, "## Validation")
             for artifact_term in REQUIRED_ADAPTER_RUNTIME_SMOKE_ARTIFACT_TERMS:

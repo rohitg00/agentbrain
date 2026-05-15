@@ -50,7 +50,7 @@ def write_minimal_repo(root: Path) -> None:
         "## Install\n\n"
         "Use this adapter in a sample runtime. Run `git status --short` and `git log --oneline -5`, git fetch origin main, git rev-parse HEAD, git rev-parse origin/main, and confirm HEAD equals origin/main, run baseline validation before editing, and preserve user changes before adapter work.\n\n"
         "## Minimal instruction\n\n"
-        "Use Agent Brain as the operating harness. Read AGENTBRAIN.md, route through commands/, load skills/, produce artifacts from templates/, and validate schemas/.\n\n"
+        "Use Agent Brain as the operating harness. Read AGENTBRAIN.md, route through commands/, load skills/, produce artifacts from templates/, and validate schemas/. Treat /brain-* entries as markdown specs unless this runtime maps them to native commands; do not invent unsupported command routes.\n\n"
         "## Validation\n\n"
         "python3 -m pip install -r requirements-dev.txt\n"
         "rm -rf scripts/__pycache__ tests/__pycache__\n"
@@ -2226,6 +2226,19 @@ def test_adapter_minimal_instruction_must_name_core_harness_artifacts(tmp_path):
     errors = validate_repo.validate(tmp_path)
 
     assert "adapters/sample-adapter/README.md minimal instruction must name harness artifact: commands/" in errors
+
+
+def test_adapter_minimal_instruction_must_explain_command_boundary(tmp_path):
+    write_minimal_repo(tmp_path)
+    adapter = tmp_path / "adapters" / "sample-adapter" / "README.md"
+    adapter.write_text(
+        adapter.read_text(encoding="utf-8").replace("markdown specs", "runtime shortcuts"),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "adapters/sample-adapter/README.md minimal instruction must document command boundary: markdown specs" in errors
 
 
 def test_required_artifacts_include_qa_evidence_template(tmp_path):
@@ -6193,7 +6206,7 @@ def test_adapter_readmes_must_include_minimal_instruction(tmp_path):
     adapter = tmp_path / "adapters" / "sample-adapter" / "README.md"
     adapter.write_text(
         adapter.read_text(encoding="utf-8").replace(
-            "## Minimal instruction\n\nUse Agent Brain as the operating harness. Read AGENTBRAIN.md, route through commands/, load skills/, produce artifacts from templates/, and validate schemas/.\n\n",
+            "## Minimal instruction\n\nUse Agent Brain as the operating harness. Read AGENTBRAIN.md, route through commands/, load skills/, produce artifacts from templates/, and validate schemas/. Treat /brain-* entries as markdown specs unless this runtime maps them to native commands; do not invent unsupported command routes.\n\n",
             "",
         ),
         encoding="utf-8",

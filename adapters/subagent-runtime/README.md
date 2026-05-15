@@ -16,7 +16,7 @@ Before wiring the subagent runtime to the harness, run `git status --short` and 
 ## Minimal instruction
 
 ```text
-Use Agent Brain as the operating harness. In a subagent-capable runtime, inspect AGENTBRAIN.md first, choose the matching command from commands/, load only the required skills from skills/, produce artifacts from templates/, check schemas/, and run real tool-backed validation before claiming success. Use subagents for independent read-only audits or review, but join their evidence and keep one writer for repo changes.
+Use Agent Brain as the operating harness. In a subagent-capable runtime, inspect AGENTBRAIN.md first, choose the matching command from commands/, load only the required skills from skills/, produce artifacts from templates/, check schemas/, and run real tool-backed validation before claiming success. Use subagents for independent read-only audits or review, but join their evidence and keep one writer for repo changes. Treat /brain-* entries as markdown specs unless this runtime maps them to native commands; do not invent unsupported command routes.
 ```
 
 ## Validation

@@ -15,7 +15,7 @@ Before wiring the CLI runtime to the harness, run `git status --short` and `git 
 ## Minimal instruction
 
 ```text
-Use Agent Brain as the operating harness. Read AGENTBRAIN.md, route through commands/, load only the listed skills from skills/, produce artifacts from templates/, check schemas/, and remember that /brain-* entries are markdown command specs, not native runtime slash commands. Start in read-only mode, preserve git status, and stop before side effects without approval evidence.
+Use Agent Brain as the operating harness. Read AGENTBRAIN.md, route through commands/, load only the listed skills from skills/, produce artifacts from templates/, check schemas/, and remember that /brain-* entries are markdown command specs, not native runtime slash commands. Start in read-only mode, preserve git status, and stop before side effects without approval evidence. Treat /brain-* entries as markdown specs unless this runtime maps them to native commands; do not invent unsupported command routes.
 ```
 
 ## Validation

@@ -17,7 +17,7 @@ Before wiring a runtime, run `git status --short` and `git log --oneline -5`, th
 ## Minimal instruction
 
 ```text
-Use Agent Brain as the operating harness. Start with AGENTBRAIN.md, choose the matching command in commands/, load only the listed skills from skills/, produce the required artifact from templates/, check the matching contract in schemas/, and run the validation gate before claiming success. If evidence, approval, rollback, secrets handling, or loop limits are missing, stop with a blocker instead of improvising.
+Use Agent Brain as the operating harness. Start with AGENTBRAIN.md, choose the matching command in commands/, load only the listed skills from skills/, produce the required artifact from templates/, check the matching contract in schemas/, and run the validation gate before claiming success. If evidence, approval, rollback, secrets handling, or loop limits are missing, stop with a blocker instead of improvising. Treat /brain-* entries as markdown specs unless this runtime maps them to native commands; do not invent unsupported command routes.
 ```
 
 ## Validation
