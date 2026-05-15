@@ -327,7 +327,12 @@ REQUIRED_ADAPTER_VALIDATION_COMMANDS = [
     "git diff --check",
     "targeted exact-name scrub",
 ]
-REQUIRED_CONTRIBUTING_VALIDATION_COMMANDS = ["pytest -q", "git diff --check"]
+REQUIRED_CONTRIBUTING_VALIDATION_COMMANDS = [
+    "pytest -q",
+    "rm -rf scripts/__pycache__ tests/__pycache__",
+    "git diff --check",
+    "targeted exact-name scrub",
+]
 RESEARCH_WATCHLIST_REQUIRED_SOURCES = [
     "autonomous-goal runtime docs",
     "service-layer skill pattern",

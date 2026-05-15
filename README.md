@@ -319,7 +319,7 @@ Do not reuse stale validation proof after code, docs, schemas, templates, comman
 
 Use adapters when the runtime cannot load Agent Brain directly. Each adapter must keep the same setup, evidence, stop-condition, and validation contracts as the core harness.
 
-- `adapters/hermes/README.md` — wire Agent Brain into a tool-enabled skill runtime while preserving portable command and skill contracts.
+- `adapters/skill-runtime/README.md` — wire Agent Brain into a tool-enabled skill runtime while preserving portable command and skill contracts.
 - `adapters/plain-markdown/README.md` — run Agent Brain in agents that can only read markdown files and need manual command/skill routing.
 
 ## Edge Cases and Stop Conditions

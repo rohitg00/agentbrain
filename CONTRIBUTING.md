@@ -50,9 +50,18 @@ Run the full local quality gate before opening a PR or pushing to `main`:
 
 ```bash
 python3 -m pip install -r requirements-dev.txt
+rm -rf scripts/__pycache__ tests/__pycache__
 python3 -m pytest -q
 python3 scripts/validate_repo.py
 git diff --check
+```
+
+Before committing public docs, skills, commands, templates, schemas, evals, or
+adapter copy, run a targeted exact-name scrub for user-shared source names,
+internal tool names, and source-specific branding:
+
+```bash
+python scripts/scrub_public_copy.py <exact-source-name> [more-exact-names...]
 ```
 
 The validator checks:

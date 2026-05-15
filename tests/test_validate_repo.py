@@ -15,7 +15,7 @@ def write_minimal_repo(root: Path) -> None:
     ]:
         (root / rel).write_text("# required\n", encoding="utf-8")
     (root / "CONTRIBUTING.md").write_text(
-        "# Contributing\n\n## Validation\n\n```bash\npython3 -m pip install -r requirements-dev.txt\npython3 -m pytest -q\npython3 scripts/validate_repo.py\ngit diff --check\n```\n",
+        "# Contributing\n\n## Validation\n\n```bash\npython3 -m pip install -r requirements-dev.txt\nrm -rf scripts/__pycache__ tests/__pycache__\npython3 -m pytest -q\npython3 scripts/validate_repo.py\ngit diff --check\n```\nRun a targeted exact-name scrub before public copy changes.\n",
         encoding="utf-8",
     )
     (root / "README.md").write_text(
@@ -4602,6 +4602,33 @@ def test_contributing_validation_section_must_list_pytest(tmp_path):
     errors = validate_repo.validate(tmp_path)
 
     assert "CONTRIBUTING.md validation section must document: pytest -q" in errors
+
+
+def test_contributing_validation_section_must_list_cache_cleanup(tmp_path):
+    write_minimal_repo(tmp_path)
+    (tmp_path / "CONTRIBUTING.md").write_text(
+        "# Contributing\n\n## Validation\n\n```bash\npython3 -m pip install -r requirements-dev.txt\npython3 -m pytest -q\npython3 scripts/validate_repo.py\ngit diff --check\n```\n",
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert (
+        "CONTRIBUTING.md validation section must document: rm -rf scripts/__pycache__ tests/__pycache__"
+        in errors
+    )
+
+
+def test_contributing_validation_section_must_list_targeted_scrub(tmp_path):
+    write_minimal_repo(tmp_path)
+    (tmp_path / "CONTRIBUTING.md").write_text(
+        "# Contributing\n\n## Validation\n\n```bash\npython3 -m pip install -r requirements-dev.txt\nrm -rf scripts/__pycache__ tests/__pycache__\npython3 -m pytest -q\npython3 scripts/validate_repo.py\ngit diff --check\n```\n",
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "CONTRIBUTING.md validation section must document: targeted exact-name scrub" in errors
 
 
 def test_evals_readme_must_list_available_cases(tmp_path):

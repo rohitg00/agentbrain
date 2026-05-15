@@ -166,7 +166,7 @@ Add:
 
 - `evals/cases/*`
 - `evals/rubrics/*`
-- `adapters/hermes/*`
+- `adapters/skill-runtime/*`
 - `adapters/plain-markdown/*`
 
 Purpose:
