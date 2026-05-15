@@ -224,6 +224,11 @@ REQUIRED_README_HANDOFF_TERMS = [
     "risks",
     "next action",
 ]
+REQUIRED_README_HANDOFF_RESUME_TERMS = [
+    "previous handoff",
+    "stale",
+    "resume only the named next action",
+]
 REQUIRED_README_COMMAND_SELECTION_FALLBACK_TERMS = [
     "If no command fits",
     "do not invent",
@@ -1515,6 +1520,9 @@ def validate(root: Path = ROOT) -> list[str]:
         for required_term in REQUIRED_README_HANDOFF_TERMS:
             if required_term.lower() not in handoff_body:
                 errors.append(f"README.md handoff contract must mention: {required_term}")
+        for required_term in REQUIRED_README_HANDOFF_RESUME_TERMS:
+            if required_term.lower() not in handoff_body:
+                errors.append(f"README.md handoff contract must include resume guidance: {required_term}")
         evidence_freshness_body = section_body(readme_text, "## Evidence Freshness Rules").lower()
         for required_term in REQUIRED_README_EVIDENCE_FRESHNESS_TERMS:
             if required_term.lower() not in evidence_freshness_body:

@@ -274,6 +274,8 @@ Every agent handoff should be useful without private chat context. End each run,
 
 Do not summarize intent as if it were evidence. If the handoff cannot name proof, mark it `blocked` and route to `/brain-verify`, `/brain-review`, or `/brain-research` before continuing.
 
+When resuming from a previous handoff, treat the handoff as stale until the current files, blockers, risks, and validation commands confirm it. Resume only the named next action; do not replay broad discovery, skip recorded blockers, or widen scope just because an earlier note sounded complete.
+
 ## Evidence Freshness Rules
 
 Fresh proof must be specific enough for the next agent to rerun or audit it. For every validation, CI, scrub, source check, or review claim, record:
