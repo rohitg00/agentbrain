@@ -147,7 +147,7 @@ def test_adapter_requires_output_contract(tmp_path: Path) -> None:
     adapter.write_text(
         adapter.read_text(encoding="utf-8").replace(
             "\n## Output Contract\n\n"
-            "Runtime adapter output must report state, selected command, loaded skills, capability matrix, run scope, artifact path, transcript path, command exit status, template, schema, validation evidence, freshness, blockers, stop condition, and next action.\n",
+            "Runtime adapter output must report state, selected command, loaded skills, capability matrix, run scope, artifact path, transcript path, command exit status, template, schema, validation evidence, user change review, freshness, blockers, stop condition, and next action.\n",
             "\n",
         ),
         encoding="utf-8",
@@ -373,6 +373,26 @@ def test_adapter_output_contract_requires_capability_matrix_and_run_scope(tmp_pa
     )
     assert any(
         "adapters/sample-adapter/README.md output contract must document handoff field: run scope"
+        in error
+        for error in errors
+    )
+
+
+def test_adapter_output_contract_requires_user_change_review(tmp_path: Path) -> None:
+    write_minimal_repo(tmp_path)
+    adapter = tmp_path / "adapters" / "sample-adapter" / "README.md"
+    adapter.write_text(
+        adapter.read_text(encoding="utf-8").replace(
+            "validation evidence, user change review, freshness",
+            "validation evidence, freshness",
+        ),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert any(
+        "adapters/sample-adapter/README.md output contract must document handoff field: user change review"
         in error
         for error in errors
     )
@@ -1004,7 +1024,7 @@ def write_minimal_repo(root: Path) -> None:
         "Promote read-only smoke to full validation only when write access, shell access, dependency install, and the full local gate are available; otherwise keep the result marked read-only smoke with blockers.\n\n"
         "Before full validation writes, set a write fence that names allowed paths, disallowed paths, user-owned files, and rollback command.\n\n"
         "## Output Contract\n\n"
-        "Runtime adapter output must report state, selected command, loaded skills, capability matrix, run scope, artifact path, transcript path, command exit status, template, schema, validation evidence, freshness, blockers, stop condition, and next action.\n\n"
+        "Runtime adapter output must report state, selected command, loaded skills, capability matrix, run scope, artifact path, transcript path, command exit status, template, schema, validation evidence, user change review, freshness, blockers, stop condition, and next action.\n\n"
         "## Failure Modes\n\n"
         "Stop if the runtime cannot load files, treats /brain-* as a native command without proof, uses unrestricted execution before approval, claims pytest passed when blocked by a read-only sandbox, or hides stderr instead of recording runtime evidence.\n",
         encoding="utf-8",

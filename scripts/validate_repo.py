@@ -503,6 +503,7 @@ REQUIRED_ADAPTER_OUTPUT_CONTRACT_TERMS = [
     "template",
     "schema",
     "validation evidence",
+    "user change review",
     "freshness",
     "blockers",
     "stop condition",
