@@ -208,6 +208,12 @@ REQUIRED_README_HANDOFF_TERMS = [
     "risks",
     "next action",
 ]
+REQUIRED_HANDOFF_SCHEMA_RESUME_FIELDS = [
+    "facts",
+    "assumptions",
+    "open_questions",
+    "risks",
+]
 STALE_STATUS_COMPLETION_TERMS = [
     "complete",
     "done",
@@ -919,6 +925,11 @@ def validate(root: Path = ROOT) -> list[str]:
                 errors.append("schemas/handoff-report.schema.json must require fresh_validation_proof")
             if "coordination_review" not in required_fields:
                 errors.append("schemas/handoff-report.schema.json must require coordination_review")
+            for field in REQUIRED_HANDOFF_SCHEMA_RESUME_FIELDS:
+                if field not in required_fields:
+                    errors.append(
+                        f"schemas/handoff-report.schema.json required fields must include resume-ready field: {field}"
+                    )
         for field in required_fields:
             if field not in properties:
                 errors.append(f"{rel(path, root)} required field lacks property definition: {field}")

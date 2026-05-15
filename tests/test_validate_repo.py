@@ -69,7 +69,7 @@ def write_minimal_repo(root: Path) -> None:
                 "title": "Handoff Report",
                 "type": "object",
                 "additionalProperties": False,
-                "required": ["state", "decision", "evidence_checked", "fresh_validation_proof", "coordination_review", "next_action"],
+                "required": ["state", "decision", "evidence_checked", "fresh_validation_proof", "coordination_review", "facts", "assumptions", "open_questions", "risks", "next_action"],
                 "properties": {
                     "state": {
                         "type": "string",
@@ -1396,6 +1396,18 @@ def test_readme_handoff_contract_must_name_resume_ready_fields(tmp_path):
     assert "README.md handoff contract must mention: decision" in errors
     assert "README.md handoff contract must mention: fresh validation proof" in errors
     assert "README.md handoff contract must mention: open questions" in errors
+
+
+def test_handoff_schema_must_require_resume_ready_fields(tmp_path):
+    write_minimal_repo(tmp_path)
+    schema_path = tmp_path / "schemas" / "handoff-report.schema.json"
+    schema = json.loads(schema_path.read_text(encoding="utf-8"))
+    schema["required"].remove("facts")
+    schema_path.write_text(json.dumps(schema), encoding="utf-8")
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "schemas/handoff-report.schema.json required fields must include resume-ready field: facts" in errors
 
 
 def test_readme_must_define_evidence_freshness_rules(tmp_path):

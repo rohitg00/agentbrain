@@ -9,6 +9,10 @@
     "evidence_checked",
     "fresh_validation_proof",
     "coordination_review",
+    "facts",
+    "assumptions",
+    "open_questions",
+    "risks",
     "next_action"
   ],
   "properties": {
