@@ -259,6 +259,25 @@ def test_command_catalog_skills_must_match_command_spec(tmp_path: Path) -> None:
     )
 
 
+def test_command_catalog_rejects_extra_skills_not_declared_by_command_spec(tmp_path: Path) -> None:
+    write_minimal_repo(tmp_path)
+    catalog = tmp_path / "commands" / "README.md"
+    catalog.write_text(
+        catalog.read_text(encoding="utf-8").replace(
+            "Skills: `sample`, `activity-recap`, `agent-output-verifier`, `ci-recovery`, `context-memory`, `domain-language`, `evidence-research`, `qa-evidence`, `runtime-smoke`",
+            "Skills: `sample`, `activity-recap`, `agent-output-verifier`, `ci-recovery`, `context-memory`, `domain-language`, `evidence-research`, `qa-evidence`, `runtime-smoke`, `invented-skill`",
+        ),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert (
+        "commands/README.md catalog entry for /brain-sample lists undeclared command skill: invented-skill"
+        in errors
+    )
+
+
 def test_command_catalog_rejects_stale_nonexistent_entries(tmp_path: Path) -> None:
     write_minimal_repo(tmp_path)
     catalog = tmp_path / "commands" / "README.md"

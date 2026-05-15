@@ -1103,6 +1103,13 @@ def command_catalog_entry_lines(text: str) -> dict[str, str]:
     return entries
 
 
+def command_catalog_entry_skills(entry: str) -> set[str]:
+    match = re.search(r"Skills: (.*?)(?:;|$)", entry)
+    if not match:
+        return set()
+    return set(re.findall(r"`([a-z0-9]+(?:-[a-z0-9]+)*)`", match.group(1)))
+
+
 def readme_command_selection_references(text: str) -> list[str]:
     entries: set[str] = set()
     in_command_selection = False
@@ -1902,11 +1909,17 @@ def validate(root: Path = ROOT) -> list[str]:
                 errors.append(
                     f"commands/README.md catalog entry for {command_name} must match command artifact: {expected_artifact}"
                 )
-            for skill_name in command_skills_to_load(command_text):
-                if f"`{skill_name}`" not in entry:
+            expected_skills = set(command_skills_to_load(command_text))
+            catalog_skills = command_catalog_entry_skills(entry)
+            for skill_name in sorted(expected_skills):
+                if skill_name not in catalog_skills:
                     errors.append(
                         f"commands/README.md catalog entry for {command_name} must include command skill: {skill_name}"
                     )
+            for skill_name in sorted(catalog_skills - expected_skills):
+                errors.append(
+                    f"commands/README.md catalog entry for {command_name} lists undeclared command skill: {skill_name}"
+                )
 
     readme = root / "README.md"
     if readme.exists():
