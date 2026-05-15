@@ -10,7 +10,7 @@ description: Use when a design needs pressure-testing for UX, information archit
 Use before implementing user-facing flows.
 
 ## When not to use
-Do not use this skill when a simpler checklist, script, or existing command handles the work safely.
+Do not use when this trigger is absent; choose the command or skill that owns the requested state, artifact, and verification gate.
 
 ## Inputs
 

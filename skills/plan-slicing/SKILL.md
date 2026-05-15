@@ -10,7 +10,7 @@ description: Use when broad work needs to be broken into small verifiable slices
 Use after a brief/design is accepted and before build.
 
 ## When not to use
-Do not use this skill when a simpler checklist, script, or existing command handles the work safely.
+Do not use when this trigger is absent; choose the command or skill that owns the requested state, artifact, and verification gate.
 
 ## Inputs
 

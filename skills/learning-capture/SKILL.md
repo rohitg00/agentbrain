@@ -10,7 +10,7 @@ description: Use when repeated wins or failures should become durable memory, wi
 Use after completing, killing, or repeating a workflow.
 
 ## When not to use
-Do not use this skill when a simpler checklist, script, or existing command handles the work safely.
+Do not use when this trigger is absent; choose the command or skill that owns the requested state, artifact, and verification gate.
 
 ## Inputs
 

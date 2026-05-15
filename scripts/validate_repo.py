@@ -703,6 +703,9 @@ REQUIRED_COMMAND_INPUT_CONTRACT_TERMS = [
 ]
 REQUIRED_COMMAND_QUALITY_BAR_TERMS = ["fresh validation proof"]
 REQUIRED_SKILL_OUTPUT_ARTIFACT_RESUME_FIELDS = ["evidence", "blockers", "next action"]
+GENERIC_SKILL_WHEN_NOT_TO_USE = (
+    "do not use this skill when a simpler checklist, script, or existing command handles the work safely."
+)
 REQUIRED_SKILL_EXAMPLE_TERMS = ["trigger:", "action:", "output artifact:", "verification:"]
 REQUIRED_COMMAND_EXAMPLE_TERMS = [
     "user request",
@@ -1908,6 +1911,11 @@ def validate(root: Path = ROOT) -> list[str]:
                     errors.append(f"{rel(skill, root)} section has no body: {section}")
         if not sections_are_in_order(text, REQUIRED_SKILL_SECTIONS):
             errors.append(f"{rel(skill, root)} sections must appear in canonical order")
+        when_not_to_use = normalized_section_body(text, "## When not to use")
+        if when_not_to_use == GENERIC_SKILL_WHEN_NOT_TO_USE:
+            errors.append(
+                f"{rel(skill, root)} when-not-to-use must be skill-specific, not generic boundary copy"
+            )
         output_artifact_text = section_body(text, "## Output Artifact")
         output_artifact = output_artifact_text.lower()
         matching_template = skill_output_artifact_template(output_artifact_text, root)
