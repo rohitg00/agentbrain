@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import json
 import re
+import shlex
 import subprocess
 import sys
 import tempfile
@@ -157,7 +158,17 @@ def build_report(
 def exact_command_has_flag_value(exact_command: object, flag: str, value: str) -> bool:
     if not isinstance(exact_command, str):
         return False
-    return f"{flag} {value}" in exact_command or f"{flag}={value}" in exact_command
+    try:
+        tokens = shlex.split(exact_command)
+    except ValueError:
+        tokens = exact_command.split()
+
+    for index, token in enumerate(tokens):
+        if token == flag and index + 1 < len(tokens) and tokens[index + 1] == value:
+            return True
+        if token == f"{flag}={value}":
+            return True
+    return False
 
 
 def validate_report_against_schema(

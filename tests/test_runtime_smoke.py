@@ -573,6 +573,46 @@ def test_runtime_smoke_rejects_pass_result_when_command_failed(tmp_path: Path):
     assert any("pass smoke_result requires command_exit_status 0" in error for error in errors)
 
 
+def test_pass_runtime_smoke_rejects_exact_command_prefix_match_for_selected_command(tmp_path: Path):
+    commands_dir = tmp_path / "commands"
+    commands_dir.mkdir()
+    (commands_dir / "brain-start.md").write_text(
+        "# /brain-start\n\n"
+        "## Skills to load\n\n"
+        "Load `intake` to classify the request.\n",
+        encoding="utf-8",
+    )
+    skill_dir = tmp_path / "skills" / "intake"
+    skill_dir.mkdir(parents=True)
+    (skill_dir / "SKILL.md").write_text("# intake\n", encoding="utf-8")
+    adapter_dir = tmp_path / "adapters" / "read-only-cli"
+    adapter_dir.mkdir(parents=True)
+    (adapter_dir / "README.md").write_text("# Read-only CLI Adapter\n", encoding="utf-8")
+    report = runtime_smoke.build_report(
+        root=tmp_path,
+        runtime="generic-cli-runtime",
+        version="1.2.3",
+        sandbox_write_mode="read_only",
+        brain_command_mode="markdown_specs",
+        run_scope="read_only_smoke",
+        blocked_commands=[],
+        exact_command=(
+            "python scripts/runtime_smoke.py --runtime generic-cli-runtime --version 1.2.3 "
+            "--selected-command /brain-start-extra --loaded-skill intake "
+            "--adapter-path adapters/read-only-cli/README.md "
+            "--sandbox-write-mode read_only --brain-command-mode markdown_specs --run-scope read_only_smoke"
+        ),
+        smoke_result="pass",
+        selected_command="/brain-start",
+        loaded_skills=["intake"],
+        adapter_path="adapters/read-only-cli/README.md",
+    )
+
+    errors = runtime_smoke.validate_report_against_schema(report, Path("schemas/runtime-smoke.schema.json"), root=tmp_path)
+
+    assert any("exact_command must record selected command flag: --selected-command /brain-start" in error for error in errors)
+
+
 def test_pass_runtime_smoke_requires_exact_command_to_record_runtime_boundary_flags(tmp_path: Path):
     report = runtime_smoke.build_report(
         root=tmp_path,
