@@ -2534,6 +2534,49 @@ def test_secret_like_values_are_reported_without_echoing_value(tmp_path):
     assert all(token not in error for error in errors)
 
 
+def test_connection_strings_with_embedded_credentials_are_reported(tmp_path):
+    write_minimal_repo(tmp_path)
+    scheme = "post" + "gres"
+    uri = f"{scheme}://agent:supersecretpassword@db.example/app"
+    (tmp_path / "docs" / "copy.md").write_text(
+        f"Do not publish this connection string: {uri}\n", encoding="utf-8"
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "docs/copy.md contains secret-like value: connection string with embedded credential" in errors
+    assert all(uri not in error for error in errors)
+
+
+def test_generic_credential_assignments_are_reported(tmp_path):
+    write_minimal_repo(tmp_path)
+    key_name = "api" + "_token"
+    secret_value = "neutralplaceholdersecret123456"
+    (tmp_path / "docs" / "copy.md").write_text(
+        f"{key_name} = {secret_value}\n", encoding="utf-8"
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "docs/copy.md contains secret-like value: generic credential assignment" in errors
+    assert all(secret_value not in error for error in errors)
+
+
+def test_redacted_credential_placeholders_are_allowed(tmp_path):
+    write_minimal_repo(tmp_path)
+    key_name = "api" + "_token"
+    readme = tmp_path / "README.md"
+    readme.write_text(
+        readme.read_text(encoding="utf-8")
+        + f"\n{key_name} = <redacted>\npassword = [REDACTED]\nsecret: placeholder\n",
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert not any("generic credential assignment" in error for error in errors)
+
+
 def test_banned_public_copy_terms_are_reported(tmp_path):
     write_minimal_repo(tmp_path)
     (tmp_path / "docs").mkdir(exist_ok=True)

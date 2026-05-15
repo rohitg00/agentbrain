@@ -324,6 +324,23 @@ SECRET_LIKE_PATTERNS = [
     ("GitHub token", re.compile(r"\bgh[pousr]_[A-Za-z0-9_]{20,}\b")),
     ("private key block", re.compile(r"-----BEGIN (?:RSA |OPENSSH |EC |DSA )?PRIVATE KEY-----")),
     ("cloud access key", re.compile(r"\bAKIA[0-9A-Z]{16}\b")),
+    (
+        "connection string with embedded credential",
+        re.compile(
+            r"\b(?:postgres(?:ql)?|mysql|mongodb(?:\+srv)?|redis|amqps?)://"
+            r"[^:\s/@]+:[^@\s/]+@",
+            re.IGNORECASE,
+        ),
+    ),
+    (
+        "generic credential assignment",
+        re.compile(
+            r"\b(?:api[_-]?(?:key|token)|secret|token|password|passwd|pwd|client[_-]?secret)"
+            r"\s*[:=]\s*['\"]?(?!<redacted>|\[redacted\]|redacted|placeholder|example)"
+            r"[A-Za-z0-9_./+=:-]{16,}",
+            re.IGNORECASE,
+        ),
+    ),
 ]
 PUBLIC_COPY_SUFFIXES = {
     ".json",
