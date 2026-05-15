@@ -232,6 +232,8 @@ Use this guide before reading individual command files. Pick the earliest state 
 
 Do not skip forward because the user asked for speed. If a request matches multiple rows, choose the earliest unsafe gap first, usually research, challenge, brief, or plan before build.
 
+If no command fits, do not invent a new route silently. Stop with the closest existing state, the missing contract, and the next validator-backed improvement so the harness grows deliberately instead of accumulating undocumented one-off behavior.
+
 ## Artifact Routing Guide
 
 Use this guide when a command says to produce an artifact. Start with the command output, then choose the closest template and validate against the matching schema when one exists.

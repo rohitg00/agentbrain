@@ -209,6 +209,11 @@ REQUIRED_README_HANDOFF_TERMS = [
     "risks",
     "next action",
 ]
+REQUIRED_README_COMMAND_SELECTION_FALLBACK_TERMS = [
+    "If no command fits",
+    "do not invent",
+    "stop",
+]
 REQUIRED_HANDOFF_SCHEMA_RESUME_FIELDS = [
     "facts",
     "assumptions",
@@ -1361,6 +1366,12 @@ def validate(root: Path = ROOT) -> list[str]:
             command_file = root / "commands" / f"{command_name.removeprefix('/')}.md"
             if not command_file.exists():
                 errors.append(f"README.md command reference points to missing file: {command_name}")
+        command_selection_body = section_body(readme_text, "## Command Selection Guide").lower()
+        if not all(
+            required_term.lower() in command_selection_body
+            for required_term in REQUIRED_README_COMMAND_SELECTION_FALLBACK_TERMS
+        ):
+            errors.append("README.md command selection guide must tell agents what to do when no command fits")
         core_skill_refs = readme_skill_catalog_entries(readme_text)
         for skill in sorted((root / "skills").glob("*/SKILL.md")):
             skill_name = skill.parent.name
