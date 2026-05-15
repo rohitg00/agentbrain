@@ -551,6 +551,7 @@ REQUIRED_ADAPTER_RUNTIME_SMOKE_EVIDENCE_TERMS = [
     "selected command",
     "loaded skills",
     "transcript path",
+    "redacted transcript",
 ]
 REQUIRED_ADAPTER_SAMPLE_ROUTING_PROBE_TERMS = [
     "sample request",

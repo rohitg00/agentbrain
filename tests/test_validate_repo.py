@@ -580,7 +580,7 @@ def write_minimal_repo(root: Path) -> None:
         "validate the JSON evidence against `schemas/runtime-smoke.schema.json` before "
         "trusting adapter behavior. Keep the artifact honest about blocked commands, "
         "command mode, sandbox/write mode, git freshness, runtime version, "
-        "Python executable, smoke result, command exit status, selected command, loaded skills, and transcript path.\n\n"
+        "Python executable, smoke result, command exit status, selected command, loaded skills, transcript path, and redacted transcript.\n\n"
         "After validation, classify one sample request and confirm the runtime cites the command file, skill file, artifact contract, evidence checked, and stop condition it used.\n\n"
         "Promote read-only smoke to full validation only when write access, shell access, dependency install, and the full local gate are available; otherwise keep the result marked read-only smoke with blockers.\n\n"
         "## Output Contract\n\n"
@@ -7066,8 +7066,8 @@ def test_adapter_runtime_smoke_contract_must_name_blocked_commands(tmp_path):
     adapter = tmp_path / "adapters" / "sample-adapter" / "README.md"
     adapter.write_text(
         adapter.read_text(encoding="utf-8").replace(
-            "blocked commands, command mode, sandbox/write mode, git freshness, runtime version, Python executable, smoke result, command exit status, selected command, loaded skills, and transcript path.",
-            "command mode, sandbox/write mode, git freshness, runtime version, Python executable, smoke result, command exit status, selected command, loaded skills, and transcript path.",
+            "blocked commands, command mode, sandbox/write mode, git freshness, runtime version, Python executable, smoke result, command exit status, selected command, loaded skills, transcript path, and redacted transcript.",
+            "command mode, sandbox/write mode, git freshness, runtime version, Python executable, smoke result, command exit status, selected command, loaded skills, transcript path, and redacted transcript.",
         ),
         encoding="utf-8",
     )
@@ -7215,7 +7215,7 @@ def test_adapter_runtime_smoke_contract_must_name_smoke_result(tmp_path):
     adapter = tmp_path / "adapters" / "sample-adapter" / "README.md"
     adapter.write_text(
         adapter.read_text(encoding="utf-8").replace(
-            "command mode, sandbox/write mode, git freshness, runtime version, Python executable, smoke result, command exit status, selected command, loaded skills, and transcript path.",
+            "command mode, sandbox/write mode, git freshness, runtime version, Python executable, smoke result, command exit status, selected command, loaded skills, transcript path, and redacted transcript.",
             "command mode, sandbox/write mode, git freshness, runtime version, Python executable, command exit status, selected command, loaded skills, and transcript path.",
         ),
         encoding="utf-8",
@@ -7224,6 +7224,22 @@ def test_adapter_runtime_smoke_contract_must_name_smoke_result(tmp_path):
     errors = validate_repo.validate(tmp_path)
 
     assert "adapters/sample-adapter/README.md validation section must document runtime smoke evidence field: smoke result" in errors
+
+
+def test_adapter_runtime_smoke_contract_must_require_redacted_transcript(tmp_path):
+    write_minimal_repo(tmp_path)
+    adapter = tmp_path / "adapters" / "sample-adapter" / "README.md"
+    adapter.write_text(
+        adapter.read_text(encoding="utf-8").replace(
+            ", and redacted transcript",
+            "",
+        ),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "adapters/sample-adapter/README.md validation section must document runtime smoke evidence field: redacted transcript" in errors
 
 
 def test_skills_readme_is_required_as_runtime_catalog(tmp_path):
