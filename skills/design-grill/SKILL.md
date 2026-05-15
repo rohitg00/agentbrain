@@ -61,6 +61,8 @@ The artifact should be concise, auditable, and include evidence, blockers, and n
 
 ## Example
 
+Trigger: workflow or interface design has unclear states, users, or failure paths. Action: pressure-test UX, information architecture, accessibility, edge states, and safer non-agent alternatives. Output artifact: `templates/design-brief.md` with blockers and next action. Verification: cite flows reviewed, rejected assumptions, accessibility checks, and remaining risks.
+
 Input: "Build an assistant that handles customer refunds."
 
 Better response pattern:

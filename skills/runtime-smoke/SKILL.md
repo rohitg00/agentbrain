@@ -65,4 +65,6 @@ Use `templates/runtime-smoke.md` for narrative evidence and `schemas/runtime-smo
 
 ## Example
 
+Trigger: adapter README or harness prompt changes. Action: run read-only smoke first, capture command mode, sandbox mode, blocked commands, and transcript evidence. Output artifact: `templates/runtime-smoke.md` or schema-valid JSON with blockers and next action. Verification: cite runtime, version, Python executable, selected command, loaded skills, adapter path, and transcript redaction status.
+
 A maintainer changes an adapter README. Before shipping, the verifier runs a read-only CLI-runtime smoke against a disposable checkout, records the runtime version, sandbox mode, command mode, blocked commands, and evidence, then files a follow-up hardening slice for any command-routing gap instead of claiming full validation from prose.

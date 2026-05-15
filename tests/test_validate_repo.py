@@ -1224,7 +1224,7 @@ def write_minimal_repo(root: Path) -> None:
             "## Failure Modes",
             "Stop if evidence is missing.",
             "## Example",
-            "Sample request routes through the skill.",
+            "Trigger: sample request. Action: inspect the request and choose the next state. Output artifact: `templates/sample-routing-summary.md`. Verification: cite evidence before handoff.",
         ]),
         encoding="utf-8",
     )
@@ -1255,7 +1255,7 @@ def write_minimal_repo(root: Path) -> None:
             "## Failure Modes",
             "Do not store secrets, raw logs, or temporary task progress.",
             "## Example",
-            "Route a reusable workflow into a skill and reject transient logs.",
+            "Trigger: reusable workflow or memory candidate appears. Action: route durable context to the right tier and reject transient logs. Output artifact: memory decision with blockers and next action. Verification: cite evidence, freshness, privacy review, and next use.",
         ]),
         encoding="utf-8",
     )
@@ -1286,7 +1286,7 @@ def write_minimal_repo(root: Path) -> None:
             "## Failure Modes",
             "Do not put implementation decisions, secrets, logs, or task progress into the glossary.",
             "## Example",
-            "Resolve account versus customer before naming a state or schema.",
+            "Trigger: overloaded project term blocks naming. Action: check existing glossary evidence and choose a canonical term. Output artifact: domain language decision with aliases and routing. Verification: cite accepted term, rejected aliases, target artifact, and evidence.",
         ]),
         encoding="utf-8",
     )
@@ -1493,7 +1493,7 @@ def write_minimal_repo(root: Path) -> None:
             "## Failure Modes",
             "Stop if logs require unavailable credentials, expose secrets, or the run is still pending beyond the loop limit.",
             "## Example",
-            "Reproduce a validator failure from CI locally, fix the catalog drift, push, and verify the newer remote run succeeds.",
+            "Trigger: remote workflow fails after local validation. Action: inspect logs, reproduce the failure locally, fix catalog drift, push, and re-check the newer run. Output artifact: CI recovery handoff with blockers and next action. Verification: cite run id, failing command, local reproduction, and final remote proof.",
         ]),
         encoding="utf-8",
     )
@@ -1524,7 +1524,7 @@ def write_minimal_repo(root: Path) -> None:
             "## Failure Modes",
             "Do not invent work without evidence.",
             "## Example",
-            "Summarize commits and changed files from the current repo.",
+            "Trigger: user asks what changed recently. Action: inspect commits and changed files before summarizing. Output artifact: evidence-backed recap with checked scope, blockers, and next action. Verification: cite the local commands or files inspected.",
         ]),
         encoding="utf-8",
     )
@@ -1555,7 +1555,7 @@ def write_minimal_repo(root: Path) -> None:
             "## Failure Modes",
             "Do not approve unverifiable output.",
             "## Example",
-            "Block output that claims tests passed without logs.",
+            "Trigger: agent output claims tests passed without logs. Action: check the output for missing proof and block trust until evidence exists. Output artifact: verifier decision with evidence, blockers, and next action. Verification: cite each pass or blocker.",
         ]),
         encoding="utf-8",
     )
@@ -1564,17 +1564,17 @@ def write_minimal_repo(root: Path) -> None:
         (
             "evidence-research",
             "source-backed research evidence",
-            "Split an adoption claim into checked sources, unknowns, and recheck triggers before accepting it.",
+            "Trigger: adoption claim needs source-backed evidence. Action: split the claim into checked sources, unknowns, and recheck triggers before accepting it. Output artifact: evidence record with confidence and blockers. Verification: cite source, scope, result, and unresolved gaps.",
         ),
         (
             "qa-evidence",
             "verification proof for review and shipping decisions",
-            "Tie a passing validation claim to exact commands, artifacts checked, and unresolved blockers.",
+            "Trigger: passing validation claim needs review proof. Action: tie the claim to exact commands, artifacts checked, and unresolved blockers. Output artifact: QA evidence record with blockers and next action. Verification: cite command, result, artifact checked, and remaining gap.",
         ),
         (
             "runtime-smoke",
             "real-runtime smoke evidence with sandbox, command-boundary, and blocked-command details",
-            "Run a read-only adapter smoke and record command mode, sandbox mode, blocked commands, and transcript path.",
+            "Trigger: adapter readiness depends on a real runtime. Action: run a read-only adapter smoke and record command mode, sandbox mode, blocked commands, and transcript path. Output artifact: runtime smoke record. Verification: cite runtime, version, selected command, loaded skills, and transcript status.",
         ),
     ]:
         skill_dir = root / "skills" / skill_name
@@ -7626,3 +7626,22 @@ def test_skills_readme_must_catalog_every_skill_with_links(tmp_path):
     errors = validate_repo.validate(tmp_path)
 
     assert "skills/README.md catalog missing skill link: sample" in errors
+
+
+def test_skill_examples_must_be_structured_for_runtime_use(tmp_path):
+    write_minimal_repo(tmp_path)
+    skill = tmp_path / "skills" / "sample" / "SKILL.md"
+    skill.write_text(
+        skill.read_text(encoding="utf-8").replace(
+            "Trigger: sample request. Action: inspect the request and choose the next state. Output artifact: `templates/sample-routing-summary.md`. Verification: cite evidence before handoff.",
+            "Sample request routes through the skill.",
+        ),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "skills/sample/SKILL.md example must mention: trigger:" in errors
+    assert "skills/sample/SKILL.md example must mention: action:" in errors
+    assert "skills/sample/SKILL.md example must mention: output artifact:" in errors
+    assert "skills/sample/SKILL.md example must mention: verification:" in errors

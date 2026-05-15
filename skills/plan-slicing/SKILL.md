@@ -65,4 +65,6 @@ Use `templates/implementation-plan.md`. The artifact should be concise, auditabl
 
 ## Example
 
+Trigger: a broad plan needs a safe first slice. Action: split work into ordered slices that start with a validator, eval, or failing test where behavior changes. Output artifact: `templates/implementation-plan.md` with blockers and next action. Verification: each slice names acceptance checks, verification command, rollback, and artifact changed.
+
 A brief requires a new adapter. Plan slices should start with a failing validator or smoke fixture for the adapter contract, then a docs/template update, then local validation and real-runtime smoke evidence. Each slice names acceptance checks, a verification command, rollback, and the artifact it updates.

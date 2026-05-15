@@ -89,6 +89,8 @@ Next action: <validator/eval/doc/code update if needed>
 
 ## Example
 
+Trigger: overloaded or source-specific vocabulary could leak into durable artifacts. Action: inspect shared language, resolve canonical terms, and route trade-offs to decision records only when justified. Output artifact: domain language decision with blockers and next action. Verification: cite accepted term, rejected aliases, evidence, and target artifact.
+
 A user says, "Add memory guidance," but the repo already separates session recall, durable project knowledge, and reusable skills.
 
 Correct response:

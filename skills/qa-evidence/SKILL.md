@@ -61,4 +61,6 @@ Use `templates/qa-evidence.md`. The artifact should be concise, auditable, and i
 
 ## Example
 
+Trigger: a build claims a route or behavior works. Action: tie the claim to exact commands, checked artifacts, schema validation, diff checks, scrub results, and blocked runtime commands. Output artifact: `templates/qa-evidence.md` with blockers and next action. Verification: cite command output, artifact path, expected result, and unresolved gaps.
+
 A build claims, "The command router works." QA evidence should name the exact command, fixture or runtime checked, expected artifact, schema validation, git diff check, public-copy scrub, and any blocked runtime commands before accepting the claim.

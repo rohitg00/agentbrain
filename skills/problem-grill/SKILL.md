@@ -61,4 +61,6 @@ The artifact should be concise, auditable, and include evidence, blockers, and n
 
 ## Example
 
+Trigger: a product request over-assumes the problem or automation need. Action: challenge user, pain, frequency, alternatives, evidence, and safety before approving build work. Output artifact: `templates/grill-report.md` with blockers and next action. Verification: cite known facts, assumptions, missing evidence, and non-agent alternatives reviewed.
+
 A request says, "Automate every repo maintenance task." The skill should challenge whether automation is needed, list manual or checklist alternatives, surface privacy and side-effect risks, and produce a problem grill report before approving any build plan.

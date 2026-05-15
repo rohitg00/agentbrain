@@ -66,6 +66,8 @@ Produce a memory decision that names the target tier, evidence, freshness/scope,
 
 ## Example
 
+Trigger: project context may need to be remembered, retrieved, updated, or rejected. Action: separate stable preferences, project docs, procedures, session recall, and private data before writing memory. Output artifact: `templates/memory-decision.md` with blockers and next action. Verification: cite tier, evidence, freshness, privacy review, rejected material, and next use.
+
 Input: “We fixed this after three attempts; remember the approach.”
 
 Better response pattern:

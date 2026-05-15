@@ -61,4 +61,6 @@ The artifact should be concise, auditable, and include evidence, blockers, and n
 
 ## Example
 
+Trigger: uncertainty remains after retrievable evidence has been checked. Action: ask the smallest useful next question or choose the safest documented default in noninteractive mode. Output artifact: intake or grill artifact with blockers and next action. Verification: cite evidence checked, why the question changes action, and stop condition if no answer is available.
+
 A plan is blocked by "needs approval." The ladder should ask the smallest next question first: what side effect is approval-gated, what safe read-only alternative exists, what assumption can unblock planning, and what evidence would change the route.

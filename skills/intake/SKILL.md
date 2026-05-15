@@ -61,4 +61,6 @@ Use `templates/intake-summary.md`. The artifact should be concise, auditable, an
 
 ## Example
 
+Trigger: raw request enters the harness. Action: capture facts, assumptions, constraints, missing evidence, approval state, and likely next command before deeper work. Output artifact: `templates/intake-summary.md` with blockers and next action. Verification: cite routing evidence and the safest noninteractive default when follow-up is impossible.
+
 A user says, "Make the harness better." Intake should capture known facts, assumptions, constraints, missing evidence, approval state, and likely next command; in a scheduled run, choose the safest documented default and create an intake summary rather than asking a broad follow-up.

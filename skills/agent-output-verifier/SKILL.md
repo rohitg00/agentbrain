@@ -67,6 +67,8 @@ Produce a verifier decision with status, checked claims, evidence references, bl
 
 ## Example
 
+Trigger: agent-produced output must be trusted, blocked, or routed for repair. Action: check evidence, secrets, invented tools, skipped tests, unsafe side effects, and loop limits before handoff. Output artifact: `templates/review-report.md` with blockers and next action. Verification: cite each pass, blocker, artifact path, and validation proof.
+
 ```markdown
 Status: blocked
 

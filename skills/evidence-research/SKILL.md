@@ -61,4 +61,6 @@ Use `templates/research-claim-ledger.md`. The artifact should be concise, audita
 
 ## Example
 
+Trigger: a claim needs source-backed evidence before planning or public copy. Action: split the claim into subclaims, inspect canonical sources, mark confidence, and reject unsupported adoption language. Output artifact: `templates/research-claim-ledger.md` with blockers and next action. Verification: cite source provenance, checked scope, confidence, and recheck trigger.
+
 A claim says, "Developers already want this workflow." The skill should split the claim into source-backed subclaims, record canonical sources, mark unsupported adoption language as unknown, and produce a research claim ledger with recheck triggers before any roadmap or public copy uses the claim.

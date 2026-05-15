@@ -43,4 +43,6 @@ Stop if CI logs require unavailable credentials, the workflow is still running b
 
 ## Example
 
+Trigger: local proof and remote workflow status disagree or CI is unchecked. Action: inspect the latest run, read failed logs, reproduce locally, fix the root cause, rerun the gate, and re-check remote status. Output artifact: CI recovery handoff with blockers and next action. Verification: cite run id, failed command, local reproduction, pushed commit, and final remote conclusion.
+
 A branch passes `python -m pytest -q` locally but CI fails `python scripts/validate_repo.py`; inspect the failed run, reproduce the validator failure locally, add the missing catalog entry, rerun the local gate, push, and verify the newer remote run succeeds.

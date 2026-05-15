@@ -61,4 +61,6 @@ Use `templates/launch-checklist.md`. The artifact should be concise, auditable, 
 
 ## Example
 
+Trigger: work is ready to merge, publish, or hand off. Action: check validation logs, CI state, public-copy scrub, rollback, side effects, and artifact links before launch. Output artifact: `templates/launch-checklist.md` with blockers and next action. Verification: cite local gate, remote status, rollback path, and unresolved risks.
+
 Before a merge or public handoff, inspect the latest validation logs, CI state, public-copy scrub, rollback plan, and artifact links. If the branch has local-only proof or unreviewed side effects, block launch with a launch checklist instead of saying the work is ready.

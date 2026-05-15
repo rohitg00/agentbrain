@@ -689,6 +689,7 @@ REQUIRED_COMMAND_INPUT_CONTRACT_TERMS = [
 ]
 REQUIRED_COMMAND_QUALITY_BAR_TERMS = ["fresh validation proof"]
 REQUIRED_SKILL_OUTPUT_ARTIFACT_RESUME_FIELDS = ["evidence", "blockers", "next action"]
+REQUIRED_SKILL_EXAMPLE_TERMS = ["trigger:", "action:", "output artifact:", "verification:"]
 REQUIRED_COMMAND_EXAMPLE_TERMS = [
     "user request",
     "selected command",
@@ -1900,6 +1901,10 @@ def validate(root: Path = ROOT) -> list[str]:
                     errors.append(message)
         example = normalized_section_body(text, "## Example")
         if example:
+            example_lower = example.lower()
+            for required_term in REQUIRED_SKILL_EXAMPLE_TERMS:
+                if required_term not in example_lower:
+                    errors.append(f"{rel(skill, root)} example must mention: {required_term}")
             if example in seen_skill_examples:
                 errors.append(
                     f"{rel(skill, root)} example duplicates {seen_skill_examples[example]}"

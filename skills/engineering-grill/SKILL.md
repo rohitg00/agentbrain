@@ -61,4 +61,6 @@ The artifact should be concise, auditable, and include evidence, blockers, and n
 
 ## Example
 
+Trigger: an engineering plan needs pressure-testing before implementation. Action: compare scripts, checklists, human review, and agent workflows; require file scope, rollback, and validation proof. Output artifact: `templates/grill-report.md` with blockers and next action. Verification: cite architecture risks, data risks, operability checks, and smallest safe path.
+
 A request says, "Add recurring workspace cleanup." The skill should compare a scheduled script, manual checklist, and agent-run cleanup; require file-scope, dry-run, rollback, and validation proof; then produce an engineering grill report that recommends the smallest safe implementation path instead of jumping straight to code.

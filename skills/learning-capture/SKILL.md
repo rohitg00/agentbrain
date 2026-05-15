@@ -61,4 +61,6 @@ Use `templates/learning-capture.md`. The artifact should be concise, auditable, 
 
 ## Example
 
+Trigger: repeated success or failure should become durable guidance. Action: capture only reusable procedure, reject transient logs, and route the learning to docs, validator, eval, or skill updates. Output artifact: `templates/learning-capture.md` with blockers and next action. Verification: cite recurrence evidence, changed artifact, and validation command.
+
 After a CI failure is fixed by adding a missing catalog rule, capture the reusable rule as validator guidance or a skill update, reject transient run IDs and timestamps, record the verification commands, and produce a learning capture only if the procedure will prevent a future repeat.

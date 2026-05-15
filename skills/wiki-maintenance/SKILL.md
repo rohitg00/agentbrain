@@ -61,4 +61,6 @@ Use `templates/wiki-update.md`. The artifact should be concise, auditable, and i
 
 ## Example
 
+Trigger: source-backed project knowledge needs a durable update. Action: preserve provenance, confidence, freshness, and recheck triggers while updating only the relevant wiki section. Output artifact: `templates/wiki-update.md` with blockers and next action. Verification: cite changed paths, sources checked, stale claims rejected, and validation evidence.
+
 A new source contradicts an existing project note. The skill should preserve both claims with provenance, mark freshness and confidence, update only the relevant wiki section, and record a recheck trigger instead of overwriting durable knowledge with unverified synthesis.

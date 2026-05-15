@@ -61,4 +61,6 @@ The artifact should be concise, auditable, and include evidence, blockers, and n
 
 ## Example
 
+Trigger: market or positioning claim lacks evidence. Action: identify buyer, user, alternatives, proof needed, and neutral messaging boundaries. Output artifact: `templates/grill-report.md` with blockers and next action. Verification: cite category evidence, rejected claims, and open market questions.
+
 A request says, "Position this as the default harness for teams." The skill should identify the buyer/user, alternative non-agent workflows, proof needed for adoption claims, and neutral messaging boundaries, then produce a market grill report that separates evidence from aspiration.

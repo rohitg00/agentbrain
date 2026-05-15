@@ -65,6 +65,8 @@ Produce a concise recap that names the inspected scope, timeframe, filters, evid
 
 ## Example
 
+Trigger: user needs a recap of recent project activity. Action: inspect local commits, files, branches, and relevant logs before summarizing. Output artifact: activity recap with checked scope, blockers, and next action. Verification: cite command output, author/date filters, repositories checked, and unknowns.
+
 ```markdown
 Activity recap for 2026-05-13, author filter: current Git user.
 
