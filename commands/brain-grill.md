@@ -60,3 +60,7 @@ In noninteractive runs where the agent cannot ask questions, use the safest docu
 ## Quality bar
 
 A good `/brain-grill` run asks only the few blocking questions that change the decision, gives recommended answers where useful, captures verified decisions, and records fresh validation proof instead of drifting into generic discovery.
+
+## Example
+
+Example: challenge a vague request with evidence-backed questions, capture assumptions and risks, and route only concrete decisions to `/brain-brief`.

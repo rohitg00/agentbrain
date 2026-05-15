@@ -60,3 +60,7 @@ In noninteractive runs where the agent cannot ask questions, use the safest docu
 ## Quality bar
 
 A good `/brain-build` run implements one approved slice, preserves the planned scope, records the failing-then-passing verification evidence when behavior changes, captures fresh validation proof, and stops before unrelated cleanup.
+
+## Example
+
+Example: take one approved plan slice, write failing behavior proof or validator-first proof, implement only that slice, then report fresh validation proof and the next recommended state.

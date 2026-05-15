@@ -61,3 +61,7 @@ In noninteractive runs where the agent cannot ask questions, use the safest docu
 ## Quality bar
 
 A good `/brain-start` run classifies the request into the earliest safe state, names missing inputs and evidence, selects the next command and skills, records fresh validation proof, and avoids jumping directly to implementation.
+
+## Example
+
+Example: inspect repository state, run baseline validation when appropriate, classify the request, choose the next `/brain-*` route, and preserve user changes.

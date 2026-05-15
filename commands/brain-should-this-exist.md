@@ -58,3 +58,7 @@ In noninteractive runs where the agent cannot ask questions, use the safest docu
 ## Quality bar
 
 A good `/brain-should-this-exist` run challenges whether the requested agent feature should exist, compares non-agent alternatives, names the concrete user and failure mode, records fresh validation proof, and blocks vague automation.
+
+## Example
+
+Example: compare the request against user evidence, non-agent alternatives, costs, and risks before deciding whether to continue to `/brain-research` or stop.

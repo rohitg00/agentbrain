@@ -61,3 +61,7 @@ In noninteractive runs where the agent cannot ask questions, use the safest docu
 ## Quality bar
 
 A good `/brain-eval` run turns a repeated failure mode into a concrete eval case or rubric entry with expected behavior, failure criteria, catalog coverage, and fresh validation proof before relying on prose assurances.
+
+## Example
+
+Example: run one eval case against a command or skill, compare the output to the rubric, record pass/fail evidence, and route fixes through `/brain-plan` or `/brain-build`.

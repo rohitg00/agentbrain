@@ -58,3 +58,7 @@ In noninteractive runs where the agent cannot ask questions, use the safest docu
 ## Quality bar
 
 A good `/brain-ship` run makes a go/no-go call from current verification, rollback, support, monitoring evidence, and fresh validation proof, and blocks release when launch safety is missing.
+
+## Example
+
+Example: confirm validation, rollback, documentation, and release evidence before shipping; stop when monitoring or approval proof is missing.

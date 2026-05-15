@@ -58,3 +58,7 @@ In noninteractive runs where the agent cannot ask questions, use the safest docu
 ## Quality bar
 
 A good `/brain-research` run produces a claim ledger with inspectable sources, separates leads from verified facts, flags weak evidence, records fresh validation proof, and keeps public copy in neutral pattern language.
+
+## Example
+
+Example: inspect local files and source-backed references, separate facts from assumptions, and route findings to `/brain-grill` or `/brain-brief` with provenance.

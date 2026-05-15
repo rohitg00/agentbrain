@@ -571,6 +571,7 @@ REQUIRED_COMMAND_SECTIONS = [
     "## Output",
     "## Stop conditions",
     "## Quality bar",
+    "## Example",
 ]
 REQUIRED_COMMAND_OUTPUT_TERMS = [
     "decision",

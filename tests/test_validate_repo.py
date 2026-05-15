@@ -482,6 +482,8 @@ def write_minimal_repo(root: Path) -> None:
             "Stop when the request is unsafe.",
             "## Quality bar",
             "Evidence is checked before output. Fresh validation proof is captured before handoff.",
+            "## Example",
+            "Run `/brain-sample` on a sample request, load the listed skills, write the required artifact, and include fresh validation proof.",
         ]),
         encoding="utf-8",
     )
@@ -510,6 +512,8 @@ def write_minimal_repo(root: Path) -> None:
             "Stop when required proof is unavailable.",
             "## Quality bar",
             "Eval evidence is checked before acceptance. Fresh validation proof is captured before handoff.",
+            "## Example",
+            "Run `/brain-eval` against one eval case, load the listed skills, record the rubric decision, and include fresh validation proof.",
         ]),
         encoding="utf-8",
     )
@@ -5487,6 +5491,23 @@ def test_commands_must_have_exactly_one_h1(tmp_path):
     errors = validate_repo.validate(tmp_path)
 
     assert "commands/brain-sample.md must contain exactly one H1 heading" in errors
+
+
+def test_commands_must_include_example_section(tmp_path):
+    write_minimal_repo(tmp_path)
+    command = tmp_path / "commands" / "brain-sample.md"
+    command_text = command.read_text(encoding="utf-8")
+    command.write_text(
+        command_text.replace(
+            "## Example\nRun `/brain-sample` on a sample request, load the listed skills, write the required artifact, and include fresh validation proof.",
+            "",
+        ),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "commands/brain-sample.md missing ## Example" in errors
 
 
 def test_commands_must_include_quality_bar_section(tmp_path):
