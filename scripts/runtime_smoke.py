@@ -192,14 +192,17 @@ def validate_report_against_schema(
         errors.append("full_validation requires fresh git checkout with HEAD equal to origin/main")
     if report.get("run_scope") == "full_validation" and report.get("writable_temp_dir_status") != "writable":
         errors.append("full_validation requires writable temporary directory evidence")
-    if root is not None and report.get("run_scope") == "full_validation":
+    if root is not None and report.get("smoke_result") == "pass":
+        adapter_path = report.get("adapter_path")
+        if isinstance(adapter_path, str) and adapter_path != "unknown" and not (Path(root) / adapter_path).is_file():
+            errors.append(f"adapter file is missing: {adapter_path}")
         selected_command = report.get("selected_command")
         if isinstance(selected_command, str) and selected_command.startswith("/brain-"):
             command_rel = f"commands/{selected_command.removeprefix('/')}.md"
             command_path = Path(root) / command_rel
             if not command_path.is_file():
                 errors.append(f"selected command file is missing: {command_rel}")
-            elif isinstance(loaded_skills, list):
+            elif report.get("run_scope") == "full_validation" and isinstance(loaded_skills, list):
                 declared_skills = command_declared_skills(command_path)
                 for skill in loaded_skills:
                     if isinstance(skill, str) and skill and skill not in declared_skills:
