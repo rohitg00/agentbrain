@@ -193,6 +193,7 @@ REQUIRED_README_DEPENDENCY_TROUBLESHOOTING_TERMS = [
 ]
 REQUIRED_README_GENERATED_CACHE_TROUBLESHOOTING_TERMS = ["generated Python cache file"]
 REQUIRED_README_ARTIFACT_TROUBLESHOOTING_TERMS = ["schema/template mismatch"]
+REQUIRED_README_EDGE_CASE_APPROVAL_TERMS = ["approval", "side effect"]
 REQUIRED_README_MAINTAINER_LOOP_TERMS = [
     "git push",
     "git fetch origin main",
@@ -1442,6 +1443,9 @@ def validate(root: Path = ROOT) -> list[str]:
         for required_term in REQUIRED_README_EVIDENCE_FRESHNESS_TERMS:
             if required_term.lower() not in evidence_freshness_body:
                 errors.append(f"README.md evidence freshness rules must mention: {required_term}")
+        readme_edge_cases_body = section_body(readme_text, "## Edge Cases and Stop Conditions").lower()
+        if not all(term in readme_edge_cases_body for term in REQUIRED_README_EDGE_CASE_APPROVAL_TERMS):
+            errors.append("README.md edge cases must require explicit approval evidence before side effects")
         maintainer_loop_body = section_body(readme_text, "## Maintainer Loop")
         for required_term in REQUIRED_README_MAINTAINER_LOOP_TERMS:
             if required_term not in maintainer_loop_body:

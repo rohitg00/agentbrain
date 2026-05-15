@@ -336,7 +336,7 @@ Stop instead of proceeding when:
 - the agent is about to build before a spec or plan exists,
 - implementation slices are too large to verify independently,
 - tests are skipped because the change feels small,
-- a tool call, file write, public post, deploy, payment, or destructive action needs approval,
+- a tool call, file write, public post, deploy, payment, side effect, or destructive action lacks explicit approval evidence,
 - the output claims tests passed but does not include test logs,
 - a background loop, retry worker, scheduled run, or unattended maintenance job has no stop condition,
 - a noninteractive run would need user clarification before a scoped or destructive decision,
