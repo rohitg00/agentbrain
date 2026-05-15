@@ -52,6 +52,7 @@ def is_allowed_occurrence(path: Path, root: Path, lines: list[str], line_number:
 
 def find_violations(root: Path, terms: list[str]) -> list[str]:
     unique_terms = sorted({term for term in terms if term})
+    normalized_terms = [(term, term.casefold()) for term in unique_terms]
     violations: list[str] = []
     for path in iter_public_files(root):
         try:
@@ -59,8 +60,9 @@ def find_violations(root: Path, terms: list[str]) -> list[str]:
         except UnicodeDecodeError:
             continue
         for line_number, line in enumerate(lines, start=1):
-            for term in unique_terms:
-                if term not in line:
+            normalized_line = line.casefold()
+            for term, normalized_term in normalized_terms:
+                if normalized_term not in normalized_line:
                     continue
                 if is_allowed_occurrence(path, root, lines, line_number):
                     continue

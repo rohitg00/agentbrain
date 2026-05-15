@@ -113,6 +113,7 @@ REQUIRED_README_QUICKSTART_COMMANDS = [
 ]
 REQUIRED_README_QUICKSTART_TERMS = {
     "targeted exact-name scrub": "README.md Quickstart must include targeted exact-name scrub",
+    "case-insensitive": "README.md Quickstart must document that targeted exact-name scrub is case-insensitive",
     "Python 3.11": "README.md Quickstart must document CI Python version: Python 3.11",
     "baseline validation before editing": "README.md Quickstart must require baseline validation before editing",
 }

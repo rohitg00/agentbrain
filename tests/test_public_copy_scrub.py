@@ -48,3 +48,17 @@ def test_scrub_allows_exact_source_name_inside_readme_comparison_section(tmp_pat
 
     assert result.returncode == 0
     assert "No banned exact names found" in result.stdout
+
+
+def test_scrub_rejects_case_variant_of_exact_source_name(tmp_path: Path) -> None:
+    banned = "".join(["Source", "Brand"])
+    (tmp_path / "docs").mkdir()
+    (tmp_path / "docs" / "guide.md").write_text(
+        "# Guide\n\nPublic copy mentions sourcebrand with a case variant.\n",
+        encoding="utf-8",
+    )
+
+    result = run_scrub(tmp_path, banned)
+
+    assert result.returncode == 1
+    assert "docs/guide.md:3" in result.stdout
