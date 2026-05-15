@@ -16,7 +16,7 @@ Before adapting the harness, run `git status --short` and `git log --oneline -5`
 ## Minimal instruction
 
 ```text
-Use Agent Brain as the operating harness. Before building, read AGENTBRAIN.md, choose the matching command in commands/, load only the relevant skills/*/SKILL.md files, produce the required artifact, and do not skip evidence, stop conditions, or non-agent alternative review.
+Use Agent Brain as the operating harness. Before building, read AGENTBRAIN.md, choose the matching command in commands/, load only the relevant files from skills/, produce the required artifact from templates/, check the matching contract in schemas/, and do not skip evidence, stop conditions, or non-agent alternative review.
 ```
 
 ## Validation

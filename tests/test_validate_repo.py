@@ -38,7 +38,7 @@ def write_minimal_repo(root: Path) -> None:
         "## Install\n\n"
         "Use this adapter in a sample runtime. Run `git status --short` and `git log --oneline -5`, run baseline validation before editing, and preserve user changes before adapter work.\n\n"
         "## Minimal instruction\n\n"
-        "Use Agent Brain as the operating harness.\n\n"
+        "Use Agent Brain as the operating harness. Read AGENTBRAIN.md, route through commands/, load skills/, produce artifacts from templates/, and validate schemas/.\n\n"
         "## Validation\n\n"
         "python3 -m pip install -r requirements-dev.txt\n"
         "rm -rf scripts/__pycache__ tests/__pycache__\n"
@@ -1710,6 +1710,19 @@ def test_readme_adapter_guide_must_catalog_every_adapter(tmp_path):
     errors = validate_repo.validate(tmp_path)
 
     assert "README.md adapter guide missing adapter: adapters/sample-adapter/README.md" in errors
+
+
+def test_adapter_minimal_instruction_must_name_core_harness_artifacts(tmp_path):
+    write_minimal_repo(tmp_path)
+    adapter = tmp_path / "adapters" / "sample-adapter" / "README.md"
+    adapter.write_text(
+        adapter.read_text(encoding="utf-8").replace("commands/", "command files"),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "adapters/sample-adapter/README.md minimal instruction must name harness artifact: commands/" in errors
 
 
 def test_readme_artifact_routing_guide_must_cover_schemas_and_templates(tmp_path):
@@ -5468,7 +5481,7 @@ def test_adapter_readmes_must_include_minimal_instruction(tmp_path):
     adapter = tmp_path / "adapters" / "sample-adapter" / "README.md"
     adapter.write_text(
         adapter.read_text(encoding="utf-8").replace(
-            "## Minimal instruction\n\nUse Agent Brain as the operating harness.\n\n",
+            "## Minimal instruction\n\nUse Agent Brain as the operating harness. Read AGENTBRAIN.md, route through commands/, load skills/, produce artifacts from templates/, and validate schemas/.\n\n",
             "",
         ),
         encoding="utf-8",

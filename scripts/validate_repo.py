@@ -362,6 +362,13 @@ REQUIRED_ADAPTER_BOOTSTRAP_COMMANDS = [
     "baseline validation before editing",
     "preserve user changes",
 ]
+REQUIRED_ADAPTER_MINIMAL_INSTRUCTION_ARTIFACTS = [
+    "AGENTBRAIN.md",
+    "commands/",
+    "skills/",
+    "templates/",
+    "schemas/",
+]
 REQUIRED_CONTRIBUTING_VALIDATION_COMMANDS = [
     "pytest -q",
     "rm -rf scripts/__pycache__ tests/__pycache__",
@@ -1660,6 +1667,12 @@ def validate(root: Path = ROOT) -> list[str]:
             for run_command in REQUIRED_ADAPTER_BOOTSTRAP_COMMANDS:
                 if run_command.lower() not in adapter_text_lower:
                     errors.append(f"{rel(markdown_file, root)} bootstrap section must document: {run_command}")
+            minimal_instruction_body = section_body(adapter_text, "## Minimal instruction")
+            for artifact in REQUIRED_ADAPTER_MINIMAL_INSTRUCTION_ARTIFACTS:
+                if artifact not in minimal_instruction_body:
+                    errors.append(
+                        f"{rel(markdown_file, root)} minimal instruction must name harness artifact: {artifact}"
+                    )
 
     for rubric in sorted((root / "evals" / "rubrics").glob("*.md")):
         text = rubric.read_text(errors="ignore")
