@@ -177,6 +177,25 @@ def test_read_only_runtime_smoke_requires_blocker_when_smoke_is_blocked(tmp_path
     assert any("blocked smoke_result must list at least one blocked command" in error for error in errors)
 
 
+def test_runtime_smoke_rejects_pass_result_when_command_failed(tmp_path: Path):
+    report = runtime_smoke.build_report(
+        root=tmp_path,
+        runtime="generic-cli-runtime",
+        version="1.2.3",
+        sandbox_write_mode="read_only",
+        brain_command_mode="markdown_specs",
+        run_scope="read_only_smoke",
+        blocked_commands=[],
+        exact_command="python scripts/runtime_smoke.py --runtime generic-cli-runtime --version 1.2.3",
+        command_exit_status=2,
+        smoke_result="pass",
+    )
+
+    errors = runtime_smoke.validate_report_against_schema(report, Path("schemas/runtime-smoke.schema.json"))
+
+    assert any("pass smoke_result requires command_exit_status 0" in error for error in errors)
+
+
 def test_full_validation_runtime_smoke_requires_durable_transcript_path(tmp_path: Path):
     report = runtime_smoke.build_report(
         root=tmp_path,

@@ -135,6 +135,8 @@ def validate_report_against_schema(report: dict[str, object], schema_path: Path)
         errors.append("full_validation cannot list blocked_commands; use read_only_smoke or remove blockers")
     if report.get("smoke_result") == "blocked" and blocked_count == 0:
         errors.append("blocked smoke_result must list at least one blocked command")
+    if report.get("smoke_result") == "pass" and report.get("command_exit_status") != 0:
+        errors.append("pass smoke_result requires command_exit_status 0")
     if report.get("run_scope") == "full_validation" and report.get("smoke_result") != "pass":
         errors.append("full_validation requires smoke_result pass")
     if report.get("run_scope") == "full_validation" and report.get("transcript_path") == "not_captured_stdout_only":
