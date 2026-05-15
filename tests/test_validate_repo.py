@@ -284,6 +284,25 @@ def test_command_examples_must_name_stop_condition_and_next_state(tmp_path: Path
     assert "commands/brain-sample.md example must mention: next state" in errors
 
 
+def test_command_examples_must_cite_required_artifact_template(tmp_path: Path) -> None:
+    write_minimal_repo(tmp_path)
+    command = tmp_path / "commands" / "brain-sample.md"
+    command.write_text(
+        command.read_text(encoding="utf-8").replace(
+            "Artifact: write `templates/sample-routing-summary.md`.",
+            "Artifact: write `templates/eval-report.md`.",
+        ),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert (
+        "commands/brain-sample.md example must cite required artifact template: templates/sample-routing-summary.md"
+        in errors
+    )
+
+
 def test_runtime_smoke_template_requires_loaded_skills_to_match_selected_command(tmp_path: Path) -> None:
     write_minimal_repo(tmp_path)
     runtime_template = tmp_path / "templates" / "runtime-smoke.md"

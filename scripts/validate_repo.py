@@ -1907,11 +1907,16 @@ def validate(root: Path = ROOT) -> list[str]:
                 )
             else:
                 seen_quality_bars[quality_bar] = rel(command, root)
-        example = section_body(text, "## Example").lower()
+        example = section_body(text, "## Example")
+        example_lower = example.lower()
         if example:
             for required_term in REQUIRED_COMMAND_EXAMPLE_TERMS:
-                if required_term not in example:
+                if required_term not in example_lower:
                     errors.append(f"{rel(command, root)} example must mention: {required_term}")
+            if required_artifact_template and f"`{required_artifact_template}`" not in example:
+                errors.append(
+                    f"{rel(command, root)} example must cite required artifact template: {required_artifact_template}"
+                )
         stop_conditions = normalized_section_body(text, "## Stop conditions")
         if stop_conditions:
             if any(term in command_text_lower for term in COMMAND_ASK_USER_TERMS):
