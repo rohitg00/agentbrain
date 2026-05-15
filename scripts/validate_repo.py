@@ -76,6 +76,7 @@ REQUIRED_SKILLS = [
     "skills/context-memory/SKILL.md",
     "skills/domain-language/SKILL.md",
     "skills/ci-recovery/SKILL.md",
+    "skills/runtime-smoke/SKILL.md",
 ]
 REQUIRED_EVAL_CASES = [
     "evals/cases/activity-recap.md",

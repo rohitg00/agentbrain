@@ -339,6 +339,7 @@ Do not reuse stale validation proof after code, docs, schemas, templates, comman
 - `plan-slicing` — split work into small verifiable implementation slices.
 - `problem-grill` — test whether the problem is real, specific, and worth solving.
 - `qa-evidence` — collect verification proof for review and shipping decisions.
+- `runtime-smoke` — check Agent Brain in a real agent runtime or adapter without overstating read-only smoke as full validation.
 - `question-ladder` — ask staged questions that narrow ambiguity without overloading the user.
 - `wiki-maintenance` — maintain project knowledge from checked sources.
 

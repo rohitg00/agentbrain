@@ -19,6 +19,7 @@ If required inputs are missing, ask at most three blocking questions or state ex
 ## Skills to load
 
 - `qa-evidence` to collect tests, logs, traces, screenshots, citations, or diff proof.
+- `runtime-smoke` when harness usability depends on a real agent runtime, adapter, sandbox, or `/brain-*` command boundary.
 - `ci-recovery` when remote workflow status must be reconciled with local validation.
 - `agent-output-verifier` when the proof is attached to agent-produced output.
 
@@ -26,7 +27,7 @@ If required inputs are missing, ask at most three blocking questions or state ex
 
 1. List every important claim the artifact makes.
 2. Collect proof through tests, logs, traces, screenshots, citations, diffs, or human approval.
-3. Use `qa-evidence`; add `ci-recovery` for remote workflow failures or stale CI claims; add `agent-output-verifier` for agent-produced claims.
+3. Use `qa-evidence`; add `runtime-smoke` when a real agent runtime, adapter, sandbox mode, or `/brain-*` command boundary is part of the claim; add `ci-recovery` for remote workflow failures or stale CI claims; add `agent-output-verifier` for agent-produced claims.
 4. Produce QA Evidence with pass/fail status, commands, outputs, and unchecked areas.
 5. Stop if proof is missing or the artifact cannot be verified safely.
 
