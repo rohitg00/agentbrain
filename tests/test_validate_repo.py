@@ -723,6 +723,18 @@ def test_valid_minimal_repo_has_no_errors(tmp_path):
     assert validate_repo.validate(tmp_path) == []
 
 
+def test_markdown_links_must_point_to_existing_local_files(tmp_path):
+    write_minimal_repo(tmp_path)
+    (tmp_path / "docs" / "agent-harness.md").write_text(
+        "# Agent Harness\n\nRead [the missing workflow](missing-workflow.md) before setup.\n",
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "docs/agent-harness.md local markdown link points to missing file: missing-workflow.md" in errors
+
+
 def test_evals_readme_must_explain_run_contract(tmp_path):
     write_minimal_repo(tmp_path)
     evals_readme = tmp_path / "evals" / "README.md"

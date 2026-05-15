@@ -968,6 +968,25 @@ def evals_readme_catalog_entries(text: str, section: str) -> list[str]:
     return sorted(set(re.findall(r"`([a-z0-9]+(?:-[a-z0-9]+)*)`", body)))
 
 
+def local_markdown_links(text: str) -> list[str]:
+    links: list[str] = []
+    for match in re.finditer(r"!?\[[^\]]*\]\(([^)]+)\)", text):
+        target = match.group(1).strip()
+        if not target:
+            continue
+        if target.startswith("<") and target.endswith(">"):
+            target = target[1:-1].strip()
+        target = target.split()[0].split("#", 1)[0]
+        if not target:
+            continue
+        if re.match(r"^[a-z][a-z0-9+.-]*:", target, flags=re.IGNORECASE):
+            continue
+        if target.startswith("//"):
+            continue
+        links.append(target)
+    return links
+
+
 def validate(root: Path = ROOT) -> list[str]:
     root = Path(root)
     errors: list[str] = []
@@ -1776,6 +1795,18 @@ def validate(root: Path = ROOT) -> list[str]:
         for term in BANNED_PUBLIC_COPY_TERMS:
             if term.lower() in text.lower() and not public_copy_term_allowed(public_copy_file, text, term):
                 errors.append(f"{rel(public_copy_file, root)} contains banned public-copy term: {term}")
+
+        if public_copy_file.suffix == ".md":
+            for link_target in local_markdown_links(text):
+                link_path = (public_copy_file.parent / link_target).resolve()
+                try:
+                    link_path.relative_to(root.resolve())
+                except ValueError:
+                    continue
+                if not link_path.exists():
+                    errors.append(
+                        f"{rel(public_copy_file, root)} local markdown link points to missing file: {link_target}"
+                    )
 
     return errors
 
