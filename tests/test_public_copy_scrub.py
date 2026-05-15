@@ -64,6 +64,26 @@ def test_scrub_rejects_case_variant_of_exact_source_name(tmp_path: Path) -> None
     assert "docs/guide.md:3" in result.stdout
 
 
+def test_scrub_rejects_exact_source_name_in_schema_and_example_artifacts(tmp_path: Path) -> None:
+    banned = "".join(["Source", "Brand"])
+    (tmp_path / "schemas").mkdir()
+    (tmp_path / "examples" / "artifacts").mkdir(parents=True)
+    (tmp_path / "schemas" / "sample.schema.json").write_text(
+        f'{"{"}"description": "Do not copy {banned} branding into schema descriptions."{"}"}\n',
+        encoding="utf-8",
+    )
+    (tmp_path / "examples" / "artifacts" / "sample.example.json").write_text(
+        f'{"{"}"notes": "Do not copy {banned} branding into example artifacts."{"}"}\n',
+        encoding="utf-8",
+    )
+
+    result = run_scrub(tmp_path, banned)
+
+    assert result.returncode == 1
+    assert "schemas/sample.schema.json:1" in result.stdout
+    assert "examples/artifacts/sample.example.json:1" in result.stdout
+
+
 def test_scrub_requires_at_least_one_exact_name(tmp_path: Path) -> None:
     (tmp_path / "README.md").write_text(
         "# Harness\n\nNeutral public copy.\n",

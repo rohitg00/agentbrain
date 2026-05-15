@@ -40,9 +40,11 @@ Before committing public changes, also run a targeted exact-name scrub for
 user-shared source names, internal tool names, and source-specific branding. The
 scrub requires at least one exact source name, and that name must be non-blank.
 It is case-insensitive, so spelling or casing drift cannot bypass the public copy
-gate. Whitespace-only placeholders are rejected instead of silently passing.
-Keep only neutral operator-pattern language unless the change is explicitly in
-an approved comparison or benchmark section.
+gate. The scrub covers docs, commands, skills, templates, evals, adapters,
+schemas, and example artifacts because schema descriptions and JSON examples are
+also public harness copy. Whitespace-only placeholders are rejected instead of
+silently passing. Keep only neutral operator-pattern language unless the change
+is explicitly in an approved comparison or benchmark section.
 
 ```bash
 python scripts/scrub_public_copy.py <exact-source-name> [more-exact-names...]

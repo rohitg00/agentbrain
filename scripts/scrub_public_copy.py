@@ -22,6 +22,8 @@ PUBLIC_COPY_GLOBS = [
     "docs/*.md",
     "skills/*/SKILL.md",
     "templates/*.md",
+    "schemas/*.json",
+    "examples/artifacts/*.json",
     "evals/**/*.md",
     "adapters/*/README.md",
 ]
