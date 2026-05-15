@@ -48,6 +48,10 @@ runtime version, Python executable, smoke result, command exit status, selected 
 
 For a read-only smoke test, do not fake the full gate. Record the blocked command and run only checks that do not require writes. If pytest cannot create a temporary directory, report that as a runtime blocker and continue with document routing checks, schema/template inspection, `git rev-parse HEAD`, `git rev-parse origin/main`, and `python scripts/validate_repo.py` only when Python 3.11 and dependencies are already available.
 
+## Output Contract
+
+Runtime adapter output must report state, selected command, loaded skills, artifact path, template, schema, validation evidence, freshness, blockers, stop condition, and next action. If any field is unknown, say `unknown` with evidence instead of inferring capability.
+
 ## Failure Modes
 
 Stop and fix the adapter when:

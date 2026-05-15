@@ -6,6 +6,26 @@ from pathlib import Path
 from scripts import validate_repo
 
 
+def test_adapter_requires_output_contract(tmp_path: Path) -> None:
+    write_minimal_repo(tmp_path)
+    adapter = tmp_path / "adapters" / "sample-adapter" / "README.md"
+    adapter.write_text(
+        adapter.read_text(encoding="utf-8").replace(
+            "\n## Output Contract\n\n"
+            "Runtime adapter output must report state, selected command, loaded skills, artifact path, template, schema, validation evidence, freshness, blockers, stop condition, and next action.\n",
+            "\n",
+        ),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert any(
+        "adapters/sample-adapter/README.md missing adapter section: ## Output Contract" in error
+        for error in errors
+    )
+
+
 def write_minimal_repo(root: Path) -> None:
     for rel in [
         "AGENTBRAIN.md",
@@ -67,6 +87,8 @@ def write_minimal_repo(root: Path) -> None:
         "trusting adapter behavior. Keep the artifact honest about blocked commands, "
         "command mode, sandbox/write mode, git freshness, runtime version, "
         "Python executable, smoke result, command exit status, selected command, loaded skills, and transcript path.\n\n"
+        "## Output Contract\n\n"
+        "Runtime adapter output must report state, selected command, loaded skills, artifact path, template, schema, validation evidence, freshness, blockers, stop condition, and next action.\n\n"
         "## Failure Modes\n\n"
         "Stop if the runtime cannot load files.\n",
         encoding="utf-8",

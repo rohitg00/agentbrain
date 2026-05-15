@@ -56,6 +56,10 @@ Then perform one dry run with a low-risk request and confirm the agent names the
 /brain-start → /brain-should-this-exist → /brain-research → /brain-grill → /brain-plan → build/verify/review → /brain-learn
 ```
 
+## Output Contract
+
+Runtime adapter output must report state, selected command, loaded skills, artifact path, template, schema, validation evidence, freshness, blockers, stop condition, and next action. If any field is unknown, say `unknown` with evidence instead of inferring capability.
+
 ## Failure Modes
 
 Stop and fix the adapter when:

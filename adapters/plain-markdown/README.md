@@ -49,6 +49,10 @@ runtime version, Python executable, smoke result, command exit status, selected 
 
 Then ask the agent to classify one sample request and confirm it cites the command file, skill file, artifact contract, evidence checked, and stop condition it used.
 
+## Output Contract
+
+Runtime adapter output must report state, selected command, loaded skills, artifact path, template, schema, validation evidence, freshness, blockers, stop condition, and next action. If any field is unknown, say `unknown` with evidence instead of inferring capability.
+
 ## Failure Modes
 
 Stop and repair the setup when:

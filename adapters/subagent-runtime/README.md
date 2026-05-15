@@ -49,6 +49,10 @@ runtime version, Python executable, smoke result, command exit status, selected 
 
 For a subagent runtime smoke test, also record the runtime version, the enabled toolsets used for inspection, whether subagents were read-only or write-capable, and the join review that accepted or rejected each subagent result.
 
+## Output Contract
+
+Runtime adapter output must report state, selected command, loaded skills, artifact path, template, schema, validation evidence, freshness, blockers, stop condition, and next action. If any field is unknown, say `unknown` with evidence instead of inferring capability.
+
 ## Failure Modes
 
 Stop and fix the adapter when:

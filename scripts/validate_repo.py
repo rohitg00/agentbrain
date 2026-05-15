@@ -446,7 +446,21 @@ REQUIRED_ADAPTER_SECTIONS = [
     "## Capability Matrix",
     "## Minimal instruction",
     "## Validation",
+    "## Output Contract",
     "## Failure Modes",
+]
+REQUIRED_ADAPTER_OUTPUT_CONTRACT_TERMS = [
+    "state",
+    "selected command",
+    "loaded skills",
+    "artifact path",
+    "template",
+    "schema",
+    "validation evidence",
+    "freshness",
+    "blockers",
+    "stop condition",
+    "next action",
 ]
 REQUIRED_ADAPTER_CAPABILITY_MATRIX_TERMS = [
     "read files",
@@ -2113,6 +2127,12 @@ def validate(root: Path = ROOT) -> list[str]:
                 if evidence_term not in adapter_validation_body_lower:
                     errors.append(
                         f"{rel(markdown_file, root)} validation section must document runtime smoke evidence field: {evidence_term}"
+                    )
+            adapter_output_contract_body = section_body(adapter_text, "## Output Contract").lower()
+            for output_term in REQUIRED_ADAPTER_OUTPUT_CONTRACT_TERMS:
+                if output_term not in adapter_output_contract_body:
+                    errors.append(
+                        f"{rel(markdown_file, root)} output contract must document handoff field: {output_term}"
                     )
 
     for rubric in sorted((root / "evals" / "rubrics").glob("*.md")):
