@@ -38,6 +38,7 @@ def write_minimal_repo(root: Path) -> None:
     scripts_dir = root / "scripts"
     scripts_dir.mkdir()
     (scripts_dir / "scrub_public_copy.py").write_text("#!/usr/bin/env python3\n", encoding="utf-8")
+    (scripts_dir / "runtime_smoke.py").write_text("#!/usr/bin/env python3\n", encoding="utf-8")
     (root / ".gitignore").write_text(
         "__pycache__/\n*.py[cod]\n.pytest_cache/\n.venv/\n",
         encoding="utf-8",
@@ -6323,3 +6324,12 @@ def test_schema_title_must_match_artifact_filename(tmp_path):
     errors = validate_repo.validate(tmp_path)
 
     assert "schemas/handoff-report.schema.json title must match filename: Handoff Report" in errors
+
+
+def test_runtime_smoke_script_is_required_for_real_runtime_evidence(tmp_path):
+    write_minimal_repo(tmp_path)
+    (tmp_path / "scripts" / "runtime_smoke.py").unlink()
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "missing scripts/runtime_smoke.py" in errors

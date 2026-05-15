@@ -25,6 +25,14 @@ python scripts/scrub_public_copy.py <exact-source-name> [more-exact-names...]
 
 Replace `<exact-source-name>` with any user-shared source name, internal tool name, or source-specific branding that must not leak into promoted copy. The scrub gate requires at least one non-blank exact source name; whitespace-only placeholders fail instead of creating false confidence. The harness is ready only when tests, validation, whitespace checks, and the scrub gate pass.
 
+When validating an adapter in a real agent runtime, also capture structured smoke
+evidence with `scripts/runtime_smoke.py` and validate the JSON against
+`schemas/runtime-smoke.schema.json`. The artifact must name the runtime,
+version, Python executable, writable temp-dir status, git freshness result,
+exact command, sandbox/write mode, whether `/brain-*` entries are native commands
+or markdown specs, blocked commands, and whether the run was read-only smoke or
+full validation. Do not accept a runtime prose summary as proof.
+
 ## Fresh Checkout Bootstrap
 
 Before a new agent acts on this repo, make it prove the checkout state instead of relying on private session context:

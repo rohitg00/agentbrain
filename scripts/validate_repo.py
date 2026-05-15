@@ -16,7 +16,7 @@ REQUIRED_ROOT = [
     "ANTI_RATIONALIZATION.md",
     "CONTRIBUTING.md",
 ]
-REQUIRED_FILES = ["requirements-dev.txt", "scripts/scrub_public_copy.py"]
+REQUIRED_FILES = ["requirements-dev.txt", "scripts/scrub_public_copy.py", "scripts/runtime_smoke.py"]
 REQUIRED_DEV_REQUIREMENTS = ["jsonschema", "pytest"]
 REQUIRED_DIRECTORIES = ["schemas"]
 REQUIRED_ARTIFACT_FILES = [

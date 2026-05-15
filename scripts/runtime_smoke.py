@@ -1,0 +1,138 @@
+#!/usr/bin/env python3
+"""Emit a runtime-smoke JSON artifact for the current Agent Brain checkout."""
+
+from __future__ import annotations
+
+import argparse
+import json
+import subprocess
+import sys
+import tempfile
+from pathlib import Path
+
+SANDBOX_WRITE_MODES = {"read_only", "workspace_write", "approval_gated", "unrestricted", "unknown"}
+BRAIN_COMMAND_MODES = {"native_commands", "markdown_specs", "mixed", "unknown"}
+RUN_SCOPES = {"read_only_smoke", "full_validation"}
+
+
+def _run_git(root: Path, *args: str) -> tuple[bool, str]:
+    try:
+        completed = subprocess.run(
+            ["git", *args],
+            cwd=root,
+            check=False,
+            capture_output=True,
+            text=True,
+            timeout=15,
+        )
+    except Exception as exc:  # pragma: no cover - defensive around host git setup
+        return False, str(exc)
+
+    output = (completed.stdout or completed.stderr).strip()
+    if completed.returncode != 0:
+        return False, output or f"git {' '.join(args)} exited {completed.returncode}"
+    return True, output
+
+
+def git_freshness_result(root: Path) -> str:
+    head_ok, head = _run_git(root, "rev-parse", "HEAD")
+    origin_ok, origin = _run_git(root, "rev-parse", "origin/main")
+    if not head_ok or not origin_ok:
+        reason = head if not head_ok else origin
+        return f"unavailable: {reason}"
+    if head == origin:
+        return f"fresh: HEAD equals origin/main at {head}"
+    return f"stale: HEAD {head} differs from origin/main {origin}"
+
+
+def writable_temp_dir_status(root: Path) -> str:
+    try:
+        with tempfile.NamedTemporaryFile(prefix="agentbrain-smoke-", dir=root, delete=True) as handle:
+            handle.write(b"ok")
+            handle.flush()
+        return "writable"
+    except OSError:
+        return "blocked"
+
+
+def build_report(
+    *,
+    root: Path,
+    runtime: str,
+    version: str,
+    sandbox_write_mode: str,
+    brain_command_mode: str,
+    run_scope: str,
+    blocked_commands: list[str],
+    exact_command: str,
+) -> dict[str, object]:
+    root = Path(root)
+    if sandbox_write_mode not in SANDBOX_WRITE_MODES:
+        raise ValueError(f"unsupported sandbox_write_mode: {sandbox_write_mode}")
+    if brain_command_mode not in BRAIN_COMMAND_MODES:
+        raise ValueError(f"unsupported brain_command_mode: {brain_command_mode}")
+    if run_scope not in RUN_SCOPES:
+        raise ValueError(f"unsupported run_scope: {run_scope}")
+
+    scope_label = run_scope.replace("read_only", "read-only").replace("_", " ")
+    command_label = brain_command_mode.replace("_", " ")
+    freshness = git_freshness_result(root)
+    evidence = [
+        f"Runtime smoke captured for {runtime} {version} as {scope_label}.",
+        f"Python executable: {sys.executable}",
+        f"/brain-* command mode: {command_label}.",
+        f"Git freshness result: {freshness}",
+        f"Blocked commands recorded: {', '.join(blocked_commands) if blocked_commands else 'none'}.",
+    ]
+
+    return {
+        "runtime": runtime,
+        "version": version,
+        "python_executable": sys.executable,
+        "writable_temp_dir_status": writable_temp_dir_status(root),
+        "git_freshness_result": freshness,
+        "exact_command": exact_command,
+        "sandbox_write_mode": sandbox_write_mode,
+        "brain_command_mode": brain_command_mode,
+        "blocked_commands": blocked_commands,
+        "run_scope": run_scope,
+        "evidence": evidence,
+    }
+
+
+def parse_args(argv: list[str]) -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--runtime", required=True, help="Neutral runtime name, for example generic-cli-runtime")
+    parser.add_argument("--version", required=True, help="Runtime version string reported by the runtime")
+    parser.add_argument("--sandbox-write-mode", choices=sorted(SANDBOX_WRITE_MODES), default="unknown")
+    parser.add_argument("--brain-command-mode", choices=sorted(BRAIN_COMMAND_MODES), default="markdown_specs")
+    parser.add_argument("--run-scope", choices=sorted(RUN_SCOPES), default="read_only_smoke")
+    parser.add_argument("--blocked-command", action="append", default=[], help="Command that was blocked or intentionally skipped")
+    parser.add_argument("--root", type=Path, default=Path.cwd(), help="Repository root to inspect")
+    parser.add_argument("--output", type=Path, help="Optional JSON output path; stdout is used when omitted")
+    return parser.parse_args(argv)
+
+
+def main(argv: list[str] | None = None) -> int:
+    args = parse_args(sys.argv[1:] if argv is None else argv)
+    exact_command = "python scripts/runtime_smoke.py " + " ".join(sys.argv[1:] if argv is None else argv)
+    report = build_report(
+        root=args.root,
+        runtime=args.runtime,
+        version=args.version,
+        sandbox_write_mode=args.sandbox_write_mode,
+        brain_command_mode=args.brain_command_mode,
+        run_scope=args.run_scope,
+        blocked_commands=args.blocked_command,
+        exact_command=exact_command,
+    )
+    payload = json.dumps(report, indent=2, sort_keys=True) + "\n"
+    if args.output:
+        args.output.write_text(payload, encoding="utf-8")
+    else:
+        sys.stdout.write(payload)
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

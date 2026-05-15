@@ -164,7 +164,7 @@ docs/                          # Architecture, state, memory, research, gates
 templates/                     # Artifact templates
 evals/                         # Cases and rubrics
 adapters/                      # Runtime-specific integration notes
-scripts/                       # Repository validation
+scripts/                       # Repository validation and runtime smoke artifact capture
 ```
 
 ## Documentation Guide
@@ -474,6 +474,24 @@ python scripts/validate_repo.py
 git diff --check
 python scripts/scrub_public_copy.py <exact-source-name> [more-exact-names...]
 ```
+
+When testing a real agent runtime or adapter, capture a schema-valid smoke
+artifact instead of relying on a prose summary:
+
+```bash
+python scripts/runtime_smoke.py \
+  --runtime generic-cli-runtime \
+  --version <runtime-version> \
+  --sandbox-write-mode read_only \
+  --brain-command-mode markdown_specs \
+  --run-scope read_only_smoke \
+  --blocked-command "python -m pytest -q" \
+  --output runtime-smoke.local.json
+```
+
+The artifact must be checked against `schemas/runtime-smoke.schema.json` before
+adapter behavior is trusted. Use neutral runtime labels and record blocked
+commands honestly; do not call read-only smoke a full validation run.
 
 Also run a targeted exact-name scrub before committing public copy changes:
 
