@@ -1250,6 +1250,20 @@ def test_readme_command_selection_entries_must_point_to_existing_files(tmp_path)
     assert "README.md command selection guide entry points to missing file: /brain-missing" in errors
 
 
+def test_readme_inline_command_mentions_must_point_to_existing_files(tmp_path):
+    write_minimal_repo(tmp_path)
+    readme = tmp_path / "README.md"
+    readme.write_text(
+        readme.read_text(encoding="utf-8")
+        + "\nExample workflow: `/brain-sample` then `/brain-missing`.\n",
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "README.md command reference points to missing file: /brain-missing" in errors
+
+
 def test_readme_repository_map_must_include_setup_and_ci_paths(tmp_path):
     write_minimal_repo(tmp_path)
     readme = tmp_path / "README.md"

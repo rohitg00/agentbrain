@@ -735,6 +735,10 @@ def readme_command_selection_references(text: str) -> list[str]:
     return sorted(entries)
 
 
+def readme_all_command_references(text: str) -> list[str]:
+    return sorted(set(re.findall(r"`(/brain-[a-z0-9-]+)`", text)))
+
+
 def agent_harness_command_routing_references(text: str) -> list[str]:
     body = section_body(text, "## Command Routing")
     return sorted(set(re.findall(r"`(/brain-[a-z0-9-]+)`", body)))
@@ -1176,6 +1180,7 @@ def validate(root: Path = ROOT) -> list[str]:
                 errors.append(message)
         core_command_refs = readme_command_references(readme_text)
         command_selection_refs = readme_command_selection_references(readme_text)
+        all_command_refs = readme_all_command_references(readme_text)
         for command in sorted((root / "commands").glob("*.md")):
             command_name = f"/{command.stem}"
             if command_name not in core_command_refs:
@@ -1192,6 +1197,10 @@ def validate(root: Path = ROOT) -> list[str]:
                 errors.append(
                     f"README.md command selection guide entry points to missing file: {command_name}"
                 )
+        for command_name in all_command_refs:
+            command_file = root / "commands" / f"{command_name.removeprefix('/')}.md"
+            if not command_file.exists():
+                errors.append(f"README.md command reference points to missing file: {command_name}")
         core_skill_refs = readme_skill_catalog_entries(readme_text)
         for skill in sorted((root / "skills").glob("*/SKILL.md")):
             skill_name = skill.parent.name

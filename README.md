@@ -454,7 +454,7 @@ Do not overwrite local work just to make the harness look clean. Preserve user c
 Add the command to the Core Commands list with backticks, for example:
 
 ```text
-- `/brain-example` — short action-oriented description.
+- `/brain-start` — short action-oriented description.
 ```
 
 ### Validation says a skill is missing from README
