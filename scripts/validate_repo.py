@@ -111,6 +111,10 @@ REQUIRED_REAL_RUNTIME_SMOKE_EVIDENCE_FIELDS = [
     "python executable",
     "writable temp-dir status",
     "git freshness result",
+    "exact command",
+    "sandbox/write mode",
+    "/brain-* native commands or markdown specs",
+    "blocked commands",
 ]
 REQUIRED_REAL_RUNTIME_SMOKE_READ_ONLY_TERMS = ["read-only", "full validation"]
 REQUIRED_WORKFLOWS = [".github/workflows/quality.yml"]
