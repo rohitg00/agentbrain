@@ -550,6 +550,15 @@ REQUIRED_ADAPTER_SAMPLE_ROUTING_PROBE_TERMS = [
     "evidence checked",
     "stop condition",
 ]
+REQUIRED_ADAPTER_SMOKE_PROMOTION_TERMS = [
+    "read-only smoke",
+    "full validation",
+    "write access",
+    "shell access",
+    "dependency install",
+    "full local gate",
+    "blockers",
+]
 REQUIRED_CONTRIBUTING_VALIDATION_COMMANDS = [
     "pytest -q",
     "rm -rf scripts/__pycache__ tests/__pycache__",
@@ -2302,6 +2311,11 @@ def validate(root: Path = ROOT) -> list[str]:
                 if probe_term not in adapter_validation_body_lower:
                     errors.append(
                         f"{rel(markdown_file, root)} validation must include sample request routing probe: {probe_term}"
+                    )
+            for promotion_term in REQUIRED_ADAPTER_SMOKE_PROMOTION_TERMS:
+                if promotion_term not in adapter_validation_body_lower:
+                    errors.append(
+                        f"{rel(markdown_file, root)} validation must document read-only smoke promotion criteria: {promotion_term}"
                     )
             adapter_output_contract_body = section_body(adapter_text, "## Output Contract").lower()
             for output_term in REQUIRED_ADAPTER_OUTPUT_CONTRACT_TERMS:

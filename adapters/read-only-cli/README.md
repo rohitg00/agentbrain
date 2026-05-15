@@ -48,6 +48,8 @@ runtime version, Python executable, smoke result, command exit status, selected 
 
 After validation, classify one sample request and confirm the runtime cites the command file, skill file, artifact contract, evidence checked, and stop condition it used.
 
+Promote read-only smoke to full validation only when write access, shell access, dependency install, and the full local gate are available; otherwise keep the result marked read-only smoke with blockers.
+
 For a read-only smoke test, do not fake the full gate. Record the blocked command and run only checks that do not require writes. If pytest cannot create a temporary directory, report that as a runtime blocker and continue with document routing checks, schema/template inspection, `git rev-parse HEAD`, `git rev-parse origin/main`, and `python scripts/validate_repo.py` only when Python 3.11 and dependencies are already available.
 
 ## Output Contract

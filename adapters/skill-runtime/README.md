@@ -50,6 +50,8 @@ runtime version, Python executable, smoke result, command exit status, selected 
 
 After validation, classify one sample request and confirm the runtime cites the command file, skill file, artifact contract, evidence checked, and stop condition it used.
 
+Promote read-only smoke to full validation only when write access, shell access, dependency install, and the full local gate are available; otherwise keep the result marked read-only smoke with blockers.
+
 Then perform one dry run with a low-risk request and confirm the agent names the chosen command, loaded skills, evidence checked, stop conditions, and next action.
 
 ## Recommended skill-runtime flow
