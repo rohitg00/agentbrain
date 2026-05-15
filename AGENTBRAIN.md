@@ -112,6 +112,10 @@ Use the speed fallback:
 - build the smallest reversible artifact,
 - record risks and missing evidence.
 
+## Noninteractive scheduled runs
+
+When Agent Brain is used in a noninteractive scheduled run, the agent cannot ask questions or wait for follow-up. It should use the safest documented default only when the ambiguity does not change the action. If the ambiguity affects scope, safety, side effects, secrets, rollback, or user approval, stop with a blocker and name the missing evidence instead of guessing.
+
 ## When the user wants a big vision
 
 Split the vision into:

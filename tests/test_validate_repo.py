@@ -14,6 +14,12 @@ def write_minimal_repo(root: Path) -> None:
         "CONTRIBUTING.md",
     ]:
         (root / rel).write_text("# required\n", encoding="utf-8")
+    (root / "AGENTBRAIN.md").write_text(
+        "# Agent Brain Constitution\n\n"
+        "When running as a noninteractive scheduled run, the harness cannot ask questions. "
+        "Use the safest documented default or stop with a blocker when ambiguity changes the action.\n",
+        encoding="utf-8",
+    )
     (root / "CONTRIBUTING.md").write_text(
         "# Contributing\n\n## Validation\n\n```bash\npython3 -m pip install -r requirements-dev.txt\nrm -rf scripts/__pycache__ tests/__pycache__\npython3 -m pytest -q\npython3 scripts/validate_repo.py\ngit diff --check\n```\nRun a targeted exact-name scrub before public copy changes.\n",
         encoding="utf-8",
@@ -5664,3 +5670,16 @@ def test_agent_harness_requires_single_writer_parallel_coordination(tmp_path):
     errors = validate_repo.validate(tmp_path)
 
     assert "docs/agent-harness.md worker guidance must require a single writer for parallel work" in errors
+
+
+def test_constitution_requires_noninteractive_scheduled_run_guidance(tmp_path):
+    write_minimal_repo(tmp_path)
+    constitution = tmp_path / "AGENTBRAIN.md"
+    constitution.write_text(
+        "# Agent Brain Constitution\n\nQuestion before building, then verify with evidence.\n",
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "AGENTBRAIN.md must document noninteractive scheduled-run fallback guidance: noninteractive" in errors

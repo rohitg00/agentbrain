@@ -252,6 +252,13 @@ STALE_REPOSITORY_BOOTSTRAP_TERMS = [
     "push the docs-only",
     "open issues for installer",
 ]
+REQUIRED_CONSTITUTION_NONINTERACTIVE_TERMS = [
+    "noninteractive",
+    "scheduled run",
+    "cannot ask questions",
+    "safest documented default",
+    "stop with a blocker",
+]
 REQUIRED_AGENT_HARNESS_SECTIONS = [
     "## Install",
     "## Fresh Checkout Bootstrap",
@@ -1047,6 +1054,16 @@ def validate(root: Path = ROOT) -> list[str]:
         single_h1_error = validate_single_h1(root_markdown, root)
         if single_h1_error:
             errors.append(single_h1_error)
+
+    constitution = root / "AGENTBRAIN.md"
+    if constitution.exists():
+        constitution_text_lower = constitution.read_text(errors="ignore").lower()
+        for required_term in REQUIRED_CONSTITUTION_NONINTERACTIVE_TERMS:
+            if required_term not in constitution_text_lower:
+                errors.append(
+                    "AGENTBRAIN.md must document noninteractive scheduled-run fallback guidance: "
+                    f"{required_term}"
+                )
 
     for required_path in REQUIRED_FILES:
         required_file = root / required_path
