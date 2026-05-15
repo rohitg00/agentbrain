@@ -982,6 +982,20 @@ def test_readme_must_include_maintainer_checklist(tmp_path):
     assert "README.md missing self-setup harness section: ## Maintainer Checklist" in errors
 
 
+def test_readme_status_must_not_claim_the_harness_is_complete(tmp_path):
+    write_minimal_repo(tmp_path)
+    readme = tmp_path / "README.md"
+    readme.write_text(
+        readme.read_text(encoding="utf-8")
+        + "\n## Status\n\nThe harness is complete and ready for no more hardening.\n",
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "README.md status must describe ongoing hardening, not claim completion" in errors
+
+
 def test_readme_quickstart_must_include_full_local_quality_gate(tmp_path):
     write_minimal_repo(tmp_path)
     readme = tmp_path / "README.md"

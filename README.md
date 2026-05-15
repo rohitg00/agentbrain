@@ -587,4 +587,4 @@ High-priority hardening targets:
 
 ## Status
 
-v0.2.0 rewrite complete and now under continuous hardening. The repo is documentation-first, with portable commands, skills, schemas, eval cases, adapters, and validation checks ready for iterative improvement.
+v0.2.0 rewrite baseline is under continuous hardening. The repo is documentation-first, with portable commands, skills, schemas, eval cases, adapters, and validation checks ready for iterative improvement.

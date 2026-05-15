@@ -170,6 +170,12 @@ REQUIRED_README_MAINTAINER_LOOP_TERMS = [
     "git fetch origin main",
     "HEAD equals origin/main",
 ]
+STALE_STATUS_COMPLETION_TERMS = [
+    "complete",
+    "done",
+    "finished",
+    "no more hardening",
+]
 REQUIRED_AGENT_HARNESS_SECTIONS = [
     "## Install",
     "## Fresh Checkout Bootstrap",
@@ -1230,6 +1236,9 @@ def validate(root: Path = ROOT) -> list[str]:
         for required_term in REQUIRED_README_MAINTAINER_LOOP_TERMS:
             if required_term not in maintainer_loop_body:
                 errors.append(f"README.md maintainer loop must mention: {required_term}")
+        readme_status_body = section_body(readme_text, "## Status").lower()
+        if any(term in readme_status_body for term in STALE_STATUS_COMPLETION_TERMS):
+            errors.append("README.md status must describe ongoing hardening, not claim completion")
 
     contributing = root / "CONTRIBUTING.md"
     if contributing.exists():
