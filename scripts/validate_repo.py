@@ -1137,6 +1137,22 @@ def command_catalog_entry_skills(entry: str) -> set[str]:
     return set(re.findall(r"`([a-z0-9]+(?:-[a-z0-9]+)*)`", match.group(1)))
 
 
+def command_catalog_entry_use_when(entry: str) -> str:
+    match = re.search(r"Use when: (.*?)(?:;|$)", entry)
+    return normalize_use_when(match.group(1)) if match else ""
+
+
+def normalize_use_when(value: str) -> str:
+    normalized = re.sub(r"\s+", " ", value.strip().lower()).rstrip(".")
+    for prefix in ["use when ", "use for ", "use after ", "use before ", "use "]:
+        if normalized.startswith(prefix):
+            remainder = normalized.removeprefix(prefix).strip()
+            if prefix in {"use after ", "use before "}:
+                return f"{prefix.removeprefix('use ').strip()} {remainder}"
+            return remainder
+    return normalized
+
+
 def readme_command_selection_references(text: str) -> list[str]:
     entries: set[str] = set()
     in_command_selection = False
@@ -1960,6 +1976,13 @@ def validate(root: Path = ROOT) -> list[str]:
             if expected_state and f"State: {expected_state}" not in entry:
                 errors.append(
                     f"commands/README.md catalog entry for {command_name} must match command lifecycle state: {expected_state}"
+                )
+            expected_use_when = normalize_use_when(section_body(command_text, "## When to use"))
+            catalog_use_when = command_catalog_entry_use_when(entry)
+            if expected_use_when and catalog_use_when and catalog_use_when != expected_use_when:
+                errors.append(
+                    "commands/README.md catalog entry for "
+                    f"{command_name} must match command When to use: {expected_use_when}"
                 )
             expected_artifact = command_required_artifact_template(command_text)
             if expected_artifact and f"Artifact: `{expected_artifact}`" not in entry:
