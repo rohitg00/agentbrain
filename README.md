@@ -28,6 +28,9 @@ python scripts/validate_repo.py
 git diff --check
 ```
 
+Run baseline validation before editing so new failures are not blamed on old
+repository drift.
+
 Before committing public changes, also run a targeted exact-name scrub for
 user-shared source names, internal tool names, and source-specific branding. Keep
 only neutral operator-pattern language unless the change is explicitly in an
