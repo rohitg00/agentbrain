@@ -215,6 +215,25 @@ def test_full_validation_runtime_smoke_requires_durable_transcript_path(tmp_path
     assert any("full_validation requires a durable transcript_path" in error for error in errors)
 
 
+def test_full_validation_runtime_smoke_requires_fresh_git_checkout(tmp_path: Path):
+    report = runtime_smoke.build_report(
+        root=tmp_path,
+        runtime="generic-cli-runtime",
+        version="1.2.3",
+        sandbox_write_mode="workspace_write",
+        brain_command_mode="markdown_specs",
+        run_scope="full_validation",
+        blocked_commands=[],
+        exact_command="python scripts/runtime_smoke.py --runtime generic-cli-runtime --version 1.2.3 --run-scope full_validation",
+        smoke_result="pass",
+        transcript_path="artifacts/runtime-smoke/generic-cli-runtime-2026-05-15.log",
+    )
+
+    errors = runtime_smoke.validate_report_against_schema(report, Path("schemas/runtime-smoke.schema.json"))
+
+    assert any("full_validation requires fresh git checkout" in error for error in errors)
+
+
 def test_main_rejects_schema_invalid_generated_smoke_artifact(monkeypatch, capsys):
     def invalid_report(**_kwargs):
         return {"runtime": "generic-cli-runtime", "version": "1.2.3"}

@@ -141,6 +141,11 @@ def validate_report_against_schema(report: dict[str, object], schema_path: Path)
         errors.append("full_validation requires smoke_result pass")
     if report.get("run_scope") == "full_validation" and report.get("transcript_path") == "not_captured_stdout_only":
         errors.append("full_validation requires a durable transcript_path instead of not_captured_stdout_only")
+    git_freshness = report.get("git_freshness_result")
+    if report.get("run_scope") == "full_validation" and not (
+        isinstance(git_freshness, str) and git_freshness.startswith("fresh: HEAD equals origin/main")
+    ):
+        errors.append("full_validation requires fresh git checkout with HEAD equal to origin/main")
 
     return errors
 

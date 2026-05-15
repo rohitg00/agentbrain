@@ -30,7 +30,7 @@ The helper exits non-zero if the generated artifact does not satisfy the schema.
 - **Version:** Exact runtime version or `unknown` with evidence explaining why it could not be checked.
 - **Python executable:** Path and version used for repository checks, or blocker if Python could not run.
 - **Writable temp-dir status:** `writable`, `blocked`, or `not_checked`.
-- **Git freshness result:** `git fetch origin main`, `git rev-parse HEAD`, and `git rev-parse origin/main` result.
+- **Git freshness result:** `git fetch origin main`, `git rev-parse HEAD`, and `git rev-parse origin/main` result. `full_validation` requires `HEAD` to equal `origin/main`; stale or unavailable freshness can only be reported as `read_only_smoke`.
 - **Exact command:** Full command or prompt invocation used for the smoke run.
 - **Command exit status:** Numeric exit status from the smoke command or validation command.
 - **Smoke result:** `pass`, `blocked`, or `fail`; use `blocked` when sandbox or approval constraints prevented required proof.
