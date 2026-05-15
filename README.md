@@ -216,7 +216,7 @@ Each state should answer:
 
 ## Command Selection Guide
 
-Use this guide before reading individual command files. Pick the earliest state that matches the request, then load the command spec and only the skills it names.
+Use this guide before reading individual command files. Pick the earliest state that matches the request, then load the command spec and only the skills it names. The selected command must also name the output artifact; when it does not, use the closest template or command output contract and record the gap as a validator-backed improvement.
 
 | Request shape | Start with | Use when |
 | --- | --- | --- |

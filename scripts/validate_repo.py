@@ -238,6 +238,11 @@ REQUIRED_README_COMMAND_SELECTION_FALLBACK_TERMS = [
     "do not invent",
     "stop",
 ]
+REQUIRED_README_COMMAND_SELECTION_ARTIFACT_TERMS = [
+    "output artifact",
+    "template",
+    "command output contract",
+]
 REQUIRED_HANDOFF_SCHEMA_RESUME_FIELDS = [
     "facts",
     "assumptions",
@@ -1547,6 +1552,11 @@ def validate(root: Path = ROOT) -> list[str]:
             for required_term in REQUIRED_README_COMMAND_SELECTION_FALLBACK_TERMS
         ):
             errors.append("README.md command selection guide must tell agents what to do when no command fits")
+        if not all(
+            required_term.lower() in command_selection_body
+            for required_term in REQUIRED_README_COMMAND_SELECTION_ARTIFACT_TERMS
+        ):
+            errors.append("README.md command selection guide must tell agents how to route the output artifact")
         core_skill_refs = readme_skill_catalog_entries(readme_text)
         for skill in sorted((root / "skills").glob("*/SKILL.md")):
             skill_name = skill.parent.name
