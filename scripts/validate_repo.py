@@ -1293,7 +1293,10 @@ def validate(root: Path = ROOT) -> list[str]:
                         f"{rel(command, root)} mentions asking the user but must include noninteractive fallback guidance"
                     )
                     break
-        output_body = section_body(text, "## Output").lower()
+        output_section = section_body(text, "## Output")
+        output_body = output_section.lower()
+        if "required artifact:" not in output_body:
+            errors.append(f"{rel(command, root)} output must name a required artifact")
         for required_term in REQUIRED_COMMAND_OUTPUT_TERMS:
             if required_term not in output_body:
                 errors.append(f"{rel(command, root)} output must mention: {required_term}")

@@ -316,7 +316,7 @@ def write_minimal_repo(root: Path) -> None:
             "## Workflow",
             "Inspect inputs and decide the next action.",
             "## Output",
-            "A concrete next action with decision, evidence, fresh validation proof, assumptions, risks, open questions, and next recommended state.",
+            "Required artifact: **Sample Routing Summary**. A concrete next action with decision, evidence, fresh validation proof, assumptions, risks, open questions, and next recommended state.",
             "## Stop conditions",
             "Stop when the request is unsafe.",
             "## Quality bar",
@@ -340,7 +340,7 @@ def write_minimal_repo(root: Path) -> None:
             "## Workflow",
             "Select cases, collect proof, compare behavior to expected outcomes.",
             "## Output",
-            "A concrete eval decision with evidence, fresh validation proof, assumptions, risks, open questions, and next recommended state.",
+            "Required artifact: **Eval Report**. A concrete eval decision with evidence, fresh validation proof, assumptions, risks, open questions, and next recommended state.",
             "## Stop conditions",
             "Stop when required proof is unavailable.",
             "## Quality bar",
@@ -922,8 +922,8 @@ def test_commands_must_include_handoff_fields_in_output(tmp_path):
     command = tmp_path / "commands" / "brain-sample.md"
     command.write_text(
         command.read_text(encoding="utf-8").replace(
-            "A concrete next action with decision, evidence, fresh validation proof, assumptions, risks, open questions, and next recommended state.",
-            "A concrete next action with evidence only.",
+            "Required artifact: **Sample Routing Summary**. A concrete next action with decision, evidence, fresh validation proof, assumptions, risks, open questions, and next recommended state.",
+            "Required artifact: **Sample Routing Summary**. A concrete next action with evidence only.",
         ),
         encoding="utf-8",
     )
@@ -936,6 +936,22 @@ def test_commands_must_include_handoff_fields_in_output(tmp_path):
     assert "commands/brain-sample.md output must mention: open questions" in errors
     assert "commands/brain-sample.md output must mention: next recommended state" in errors
     assert "commands/brain-sample.md output must mention: fresh validation proof" in errors
+
+
+def test_commands_must_name_required_output_artifact(tmp_path):
+    write_minimal_repo(tmp_path)
+    command = tmp_path / "commands" / "brain-sample.md"
+    command.write_text(
+        command.read_text(encoding="utf-8").replace(
+            "Required artifact: **Sample Routing Summary**. ",
+            "",
+        ),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "commands/brain-sample.md output must name a required artifact" in errors
 
 
 def test_command_stop_conditions_must_include_noninteractive_fallback_when_the_command_asks_users(tmp_path):
