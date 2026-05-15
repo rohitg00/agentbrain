@@ -143,6 +143,17 @@ def validate_report_against_schema(report: dict[str, object], schema_path: Path)
         errors.append("full_validation requires a write-capable sandbox; use read_only_smoke for read_only runs")
     if report.get("run_scope") == "full_validation" and report.get("transcript_path") == "not_captured_stdout_only":
         errors.append("full_validation requires a durable transcript_path instead of not_captured_stdout_only")
+    if report.get("run_scope") == "full_validation" and report.get("brain_command_mode") == "unknown":
+        errors.append("full_validation requires brain_command_mode to be proven as native_commands, markdown_specs, or mixed")
+    if report.get("run_scope") == "full_validation" and report.get("selected_command") == "unknown":
+        errors.append("full_validation requires a selected /brain-* command")
+    loaded_skills = report.get("loaded_skills")
+    if report.get("run_scope") == "full_validation" and not (
+        isinstance(loaded_skills, list) and any(isinstance(skill, str) and skill for skill in loaded_skills)
+    ):
+        errors.append("full_validation requires at least one loaded skill")
+    if report.get("run_scope") == "full_validation" and report.get("adapter_path") == "unknown":
+        errors.append("full_validation requires an adapter_path for the runtime boundary")
     git_freshness = report.get("git_freshness_result")
     if report.get("run_scope") == "full_validation" and not (
         isinstance(git_freshness, str) and git_freshness.startswith("fresh: HEAD equals origin/main")
