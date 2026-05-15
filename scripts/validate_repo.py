@@ -1818,6 +1818,13 @@ def validate(root: Path = ROOT) -> list[str]:
         commands_readme_text = commands_readme.read_text(errors="ignore")
         commands_readme_text_lower = commands_readme_text.lower()
         command_catalog_entries = command_catalog_entry_lines(commands_readme_text)
+        command_names = {f"/{command.stem}" for command in command_files}
+        for catalog_command_name in sorted(command_catalog_entries):
+            if catalog_command_name not in command_names:
+                errors.append(
+                    "commands/README.md catalog entry points to missing command file: "
+                    f"{catalog_command_name}"
+                )
         for required_term in REQUIRED_COMMAND_CATALOG_CONTRACT_TERMS:
             if required_term not in commands_readme_text_lower:
                 errors.append(

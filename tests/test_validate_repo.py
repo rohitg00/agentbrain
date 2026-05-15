@@ -143,6 +143,20 @@ def test_command_catalog_skills_must_match_command_spec(tmp_path: Path) -> None:
     )
 
 
+def test_command_catalog_rejects_stale_nonexistent_entries(tmp_path: Path) -> None:
+    write_minimal_repo(tmp_path)
+    catalog = tmp_path / "commands" / "README.md"
+    catalog.write_text(
+        catalog.read_text(encoding="utf-8")
+        + "- [`/brain-stale`](brain-stale.md) — State: PLAN; Skills: `plan-slicing`; Artifact: `templates/implementation-plan.md`; Stop: missing evidence.\n",
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "commands/README.md catalog entry points to missing command file: /brain-stale" in errors
+
+
 def test_skill_catalog_quality_bar_must_keep_runtime_checks(tmp_path: Path) -> None:
     write_minimal_repo(tmp_path)
     catalog = tmp_path / "skills" / "README.md"
