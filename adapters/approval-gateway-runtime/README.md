@@ -38,7 +38,7 @@ Run a targeted exact-name scrub before public adapter copy changes so source
 runtime names, internal tools, or one-off branding do not leak into reusable
 harness instructions.
 
-Run `python scripts/runtime_smoke.py --runtime <neutral-runtime-name> --version <runtime-version> --selected-command /brain-start --loaded-skill intake --adapter-path <adapter-readme> --run-scope read_only_smoke` for read-only smoke evidence, or use `--run-scope full_validation` only when the full local gate can run without runtime blockers.
+Run `python scripts/runtime_smoke.py --runtime <neutral-runtime-name> --version <runtime-version> --selected-command /brain-start --loaded-skill intake --adapter-path <adapter-readme> --sandbox-write-mode <sandbox-write-mode> --brain-command-mode <brain-command-mode> --run-scope read_only_smoke --transcript-path <transcript-path>` for read-only smoke evidence, or use `--run-scope full_validation` only when the full local gate can run without runtime blockers.
 
 Record every real-runtime smoke run with `templates/runtime-smoke.md` and validate
 the JSON evidence against `schemas/runtime-smoke.schema.json` before trusting

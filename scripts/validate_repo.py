@@ -555,6 +555,17 @@ REQUIRED_ADAPTER_RUNTIME_SMOKE_EVIDENCE_TERMS = [
     "transcript path",
     "redacted transcript",
 ]
+REQUIRED_ADAPTER_RUNTIME_SMOKE_COMMAND_FLAGS = [
+    "--runtime",
+    "--version",
+    "--selected-command",
+    "--loaded-skill",
+    "--adapter-path",
+    "--sandbox-write-mode",
+    "--brain-command-mode",
+    "--run-scope",
+    "--transcript-path",
+]
 REQUIRED_ADAPTER_SAMPLE_ROUTING_PROBE_TERMS = [
     "sample request",
     "command file",
@@ -2369,6 +2380,11 @@ def validate(root: Path = ROOT) -> list[str]:
                 if evidence_term not in adapter_validation_body_lower:
                     errors.append(
                         f"{rel(markdown_file, root)} validation section must document runtime smoke evidence field: {evidence_term}"
+                    )
+            for command_flag in REQUIRED_ADAPTER_RUNTIME_SMOKE_COMMAND_FLAGS:
+                if command_flag not in adapter_validation_body:
+                    errors.append(
+                        f"{rel(markdown_file, root)} runtime_smoke.py command must include flag: {command_flag}"
                     )
             for probe_term in REQUIRED_ADAPTER_SAMPLE_ROUTING_PROBE_TERMS:
                 if probe_term not in adapter_validation_body_lower:

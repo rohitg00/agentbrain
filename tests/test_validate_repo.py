@@ -109,6 +109,36 @@ def test_adapter_validation_requires_read_only_to_full_validation_promotion_crit
     )
 
 
+def test_adapter_runtime_smoke_command_must_include_boundary_flags(tmp_path: Path) -> None:
+    write_minimal_repo(tmp_path)
+    adapter = tmp_path / "adapters" / "sample-adapter" / "README.md"
+    adapter.write_text(
+        adapter.read_text(encoding="utf-8")
+        .replace(" --sandbox-write-mode <sandbox-write-mode>", "")
+        .replace(" --brain-command-mode <brain-command-mode>", "")
+        .replace(" --transcript-path <transcript-path>", ""),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert any(
+        "adapters/sample-adapter/README.md runtime_smoke.py command must include flag: --sandbox-write-mode"
+        in error
+        for error in errors
+    )
+    assert any(
+        "adapters/sample-adapter/README.md runtime_smoke.py command must include flag: --brain-command-mode"
+        in error
+        for error in errors
+    )
+    assert any(
+        "adapters/sample-adapter/README.md runtime_smoke.py command must include flag: --transcript-path"
+        in error
+        for error in errors
+    )
+
+
 def test_adapter_output_contract_requires_capability_matrix_and_run_scope(tmp_path: Path) -> None:
     write_minimal_repo(tmp_path)
     adapter = tmp_path / "adapters" / "sample-adapter" / "README.md"
@@ -598,7 +628,7 @@ def write_minimal_repo(root: Path) -> None:
         "python -m pytest -q\n"
         "python scripts/validate_repo.py\n"
         "git diff --check\n"
-        "Run `python scripts/runtime_smoke.py --runtime <neutral-runtime-name> --version <runtime-version> --selected-command /brain-start --loaded-skill intake --adapter-path <adapter-readme> --run-scope read_only_smoke` for read-only smoke evidence, or use `--run-scope full_validation` only when the full local gate can run without runtime blockers.\n\n"
+        "Run `python scripts/runtime_smoke.py --runtime <neutral-runtime-name> --version <runtime-version> --selected-command /brain-start --loaded-skill intake --adapter-path <adapter-readme> --sandbox-write-mode <sandbox-write-mode> --brain-command-mode <brain-command-mode> --run-scope read_only_smoke --transcript-path <transcript-path>` for read-only smoke evidence, or use `--run-scope full_validation` only when the full local gate can run without runtime blockers.\n\n"
         "Run a targeted exact-name scrub before public adapter copy changes.\n\n"
         "Record every real-runtime smoke run with `templates/runtime-smoke.md` and "
         "validate the JSON evidence against `schemas/runtime-smoke.schema.json` before "
@@ -7106,7 +7136,7 @@ def test_adapter_validation_must_include_runtime_smoke_command(tmp_path):
     adapter = tmp_path / "adapters" / "sample-adapter" / "README.md"
     adapter.write_text(
         adapter.read_text(encoding="utf-8").replace(
-            "Run `python scripts/runtime_smoke.py --runtime <neutral-runtime-name> --version <runtime-version> --selected-command /brain-start --loaded-skill intake --adapter-path <adapter-readme> --run-scope read_only_smoke` for read-only smoke evidence, or use `--run-scope full_validation` only when the full local gate can run without runtime blockers.\n\n",
+            "Run `python scripts/runtime_smoke.py --runtime <neutral-runtime-name> --version <runtime-version> --selected-command /brain-start --loaded-skill intake --adapter-path <adapter-readme> --sandbox-write-mode <sandbox-write-mode> --brain-command-mode <brain-command-mode> --run-scope read_only_smoke --transcript-path <transcript-path>` for read-only smoke evidence, or use `--run-scope full_validation` only when the full local gate can run without runtime blockers.\n\n",
             "",
         ),
         encoding="utf-8",
