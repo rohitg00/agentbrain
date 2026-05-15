@@ -486,6 +486,8 @@ python scripts/runtime_smoke.py \
   --sandbox-write-mode read_only \
   --brain-command-mode markdown_specs \
   --run-scope read_only_smoke \
+  --command-exit-status 0 \
+  --smoke-result pass \
   --blocked-command "python -m pytest -q" \
   --output runtime-smoke.local.json
 ```

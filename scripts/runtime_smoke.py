@@ -15,6 +15,7 @@ from jsonschema import Draft202012Validator
 SANDBOX_WRITE_MODES = {"read_only", "workspace_write", "approval_gated", "unrestricted", "unknown"}
 BRAIN_COMMAND_MODES = {"native_commands", "markdown_specs", "mixed", "unknown"}
 RUN_SCOPES = {"read_only_smoke", "full_validation"}
+SMOKE_RESULTS = {"pass", "blocked", "fail"}
 
 
 def _run_git(root: Path, *args: str) -> tuple[bool, str]:
@@ -67,6 +68,8 @@ def build_report(
     run_scope: str,
     blocked_commands: list[str],
     exact_command: str,
+    command_exit_status: int = 0,
+    smoke_result: str = "pass",
 ) -> dict[str, object]:
     root = Path(root)
     if sandbox_write_mode not in SANDBOX_WRITE_MODES:
@@ -75,6 +78,8 @@ def build_report(
         raise ValueError(f"unsupported brain_command_mode: {brain_command_mode}")
     if run_scope not in RUN_SCOPES:
         raise ValueError(f"unsupported run_scope: {run_scope}")
+    if smoke_result not in SMOKE_RESULTS:
+        raise ValueError(f"unsupported smoke_result: {smoke_result}")
 
     scope_label = run_scope.replace("read_only", "read-only").replace("_", " ")
     command_label = brain_command_mode.replace("_", " ")
@@ -84,6 +89,8 @@ def build_report(
         f"Python executable: {sys.executable}",
         f"/brain-* command mode: {command_label}.",
         f"Git freshness result: {freshness}",
+        f"Command exit status: {command_exit_status}",
+        f"Smoke result: {smoke_result}",
         f"Blocked commands recorded: {', '.join(blocked_commands) if blocked_commands else 'none'}.",
     ]
 
@@ -94,6 +101,8 @@ def build_report(
         "writable_temp_dir_status": writable_temp_dir_status(root),
         "git_freshness_result": freshness,
         "exact_command": exact_command,
+        "command_exit_status": command_exit_status,
+        "smoke_result": smoke_result,
         "sandbox_write_mode": sandbox_write_mode,
         "brain_command_mode": brain_command_mode,
         "blocked_commands": blocked_commands,
@@ -115,6 +124,8 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     parser.add_argument("--sandbox-write-mode", choices=sorted(SANDBOX_WRITE_MODES), default="unknown")
     parser.add_argument("--brain-command-mode", choices=sorted(BRAIN_COMMAND_MODES), default="markdown_specs")
     parser.add_argument("--run-scope", choices=sorted(RUN_SCOPES), default="read_only_smoke")
+    parser.add_argument("--command-exit-status", type=int, default=0, help="Exit status of the smoke command or validation command")
+    parser.add_argument("--smoke-result", choices=sorted(SMOKE_RESULTS), default="pass")
     parser.add_argument("--blocked-command", action="append", default=[], help="Command that was blocked or intentionally skipped")
     parser.add_argument("--root", type=Path, default=Path.cwd(), help="Repository root to inspect")
     parser.add_argument("--schema", type=Path, help="Runtime-smoke schema path; defaults to <root>/schemas/runtime-smoke.schema.json")
@@ -134,6 +145,8 @@ def main(argv: list[str] | None = None) -> int:
         run_scope=args.run_scope,
         blocked_commands=args.blocked_command,
         exact_command=exact_command,
+        command_exit_status=args.command_exit_status,
+        smoke_result=args.smoke_result,
     )
     schema_path = args.schema or (args.root / "schemas" / "runtime-smoke.schema.json")
     errors = validate_report_against_schema(report, schema_path)

@@ -29,6 +29,26 @@ def test_build_report_emits_schema_valid_runtime_smoke_for_plain_checkout(tmp_pa
     assert "markdown specs" in "\n".join(report["evidence"]).lower()
 
 
+def test_build_report_records_smoke_result_and_command_exit_status(tmp_path: Path):
+    report = runtime_smoke.build_report(
+        root=tmp_path,
+        runtime="generic-cli-runtime",
+        version="1.2.3",
+        sandbox_write_mode="read_only",
+        brain_command_mode="markdown_specs",
+        run_scope="read_only_smoke",
+        blocked_commands=["python -m pytest -q"],
+        exact_command="python scripts/runtime_smoke.py --runtime generic-cli-runtime --version 1.2.3",
+        command_exit_status=0,
+        smoke_result="pass",
+    )
+
+    assert report["command_exit_status"] == 0
+    assert report["smoke_result"] == "pass"
+    assert "Command exit status: 0" in report["evidence"]
+    assert "Smoke result: pass" in report["evidence"]
+
+
 def test_validate_report_against_schema_rejects_incomplete_smoke_artifact():
     incomplete_report = {
         "runtime": "generic-cli-runtime",

@@ -10,6 +10,8 @@
     "writable_temp_dir_status",
     "git_freshness_result",
     "exact_command",
+    "command_exit_status",
+    "smoke_result",
     "sandbox_write_mode",
     "brain_command_mode",
     "blocked_commands",
@@ -43,6 +45,17 @@
     "exact_command": {
       "type": "string",
       "minLength": 1
+    },
+    "command_exit_status": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "smoke_result": {
+      "enum": [
+        "pass",
+        "blocked",
+        "fail"
+      ]
     },
     "sandbox_write_mode": {
       "enum": [

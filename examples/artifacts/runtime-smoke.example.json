@@ -5,6 +5,8 @@
   "writable_temp_dir_status": "writable",
   "git_freshness_result": "HEAD matched origin/main at example commit after git fetch origin main",
   "exact_command": "agent-runtime --sandbox read-only --prompt 'Use Agent Brain as the operating harness'",
+  "command_exit_status": 0,
+  "smoke_result": "pass",
   "sandbox_write_mode": "read_only",
   "brain_command_mode": "markdown_specs",
   "blocked_commands": [
@@ -13,6 +15,8 @@
   "run_scope": "read_only_smoke",
   "evidence": [
     "Runtime opened AGENTBRAIN.md and commands/brain-start.md",
+    "Command exit status: 0",
+    "Smoke result: pass",
     "Runtime identified /brain-* entries as markdown specs rather than native commands"
   ]
 }
