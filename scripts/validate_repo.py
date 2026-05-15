@@ -167,6 +167,7 @@ REQUIRED_README_DEPENDENCY_TROUBLESHOOTING_TERMS = [
     "python3 -m pip install -r requirements-dev.txt",
 ]
 REQUIRED_README_GENERATED_CACHE_TROUBLESHOOTING_TERMS = ["generated Python cache file"]
+REQUIRED_README_ARTIFACT_TROUBLESHOOTING_TERMS = ["schema/template mismatch"]
 REQUIRED_README_MAINTAINER_LOOP_TERMS = [
     "git push",
     "git fetch origin main",
@@ -1252,6 +1253,12 @@ def validate(root: Path = ROOT) -> list[str]:
             if required_term.lower() not in troubleshooting_body:
                 errors.append(
                     "README.md troubleshooting must document generated cache recovery: "
+                    f"{required_term}"
+                )
+        for required_term in REQUIRED_README_ARTIFACT_TROUBLESHOOTING_TERMS:
+            if required_term.lower() not in troubleshooting_body:
+                errors.append(
+                    "README.md troubleshooting must document artifact contract recovery: "
                     f"{required_term}"
                 )
         handoff_body = section_body(readme_text, "## Handoff Contract").lower()

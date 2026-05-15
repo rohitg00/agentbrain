@@ -533,6 +533,17 @@ git diff --check
 
 If the file remains after cleanup, inspect whether it was accidentally tracked and remove it from version control in the same small hardening slice.
 
+### Artifact contract validation fails
+
+If validation reports a schema/template mismatch, treat it as a broken harness contract, not a wording nit:
+
+1. Inspect the schema required fields and optional properties.
+2. Update the matching template with exact field tokens so future agents know what to produce.
+3. Update README artifact routing if the template or schema path changed.
+4. Re-run tests, repository validation, whitespace checks, and the targeted exact-name scrub before committing.
+
+Do not relax schemas just to make an existing template pass. The schema, template, and routing guide should describe the same artifact.
+
 ## Weakest Failure Mode Audit
 
 Before choosing the next hardening slice, inspect the repo for the least protected way a future agent could fail. Check each area quickly and pick the first gap with no eval, validator, or explicit doc coverage:
