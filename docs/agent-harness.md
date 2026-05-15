@@ -6,11 +6,12 @@ The harness is not a chat prompt. It is a controlled operating environment made 
 
 ## Install
 
-From a fresh checkout:
+From a fresh checkout, use Python 3.11 so local validation matches CI:
 
 ```bash
 git clone https://github.com/rohitg00/agentbrain.git
 cd agentbrain
+python3 --version  # expect Python 3.11.x
 python3 -m pip install -r requirements-dev.txt
 rm -rf scripts/__pycache__ tests/__pycache__
 python -m pytest -q
@@ -219,11 +220,11 @@ Treat secret-like values as a blocker, not as normal copy. Remove the value from
 
 ### Tests pass locally but CI fails
 
-Run the exact CI sequence locally, including install, tests, repository validation, and whitespace checks. Inspect `.github/workflows/quality.yml` for Python version, dependency, permission, trigger, or timeout drift before changing production docs or code.
+Run the exact CI sequence locally with Python 3.11, including install, tests, repository validation, and whitespace checks. Inspect `.github/workflows/quality.yml` for Python version, dependency, permission, trigger, or timeout drift before changing production docs or code.
 
 ### Dependency bootstrap fails
 
-If validation fails with `ModuleNotFoundError`, create or refresh a virtual environment, rerun `python3 -m pip install -r requirements-dev.txt`, and retry the quality gate. Do not edit around missing dependencies or assume global packages match CI.
+If validation fails with `ModuleNotFoundError`, create or refresh a Python 3.11 virtual environment, rerun `python3 -m pip install -r requirements-dev.txt`, and retry the quality gate. Do not edit around missing dependencies or assume global packages match CI.
 
 ### Generated cache files appear
 

@@ -12,11 +12,13 @@ The core question is:
 
 ## Quickstart
 
-Use this repo as a harness, not as inspiration-only reading.
+Use this repo as a harness, not as inspiration-only reading. Match CI by
+running the local gate with Python 3.11.
 
 ```bash
 git clone https://github.com/rohitg00/agentbrain.git
 cd agentbrain
+python3 --version  # expect Python 3.11.x
 python3 -m pip install -r requirements-dev.txt
 rm -rf scripts/__pycache__ tests/__pycache__
 python -m pytest -q
@@ -507,13 +509,13 @@ python scripts/validate_repo.py
 git diff --check
 ```
 
-Then inspect `.github/workflows/quality.yml` for missing install, test, validation, timeout, or read-only permission settings.
+Then inspect `.github/workflows/quality.yml` for Python 3.11 drift plus missing install, test, validation, timeout, or read-only permission settings.
 
 ### Dependency bootstrap fails
 
 If validation fails with `ModuleNotFoundError` or a missing package before repository checks run, fix the setup path rather than editing around the missing dependency:
 
-1. Create or refresh a local virtual environment if the workspace does not already have one.
+1. Create or refresh a local Python 3.11 virtual environment if the workspace does not already have one.
 2. Re-run `python3 -m pip install -r requirements-dev.txt` from the repository root.
 3. Re-run `python -m pytest -q` before changing docs, skills, schemas, or validators.
 4. If install still fails, report the package manager output as the blocker and do not claim the harness is validated.
