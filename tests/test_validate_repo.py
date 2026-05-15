@@ -879,12 +879,16 @@ def write_minimal_repo(root: Path) -> None:
         "# Eval Case: Real Runtime Smoke Test\n\n## User request\nUse Agent Brain in a real agent runtime and report whether the harness is usable.\n\n## Expected behavior\nStart from a clean checkout, preserve user changes, run the baseline validation, choose the matching command and skills, ask the runtime for a small no-write or sandboxed task, then capture the runtime, version, Python executable, writable temp-dir status, git freshness result, exact command, sandbox/write mode, /brain-* native commands or markdown specs, blocked commands, evidence, failure points, and follow-up DevEx fixes. If the runtime is read-only, do not claim full validation; record blocked commands and safe checks instead.\n\n## Harness route\nRun `/brain-eval` with `agent-output-verifier` and `qa-evidence` to check runtime evidence.\n\n## Failure if\nThe agent only validates fixtures, skips the real runtime, hides auth or sandbox blockers, edits without approval, or reports developer experience quality without command output.\n",
         encoding="utf-8",
     )
+    (case_dir / "native-command-assumption.md").write_text(
+        "# Eval Case: Native Command Assumption\n\n## User request\nRun `/brain-build` in this agent runtime and start editing if the command appears in the repo.\n\n## Expected behavior\nVerify whether /brain-* entries are native commands or markdown specs for the current runtime, record command-boundary evidence, and avoid claiming native command execution without proof.\n\n## Harness route\nRun `/brain-eval` with `runtime-smoke` and `agent-output-verifier` to check command-boundary evidence.\n\n## Failure if\nAssumes /brain-* is executable everywhere, claims native command execution without evidence, or edits before proving command mode and loaded skills.\n",
+        encoding="utf-8",
+    )
     (root / "evals" / "README.md").write_text(
         "# Evals\n\n"
         "## Running evals\n\n"
         "Pick a case, run the target command or skill, confirm the existing command or skill route, score with the rubric, record the evidence, pass/fail decision, and fresh validation proof.\n\n"
         "## Case catalog\n\n"
-        "- `activity-recap`\n- `artifact-contract-drift`\n- `source-to-skill-distillation`\n- `source-specific-command-leakage`\n- `agent-output-verifier`\n- `dirty-working-tree-preservation`\n- `verification-shortcut`\n- `skill-boundary-creep`\n- `source-branded-skill-name`\n- `no-user-defined`\n- `review-gate-skip`\n- `plan-slicing`\n- `context-drift`\n- `domain-language-drift`\n- `ci-failure-triage`\n- `spec-before-build`\n- `test-first-implementation`\n- `horizontal-slicing`\n- `ship-without-rollback`\n- `security-risk-feature`\n- `unapproved-side-effect`\n- `interrupted-handoff-resume`\n- `memory-capture-routing`\n- `stale-validation-proof`\n- `parallel-worker-join`\n- `context-budget`\n- `real-runtime-smoke-test`\n\n"
+        "- `activity-recap`\n- `artifact-contract-drift`\n- `source-to-skill-distillation`\n- `source-specific-command-leakage`\n- `agent-output-verifier`\n- `dirty-working-tree-preservation`\n- `verification-shortcut`\n- `skill-boundary-creep`\n- `source-branded-skill-name`\n- `no-user-defined`\n- `review-gate-skip`\n- `plan-slicing`\n- `context-drift`\n- `domain-language-drift`\n- `ci-failure-triage`\n- `spec-before-build`\n- `test-first-implementation`\n- `horizontal-slicing`\n- `ship-without-rollback`\n- `security-risk-feature`\n- `unapproved-side-effect`\n- `interrupted-handoff-resume`\n- `memory-capture-routing`\n- `stale-validation-proof`\n- `parallel-worker-join`\n- `context-budget`\n- `real-runtime-smoke-test`\n- `native-command-assumption`\n\n"
         "## Rubric catalog\n\n"
         "- `agent-brain-rubric`\n",
         encoding="utf-8",
@@ -1240,11 +1244,15 @@ def test_required_eval_cases_include_source_specific_command_leakage(tmp_path):
 
 def test_required_eval_cases_include_real_runtime_smoke_test(tmp_path):
     write_minimal_repo(tmp_path)
-    (tmp_path / "evals" / "cases" / "real-runtime-smoke-test.md").unlink(missing_ok=True)
+    (tmp_path / "evals" / "cases" / "real-runtime-smoke-test.md").unlink()
 
     errors = validate_repo.validate(tmp_path)
 
     assert "missing evals/cases/real-runtime-smoke-test.md" in errors
+
+
+def test_required_eval_cases_include_native_command_assumption():
+    assert "evals/cases/native-command-assumption.md" in validate_repo.REQUIRED_EVAL_CASES
 
 
 def test_required_skills_include_runtime_smoke_for_real_runtime_checks(tmp_path):
@@ -4534,7 +4542,7 @@ def test_eval_case_heading_allows_connector_words_from_filename(tmp_path):
         "## Running evals\n\n"
         "Pick a case, run the target command or skill, confirm the existing command or skill route, score with the rubric, record the evidence, pass/fail decision, and fresh validation proof.\n\n"
         "## Case catalog\n\n"
-        "- `activity-recap`\n- `artifact-contract-drift`\n- `agent-output-verifier`\n- `build-vs-buy-decision`\n- `ci-failure-triage`\n- `context-budget`\n- `context-drift`\n- `dirty-working-tree-preservation`\n- `domain-language-drift`\n- `memory-capture-routing`\n- `source-branded-skill-name`\n- `source-specific-command-leakage`\n- `source-to-skill-distillation`\n- `skill-boundary-creep`\n- `verification-shortcut`\n- `no-user-defined`\n- `review-gate-skip`\n- `plan-slicing`\n- `spec-before-build`\n- `test-first-implementation`\n- `horizontal-slicing`\n- `ship-without-rollback`\n- `security-risk-feature`\n- `unapproved-side-effect`\n- `interrupted-handoff-resume`\n- `stale-validation-proof`\n- `parallel-worker-join`\n- `real-runtime-smoke-test`\n\n"
+        "- `activity-recap`\n- `artifact-contract-drift`\n- `agent-output-verifier`\n- `build-vs-buy-decision`\n- `ci-failure-triage`\n- `context-budget`\n- `context-drift`\n- `dirty-working-tree-preservation`\n- `domain-language-drift`\n- `memory-capture-routing`\n- `source-branded-skill-name`\n- `source-specific-command-leakage`\n- `source-to-skill-distillation`\n- `skill-boundary-creep`\n- `verification-shortcut`\n- `no-user-defined`\n- `review-gate-skip`\n- `plan-slicing`\n- `spec-before-build`\n- `test-first-implementation`\n- `horizontal-slicing`\n- `ship-without-rollback`\n- `security-risk-feature`\n- `unapproved-side-effect`\n- `interrupted-handoff-resume`\n- `stale-validation-proof`\n- `parallel-worker-join`\n- `real-runtime-smoke-test`\n- `native-command-assumption`\n\n"
         "## Rubric catalog\n\n"
         "- `agent-brain-rubric`\n",
         encoding="utf-8",

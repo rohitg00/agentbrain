@@ -27,6 +27,7 @@ Agent Brain evals check whether a command or skill improves judgment instead of 
 - `horizontal-slicing` — rejects broad test or layer batching and requires one red-green vertical slice at a time.
 - `interrupted-handoff-resume` — resumes from prior agent handoffs only after checking repo state and stale-note risk.
 - `memory-capture-routing` — routes candidate memories to the right tier while rejecting noise, secrets, and stale progress.
+- `native-command-assumption` — verifies whether `/brain-*` entries are native commands or markdown specs before acting.
 - `no-user-defined` — refuses to design without a concrete user definition.
 - `overengineered-feature` — reduces unnecessary complexity before planning.
 - `parallel-worker-join` — requires coordinator evidence review, accepted and rejected outputs, and conflict checks before trusting parallel work.

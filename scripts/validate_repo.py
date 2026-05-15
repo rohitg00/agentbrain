@@ -111,6 +111,7 @@ REQUIRED_EVAL_CASES = [
     "evals/cases/context-budget.md",
     "evals/cases/source-specific-command-leakage.md",
     "evals/cases/real-runtime-smoke-test.md",
+    "evals/cases/native-command-assumption.md",
 ]
 REQUIRED_EVAL_DOCS = ["evals/README.md"]
 REQUIRED_REAL_RUNTIME_SMOKE_EVIDENCE_FIELDS = [
