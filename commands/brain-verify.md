@@ -63,4 +63,4 @@ A good `/brain-verify` run checks the actual artifact against tests, logs, diffs
 
 ## Example
 
-Example: run the requested quality gate, capture exact command output and artifact paths, classify failures, and route fixes through `/brain-build` or `/brain-review`.
+User request: verify an artifact or recent build. Selected command: `/brain-verify`. Loaded skills: `qa-evidence`, `runtime-smoke`, and `agent-output-verifier` as needed. Artifact: write `templates/qa-evidence.md`. Verification: run the requested quality gate, capture exact command output and artifact paths, classify failures, record fresh validation proof, and route fixes through `/brain-build` or `/brain-review`.

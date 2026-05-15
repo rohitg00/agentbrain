@@ -61,4 +61,4 @@ A good `/brain-should-this-exist` run challenges whether the requested agent fea
 
 ## Example
 
-Example: compare the request against user evidence, non-agent alternatives, costs, and risks before deciding whether to continue to `/brain-research` or stop.
+User request: decide whether a requested agent workflow should exist. Selected command: `/brain-should-this-exist`. Loaded skills: `problem-grill` and `market-grill`. Artifact: write `templates/non-agent-alternative-review.md`. Verification: compare user evidence, non-agent alternatives, costs, risks, and fresh validation proof before continuing to `/brain-research` or stopping.

@@ -64,4 +64,4 @@ A good `/brain-eval` run turns a repeated failure mode into a concrete eval case
 
 ## Example
 
-Example: run one eval case against a command or skill, compare the output to the rubric, record pass/fail evidence, and route fixes through `/brain-plan` or `/brain-build`.
+User request: score one harness behavior against an eval case. Selected command: `/brain-eval`. Loaded skills: `agent-output-verifier`, `qa-evidence`, and `ci-recovery` when remote proof matters. Artifact: write `templates/eval-report.md`. Verification: compare the output to the rubric, record pass/fail evidence, fresh validation proof, and route fixes through `/brain-plan` or `/brain-build`.

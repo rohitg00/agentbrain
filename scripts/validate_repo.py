@@ -591,6 +591,13 @@ REQUIRED_COMMAND_INPUT_CONTRACT_TERMS = [
     "approval state",
 ]
 REQUIRED_COMMAND_QUALITY_BAR_TERMS = ["fresh validation proof"]
+REQUIRED_COMMAND_EXAMPLE_TERMS = [
+    "user request",
+    "selected command",
+    "loaded skills",
+    "artifact",
+    "verification",
+]
 REQUIRED_BUILD_COMMAND_PROOF_TERMS = [
     "failing test before implementation",
     "validator-first proof",
@@ -1688,6 +1695,11 @@ def validate(root: Path = ROOT) -> list[str]:
                 )
             else:
                 seen_quality_bars[quality_bar] = rel(command, root)
+        example = section_body(text, "## Example").lower()
+        if example:
+            for required_term in REQUIRED_COMMAND_EXAMPLE_TERMS:
+                if required_term not in example:
+                    errors.append(f"{rel(command, root)} example must mention: {required_term}")
         stop_conditions = normalized_section_body(text, "## Stop conditions")
         if stop_conditions:
             if any(term in command_text_lower for term in COMMAND_ASK_USER_TERMS):

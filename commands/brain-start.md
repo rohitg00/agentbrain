@@ -64,4 +64,4 @@ A good `/brain-start` run classifies the request into the earliest safe state, n
 
 ## Example
 
-Example: inspect repository state, run baseline validation when appropriate, classify the request, choose the next `/brain-*` route, and preserve user changes.
+User request: start from a vague task or product ambition. Selected command: `/brain-start`. Loaded skills: `intake`, `question-ladder`, and `domain-language`. Artifact: write `templates/intake-summary.md`. Verification: inspect repository state, run baseline validation when appropriate, preserve user changes, and record fresh validation proof before choosing the next `/brain-*` route.

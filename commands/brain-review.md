@@ -61,4 +61,4 @@ A good `/brain-review` run identifies blocking correctness, security, maintainab
 
 ## Example
 
-Example: review changed artifacts for correctness, security, maintainability, and proof gaps, then route blockers to `/brain-build` or verified work to `/brain-ship`.
+User request: review changed artifacts before trust or release. Selected command: `/brain-review`. Loaded skills: `agent-output-verifier` and `engineering-grill`. Artifact: write `templates/review-report.md`. Verification: check correctness, security, maintainability, proof gaps, risks, and fresh validation proof before routing blockers to `/brain-build` or verified work to `/brain-ship`.

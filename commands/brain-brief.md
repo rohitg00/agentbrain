@@ -61,4 +61,4 @@ A good `/brain-brief` run produces a schema-aligned product brief with a named u
 
 ## Example
 
-Example: summarize the accepted intake facts into a brief, cite checked evidence, list assumptions and risks, then route to `/brain-design` or stop with a blocker.
+User request: turn accepted intake facts into product scope. Selected command: `/brain-brief`. Loaded skills: `problem-grill` and `evidence-research`. Artifact: write `templates/product-brief.md`. Verification: cite checked evidence, assumptions, risks, and fresh validation proof before routing to `/brain-design` or stopping with a blocker.

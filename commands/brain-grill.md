@@ -63,4 +63,4 @@ A good `/brain-grill` run asks only the few blocking questions that change the d
 
 ## Example
 
-Example: challenge a vague request with evidence-backed questions, capture assumptions and risks, and route only concrete decisions to `/brain-brief`.
+User request: challenge a vague or risky request. Selected command: `/brain-grill`. Loaded skills: `problem-grill`, `market-grill`, and `design-grill` as relevant. Artifact: write `templates/grill-report.md`. Verification: capture evidence-backed questions, assumptions, risks, fresh validation proof, and route only concrete decisions to `/brain-brief`.

@@ -63,4 +63,4 @@ A good `/brain-build` run implements one approved slice, preserves the planned s
 
 ## Example
 
-Example: take one approved plan slice, write failing behavior proof or validator-first proof, implement only that slice, then report fresh validation proof and the next recommended state.
+User request: implement one approved plan slice. Selected command: `/brain-build`. Loaded skills: `plan-slicing` and `qa-evidence`. Artifact: write `templates/changed-artifact-plus-implementation-notes.md`. Verification: record failing behavior proof or validator-first proof, passing proof, risks, and fresh validation proof before the next recommended state.

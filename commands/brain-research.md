@@ -61,4 +61,4 @@ A good `/brain-research` run produces a claim ledger with inspectable sources, s
 
 ## Example
 
-Example: inspect local files and source-backed references, separate facts from assumptions, and route findings to `/brain-grill` or `/brain-brief` with provenance.
+User request: resolve a claim that depends on evidence. Selected command: `/brain-research`. Loaded skills: `evidence-research` and `wiki-maintenance`. Artifact: write `templates/research-claim-ledger.md`. Verification: inspect local files and source-backed references, separate facts from assumptions, record provenance, and route findings to `/brain-grill` or `/brain-brief` with fresh validation proof.
