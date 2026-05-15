@@ -235,6 +235,35 @@ def test_runtime_smoke_cli_checks_selected_command_file_against_root(tmp_path: P
     assert "selected command file is missing: commands/brain-missing.md" in captured.err
 
 
+def test_full_validation_runtime_smoke_rejects_loaded_skills_not_named_by_selected_command(tmp_path: Path):
+    commands_dir = tmp_path / "commands"
+    commands_dir.mkdir()
+    (commands_dir / "brain-verify.md").write_text(
+        "# /brain-verify\n\n"
+        "## Skills to load\n\n"
+        "Load `runtime-smoke` when proof depends on a real runtime.\n",
+        encoding="utf-8",
+    )
+    report = runtime_smoke.build_report(
+        root=tmp_path,
+        runtime="generic-cli-runtime",
+        version="1.2.3",
+        sandbox_write_mode="workspace_write",
+        brain_command_mode="markdown_specs",
+        run_scope="full_validation",
+        blocked_commands=[],
+        exact_command="python scripts/runtime_smoke.py --runtime generic-cli-runtime --version 1.2.3 --run-scope full_validation --selected-command /brain-verify --loaded-skill invented-skill",
+        selected_command="/brain-verify",
+        loaded_skills=["invented-skill"],
+        adapter_path="adapters/read-only-cli/README.md",
+        transcript_path="artifacts/runtime-smoke/generic-cli-runtime-2026-05-15.log",
+    )
+
+    errors = runtime_smoke.validate_report_against_schema(report, Path("schemas/runtime-smoke.schema.json"), root=tmp_path)
+
+    assert any("loaded skill is not named by selected command /brain-verify: invented-skill" in error for error in errors)
+
+
 def test_read_only_runtime_smoke_requires_blocker_when_smoke_is_blocked(tmp_path: Path):
     report = runtime_smoke.build_report(
         root=tmp_path,

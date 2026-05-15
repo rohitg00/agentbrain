@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import subprocess
 import sys
 import tempfile
@@ -56,6 +57,25 @@ def writable_temp_dir_status(root: Path) -> str:
         return "writable"
     except OSError:
         return "blocked"
+
+
+def section_body(text: str, section: str) -> str:
+    lines = text.splitlines()
+    for index, line in enumerate(lines):
+        if line != section:
+            continue
+        body_lines: list[str] = []
+        for following_line in lines[index + 1 :]:
+            if following_line.startswith("## "):
+                break
+            body_lines.append(following_line)
+        return "\n".join(body_lines)
+    return ""
+
+
+def command_declared_skills(command_path: Path) -> set[str]:
+    body = section_body(command_path.read_text(encoding="utf-8"), "## Skills to load")
+    return set(re.findall(r"`([a-z0-9]+(?:-[a-z0-9]+)*)`", body))
 
 
 def build_report(
@@ -167,8 +187,14 @@ def validate_report_against_schema(
         selected_command = report.get("selected_command")
         if isinstance(selected_command, str) and selected_command.startswith("/brain-"):
             command_rel = f"commands/{selected_command.removeprefix('/')}.md"
-            if not (Path(root) / command_rel).is_file():
+            command_path = Path(root) / command_rel
+            if not command_path.is_file():
                 errors.append(f"selected command file is missing: {command_rel}")
+            elif isinstance(loaded_skills, list):
+                declared_skills = command_declared_skills(command_path)
+                for skill in loaded_skills:
+                    if isinstance(skill, str) and skill and skill not in declared_skills:
+                        errors.append(f"loaded skill is not named by selected command {selected_command}: {skill}")
 
     return errors
 
