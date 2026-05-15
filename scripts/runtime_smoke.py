@@ -293,8 +293,11 @@ def validate_report_against_schema(
     if report.get("run_scope") == "full_validation" and isinstance(report.get("transcript_path"), str):
         transcript_path = report["transcript_path"]
         if root is not None and not transcript_path_is_external_reference(transcript_path):
-            if not (Path(root) / transcript_path).is_file():
+            transcript_file = Path(root) / transcript_path
+            if not transcript_file.is_file():
                 errors.append(f"full_validation transcript file is missing: {transcript_path}")
+            elif transcript_file.stat().st_size == 0:
+                errors.append(f"full_validation transcript file is empty: {transcript_path}")
     if report.get("run_scope") == "full_validation" and report.get("transcript_redaction_status") not in {
         "redacted",
         "no_sensitive_content",
