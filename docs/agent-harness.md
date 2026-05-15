@@ -12,6 +12,8 @@ From a fresh checkout, use Python 3.11 so local validation matches CI:
 git clone https://github.com/rohitg00/agentbrain.git
 cd agentbrain
 python3 --version  # expect Python 3.11.x
+python3 -m venv .venv
+source .venv/bin/activate
 python3 -m pip install -r requirements-dev.txt
 rm -rf scripts/__pycache__ tests/__pycache__
 python -m pytest -q

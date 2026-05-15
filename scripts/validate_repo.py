@@ -101,6 +101,8 @@ REQUIRED_README_VALIDATION_GATE_TERMS = {
     "targeted exact-name scrub": "README.md validation gate must include targeted exact-name scrub",
 }
 REQUIRED_README_QUICKSTART_COMMANDS = [
+    "python3 -m venv .venv",
+    "source .venv/bin/activate",
     "python3 -m pip install -r requirements-dev.txt",
     "rm -rf scripts/__pycache__ tests/__pycache__",
     "python -m pytest -q",
@@ -200,6 +202,8 @@ REQUIRED_AGENT_HARNESS_SECTIONS = [
     "## Troubleshooting",
 ]
 REQUIRED_AGENT_HARNESS_VALIDATION_COMMANDS = [
+    "python3 -m venv .venv",
+    "source .venv/bin/activate",
     "pip install -r requirements-dev.txt",
     "python -m pytest -q",
     "python scripts/validate_repo.py",
