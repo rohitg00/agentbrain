@@ -174,6 +174,26 @@ def test_command_specs_require_when_not_to_use_section(tmp_path: Path) -> None:
     assert "commands/brain-sample.md missing ## When not to use" in errors
 
 
+def test_command_catalog_requires_use_when_routing_signal(tmp_path: Path) -> None:
+    write_minimal_repo(tmp_path)
+    commands_readme = tmp_path / "commands" / "README.md"
+    commands_readme.write_text(
+        commands_readme.read_text(encoding="utf-8").replace(
+            "Use when: sample routing request; ",
+            "",
+        ),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert any(
+        "commands/README.md catalog entry for /brain-sample must name routing field: Use when:"
+        in error
+        for error in errors
+    )
+
+
 def test_runtime_smoke_template_requires_loaded_skills_to_match_selected_command(tmp_path: Path) -> None:
     write_minimal_repo(tmp_path)
     runtime_template = tmp_path / "templates" / "runtime-smoke.md"
@@ -956,11 +976,11 @@ def write_minimal_repo(root: Path) -> None:
         "# Command Catalog\n\n"
         "Use this catalog when a runtime cannot expose `/brain-*` entries as native commands. "
         "Treat each command file as a markdown spec, load only the listed skills, and produce the required artifact.\n\n"
-        "Each catalog entry must preserve the lifecycle state, skills to load, required artifact, stop condition, "
+        "Each catalog entry must preserve the lifecycle state, use-when routing signal, skills to load, required artifact, stop condition, "
         "and native command support boundary so markdown-only runtimes can route work without guessing.\n\n"
         "## Commands\n\n"
-        "- [`/brain-sample`](brain-sample.md) — State: INTAKE; Skills: `sample`, `activity-recap`, `agent-output-verifier`, `ci-recovery`, `context-memory`, `domain-language`, `evidence-research`, `qa-evidence`, `runtime-smoke`; Artifact: `templates/sample-routing-summary.md`; Stop: unsafe request or missing evidence.\n"
-        "- [`/brain-eval`](brain-eval.md) — State: VERIFY; Skills: `agent-output-verifier`, `qa-evidence`, `ci-recovery`, `evidence-research`, `runtime-smoke`; Artifact: `templates/eval-report.md`; Stop: required proof unavailable.\n",
+        "- [`/brain-sample`](brain-sample.md) — State: INTAKE; Use when: sample routing request; Skills: `sample`, `activity-recap`, `agent-output-verifier`, `ci-recovery`, `context-memory`, `domain-language`, `evidence-research`, `qa-evidence`, `runtime-smoke`; Artifact: `templates/sample-routing-summary.md`; Stop: unsafe request or missing evidence.\n"
+        "- [`/brain-eval`](brain-eval.md) — State: VERIFY; Use when: eval quality check; Skills: `agent-output-verifier`, `qa-evidence`, `ci-recovery`, `evidence-research`, `runtime-smoke`; Artifact: `templates/eval-report.md`; Stop: required proof unavailable.\n",
         encoding="utf-8",
     )
     (command_dir / "brain-sample.md").write_text(

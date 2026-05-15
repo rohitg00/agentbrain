@@ -2,7 +2,7 @@
 
 Use this catalog when an agent runtime cannot expose `/brain-*` entries as native commands. Treat each command file as a markdown spec, load only the skills listed by that command, produce the required artifact, and stop instead of inventing unsupported routes.
 
-Each catalog entry preserves the command boundary for runtimes with or without native command support: lifecycle state, skills to load, required artifact, stop condition, and link to the markdown spec. If those fields are missing, the harness cannot prove command routing or artifact handoff behavior in a real runtime smoke.
+Each catalog entry preserves the command boundary for runtimes with or without native command support: lifecycle state, use-when routing signal, skills to load, required artifact, stop condition, and link to the markdown spec. If those fields are missing, the harness cannot prove command routing or artifact handoff behavior in a real runtime smoke.
 
 ## Routing rules
 
@@ -14,20 +14,20 @@ Each catalog entry preserves the command boundary for runtimes with or without n
 
 ## Commands
 
-- [`/brain-brief`](brain-brief.md) — State: DESIGN; Skills: `evidence-research`, `problem-grill`; Artifact: `templates/product-brief.md`; Stop: missing user/problem evidence, unresolved assumptions, or unsafe scope.
-- [`/brain-build`](brain-build.md) — State: BUILD; Skills: `plan-slicing`, `qa-evidence`; Artifact: `templates/changed-artifact-plus-implementation-notes.md`; Stop: no approved slice, no failing test or validator-first proof, or red checks.
-- [`/brain-design`](brain-design.md) — State: DESIGN; Skills: `design-grill`, `engineering-grill`; Artifact: `templates/design-brief.md`; Stop: missing state, flow, edge-case, accessibility, or risk evidence.
-- [`/brain-eval`](brain-eval.md) — State: VERIFY; Skills: `agent-output-verifier`, `ci-recovery`, `evidence-research`, `qa-evidence`, `runtime-smoke`; Artifact: `templates/eval-report.md`; Stop: missing case, rubric, evidence, or runtime proof.
-- [`/brain-grill`](brain-grill.md) — State: CHALLENGE; Skills: `design-grill`, `engineering-grill`, `market-grill`, `problem-grill`; Artifact: `templates/grill-report.md`; Stop: retrievable context is unchecked or a question changes scope.
-- [`/brain-learn`](brain-learn.md) — State: LEARN; Skills: `context-memory`, `learning-capture`, `wiki-maintenance`; Artifact: `templates/learning-capture.md`; Stop: lesson is temporary task chatter, private data, or not reusable.
-- [`/brain-plan`](brain-plan.md) — State: PLAN; Skills: `engineering-grill`, `plan-slicing`; Artifact: `templates/implementation-plan.md`; Stop: slice lacks acceptance checks, verification command, or rollback path.
-- [`/brain-research`](brain-research.md) — State: RESEARCH; Skills: `evidence-research`, `wiki-maintenance`; Artifact: `templates/research-claim-ledger.md`; Stop: source provenance, freshness, or recheck trigger is missing.
-- [`/brain-review`](brain-review.md) — State: REVIEW; Skills: `agent-output-verifier`, `engineering-grill`; Artifact: `templates/review-report.md`; Stop: diff, evidence, security, maintainability, or side-effect scope is unchecked.
-- [`/brain-ship`](brain-ship.md) — State: SHIP; Skills: `launch-gate`, `qa-evidence`; Artifact: `templates/launch-checklist.md`; Stop: rollout, rollback, monitoring, approval, or CI proof is missing.
-- [`/brain-should-this-exist`](brain-should-this-exist.md) — State: DECIDE; Skills: `market-grill`, `problem-grill`; Artifact: `templates/non-agent-alternative-review.md`; Stop: non-agent alternatives, risk, user, or success evidence is missing.
-- [`/brain-start`](brain-start.md) — State: INTAKE; Skills: `domain-language`, `intake`, `question-ladder`; Artifact: `templates/intake-summary.md`; Stop: no safe default exists for missing context in a noninteractive run.
-- [`/brain-verify`](brain-verify.md) — State: VERIFY; Skills: `agent-output-verifier`, `ci-recovery`, `qa-evidence`, `runtime-smoke`; Artifact: `templates/qa-evidence.md`; Stop: proof is stale, missing, unverifiable, or only a prose summary.
-- [`/brain-wiki`](brain-wiki.md) — State: LEARN; Skills: `activity-recap`, `evidence-research`, `wiki-maintenance`; Artifact: `templates/wiki-update.md`; Stop: knowledge lacks provenance, freshness, or durable project value.
+- [`/brain-brief`](brain-brief.md) — State: DESIGN; Use when: product scope or user story needs a concise evidence-backed brief; Skills: `evidence-research`, `problem-grill`; Artifact: `templates/product-brief.md`; Stop: missing user/problem evidence, unresolved assumptions, or unsafe scope.
+- [`/brain-build`](brain-build.md) — State: BUILD; Use when: an approved slice is ready for test-first or validator-first implementation; Skills: `plan-slicing`, `qa-evidence`; Artifact: `templates/changed-artifact-plus-implementation-notes.md`; Stop: no approved slice, no failing test or validator-first proof, or red checks.
+- [`/brain-design`](brain-design.md) — State: DESIGN; Use when: flows, states, interfaces, edge cases, or UX constraints need design before build; Skills: `design-grill`, `engineering-grill`; Artifact: `templates/design-brief.md`; Stop: missing state, flow, edge-case, accessibility, or risk evidence.
+- [`/brain-eval`](brain-eval.md) — State: VERIFY; Use when: a command, skill, adapter, or output needs eval-case or rubric proof; Skills: `agent-output-verifier`, `ci-recovery`, `evidence-research`, `qa-evidence`, `runtime-smoke`; Artifact: `templates/eval-report.md`; Stop: missing case, rubric, evidence, or runtime proof.
+- [`/brain-grill`](brain-grill.md) — State: CHALLENGE; Use when: assumptions, requirements, market logic, or risk claims need structured challenge; Skills: `design-grill`, `engineering-grill`, `market-grill`, `problem-grill`; Artifact: `templates/grill-report.md`; Stop: retrievable context is unchecked or a question changes scope.
+- [`/brain-learn`](brain-learn.md) — State: LEARN; Use when: repeated outcomes should become durable guidance, memory, or a skill update; Skills: `context-memory`, `learning-capture`, `wiki-maintenance`; Artifact: `templates/learning-capture.md`; Stop: lesson is temporary task chatter, private data, or not reusable.
+- [`/brain-plan`](brain-plan.md) — State: PLAN; Use when: implementation-ready work needs small vertical slices with checks and rollback; Skills: `engineering-grill`, `plan-slicing`; Artifact: `templates/implementation-plan.md`; Stop: slice lacks acceptance checks, verification command, or rollback path.
+- [`/brain-research`](brain-research.md) — State: RESEARCH; Use when: claims, APIs, current facts, or source-driven decisions need provenance; Skills: `evidence-research`, `wiki-maintenance`; Artifact: `templates/research-claim-ledger.md`; Stop: source provenance, freshness, or recheck trigger is missing.
+- [`/brain-review`](brain-review.md) — State: REVIEW; Use when: changed work needs trust review before handoff, merge, or shipping; Skills: `agent-output-verifier`, `engineering-grill`; Artifact: `templates/review-report.md`; Stop: diff, evidence, security, maintainability, or side-effect scope is unchecked.
+- [`/brain-ship`](brain-ship.md) — State: SHIP; Use when: a release or production change needs go/no-go, rollback, and launch proof; Skills: `launch-gate`, `qa-evidence`; Artifact: `templates/launch-checklist.md`; Stop: rollout, rollback, monitoring, approval, or CI proof is missing.
+- [`/brain-should-this-exist`](brain-should-this-exist.md) — State: DECIDE; Use when: a proposed agent, automation, or product needs a build-vs-alternative decision; Skills: `market-grill`, `problem-grill`; Artifact: `templates/non-agent-alternative-review.md`; Stop: non-agent alternatives, risk, user, or success evidence is missing.
+- [`/brain-start`](brain-start.md) — State: INTAKE; Use when: a raw request must be classified into the next safe state; Skills: `domain-language`, `intake`, `question-ladder`; Artifact: `templates/intake-summary.md`; Stop: no safe default exists for missing context in a noninteractive run.
+- [`/brain-verify`](brain-verify.md) — State: VERIFY; Use when: tests, logs, traces, citations, runtime smoke, or other proof must be collected; Skills: `agent-output-verifier`, `ci-recovery`, `qa-evidence`, `runtime-smoke`; Artifact: `templates/qa-evidence.md`; Stop: proof is stale, missing, unverifiable, or only a prose summary.
+- [`/brain-wiki`](brain-wiki.md) — State: LEARN; Use when: source-backed project knowledge should be updated without temporary task chatter; Skills: `activity-recap`, `evidence-research`, `wiki-maintenance`; Artifact: `templates/wiki-update.md`; Stop: knowledge lacks provenance, freshness, or durable project value.
 
 ## Failure modes
 
