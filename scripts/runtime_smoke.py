@@ -18,6 +18,7 @@ BRAIN_COMMAND_MODES = {"native_commands", "markdown_specs", "mixed", "unknown"}
 RUN_SCOPES = {"read_only_smoke", "full_validation"}
 SMOKE_RESULTS = {"pass", "blocked", "fail"}
 FULL_VALIDATION_GATE_COMMANDS = [
+    "rm -rf scripts/__pycache__ tests/__pycache__",
     "python -m pytest -q",
     "python scripts/validate_repo.py",
     "git diff --check",

@@ -25,6 +25,7 @@ python scripts/runtime_smoke.py \
 For `full_validation`, repeat `--validation-command` for each successful local gate command:
 
 ```bash
+--validation-command "rm -rf scripts/__pycache__ tests/__pycache__" \
 --validation-command "python -m pytest -q" \
 --validation-command "python scripts/validate_repo.py" \
 --validation-command "git diff --check"
@@ -50,9 +51,9 @@ The helper exits non-zero if the generated artifact does not satisfy the schema.
 - **Adapter path:** Adapter README or integration note used to map Agent Brain into the runtime. A `pass` artifact requires a concrete adapter path; use `blocked` or `fail` instead of `pass` when no adapter boundary was available.
 - **Blocked commands:** Commands that could not run and why.
 - **Run scope:** `read_only_smoke` or `full_validation`.
-- **Validation commands:** Successful local gate commands run during `full_validation`; include `python -m pytest -q`, `python scripts/validate_repo.py`, and `git diff --check`. Leave empty for read-only smoke.
+- **Validation commands:** Successful local gate commands run during `full_validation`; include `rm -rf scripts/__pycache__ tests/__pycache__`, `python -m pytest -q`, `python scripts/validate_repo.py`, and `git diff --check`. Leave empty for read-only smoke.
 - **Evidence:** Logs, outputs, files inspected, command results, and blockers.
 
 ## Review Notes
 
-Do not claim full validation when sandboxing blocked installs, temp files, tests, repository writes, command routing, skill loading, adapter mapping, or the runtime is read-only. Any `smoke_result: pass` artifact must point to an existing selected command file and an existing adapter README when validated with `--root`; otherwise the helper rejects it as unproven routing. A `full_validation` artifact must have `smoke_result: pass`, no `blocked_commands`, `writable_temp_dir_status: writable`, a durable transcript path, a fresh checkout, a write-capable sandbox/write mode, proven `/brain-*` command mode, a selected `/brain-*` command, at least one loaded skill that is declared by that command, a concrete adapter path, and recorded successful validation commands for pytest, repository validation, and whitespace diff checking; otherwise the helper rejects it. Mark blocked or read-only runs as `read_only_smoke`, list the blocked commands, and route the follow-up through `/brain-verify` or `/brain-review` before trusting the runtime adapter.
+Do not claim full validation when sandboxing blocked installs, temp files, tests, repository writes, command routing, skill loading, adapter mapping, or the runtime is read-only. Any `smoke_result: pass` artifact must point to an existing selected command file and an existing adapter README when validated with `--root`; otherwise the helper rejects it as unproven routing. A `full_validation` artifact must have `smoke_result: pass`, no `blocked_commands`, `writable_temp_dir_status: writable`, a durable transcript path, a fresh checkout, a write-capable sandbox/write mode, proven `/brain-*` command mode, a selected `/brain-*` command, at least one loaded skill that is declared by that command, a concrete adapter path, and recorded successful validation commands for cache cleanup, pytest, repository validation, and whitespace diff checking; otherwise the helper rejects it. Mark blocked or read-only runs as `read_only_smoke`, list the blocked commands, and route the follow-up through `/brain-verify` or `/brain-review` before trusting the runtime adapter.
