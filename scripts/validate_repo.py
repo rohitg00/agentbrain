@@ -20,6 +20,7 @@ REQUIRED_FILES = [
     "requirements-dev.txt",
     "scripts/scrub_public_copy.py",
     "scripts/runtime_smoke.py",
+    "adapters/README.md",
     "commands/README.md",
     "skills/README.md",
 ]
@@ -596,6 +597,17 @@ REQUIRED_ADAPTER_FAILURE_MODE_TERMS = [
     "unrestricted execution",
     "read-only sandbox",
     "stderr",
+]
+REQUIRED_ADAPTER_README_SECTIONS = [
+    "## Adapter Catalog",
+    "## Adapter Contract",
+]
+REQUIRED_ADAPTER_README_CONTRACT_TERMS = [
+    "capability matrix",
+    "command routing boundary",
+    "real-runtime smoke evidence",
+    "blocked commands",
+    "output contract",
 ]
 REQUIRED_CONTRIBUTING_VALIDATION_COMMANDS = [
     "pytest -q",
@@ -1256,6 +1268,11 @@ def readme_adapter_guide_entries(text: str) -> list[str]:
     return sorted(set(re.findall(r"`(adapters/[a-z0-9-]+/README\.md)`", body)))
 
 
+def adapters_readme_catalog_entries(text: str) -> list[str]:
+    body = section_body(text, "## Adapter Catalog")
+    return sorted(set(re.findall(r"`(adapters/[a-z0-9-]+/README\.md)`", body)))
+
+
 def readme_artifact_routing_entries(text: str, prefix: str) -> list[str]:
     body = section_body(text, "## Artifact Routing Guide")
     escaped_prefix = re.escape(prefix)
@@ -1626,6 +1643,25 @@ def validate(root: Path = ROOT) -> list[str]:
         for command in sorted((root / "commands").glob("*.md"))
         if command.name != "README.md"
     ]
+    adapter_files = sorted((root / "adapters").glob("*/README.md"))
+    adapters_readme = root / "adapters" / "README.md"
+    if adapters_readme.exists():
+        adapters_readme_text = adapters_readme.read_text(errors="ignore")
+        for required_section in REQUIRED_ADAPTER_README_SECTIONS:
+            if required_section not in adapters_readme_text:
+                errors.append(f"adapters/README.md missing adapter catalog section: {required_section}")
+        adapter_catalog = adapters_readme_catalog_entries(adapters_readme_text)
+        for adapter in adapter_files:
+            adapter_path = rel(adapter, root)
+            if adapter_path not in adapter_catalog:
+                errors.append(f"adapters/README.md catalog missing adapter: {adapter_path}")
+        for adapter_path in adapter_catalog:
+            if not (root / adapter_path).exists():
+                errors.append(f"adapters/README.md catalog points to missing adapter: {adapter_path}")
+        adapter_contract = section_body(adapters_readme_text, "## Adapter Contract").lower()
+        for term in REQUIRED_ADAPTER_README_CONTRACT_TERMS:
+            if term not in adapter_contract:
+                errors.append(f"adapters/README.md adapter contract must mention: {term}")
 
     for required_path in REQUIRED_DOCS:
         if not (root / required_path).exists():

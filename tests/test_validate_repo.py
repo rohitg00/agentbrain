@@ -95,6 +95,26 @@ def test_adapter_requires_output_contract(tmp_path: Path) -> None:
     )
 
 
+def test_adapters_directory_requires_catalog_for_every_adapter(tmp_path: Path) -> None:
+    write_minimal_repo(tmp_path)
+    (tmp_path / "adapters" / "README.md").write_text(
+        "# Runtime Adapters\n\n"
+        "## Adapter Catalog\n\n"
+        "- Missing catalog entry only.\n\n"
+        "## Adapter Contract\n\n"
+        "Every adapter must define capability matrix, command routing boundary, real-runtime smoke evidence, blocked commands, and output contract.\n",
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert any(
+        "adapters/README.md catalog missing adapter: adapters/sample-adapter/README.md"
+        in error
+        for error in errors
+    )
+
+
 def test_adapter_requires_sample_routing_probe(tmp_path: Path) -> None:
     write_minimal_repo(tmp_path)
     adapter = tmp_path / "adapters" / "sample-adapter" / "README.md"
@@ -818,6 +838,15 @@ def write_minimal_repo(root: Path) -> None:
         encoding="utf-8",
     )
 
+    (root / "adapters").mkdir()
+    (root / "adapters" / "README.md").write_text(
+        "# Runtime Adapters\n\n"
+        "## Adapter Catalog\n\n"
+        "- `adapters/sample-adapter/README.md` — sample adapter for validator fixtures.\n\n"
+        "## Adapter Contract\n\n"
+        "Every adapter must define capability matrix, command routing boundary, real-runtime smoke evidence, blocked commands, and output contract.\n",
+        encoding="utf-8",
+    )
     adapters_dir = root / "adapters" / "sample-adapter"
     adapters_dir.mkdir(parents=True)
     (adapters_dir / "README.md").write_text(
