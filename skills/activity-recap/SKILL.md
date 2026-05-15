@@ -53,7 +53,7 @@ Do not use this skill when a simpler checklist, script, or existing command hand
 
 ## Output Artifact
 
-Produce a concise recap that names the inspected scope, timeframe, filters, evidence checked, notable changes, empty scopes when relevant, assumptions, and the next useful follow-up.
+Produce a concise recap that names the inspected scope, timeframe, filters, evidence checked, notable changes, empty scopes when relevant, assumptions, blockers, and the next action.
 
 ## Failure Modes
 

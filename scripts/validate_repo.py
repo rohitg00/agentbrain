@@ -651,6 +651,7 @@ REQUIRED_COMMAND_INPUT_CONTRACT_TERMS = [
     "approval state",
 ]
 REQUIRED_COMMAND_QUALITY_BAR_TERMS = ["fresh validation proof"]
+REQUIRED_SKILL_OUTPUT_ARTIFACT_RESUME_FIELDS = ["evidence", "blockers", "next action"]
 REQUIRED_COMMAND_EXAMPLE_TERMS = [
     "user request",
     "selected command",
@@ -1743,6 +1744,12 @@ def validate(root: Path = ROOT) -> list[str]:
                     errors.append(f"{rel(skill, root)} section has no body: {section}")
         if not sections_are_in_order(text, REQUIRED_SKILL_SECTIONS):
             errors.append(f"{rel(skill, root)} sections must appear in canonical order")
+        output_artifact = section_body(text, "## Output Artifact").lower()
+        for required_term in REQUIRED_SKILL_OUTPUT_ARTIFACT_RESUME_FIELDS:
+            if required_term not in output_artifact:
+                errors.append(
+                    f"{rel(skill, root)} output artifact must mention resume-ready field: {required_term}"
+                )
         if skill.parent.name == "plan-slicing":
             text_lower = text.lower()
             for required_term, message in REQUIRED_PLAN_SLICING_TERMS.items():

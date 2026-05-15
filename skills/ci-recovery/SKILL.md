@@ -35,7 +35,7 @@ Confirm branch, commit, workflow name, run id or URL, conclusion, failed command
 
 ## Output Artifact
 
-CI recovery handoff with status, checked runs, failure class, root cause, fix commit if any, local proof, remote proof, risks, and next action.
+CI recovery handoff with status, checked runs, failure class, root cause, fix commit if any, evidence, blockers, local proof, remote proof, risks, and next action.
 
 ## Failure Modes
 

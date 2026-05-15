@@ -53,7 +53,7 @@ Do not use this skill when a simpler checklist, script, or existing command hand
 
 Runtime Smoke
 
-Use `templates/runtime-smoke.md` for narrative evidence and `schemas/runtime-smoke.schema.json` for machine-checkable JSON evidence.
+Use `templates/runtime-smoke.md` for narrative evidence and `schemas/runtime-smoke.schema.json` for machine-checkable JSON evidence. The artifact must name blockers and the next action when the run is read-only, blocked, stale, or not full validation.
 
 ## Failure Modes
 

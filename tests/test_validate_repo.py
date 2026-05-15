@@ -879,7 +879,7 @@ def write_minimal_repo(root: Path) -> None:
             "## Verification",
             "Confirm evidence.",
             "## Output Artifact",
-            "Structured result with status, evidence, blockers, and next state.",
+            "Structured result with status, evidence, blockers, and next action.",
             "## Failure Modes",
             "Stop if evidence is missing.",
             "## Example",
@@ -910,7 +910,7 @@ def write_minimal_repo(root: Path) -> None:
             "## Verification",
             "Confirm target tier, evidence, freshness, privacy review, and next use.",
             "## Output Artifact",
-            "Memory decision with write, update, reject, retrieve, or defer result.",
+            "Memory decision with evidence, blockers, next action, and write, update, reject, retrieve, or defer result.",
             "## Failure Modes",
             "Do not store secrets, raw logs, or temporary task progress.",
             "## Example",
@@ -941,7 +941,7 @@ def write_minimal_repo(root: Path) -> None:
             "## Verification",
             "Confirm evidence, accepted term, rejected aliases, and target artifact.",
             "## Output Artifact",
-            "Domain language decision with term, definition, evidence, aliases, and routing.",
+            "Domain language decision with term, definition, evidence, blockers, aliases, routing, and next action.",
             "## Failure Modes",
             "Do not put implementation decisions, secrets, logs, or task progress into the glossary.",
             "## Example",
@@ -1148,7 +1148,7 @@ def write_minimal_repo(root: Path) -> None:
             "## Verification",
             "Confirm run id, conclusion, failed command, local reproduction, and final remote proof.",
             "## Output Artifact",
-            "CI recovery handoff with local and remote evidence.",
+            "CI recovery handoff with local and remote evidence, blockers, and next action.",
             "## Failure Modes",
             "Stop if logs require unavailable credentials, expose secrets, or the run is still pending beyond the loop limit.",
             "## Example",
@@ -1179,7 +1179,7 @@ def write_minimal_repo(root: Path) -> None:
             "## Verification",
             "State the checked scope.",
             "## Output Artifact",
-            "Evidence-backed recap with checked scope and unknowns.",
+            "Evidence-backed recap with checked scope, unknowns, blockers, and next action.",
             "## Failure Modes",
             "Do not invent work without evidence.",
             "## Example",
@@ -4040,7 +4040,7 @@ def test_skill_must_define_output_artifact_for_handoff(tmp_path):
     skill = tmp_path / "skills" / "sample" / "SKILL.md"
     skill.write_text(
         skill.read_text(encoding="utf-8").replace(
-            "\n## Output Artifact\nStructured result with status, evidence, blockers, and next state.\n",
+            "\n## Output Artifact\nStructured result with status, evidence, blockers, and next action.\n",
             "\n",
         ),
         encoding="utf-8",
@@ -4049,6 +4049,24 @@ def test_skill_must_define_output_artifact_for_handoff(tmp_path):
     errors = validate_repo.validate(tmp_path)
 
     assert "skills/sample/SKILL.md missing ## Output Artifact" in errors
+
+
+def test_skill_output_artifact_must_be_resume_ready(tmp_path):
+    write_minimal_repo(tmp_path)
+    skill = tmp_path / "skills" / "sample" / "SKILL.md"
+    skill.write_text(
+        skill.read_text(encoding="utf-8").replace(
+            "Structured result with status, evidence, blockers, and next action.",
+            "Structured result.",
+        ),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "skills/sample/SKILL.md output artifact must mention resume-ready field: evidence" in errors
+    assert "skills/sample/SKILL.md output artifact must mention resume-ready field: blockers" in errors
+    assert "skills/sample/SKILL.md output artifact must mention resume-ready field: next action" in errors
 
 
 def test_eval_case_filenames_must_use_lowercase_kebab_case(tmp_path):
@@ -4329,7 +4347,7 @@ def test_skill_frontmatter_description_must_name_trigger(tmp_path):
             "## Verification",
             "Confirm evidence.",
             "## Output Artifact",
-            "Structured result with status, evidence, blockers, and next state.",
+            "Structured result with status, evidence, blockers, and next action.",
             "## Failure Modes",
             "Stop if evidence is missing.",
             "## Example",
@@ -4363,7 +4381,7 @@ def test_skill_frontmatter_description_must_start_with_trigger(tmp_path):
             "## Verification",
             "Confirm evidence.",
             "## Output Artifact",
-            "Structured result with status, evidence, blockers, and next state.",
+            "Structured result with status, evidence, blockers, and next action.",
             "## Failure Modes",
             "Stop if evidence is missing.",
             "## Example",
@@ -4421,7 +4439,7 @@ def test_skill_frontmatter_must_close_before_markdown_body(tmp_path):
             "## Verification",
             "Confirm evidence.",
             "## Output Artifact",
-            "Structured result with status, evidence, blockers, and next state.",
+            "Structured result with status, evidence, blockers, and next action.",
             "## Failure Modes",
             "Stop if evidence is missing.",
             "## Example",
@@ -4472,7 +4490,7 @@ def test_skill_required_sections_must_have_body(tmp_path):
             "## Verification",
             "Confirm evidence.",
             "## Output Artifact",
-            "Structured result with status, evidence, blockers, and next state.",
+            "Structured result with status, evidence, blockers, and next action.",
             "## Failure Modes",
             "Stop if evidence is missing.",
             "## Example",
@@ -4539,7 +4557,7 @@ def test_skill_required_sections_must_not_be_duplicated(tmp_path):
             "## Verification",
             "Confirm evidence.",
             "## Output Artifact",
-            "Structured result with status, evidence, blockers, and next state.",
+            "Structured result with status, evidence, blockers, and next action.",
             "## Failure Modes",
             "Stop if evidence is missing.",
             "## Example",
@@ -4868,7 +4886,7 @@ def test_skill_directory_names_must_be_lowercase_kebab_case(tmp_path):
             "## Verification",
             "Confirm evidence.",
             "## Output Artifact",
-            "Structured result with status, evidence, blockers, and next state.",
+            "Structured result with status, evidence, blockers, and next action.",
             "## Failure Modes",
             "Stop if evidence is missing.",
             "## Example",
@@ -6702,7 +6720,7 @@ def test_skill_template_description_must_start_with_trigger(tmp_path):
             "## Verification",
             "Confirm evidence.",
             "## Output Artifact",
-            "Structured result with status, evidence, blockers, and next state.",
+            "Structured result with status, evidence, blockers, and next action.",
             "## Failure Modes",
             "Stop if evidence is missing.",
             "## Example",
@@ -6738,7 +6756,7 @@ def test_skill_template_name_must_be_lowercase_kebab_case(tmp_path):
             "## Verification",
             "Confirm evidence.",
             "## Output Artifact",
-            "Structured result with status, evidence, blockers, and next state.",
+            "Structured result with status, evidence, blockers, and next action.",
             "## Failure Modes",
             "Stop if evidence is missing.",
             "## Example",
@@ -6773,7 +6791,7 @@ def test_skill_template_frontmatter_must_have_closing_delimiter(tmp_path):
             "## Verification",
             "Confirm evidence.",
             "## Output Artifact",
-            "Structured result with status, evidence, blockers, and next state.",
+            "Structured result with status, evidence, blockers, and next action.",
             "## Failure Modes",
             "Stop if evidence is missing.",
             "## Example",

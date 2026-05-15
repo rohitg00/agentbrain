@@ -49,7 +49,7 @@ Do not use this skill when a simpler checklist, script, or existing command hand
 
 Launch Checklist
 
-The artifact should be concise, auditable, and ready for the next Agent Brain state.
+The artifact should be concise, auditable, and include evidence, blockers, and next action so another agent can resume.
 
 ## Failure Modes
 

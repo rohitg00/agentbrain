@@ -53,7 +53,7 @@ Do not use this skill when a simpler checklist, script, or existing command hand
 
 ## Output Artifact
 
-Produce a memory decision that names the target tier, evidence, freshness/scope, rejected material, written update or no-write reason, and any validator, eval, doc, or skill follow-up.
+Produce a memory decision that names the target tier, evidence, freshness/scope, rejected material, blockers, written update or no-write reason, and the next action for any validator, eval, doc, or skill follow-up.
 
 ## Failure Modes
 

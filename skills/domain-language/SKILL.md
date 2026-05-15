@@ -73,8 +73,9 @@ Definition: <project-specific meaning>
 Use when: <scope>
 Do not confuse with: <aliases or neighboring terms>
 Evidence: <files, commands, user decision, or sources checked>
+Blockers: <missing evidence, unresolved owner decision, or none>
 Routed to: shared language | brief | plan | decision record | no durable write
-Follow-up: <validator/eval/doc/code update if needed>
+Next action: <validator/eval/doc/code update if needed>
 ```
 
 ## Failure Modes
