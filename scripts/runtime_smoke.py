@@ -159,6 +159,15 @@ def validate_report_against_schema(
         errors.append("blocked smoke_result must list at least one blocked command")
     if report.get("smoke_result") == "pass" and report.get("command_exit_status") != 0:
         errors.append("pass smoke_result requires command_exit_status 0")
+    if report.get("smoke_result") == "pass":
+        selected_command = report.get("selected_command")
+        if not (isinstance(selected_command, str) and selected_command.startswith("/brain-")):
+            errors.append("pass smoke_result requires a selected /brain-* command")
+        loaded_skills = report.get("loaded_skills")
+        if not (isinstance(loaded_skills, list) and any(isinstance(skill, str) and skill for skill in loaded_skills)):
+            errors.append("pass smoke_result requires at least one loaded skill")
+        if report.get("adapter_path") == "unknown":
+            errors.append("pass smoke_result requires an adapter_path")
     if report.get("run_scope") == "full_validation" and report.get("smoke_result") != "pass":
         errors.append("full_validation requires smoke_result pass")
     if report.get("run_scope") == "full_validation" and report.get("sandbox_write_mode") == "read_only":

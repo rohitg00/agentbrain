@@ -264,6 +264,29 @@ def test_full_validation_runtime_smoke_rejects_loaded_skills_not_named_by_select
     assert any("loaded skill is not named by selected command /brain-verify: invented-skill" in error for error in errors)
 
 
+def test_pass_runtime_smoke_requires_routing_evidence(tmp_path: Path):
+    report = runtime_smoke.build_report(
+        root=tmp_path,
+        runtime="generic-cli-runtime",
+        version="1.2.3",
+        sandbox_write_mode="read_only",
+        brain_command_mode="markdown_specs",
+        run_scope="read_only_smoke",
+        blocked_commands=[],
+        exact_command="python scripts/runtime_smoke.py --runtime generic-cli-runtime --version 1.2.3",
+        smoke_result="pass",
+        selected_command="unknown",
+        loaded_skills=[],
+        adapter_path="unknown",
+    )
+
+    errors = runtime_smoke.validate_report_against_schema(report, Path("schemas/runtime-smoke.schema.json"))
+
+    assert any("pass smoke_result requires a selected /brain-* command" in error for error in errors)
+    assert any("pass smoke_result requires at least one loaded skill" in error for error in errors)
+    assert any("pass smoke_result requires an adapter_path" in error for error in errors)
+
+
 def test_read_only_runtime_smoke_requires_blocker_when_smoke_is_blocked(tmp_path: Path):
     report = runtime_smoke.build_report(
         root=tmp_path,

@@ -37,9 +37,9 @@ The helper exits non-zero if the generated artifact does not satisfy the schema.
 - **Transcript path:** Durable path or artifact location for the smoke transcript/log. `not_captured_stdout_only` is acceptable only for `read_only_smoke`; `full_validation` requires a durable transcript path.
 - **Sandbox/write mode:** `read_only`, `workspace_write`, `approval_gated`, `unrestricted`, or `unknown`. `full_validation` requires a write-capable mode; use `read_only_smoke` when the runtime cannot write or request approval for writes.
 - **Brain command mode:** Whether `/brain-*` entries were native commands, markdown specs, mixed, or unknown.
-- **Selected command:** The `/brain-*` command route the runtime chose, or `unknown` when command routing could not be proven.
-- **Loaded skills:** Skills the runtime loaded for the selected command; for `full_validation`, every loaded skill must be named in the selected command's `## Skills to load` section so adapter runs cannot invent routes after the fact. Leave empty only when the smoke run never reached skill loading.
-- **Adapter path:** Adapter README or integration note used to map Agent Brain into the runtime, or `unknown` with evidence when no adapter was available.
+- **Selected command:** The `/brain-*` command route the runtime chose. A `pass` artifact requires a selected `/brain-*` command; use `blocked` or `fail` instead of `pass` when command routing could not be proven.
+- **Loaded skills:** Skills the runtime loaded for the selected command; a `pass` artifact requires at least one loaded skill. For `full_validation`, every loaded skill must be named in the selected command's `## Skills to load` section so adapter runs cannot invent routes after the fact.
+- **Adapter path:** Adapter README or integration note used to map Agent Brain into the runtime. A `pass` artifact requires a concrete adapter path; use `blocked` or `fail` instead of `pass` when no adapter boundary was available.
 - **Blocked commands:** Commands that could not run and why.
 - **Run scope:** `read_only_smoke` or `full_validation`.
 - **Evidence:** Logs, outputs, files inspected, command results, and blockers.

@@ -488,6 +488,7 @@ python scripts/runtime_smoke.py \
   --selected-command /brain-start \
   --loaded-skill intake \
   --loaded-skill agent-output-verifier \
+  --adapter-path adapters/read-only-cli/README.md \
   --run-scope read_only_smoke \
   --command-exit-status 0 \
   --smoke-result pass \
