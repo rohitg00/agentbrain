@@ -236,6 +236,10 @@ If validation fails with `ModuleNotFoundError`, create or refresh a Python 3.11 
 
 If validation reports a generated Python cache file, delete `__pycache__/`, `.pytest_cache/`, or tracked bytecode artifacts, then rerun the full quality gate. Generated caches are local execution residue and should not become harness state.
 
+### Schema/template mismatch appears
+
+If validation reports a schema/template mismatch, update the schema field contract, matching template field tokens, and README or command routing together before rerunning validation. Do not patch only the failing file; artifact drift usually means another agent would be routed to stale structure.
+
 ## Maintainer Checklist
 
 Before a harness release or major push:

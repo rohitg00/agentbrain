@@ -278,6 +278,7 @@ REQUIRED_AGENT_HARNESS_TROUBLESHOOTING_TERMS = {
     "ModuleNotFoundError": "docs/agent-harness.md troubleshooting must document dependency bootstrap recovery",
     "virtual environment": "docs/agent-harness.md troubleshooting must document dependency bootstrap recovery",
     "generated Python cache file": "docs/agent-harness.md troubleshooting must document generated cache recovery",
+    "schema/template mismatch": "docs/agent-harness.md troubleshooting must document schema/template mismatch recovery",
 }
 REQUIRED_AGENT_HARNESS_MAINTAINER_TERMS = [
     "git push",
