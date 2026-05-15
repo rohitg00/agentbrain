@@ -65,4 +65,4 @@ A good `/brain-brief` run produces a schema-aligned product brief with a named u
 
 ## Example
 
-User request: turn accepted intake facts into product scope. Selected command: `/brain-brief`. Loaded skills: `problem-grill` and `evidence-research`. Artifact: write `templates/product-brief.md`. Verification: cite checked evidence, assumptions, risks, and fresh validation proof before routing to `/brain-design` or stopping with a blocker.
+User request: turn accepted intake facts into product scope. Selected command: `/brain-brief`. Loaded skills: `problem-grill` and `evidence-research`. Artifact: write `templates/product-brief.md`. Verification: cite checked evidence, assumptions, risks, and fresh validation proof before routing to `/brain-design` or stopping with a blocker. Stop condition: stop if user/problem evidence or acceptance criteria are missing. Next state: DESIGN.

@@ -66,4 +66,4 @@ A good `/brain-learn` run distills a durable operator lesson into neutral guidan
 
 ## Example
 
-User request: preserve a repeated failure as reusable guidance. Selected command: `/brain-learn`. Loaded skills: `learning-capture`, `context-memory`, and `wiki-maintenance`. Artifact: write `templates/learning-capture.md`. Verification: update the matching skill, validator, or memory guidance with neutral copy and fresh validation proof before handoff.
+User request: preserve a repeated failure as reusable guidance. Selected command: `/brain-learn`. Loaded skills: `learning-capture`, `context-memory`, and `wiki-maintenance`. Artifact: write `templates/learning-capture.md`. Verification: update the matching skill, validator, or memory guidance with neutral copy and fresh validation proof before handoff. Stop condition: stop if the lesson is temporary chatter, private data, or not reusable. Next state: LEARN.

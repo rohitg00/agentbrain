@@ -268,6 +268,22 @@ def test_command_catalog_use_when_must_match_command_spec(tmp_path: Path) -> Non
     )
 
 
+def test_command_examples_must_name_stop_condition_and_next_state(tmp_path: Path) -> None:
+    write_minimal_repo(tmp_path)
+    command = tmp_path / "commands" / "brain-sample.md"
+    command.write_text(
+        command.read_text(encoding="utf-8")
+        .replace("Stop condition: stop if evidence is missing. ", "")
+        .replace("Next state: VERIFY.", ""),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "commands/brain-sample.md example must mention: stop condition" in errors
+    assert "commands/brain-sample.md example must mention: next state" in errors
+
+
 def test_runtime_smoke_template_requires_loaded_skills_to_match_selected_command(tmp_path: Path) -> None:
     write_minimal_repo(tmp_path)
     runtime_template = tmp_path / "templates" / "runtime-smoke.md"
@@ -1108,7 +1124,7 @@ def write_minimal_repo(root: Path) -> None:
             "## Quality bar",
             "Evidence is checked before output. Fresh validation proof is captured before handoff.",
             "## Example",
-            "User request: route a sample request. Selected command: `/brain-sample`. Loaded skills: `sample`, `activity-recap`, and `agent-output-verifier`. Artifact: write `templates/sample-routing-summary.md`. Verification: include fresh validation proof before handoff.",
+            "User request: route a sample request. Selected command: `/brain-sample`. Loaded skills: `sample`, `activity-recap`, and `agent-output-verifier`. Artifact: write `templates/sample-routing-summary.md`. Verification: include fresh validation proof before handoff. Stop condition: stop if evidence is missing. Next state: VERIFY.",
         ]),
         encoding="utf-8",
     )
@@ -1140,7 +1156,7 @@ def write_minimal_repo(root: Path) -> None:
             "## Quality bar",
             "Eval evidence is checked before acceptance. Fresh validation proof is captured before handoff.",
             "## Example",
-            "User request: score one eval case. Selected command: `/brain-eval`. Loaded skills: `agent-output-verifier`, `qa-evidence`, and `ci-recovery`. Artifact: write `templates/eval-report.md`. Verification: record the rubric decision with fresh validation proof.",
+            "User request: score one eval case. Selected command: `/brain-eval`. Loaded skills: `agent-output-verifier`, `qa-evidence`, and `ci-recovery`. Artifact: write `templates/eval-report.md`. Verification: record the rubric decision with fresh validation proof. Stop condition: stop if required proof is unavailable. Next state: REVIEW.",
         ]),
         encoding="utf-8",
     )
@@ -6252,7 +6268,7 @@ def test_command_examples_must_be_runnable_routing_examples(tmp_path):
     command = tmp_path / "commands" / "brain-sample.md"
     command.write_text(
         command.read_text(encoding="utf-8").replace(
-            "User request: route a sample request. Selected command: `/brain-sample`. Loaded skills: `sample`, `activity-recap`, and `agent-output-verifier`. Artifact: write `templates/sample-routing-summary.md`. Verification: include fresh validation proof before handoff.",
+            "User request: route a sample request. Selected command: `/brain-sample`. Loaded skills: `sample`, `activity-recap`, and `agent-output-verifier`. Artifact: write `templates/sample-routing-summary.md`. Verification: include fresh validation proof before handoff. Stop condition: stop if evidence is missing. Next state: VERIFY.",
             "Run `/brain-sample` on a sample request.",
         ),
         encoding="utf-8",

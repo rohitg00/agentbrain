@@ -65,4 +65,4 @@ A good `/brain-ship` run makes a go/no-go call from current verification, rollba
 
 ## Example
 
-User request: prepare a reviewed artifact for release. Selected command: `/brain-ship`. Loaded skills: `launch-gate` and `qa-evidence`. Artifact: write `templates/launch-checklist.md`. Verification: confirm validation, rollback, documentation, release evidence, fresh validation proof, and stop when monitoring or approval proof is missing.
+User request: prepare a reviewed artifact for release. Selected command: `/brain-ship`. Loaded skills: `launch-gate` and `qa-evidence`. Artifact: write `templates/launch-checklist.md`. Verification: confirm validation, rollback, documentation, release evidence, fresh validation proof, and stop when monitoring or approval proof is missing. Stop condition: stop if approval, rollout, rollback, monitoring, or CI proof is missing. Next state: LEARN.

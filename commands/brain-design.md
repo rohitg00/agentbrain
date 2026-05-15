@@ -65,4 +65,4 @@ A good `/brain-design` run compares viable approaches, names trade-offs and cons
 
 ## Example
 
-User request: convert a scoped brief into interaction design. Selected command: `/brain-design`. Loaded skills: `design-grill` and `engineering-grill`. Artifact: write `templates/design-brief.md`. Verification: capture flows, constraints, failure modes, evidence, risks, and fresh validation proof before routing to `/brain-plan`.
+User request: convert a scoped brief into interaction design. Selected command: `/brain-design`. Loaded skills: `design-grill` and `engineering-grill`. Artifact: write `templates/design-brief.md`. Verification: capture flows, constraints, failure modes, evidence, risks, and fresh validation proof before routing to `/brain-plan`. Stop condition: stop if state, flow, edge-case, accessibility, or risk evidence is missing. Next state: PLAN.

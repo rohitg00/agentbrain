@@ -678,6 +678,8 @@ REQUIRED_COMMAND_EXAMPLE_TERMS = [
     "loaded skills",
     "artifact",
     "verification",
+    "stop condition",
+    "next state",
 ]
 REQUIRED_COMMAND_CATALOG_CONTRACT_TERMS = [
     "lifecycle state",

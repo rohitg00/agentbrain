@@ -66,4 +66,4 @@ A good `/brain-wiki` run updates durable project knowledge only after evidence a
 
 ## Example
 
-User request: update durable project guidance from checked evidence. Selected command: `/brain-wiki`. Loaded skills: `wiki-maintenance`, `activity-recap`, and `evidence-research`. Artifact: write `templates/wiki-update.md`. Verification: preserve neutral copy, cite source-backed evidence, validate changed docs, and record fresh validation proof before handoff.
+User request: update durable project guidance from checked evidence. Selected command: `/brain-wiki`. Loaded skills: `wiki-maintenance`, `activity-recap`, and `evidence-research`. Artifact: write `templates/wiki-update.md`. Verification: preserve neutral copy, cite source-backed evidence, validate changed docs, and record fresh validation proof before handoff. Stop condition: stop if provenance, freshness, or durable value is missing. Next state: LEARN.

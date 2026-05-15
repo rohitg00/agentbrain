@@ -65,4 +65,4 @@ A good `/brain-plan` run decomposes approved work into ordered vertical slices, 
 
 ## Example
 
-User request: turn an approved design into implementation slices. Selected command: `/brain-plan`. Loaded skills: `plan-slicing` and `engineering-grill`. Artifact: write `templates/implementation-plan.md`. Verification: give each slice an acceptance check, verification command, risks, fresh validation proof, and route only the next slice to `/brain-build`.
+User request: turn an approved design into implementation slices. Selected command: `/brain-plan`. Loaded skills: `plan-slicing` and `engineering-grill`. Artifact: write `templates/implementation-plan.md`. Verification: give each slice an acceptance check, verification command, risks, fresh validation proof, and route only the next slice to `/brain-build`. Stop condition: stop if the slice lacks acceptance checks, a verification command, or rollback path. Next state: BUILD.

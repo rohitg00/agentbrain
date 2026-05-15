@@ -68,4 +68,4 @@ A good `/brain-start` run classifies the request into the earliest safe state, n
 
 ## Example
 
-User request: start from a vague task or product ambition. Selected command: `/brain-start`. Loaded skills: `intake`, `question-ladder`, and `domain-language`. Artifact: write `templates/intake-summary.md`. Verification: inspect repository state, run baseline validation when appropriate, preserve user changes, and record fresh validation proof before choosing the next `/brain-*` route.
+User request: start from a vague task or product ambition. Selected command: `/brain-start`. Loaded skills: `intake`, `question-ladder`, and `domain-language`. Artifact: write `templates/intake-summary.md`. Verification: inspect repository state, run baseline validation when appropriate, preserve user changes, and record fresh validation proof before choosing the next `/brain-*` route. Stop condition: stop if no safe default exists for missing context. Next state: RESEARCH.
