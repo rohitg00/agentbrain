@@ -21,7 +21,7 @@ def test_adapter_requires_output_contract(tmp_path: Path) -> None:
     adapter.write_text(
         adapter.read_text(encoding="utf-8").replace(
             "\n## Output Contract\n\n"
-            "Runtime adapter output must report state, selected command, loaded skills, artifact path, template, schema, validation evidence, freshness, blockers, stop condition, and next action.\n",
+            "Runtime adapter output must report state, selected command, loaded skills, capability matrix, run scope, artifact path, template, schema, validation evidence, freshness, blockers, stop condition, and next action.\n",
             "\n",
         ),
         encoding="utf-8",
@@ -69,6 +69,31 @@ def test_adapter_validation_requires_read_only_to_full_validation_promotion_crit
 
     assert any(
         "adapters/sample-adapter/README.md validation must document read-only smoke promotion criteria: write access" in error
+        for error in errors
+    )
+
+
+def test_adapter_output_contract_requires_capability_matrix_and_run_scope(tmp_path: Path) -> None:
+    write_minimal_repo(tmp_path)
+    adapter = tmp_path / "adapters" / "sample-adapter" / "README.md"
+    adapter.write_text(
+        adapter.read_text(encoding="utf-8").replace(
+            "capability matrix, run scope, ",
+            "",
+        ),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert any(
+        "adapters/sample-adapter/README.md output contract must document handoff field: capability matrix"
+        in error
+        for error in errors
+    )
+    assert any(
+        "adapters/sample-adapter/README.md output contract must document handoff field: run scope"
+        in error
         for error in errors
     )
 
@@ -444,7 +469,7 @@ def write_minimal_repo(root: Path) -> None:
         "After validation, classify one sample request and confirm the runtime cites the command file, skill file, artifact contract, evidence checked, and stop condition it used.\n\n"
         "Promote read-only smoke to full validation only when write access, shell access, dependency install, and the full local gate are available; otherwise keep the result marked read-only smoke with blockers.\n\n"
         "## Output Contract\n\n"
-        "Runtime adapter output must report state, selected command, loaded skills, artifact path, template, schema, validation evidence, freshness, blockers, stop condition, and next action.\n\n"
+        "Runtime adapter output must report state, selected command, loaded skills, capability matrix, run scope, artifact path, template, schema, validation evidence, freshness, blockers, stop condition, and next action.\n\n"
         "## Failure Modes\n\n"
         "Stop if the runtime cannot load files.\n",
         encoding="utf-8",

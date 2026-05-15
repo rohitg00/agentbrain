@@ -472,6 +472,8 @@ REQUIRED_ADAPTER_OUTPUT_CONTRACT_TERMS = [
     "state",
     "selected command",
     "loaded skills",
+    "capability matrix",
+    "run scope",
     "artifact path",
     "template",
     "schema",
