@@ -114,7 +114,18 @@ def build_report(
 def validate_report_against_schema(report: dict[str, object], schema_path: Path) -> list[str]:
     schema = json.loads(Path(schema_path).read_text(encoding="utf-8"))
     validator = Draft202012Validator(schema)
-    return [error.message for error in sorted(validator.iter_errors(report), key=lambda error: list(error.path))]
+    errors = [error.message for error in sorted(validator.iter_errors(report), key=lambda error: list(error.path))]
+
+    blocked_commands = report.get("blocked_commands")
+    blocked_count = len(blocked_commands) if isinstance(blocked_commands, list) else 0
+    if report.get("run_scope") == "full_validation" and blocked_count:
+        errors.append("full_validation cannot list blocked_commands; use read_only_smoke or remove blockers")
+    if report.get("smoke_result") == "blocked" and blocked_count == 0:
+        errors.append("blocked smoke_result must list at least one blocked command")
+    if report.get("run_scope") == "full_validation" and report.get("smoke_result") != "pass":
+        errors.append("full_validation requires smoke_result pass")
+
+    return errors
 
 
 def parse_args(argv: list[str]) -> argparse.Namespace:

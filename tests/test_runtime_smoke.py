@@ -61,6 +61,41 @@ def test_validate_report_against_schema_rejects_incomplete_smoke_artifact():
     assert any("run_scope" in error for error in errors)
 
 
+def test_full_validation_runtime_smoke_rejects_blocked_commands(tmp_path: Path):
+    report = runtime_smoke.build_report(
+        root=tmp_path,
+        runtime="generic-cli-runtime",
+        version="1.2.3",
+        sandbox_write_mode="workspace_write",
+        brain_command_mode="markdown_specs",
+        run_scope="full_validation",
+        blocked_commands=["python -m pytest -q blocked by sandbox"],
+        exact_command="python scripts/runtime_smoke.py --runtime generic-cli-runtime --version 1.2.3 --run-scope full_validation",
+    )
+
+    errors = runtime_smoke.validate_report_against_schema(report, Path("schemas/runtime-smoke.schema.json"))
+
+    assert any("full_validation cannot list blocked_commands" in error for error in errors)
+
+
+def test_read_only_runtime_smoke_requires_blocker_when_smoke_is_blocked(tmp_path: Path):
+    report = runtime_smoke.build_report(
+        root=tmp_path,
+        runtime="generic-cli-runtime",
+        version="1.2.3",
+        sandbox_write_mode="read_only",
+        brain_command_mode="markdown_specs",
+        run_scope="read_only_smoke",
+        blocked_commands=[],
+        exact_command="python scripts/runtime_smoke.py --runtime generic-cli-runtime --version 1.2.3 --smoke-result blocked",
+        smoke_result="blocked",
+    )
+
+    errors = runtime_smoke.validate_report_against_schema(report, Path("schemas/runtime-smoke.schema.json"))
+
+    assert any("blocked smoke_result must list at least one blocked command" in error for error in errors)
+
+
 def test_main_rejects_schema_invalid_generated_smoke_artifact(monkeypatch, capsys):
     def invalid_report(**_kwargs):
         return {"runtime": "generic-cli-runtime", "version": "1.2.3"}

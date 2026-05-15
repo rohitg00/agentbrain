@@ -37,4 +37,4 @@ The helper exits non-zero if the generated artifact does not satisfy the schema.
 
 ## Review Notes
 
-Do not claim full validation when sandboxing blocked installs, temp files, tests, or repository writes. Mark the run as `read_only_smoke`, list blocked commands, and route the follow-up through `/brain-verify` or `/brain-review` before trusting the runtime adapter.
+Do not claim full validation when sandboxing blocked installs, temp files, tests, or repository writes. A `full_validation` artifact must have `smoke_result: pass` and no `blocked_commands`; otherwise the helper rejects it. Mark blocked runs as `read_only_smoke`, list the blocked commands, and route the follow-up through `/brain-verify` or `/brain-review` before trusting the runtime adapter.
