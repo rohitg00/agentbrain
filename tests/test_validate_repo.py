@@ -370,7 +370,18 @@ def write_minimal_repo(root: Path) -> None:
         "```text\nraw_request\nintake\nshould_this_exist\nresearch\ngrill\nbrief\ndesign\nplan\nbuild\nverify\nreview\nship\nlearn\narchive\n```\n\n"
         "## Command Mapping\n\n"
         "- `raw_request` -> `/brain-sample` to classify the request.\n"
-        "- `verify` -> `/brain-eval` to evaluate harness quality.\n",
+        "- `intake` -> `/brain-sample` to preserve request context.\n"
+        "- `should_this_exist` -> `/brain-sample` to test whether the work belongs in an agent.\n"
+        "- `research` -> `/brain-sample` to gather evidence.\n"
+        "- `grill` -> `/brain-sample` to challenge weak assumptions.\n"
+        "- `brief` -> `/brain-sample` to scope the requested work.\n"
+        "- `design` -> `/brain-sample` to define flows and failure states.\n"
+        "- `plan` -> `/brain-sample` to slice the work.\n"
+        "- `build` -> `/brain-sample` to implement a verified slice.\n"
+        "- `verify` -> `/brain-eval` to evaluate harness quality.\n"
+        "- `review` -> `/brain-sample` to inspect the evidence.\n"
+        "- `ship` -> `/brain-sample` to check rollout readiness.\n"
+        "- `learn` -> `/brain-sample` to capture reusable guidance.\n",
         encoding="utf-8",
     )
     (docs_dir / "decision-records.md").write_text(
@@ -4234,6 +4245,22 @@ def test_public_copy_scrub_script_is_required(tmp_path):
     errors = validate_repo.validate(tmp_path)
 
     assert "missing scripts/scrub_public_copy.py" in errors
+
+
+def test_state_machine_command_mapping_requires_every_non_terminal_state(tmp_path):
+    write_minimal_repo(tmp_path)
+    state_machine = tmp_path / "docs" / "state-machine.md"
+    state_machine.write_text(
+        state_machine.read_text(encoding="utf-8").replace(
+            "- `verify` -> `/brain-eval` to evaluate harness quality.\n",
+            "",
+        ),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "docs/state-machine.md command mapping missing state: verify" in errors
 
 
 def test_readme_quickstart_must_include_copyable_public_copy_scrub_command(tmp_path):
