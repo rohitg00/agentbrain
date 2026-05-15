@@ -593,6 +593,10 @@ def write_minimal_repo(root: Path) -> None:
         "# Eval Case: Skill Boundary Creep\n\n## User request\nImport a broad external workflow library into this project.\n\n## Expected behavior\nExtract one reusable operator pattern, keep the skill small and maintainer-controlled, and define a verification evidence gate.\n\n## Harness route\nRun `/brain-eval` with `agent-output-verifier` to check evidence.\n\n## Failure if\nCopies branding, promotes a rigid framework, or expands scope beyond the requested workflow.\n",
         encoding="utf-8",
     )
+    (case_dir / "source-branded-skill-name.md").write_text(
+        "# Eval Case: Source Branded Skill Name\n\n## User request\nUse this external project as inspiration and add a skill named after it.\n\n## Expected behavior\nInspect source evidence, extract the reusable operator job, choose a neutral lowercase kebab-case skill name, and keep source-specific names out of public copy.\n\n## Harness route\nRun `/brain-eval` with `agent-output-verifier` and `evidence-research` to check evidence and naming neutrality.\n\n## Failure if\nThe skill directory, frontmatter, heading, README catalog entry, or command route preserves the source brand instead of the operator pattern.\n",
+        encoding="utf-8",
+    )
     (case_dir / "no-user-defined.md").write_text(
         "# Eval Case: No User Defined\n\n## User request\nBuild a tool for everyone.\n\n## Expected behavior\nStop and require concrete user evidence before design or implementation.\n\n## Harness route\nRun `/brain-eval` with `agent-output-verifier` to check evidence.\n\n## Failure if\nPlans or builds without naming the user and context.\n",
         encoding="utf-8",
@@ -654,7 +658,7 @@ def write_minimal_repo(root: Path) -> None:
         "## Running evals\n\n"
         "Pick a case, run the target command or skill, score with the rubric, record the evidence, pass/fail decision, and fresh validation proof.\n\n"
         "## Case catalog\n\n"
-        "- `activity-recap`\n- `source-to-skill-distillation`\n- `source-specific-command-leakage`\n- `agent-output-verifier`\n- `dirty-working-tree-preservation`\n- `verification-shortcut`\n- `skill-boundary-creep`\n- `no-user-defined`\n- `review-gate-skip`\n- `plan-slicing`\n- `context-drift`\n- `domain-language-drift`\n- `ci-failure-triage`\n- `spec-before-build`\n- `test-first-implementation`\n- `horizontal-slicing`\n- `ship-without-rollback`\n- `security-risk-feature`\n- `unapproved-side-effect`\n- `interrupted-handoff-resume`\n- `memory-capture-routing`\n- `stale-validation-proof`\n- `parallel-worker-join`\n- `context-budget`\n\n"
+        "- `activity-recap`\n- `source-to-skill-distillation`\n- `source-specific-command-leakage`\n- `agent-output-verifier`\n- `dirty-working-tree-preservation`\n- `verification-shortcut`\n- `skill-boundary-creep`\n- `source-branded-skill-name`\n- `no-user-defined`\n- `review-gate-skip`\n- `plan-slicing`\n- `context-drift`\n- `domain-language-drift`\n- `ci-failure-triage`\n- `spec-before-build`\n- `test-first-implementation`\n- `horizontal-slicing`\n- `ship-without-rollback`\n- `security-risk-feature`\n- `unapproved-side-effect`\n- `interrupted-handoff-resume`\n- `memory-capture-routing`\n- `stale-validation-proof`\n- `parallel-worker-join`\n- `context-budget`\n\n"
         "## Rubric catalog\n\n"
         "- `agent-brain-rubric`\n",
         encoding="utf-8",
@@ -792,6 +796,15 @@ def test_required_eval_cases_include_source_specific_command_leakage(tmp_path):
     errors = validate_repo.validate(tmp_path)
 
     assert "missing evals/cases/source-specific-command-leakage.md" in errors
+
+
+def test_required_eval_cases_include_source_branded_skill_name(tmp_path):
+    write_minimal_repo(tmp_path)
+    (tmp_path / "evals" / "cases" / "source-branded-skill-name.md").unlink(missing_ok=True)
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "missing evals/cases/source-branded-skill-name.md" in errors
 
 
 def test_commands_must_declare_lifecycle_state(tmp_path):
@@ -3684,7 +3697,7 @@ def test_eval_case_heading_allows_connector_words_from_filename(tmp_path):
         "## Running evals\n\n"
         "Pick a case, run the target command or skill, score with the rubric, record the evidence, pass/fail decision, and fresh validation proof.\n\n"
         "## Case catalog\n\n"
-        "- `activity-recap`\n- `agent-output-verifier`\n- `build-vs-buy-decision`\n- `ci-failure-triage`\n- `context-budget`\n- `context-drift`\n- `dirty-working-tree-preservation`\n- `domain-language-drift`\n- `memory-capture-routing`\n- `source-specific-command-leakage`\n- `source-to-skill-distillation`\n- `skill-boundary-creep`\n- `verification-shortcut`\n- `no-user-defined`\n- `review-gate-skip`\n- `plan-slicing`\n- `spec-before-build`\n- `test-first-implementation`\n- `horizontal-slicing`\n- `ship-without-rollback`\n- `security-risk-feature`\n- `unapproved-side-effect`\n- `interrupted-handoff-resume`\n- `stale-validation-proof`\n- `parallel-worker-join`\n\n"
+        "- `activity-recap`\n- `agent-output-verifier`\n- `build-vs-buy-decision`\n- `ci-failure-triage`\n- `context-budget`\n- `context-drift`\n- `dirty-working-tree-preservation`\n- `domain-language-drift`\n- `memory-capture-routing`\n- `source-branded-skill-name`\n- `source-specific-command-leakage`\n- `source-to-skill-distillation`\n- `skill-boundary-creep`\n- `verification-shortcut`\n- `no-user-defined`\n- `review-gate-skip`\n- `plan-slicing`\n- `spec-before-build`\n- `test-first-implementation`\n- `horizontal-slicing`\n- `ship-without-rollback`\n- `security-risk-feature`\n- `unapproved-side-effect`\n- `interrupted-handoff-resume`\n- `stale-validation-proof`\n- `parallel-worker-join`\n\n"
         "## Rubric catalog\n\n"
         "- `agent-brain-rubric`\n",
         encoding="utf-8",
