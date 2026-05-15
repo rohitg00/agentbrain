@@ -114,6 +114,7 @@ Artifact: <brief, plan, QA evidence, review, launch decision, learning note>
 Evidence checked: <commands, files, sources, logs, screenshots, traces>
 Fresh validation proof: <command, exit status, and relevant output from the current run>
 Coordination review: <single-agent note or parallel-worker join review with worker scopes, accepted outputs, rejected outputs, conflict check, and resolution>
+Artifact paths: <templates, schemas, logs, reports, or changed files the next agent must inspect>
 Facts: <verified statements>
 Assumptions: <explicit assumptions>
 Open questions: <unknowns that change the decision>

@@ -140,7 +140,7 @@ Rules:
 3. Do not skip tests, validators, or review gates for speed.
 4. Do not preserve external source branding when distilling ideas into skills.
 5. Stop instead of recommending an agent when a script, form, checklist, or human process is safer.
-6. Every artifact must name facts, assumptions, open questions, evidence, risks, and the next state.
+6. Every artifact must name facts, assumptions, open questions, evidence, artifact paths, risks, and the next state.
 7. Stop when evidence, approval, secrets handling, or loop limits are missing.
 8. Before final output, run: rm -rf scripts/__pycache__ tests/__pycache__ && python -m pytest -q && python scripts/validate_repo.py && git diff --check, then run a targeted exact-name scrub for source-specific names before public copy or commits.
 
@@ -283,6 +283,7 @@ Every agent handoff should be useful without private chat context. End each run,
 - **Decision:** `continue`, `blocked`, `needs-review`, `ready-to-ship`, or `killed`.
 - **Evidence checked:** files, commands, logs, sources, screenshots, traces, or diffs actually inspected.
 - **Fresh validation proof:** command, exit status, and relevant output from the current run when tests, validators, CI, or quality gates are part of the claim.
+- **Artifact paths:** templates, schemas, logs, reports, or changed files the next agent must inspect before continuing.
 - **Facts:** verified statements only.
 - **Assumptions:** unverified beliefs that influenced the next action.
 - **Open questions:** missing information that changes scope, safety, or priority.

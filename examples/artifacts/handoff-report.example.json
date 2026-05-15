@@ -8,6 +8,10 @@
   "fresh_validation_proof": "Current run passed pytest and repository validation at the checked commit.",
   "coordination_review": "Single-writer change; no parallel worker outputs were accepted.",
   "user_change_review": "git status --short was checked before edits; none observed.",
+  "artifact_paths": [
+    "templates/handoff-report.md",
+    "schemas/handoff-report.schema.json"
+  ],
   "facts": [
     "The validation commands passed in this run."
   ],

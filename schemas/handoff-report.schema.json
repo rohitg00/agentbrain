@@ -10,6 +10,7 @@
     "fresh_validation_proof",
     "coordination_review",
     "user_change_review",
+    "artifact_paths",
     "facts",
     "assumptions",
     "open_questions",
@@ -66,6 +67,15 @@
       "type": "string",
       "minLength": 1,
       "description": "Current-run git status and preservation action for pre-existing user changes, including none observed when the working tree was checked and clean."
+    },
+    "artifact_paths": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "description": "Paths to the primary artifacts, templates, schemas, logs, reports, or changed files that a resuming agent must inspect before continuing."
     },
     "facts": {
       "type": "array",

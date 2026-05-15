@@ -288,6 +288,7 @@ REQUIRED_README_HANDOFF_TERMS = [
     "decision",
     "evidence checked",
     "fresh validation proof",
+    "artifact paths",
     "facts",
     "assumptions",
     "open questions",
@@ -315,6 +316,7 @@ REQUIRED_README_COMMAND_SELECTION_ARTIFACT_TERMS = [
     "command output contract",
 ]
 REQUIRED_HANDOFF_SCHEMA_RESUME_FIELDS = [
+    "artifact_paths",
     "facts",
     "assumptions",
     "open_questions",
@@ -448,7 +450,7 @@ REQUIRED_AGENT_HARNESS_NONINTERACTIVE_TERMS = [
     "scheduled run",
     "cannot ask questions",
 ]
-REQUIRED_AGENT_HARNESS_HANDOFF_TERMS = ["fresh validation proof", "coordination review"]
+REQUIRED_AGENT_HARNESS_HANDOFF_TERMS = ["fresh validation proof", "coordination review", "artifact paths"]
 REQUIRED_AGENT_HARNESS_TROUBLESHOOTING_TERMS = {
     "dirty working tree": "docs/agent-harness.md troubleshooting must document dirty working tree recovery",
     "git status --short": "docs/agent-harness.md troubleshooting must document dirty working tree recovery",
