@@ -58,6 +58,9 @@ def write_minimal_repo(root: Path) -> None:
         "python scripts/validate_repo.py\n"
         "git diff --check\n"
         "Run a targeted exact-name scrub before public adapter copy changes.\n\n"
+        "Record every real-runtime smoke run with `templates/runtime-smoke.md` and "
+        "validate the JSON evidence against `schemas/runtime-smoke.schema.json` before "
+        "trusting adapter behavior.\n\n"
         "## Failure Modes\n\n"
         "Stop if the runtime cannot load files.\n",
         encoding="utf-8",
@@ -2957,6 +2960,22 @@ def test_adapter_bootstrap_must_verify_remote_freshness(tmp_path):
     assert "adapters/sample-adapter/README.md bootstrap section must verify remote freshness: git rev-parse HEAD" in errors
     assert "adapters/sample-adapter/README.md bootstrap section must verify remote freshness: git rev-parse origin/main" in errors
     assert "adapters/sample-adapter/README.md bootstrap section must verify remote freshness: HEAD equals origin/main" in errors
+
+
+def test_adapter_validation_must_require_runtime_smoke_artifact_contract(tmp_path):
+    write_minimal_repo(tmp_path)
+    adapter = tmp_path / "adapters" / "sample-adapter" / "README.md"
+    adapter.write_text(
+        adapter.read_text(encoding="utf-8")
+        .replace("`templates/runtime-smoke.md`", "runtime smoke notes")
+        .replace("`schemas/runtime-smoke.schema.json`", "runtime smoke schema"),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "adapters/sample-adapter/README.md validation section must document runtime smoke artifact contract: templates/runtime-smoke.md" in errors
+    assert "adapters/sample-adapter/README.md validation section must document runtime smoke artifact contract: schemas/runtime-smoke.schema.json" in errors
 
 
 def test_schema_directory_is_required(tmp_path):

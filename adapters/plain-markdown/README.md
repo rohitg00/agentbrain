@@ -35,6 +35,12 @@ Run a targeted exact-name scrub before public adapter copy changes so source
 names, internal tools, or one-off branding do not leak into reusable harness
 instructions.
 
+Record every real-runtime smoke run with `templates/runtime-smoke.md` and validate
+the JSON evidence against `schemas/runtime-smoke.schema.json` before trusting
+adapter behavior. Keep the artifact honest about read-only smoke versus full
+validation, blocked commands, command mode, sandbox/write mode, git freshness,
+runtime version, and Python executable.
+
 Then ask the agent to classify one sample request and confirm it cites the command file, skill file, artifact contract, evidence checked, and stop condition it used.
 
 ## Failure Modes

@@ -453,6 +453,10 @@ REQUIRED_ADAPTER_MINIMAL_INSTRUCTION_ARTIFACTS = [
     "templates/",
     "schemas/",
 ]
+REQUIRED_ADAPTER_RUNTIME_SMOKE_ARTIFACT_TERMS = [
+    "templates/runtime-smoke.md",
+    "schemas/runtime-smoke.schema.json",
+]
 REQUIRED_CONTRIBUTING_VALIDATION_COMMANDS = [
     "pytest -q",
     "rm -rf scripts/__pycache__ tests/__pycache__",
@@ -2005,6 +2009,12 @@ def validate(root: Path = ROOT) -> list[str]:
                 if artifact not in minimal_instruction_body:
                     errors.append(
                         f"{rel(markdown_file, root)} minimal instruction must name harness artifact: {artifact}"
+                    )
+            adapter_validation_body = section_body(adapter_text, "## Validation")
+            for artifact_term in REQUIRED_ADAPTER_RUNTIME_SMOKE_ARTIFACT_TERMS:
+                if artifact_term not in adapter_validation_body:
+                    errors.append(
+                        f"{rel(markdown_file, root)} validation section must document runtime smoke artifact contract: {artifact_term}"
                     )
 
     for rubric in sorted((root / "evals" / "rubrics").glob("*.md")):
