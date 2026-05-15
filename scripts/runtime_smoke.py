@@ -204,6 +204,7 @@ def validate_report_against_schema(
                 errors.append(f"selected command file is missing: {command_rel}")
             elif isinstance(loaded_skills, list):
                 declared_skills = command_declared_skills(command_path)
+                loaded_skill_names = {skill for skill in loaded_skills if isinstance(skill, str) and skill}
                 for skill in loaded_skills:
                     if not (isinstance(skill, str) and skill):
                         continue
@@ -212,6 +213,11 @@ def validate_report_against_schema(
                         errors.append(f"loaded skill file is missing: {skill_rel}")
                     if report.get("run_scope") == "full_validation" and skill not in declared_skills:
                         errors.append(f"loaded skill is not named by selected command {selected_command}: {skill}")
+                if report.get("run_scope") == "full_validation":
+                    for missing_skill in sorted(declared_skills - loaded_skill_names):
+                        errors.append(
+                            f"selected command {selected_command} declared skill was not loaded: {missing_skill}"
+                        )
 
     return errors
 
