@@ -19,6 +19,22 @@ BRAIN_COMMAND_MODES = {"native_commands", "markdown_specs", "mixed", "unknown"}
 RUN_SCOPES = {"read_only_smoke", "full_validation"}
 SMOKE_RESULTS = {"pass", "blocked", "fail"}
 TRANSCRIPT_REDACTION_STATUSES = {"redacted", "no_sensitive_content", "not_captured", "blocked"}
+SECRET_LIKE_PATTERNS = [
+    re.compile(r"\bgh[pousr]_[A-Za-z0-9_]{20,}\b"),
+    re.compile(r"-----BEGIN (?:RSA |OPENSSH |EC |DSA )?PRIVATE KEY-----"),
+    re.compile(r"\bAKIA[0-9A-Z]{16}\b"),
+    re.compile(
+        r"\b(?:postgres(?:ql)?|mysql|mongodb(?:\+srv)?|redis|amqps?)://"
+        r"[^:\s/@]+:[^@\s/]+@",
+        re.IGNORECASE,
+    ),
+    re.compile(
+        r"\b(?:api[_-]?(?:key|token)|secret|token|password|passwd|pwd|client[_-]?secret)"
+        r"\s*[:=]\s*['\"]?(?!<redacted>|\[redacted\]|redacted|placeholder|example)"
+        r"[A-Za-z0-9_./+=:-]{16,}",
+        re.IGNORECASE,
+    ),
+]
 FULL_VALIDATION_GATE_COMMANDS = [
     "rm -rf scripts/__pycache__ tests/__pycache__",
     "python -m pytest -q",
@@ -196,12 +212,26 @@ def exact_command_has_flag_value(exact_command: object, flag: str, value: str) -
     return False
 
 
+def contains_secret_like_value(value: object) -> bool:
+    if isinstance(value, str):
+        return any(pattern.search(value) for pattern in SECRET_LIKE_PATTERNS)
+    if isinstance(value, list):
+        return any(contains_secret_like_value(item) for item in value)
+    if isinstance(value, dict):
+        return any(contains_secret_like_value(item) for item in value.values())
+    return False
+
+
 def validate_report_against_schema(
     report: dict[str, object], schema_path: Path, *, root: Path | None = None
 ) -> list[str]:
     schema = json.loads(Path(schema_path).read_text(encoding="utf-8"))
     validator = Draft202012Validator(schema)
     errors = [error.message for error in sorted(validator.iter_errors(report), key=lambda error: list(error.path))]
+
+    for field in ["exact_command", "transcript_path", "blocked_commands", "validation_commands", "evidence"]:
+        if contains_secret_like_value(report.get(field)):
+            errors.append(f"runtime smoke artifact contains secret-like value in {field}; redact before output")
 
     blocked_commands = report.get("blocked_commands")
     blocked_count = len(blocked_commands) if isinstance(blocked_commands, list) else 0

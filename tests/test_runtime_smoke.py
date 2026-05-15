@@ -6,6 +6,26 @@ from jsonschema import Draft202012Validator
 from scripts import runtime_smoke
 
 
+def test_runtime_smoke_rejects_secret_like_values_before_artifact_output(tmp_path: Path):
+    token = "gh" + "p_" + "A" * 24
+    report = runtime_smoke.build_report(
+        root=tmp_path,
+        runtime="generic-cli-runtime",
+        version="1.2.3",
+        sandbox_write_mode="read_only",
+        brain_command_mode="markdown_specs",
+        run_scope="read_only_smoke",
+        blocked_commands=["python -m pytest -q blocked by read-only sandbox"],
+        exact_command=f"python scripts/runtime_smoke.py --runtime generic-cli-runtime --api-token {token}",
+    )
+    report["evidence"].append(f"Runtime stderr included token={token}")
+
+    errors = runtime_smoke.validate_report_against_schema(report, Path("schemas/runtime-smoke.schema.json"))
+
+    assert any("runtime smoke artifact contains secret-like value in exact_command" in error for error in errors)
+    assert any("runtime smoke artifact contains secret-like value in evidence" in error for error in errors)
+
+
 def test_build_report_emits_schema_valid_runtime_smoke_for_plain_checkout(tmp_path: Path):
     report = runtime_smoke.build_report(
         root=tmp_path,
