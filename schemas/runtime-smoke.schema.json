@@ -138,6 +138,11 @@
             "not": {
               "const": "not_captured_stdout_only"
             }
+          },
+          "sandbox_write_mode": {
+            "not": {
+              "const": "read_only"
+            }
           }
         }
       }

@@ -35,7 +35,7 @@ The helper exits non-zero if the generated artifact does not satisfy the schema.
 - **Command exit status:** Numeric exit status from the smoke command or validation command.
 - **Smoke result:** `pass`, `blocked`, or `fail`; use `blocked` when sandbox or approval constraints prevented required proof.
 - **Transcript path:** Durable path or artifact location for the smoke transcript/log. `not_captured_stdout_only` is acceptable only for `read_only_smoke`; `full_validation` requires a durable transcript path.
-- **Sandbox/write mode:** `read_only`, `workspace_write`, `approval_gated`, `unrestricted`, or `unknown`.
+- **Sandbox/write mode:** `read_only`, `workspace_write`, `approval_gated`, `unrestricted`, or `unknown`. `full_validation` requires a write-capable mode; use `read_only_smoke` when the runtime cannot write or request approval for writes.
 - **Brain command mode:** Whether `/brain-*` entries were native commands, markdown specs, mixed, or unknown.
 - **Selected command:** The `/brain-*` command route the runtime chose, or `unknown` when command routing could not be proven.
 - **Loaded skills:** Skills the runtime loaded for the selected command; leave empty only when the smoke run never reached skill loading.
@@ -46,4 +46,4 @@ The helper exits non-zero if the generated artifact does not satisfy the schema.
 
 ## Review Notes
 
-Do not claim full validation when sandboxing blocked installs, temp files, tests, or repository writes. A `full_validation` artifact must have `smoke_result: pass` and no `blocked_commands`; otherwise the helper rejects it. Mark blocked runs as `read_only_smoke`, list the blocked commands, and route the follow-up through `/brain-verify` or `/brain-review` before trusting the runtime adapter.
+Do not claim full validation when sandboxing blocked installs, temp files, tests, repository writes, or the runtime is read-only. A `full_validation` artifact must have `smoke_result: pass`, no `blocked_commands`, a durable transcript path, a fresh checkout, and a write-capable sandbox/write mode; otherwise the helper rejects it. Mark blocked or read-only runs as `read_only_smoke`, list the blocked commands, and route the follow-up through `/brain-verify` or `/brain-review` before trusting the runtime adapter.

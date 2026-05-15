@@ -139,6 +139,8 @@ def validate_report_against_schema(report: dict[str, object], schema_path: Path)
         errors.append("pass smoke_result requires command_exit_status 0")
     if report.get("run_scope") == "full_validation" and report.get("smoke_result") != "pass":
         errors.append("full_validation requires smoke_result pass")
+    if report.get("run_scope") == "full_validation" and report.get("sandbox_write_mode") == "read_only":
+        errors.append("full_validation requires a write-capable sandbox; use read_only_smoke for read_only runs")
     if report.get("run_scope") == "full_validation" and report.get("transcript_path") == "not_captured_stdout_only":
         errors.append("full_validation requires a durable transcript_path instead of not_captured_stdout_only")
     git_freshness = report.get("git_freshness_result")
