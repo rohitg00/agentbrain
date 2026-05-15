@@ -37,6 +37,8 @@ def write_minimal_repo(root: Path) -> None:
         "# Sample Adapter\n\n"
         "## Install\n\n"
         "Use this adapter in a sample runtime.\n\n"
+        "## Minimal instruction\n\n"
+        "Use Agent Brain as the operating harness.\n\n"
         "## Validation\n\n"
         "python3 -m pip install -r requirements-dev.txt\n"
         "rm -rf scripts/__pycache__ tests/__pycache__\n"
@@ -5213,3 +5215,19 @@ def test_commands_that_ask_questions_require_noninteractive_fallback(tmp_path):
     errors = validate_repo.validate(tmp_path)
 
     assert "commands/brain-sample.md mentions asking the user but must include noninteractive fallback guidance" in errors
+
+
+def test_adapter_readmes_must_include_minimal_instruction(tmp_path):
+    write_minimal_repo(tmp_path)
+    adapter = tmp_path / "adapters" / "sample-adapter" / "README.md"
+    adapter.write_text(
+        adapter.read_text(encoding="utf-8").replace(
+            "## Minimal instruction\n\nUse Agent Brain as the operating harness.\n\n",
+            "",
+        ),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "adapters/sample-adapter/README.md missing adapter section: ## Minimal instruction" in errors

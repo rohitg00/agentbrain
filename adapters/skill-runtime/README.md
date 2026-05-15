@@ -12,6 +12,12 @@ This adapter explains how to use Agent Brain with a tool-enabled skill runtime w
 6. Use file/git tools for `/brain-plan`, `/brain-build`, and `/brain-review`.
 7. Use scheduled jobs only after the workflow is stable.
 
+## Minimal instruction
+
+```text
+Use Agent Brain as the operating harness. Start with AGENTBRAIN.md, choose the matching command in commands/, load only the listed skills, produce the required artifact, and run the validation gate before claiming success. If evidence, approval, rollback, secrets handling, or loop limits are missing, stop with a blocker instead of improvising.
+```
+
 ## Validation
 
 After wiring the adapter into a workspace, run the same harness gate from the repository root:

@@ -14,7 +14,7 @@ Use this adapter when the agent can read files but has no native skill system.
 ## Minimal instruction
 
 ```text
-Before building, read AGENTBRAIN.md. Use commands/ to choose the right workflow. Produce the required artifact and do not skip evidence or non-agent alternative review.
+Use Agent Brain as the operating harness. Before building, read AGENTBRAIN.md, choose the matching command in commands/, load only the relevant skills/*/SKILL.md files, produce the required artifact, and do not skip evidence, stop conditions, or non-agent alternative review.
 ```
 
 ## Validation
