@@ -4,7 +4,7 @@ This adapter explains how to use Agent Brain with a tool-enabled skill runtime w
 
 ## Install
 
-Before wiring a runtime, run `git status --short` and `git log --oneline -5`, run baseline validation before editing, and preserve user changes before changing adapter instructions.
+Before wiring a runtime, run `git status --short` and `git log --oneline -5`, then run `git fetch origin main`, `git rev-parse HEAD`, and `git rev-parse origin/main`; confirm HEAD equals origin/main before trusting the checkout. Run baseline validation before editing, and preserve user changes before changing adapter instructions.
 
 1. Keep Agent Brain as a project repository.
 2. Let the runtime read `AGENTBRAIN.md` and relevant command specs.

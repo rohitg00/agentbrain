@@ -379,6 +379,12 @@ REQUIRED_ADAPTER_BOOTSTRAP_COMMANDS = [
     "baseline validation before editing",
     "preserve user changes",
 ]
+REQUIRED_ADAPTER_REMOTE_FRESHNESS_TERMS = [
+    "git fetch origin main",
+    "git rev-parse HEAD",
+    "git rev-parse origin/main",
+    "HEAD equals origin/main",
+]
 REQUIRED_ADAPTER_MINIMAL_INSTRUCTION_ARTIFACTS = [
     "AGENTBRAIN.md",
     "commands/",
@@ -1722,6 +1728,11 @@ def validate(root: Path = ROOT) -> list[str]:
             for run_command in REQUIRED_ADAPTER_BOOTSTRAP_COMMANDS:
                 if run_command.lower() not in adapter_text_lower:
                     errors.append(f"{rel(markdown_file, root)} bootstrap section must document: {run_command}")
+            for required_term in REQUIRED_ADAPTER_REMOTE_FRESHNESS_TERMS:
+                if required_term.lower() not in adapter_text_lower:
+                    errors.append(
+                        f"{rel(markdown_file, root)} bootstrap section must verify remote freshness: {required_term}"
+                    )
             minimal_instruction_body = section_body(adapter_text, "## Minimal instruction")
             for artifact in REQUIRED_ADAPTER_MINIMAL_INSTRUCTION_ARTIFACTS:
                 if artifact not in minimal_instruction_body:

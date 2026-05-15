@@ -4,7 +4,7 @@ Use this adapter when the agent can read files but has no native skill system.
 
 ## Install
 
-Before adapting the harness, run `git status --short` and `git log --oneline -5`, run baseline validation before editing, and preserve user changes before changing adapter instructions.
+Before adapting the harness, run `git status --short` and `git log --oneline -5`, then run `git fetch origin main`, `git rev-parse HEAD`, and `git rev-parse origin/main`; confirm HEAD equals origin/main before trusting the checkout. Run baseline validation before editing, and preserve user changes before changing adapter instructions.
 
 1. Copy or reference the repository root.
 2. Tell the agent to read `AGENTBRAIN.md` first.

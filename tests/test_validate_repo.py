@@ -42,7 +42,7 @@ def write_minimal_repo(root: Path) -> None:
     (adapters_dir / "README.md").write_text(
         "# Sample Adapter\n\n"
         "## Install\n\n"
-        "Use this adapter in a sample runtime. Run `git status --short` and `git log --oneline -5`, run baseline validation before editing, and preserve user changes before adapter work.\n\n"
+        "Use this adapter in a sample runtime. Run `git status --short` and `git log --oneline -5`, git fetch origin main, git rev-parse HEAD, git rev-parse origin/main, and confirm HEAD equals origin/main, run baseline validation before editing, and preserve user changes before adapter work.\n\n"
         "## Minimal instruction\n\n"
         "Use Agent Brain as the operating harness. Read AGENTBRAIN.md, route through commands/, load skills/, produce artifacts from templates/, and validate schemas/.\n\n"
         "## Validation\n\n"
@@ -2502,8 +2502,8 @@ def test_adapter_validation_must_include_cache_cleanup_and_exact_name_scrub(tmp_
         "python -m pytest -q\n"
         "python scripts/validate_repo.py\n"
         "git diff --check\n\n"
-        "## Failure Modes\n\n"
-        "Stop if the runtime cannot load files.\n",
+        "## Minimal instruction\n\nAGENTBRAIN.md commands/ skills/ templates/ schemas/\n\n"
+        "## Failure Modes\n\nStop if the runtime cannot load files.\n",
         encoding="utf-8",
     )
 
@@ -2511,6 +2511,26 @@ def test_adapter_validation_must_include_cache_cleanup_and_exact_name_scrub(tmp_
 
     assert "adapters/sample-adapter/README.md validation section must document: rm -rf scripts/__pycache__ tests/__pycache__" in errors
     assert "adapters/sample-adapter/README.md validation section must document: targeted exact-name scrub" in errors
+
+
+def test_adapter_bootstrap_must_verify_remote_freshness(tmp_path):
+    write_minimal_repo(tmp_path)
+    adapter = tmp_path / "adapters" / "sample-adapter" / "README.md"
+    adapter.write_text(
+        adapter.read_text(encoding="utf-8")
+        .replace("git fetch origin main, ", "")
+        .replace("git rev-parse HEAD, ", "")
+        .replace("git rev-parse origin/main, ", "")
+        .replace("and confirm HEAD equals origin/main, ", ""),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "adapters/sample-adapter/README.md bootstrap section must verify remote freshness: git fetch origin main" in errors
+    assert "adapters/sample-adapter/README.md bootstrap section must verify remote freshness: git rev-parse HEAD" in errors
+    assert "adapters/sample-adapter/README.md bootstrap section must verify remote freshness: git rev-parse origin/main" in errors
+    assert "adapters/sample-adapter/README.md bootstrap section must verify remote freshness: HEAD equals origin/main" in errors
 
 
 def test_schema_directory_is_required(tmp_path):
@@ -5523,7 +5543,7 @@ def test_adapter_docs_must_include_fresh_checkout_bootstrap(tmp_path):
     adapter = tmp_path / "adapters" / "sample-adapter" / "README.md"
     adapter.write_text(
         adapter.read_text(encoding="utf-8").replace(
-            "Run `git status --short` and `git log --oneline -5`, run baseline validation before editing, and preserve user changes before adapter work.",
+            "Run `git status --short` and `git log --oneline -5`, git fetch origin main, git rev-parse HEAD, git rev-parse origin/main, and confirm HEAD equals origin/main, run baseline validation before editing, and preserve user changes before adapter work.",
             "Use default adapter setup.",
         ),
         encoding="utf-8",
