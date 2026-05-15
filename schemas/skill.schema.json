@@ -10,6 +10,7 @@
     "trigger",
     "inputs",
     "procedure",
+    "when_not_to_use",
     "verification",
     "output_artifact",
     "failure_modes",
@@ -65,6 +66,14 @@
       "items": {
         "type": "string"
       },
+      "default": []
+    },
+    "when_not_to_use": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1,
       "default": []
     },
     "verification": {

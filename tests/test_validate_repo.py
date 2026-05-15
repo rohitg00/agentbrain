@@ -216,6 +216,69 @@ def test_public_copy_validator_rejects_runtime_and_source_branding(tmp_path: Pat
     assert any("banned public-copy term" in error and adapter_brand in error for error in errors)
 
 
+def test_skill_schema_requires_when_not_to_use_guidance(tmp_path: Path) -> None:
+    write_minimal_repo(tmp_path)
+    schema = tmp_path / "schemas" / "skill.schema.json"
+    schema.write_text(
+        json.dumps(
+            {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "title": "Skill",
+                "type": "object",
+                "additionalProperties": False,
+                "required": [
+                    "name",
+                    "description",
+                    "lifecycle_stage",
+                    "trigger",
+                    "inputs",
+                    "procedure",
+                    "verification",
+                    "output_artifact",
+                    "failure_modes",
+                    "examples",
+                ],
+                "properties": {
+                    "name": {"type": "string"},
+                    "description": {"type": "string"},
+                    "lifecycle_stage": {"type": "string"},
+                    "trigger": {"type": "string"},
+                    "inputs": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+                    "procedure": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+                    "verification": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+                    "output_artifact": {"type": "string"},
+                    "failure_modes": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+                    "examples": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
+    (tmp_path / "examples" / "artifacts" / "skill.example.json").write_text(
+        json.dumps(
+            {
+                "name": "sample-skill",
+                "description": "Use when a sample skill is needed.",
+                "lifecycle_stage": "VERIFY",
+                "trigger": "A sample trigger appears.",
+                "inputs": ["input"],
+                "procedure": ["act"],
+                "verification": ["check"],
+                "output_artifact": "artifact",
+                "failure_modes": ["overuse"],
+                "examples": ["Use sample-skill for the sample trigger."],
+            }
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "schemas/skill.schema.json must require when_not_to_use so skills preserve adapter boundaries and avoid boundary creep" in errors
+    assert "schemas/skill.schema.json when_not_to_use must require at least one concrete item" in errors
+
+
 def test_required_eval_cases_include_adapter_capability_overclaim(tmp_path: Path) -> None:
     write_minimal_repo(tmp_path)
     case = tmp_path / "evals" / "cases" / "adapter-capability-overclaim.md"

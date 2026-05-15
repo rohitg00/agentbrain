@@ -16,6 +16,9 @@
   "anti_rationalization": [
     "Do not assume prose examples are enough when a schema exists."
   ],
+  "when_not_to_use": [
+    "Do not use this for runtime behavior that needs a real-runtime smoke artifact instead of a static schema example."
+  ],
   "verification": [
     "python scripts/validate_repo.py"
   ],
