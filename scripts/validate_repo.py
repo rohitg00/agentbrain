@@ -344,6 +344,10 @@ REQUIRED_COMMAND_OUTPUT_TERMS = [
     "open questions",
     "next recommended state",
 ]
+REQUIRED_BUILD_COMMAND_PROOF_TERMS = [
+    "failing test before implementation",
+    "validator-first proof",
+]
 VALID_COMMAND_LIFECYCLE_STATES = set(REQUIRED_STATE_MACHINE_VALUES)
 REQUIRED_EVAL_CASE_SECTIONS = [
     "## User request",
@@ -1108,6 +1112,12 @@ def validate(root: Path = ROOT) -> list[str]:
             errors.append(f"{rel(command, root)} sections must appear in canonical order")
         if command_lifecycle_state(text) not in VALID_COMMAND_LIFECYCLE_STATES:
             errors.append(f"{rel(command, root)} purpose must declare valid lifecycle state")
+        if command_lifecycle_state(text) == "BUILD":
+            command_text_lower = text.lower()
+            if not any(term in command_text_lower for term in REQUIRED_BUILD_COMMAND_PROOF_TERMS):
+                errors.append(
+                    f"{rel(command, root)} BUILD workflow must require failing test before implementation or validator-first proof"
+                )
         output_body = section_body(text, "## Output").lower()
         for required_term in REQUIRED_COMMAND_OUTPUT_TERMS:
             if required_term not in output_body:

@@ -24,10 +24,11 @@ If required inputs are missing, ask at most three blocking questions or state ex
 ## Workflow
 
 1. Confirm the active slice is approved, narrow, and has acceptance checks.
-2. Implement only that slice; do not opportunistically expand scope.
-3. Keep notes on changed files, commands run, assumptions, and risks.
-4. Produce changed artifacts plus implementation notes and route to verification.
-5. Stop if tests, approvals, secrets, or production access are required but unavailable.
+2. For behavior changes, write or identify the failing test before implementation; for docs, schema, command, or harness changes, create validator-first proof before editing the protected artifact.
+3. Implement only that slice; do not opportunistically expand scope.
+4. Keep notes on changed files, commands run, assumptions, and risks.
+5. Produce changed artifacts plus implementation notes and route to verification.
+6. Stop if tests, approvals, secrets, or production access are required but unavailable.
 
 ## Output
 

@@ -798,6 +798,39 @@ def test_commands_must_include_handoff_fields_in_output(tmp_path):
     assert "commands/brain-sample.md output must mention: next recommended state" in errors
 
 
+def test_build_command_requires_test_or_validator_first_proof(tmp_path):
+    write_minimal_repo(tmp_path)
+    command = tmp_path / "commands" / "brain-build.md"
+    command.write_text(
+        "\n".join([
+            "# /brain-build",
+            "## Purpose",
+            "State: BUILD",
+            "",
+            "Implement an approved slice.",
+            "## When to use",
+            "Use when a plan names the next implementation slice.",
+            "## Input contract",
+            "Approved plan slice and validation command.",
+            "## Skills to load",
+            "Load `sample` for sample routing.",
+            "## Workflow",
+            "Implement the slice, then run the validation command.",
+            "## Output",
+            "A concrete build decision with evidence, assumptions, risks, open questions, and next recommended state.",
+            "## Stop conditions",
+            "Stop when the request is unsafe.",
+            "## Quality bar",
+            "Evidence is checked before output.",
+        ]),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "commands/brain-build.md BUILD workflow must require failing test before implementation or validator-first proof" in errors
+
+
 def test_agent_harness_must_include_fresh_checkout_bootstrap(tmp_path):
     write_minimal_repo(tmp_path)
     harness = tmp_path / "docs" / "agent-harness.md"
