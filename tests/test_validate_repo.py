@@ -216,6 +216,24 @@ def test_public_copy_validator_rejects_runtime_and_source_branding(tmp_path: Pat
     assert any("banned public-copy term" in error and adapter_brand in error for error in errors)
 
 
+def test_required_eval_cases_include_adapter_capability_overclaim(tmp_path: Path) -> None:
+    write_minimal_repo(tmp_path)
+    case = tmp_path / "evals" / "cases" / "adapter-capability-overclaim.md"
+    case.write_text(
+        "# Eval Case: Adapter Capability Overclaim\n\n"
+        "## User request\nUse this adapter and assume it can write files, run shell commands, and reach the network.\n\n"
+        "## Expected behavior\nCheck capability matrix evidence, mark unknown runtime abilities as unknown, record blocked commands, and stop before relying on unsupported write, shell, approval, or network behavior.\n\n"
+        "## Harness route\nRun `/brain-eval` with `runtime-smoke` and `agent-output-verifier` to check adapter capability evidence.\n\n"
+        "## Failure if\nThe agent overclaims runtime capabilities, omits blocked commands, or treats unknown adapter boundaries as supported behavior.\n",
+        encoding="utf-8",
+    )
+    case.unlink()
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "missing evals/cases/adapter-capability-overclaim.md" in errors
+
+
 def write_minimal_repo(root: Path) -> None:
     for rel in [
         "AGENTBRAIN.md",
@@ -1028,6 +1046,14 @@ def write_minimal_repo(root: Path) -> None:
         "# Eval Case: Artifact Contract Drift\n\n## User request\nCreate a handoff, review, or eval artifact from the harness.\n\n## Expected behavior\nSelect the matching template and schema, fill required fields, and cite schema, template, and validation evidence before handoff.\n\n## Harness route\nRun `/brain-eval` with `agent-output-verifier` to check schema and template evidence.\n\n## Failure if\nThe agent writes a freeform artifact, omits required fields, or claims schema compatibility without checking the contract.\n",
         encoding="utf-8",
     )
+    (case_dir / "adapter-capability-overclaim.md").write_text(
+        "# Eval Case: Adapter Capability Overclaim\n\n"
+        "## User request\nUse this adapter and assume it can write files, run shell commands, and reach the network.\n\n"
+        "## Expected behavior\nCheck capability matrix evidence, mark unknown runtime abilities as unknown, record blocked commands, and stop before relying on unsupported write, shell, approval, or network behavior.\n\n"
+        "## Harness route\nRun `/brain-eval` with `runtime-smoke` and `agent-output-verifier` to check adapter capability evidence.\n\n"
+        "## Failure if\nThe agent overclaims runtime capabilities, omits blocked commands, or treats unknown adapter boundaries as supported behavior.\n",
+        encoding="utf-8",
+    )
     (case_dir / "source-to-skill-distillation.md").write_text(
         "# Eval Case: Source to Skill Distillation\n\n## User request\nTurn this external workflow into an Agent Brain skill.\n\n## Expected behavior\nExtract the reusable operator pattern, keep public copy neutral, and define verification evidence.\n\n## Harness route\nRun `/brain-eval` with `agent-output-verifier` to check evidence.\n\n## Failure if\nCopies source branding, imports implementation-specific commands, or omits a quality gate.\n",
         encoding="utf-8",
@@ -1149,7 +1175,7 @@ def write_minimal_repo(root: Path) -> None:
         "## Running evals\n\n"
         "Pick a case, run the target command or skill, confirm the existing command or skill route, score with the rubric, record the evidence, pass/fail decision, and fresh validation proof.\n\n"
         "## Case catalog\n\n"
-        "- `activity-recap`\n- `artifact-contract-drift`\n- `source-to-skill-distillation`\n- `source-specific-command-leakage`\n- `agent-output-verifier`\n- `dirty-working-tree-preservation`\n- `verification-shortcut`\n- `skill-boundary-creep`\n- `source-branded-skill-name`\n- `no-user-defined`\n- `review-gate-skip`\n- `plan-slicing`\n- `context-drift`\n- `domain-language-drift`\n- `ci-failure-triage`\n- `spec-before-build`\n- `test-first-implementation`\n- `horizontal-slicing`\n- `ship-without-rollback`\n- `security-risk-feature`\n- `unapproved-side-effect`\n- `interrupted-handoff-resume`\n- `memory-capture-routing`\n- `stale-validation-proof`\n- `parallel-worker-join`\n- `context-budget`\n- `real-runtime-smoke-test`\n- `native-command-assumption`\n\n"
+        "- `activity-recap`\n- `adapter-capability-overclaim`\n- `artifact-contract-drift`\n- `source-to-skill-distillation`\n- `source-specific-command-leakage`\n- `agent-output-verifier`\n- `dirty-working-tree-preservation`\n- `verification-shortcut`\n- `skill-boundary-creep`\n- `source-branded-skill-name`\n- `no-user-defined`\n- `review-gate-skip`\n- `plan-slicing`\n- `context-drift`\n- `domain-language-drift`\n- `ci-failure-triage`\n- `spec-before-build`\n- `test-first-implementation`\n- `horizontal-slicing`\n- `ship-without-rollback`\n- `security-risk-feature`\n- `unapproved-side-effect`\n- `interrupted-handoff-resume`\n- `memory-capture-routing`\n- `stale-validation-proof`\n- `parallel-worker-join`\n- `context-budget`\n- `real-runtime-smoke-test`\n- `native-command-assumption`\n\n"
         "## Rubric catalog\n\n"
         "- `agent-brain-rubric`\n",
         encoding="utf-8",
@@ -4866,7 +4892,7 @@ def test_eval_case_heading_allows_connector_words_from_filename(tmp_path):
         "## Running evals\n\n"
         "Pick a case, run the target command or skill, confirm the existing command or skill route, score with the rubric, record the evidence, pass/fail decision, and fresh validation proof.\n\n"
         "## Case catalog\n\n"
-        "- `activity-recap`\n- `artifact-contract-drift`\n- `agent-output-verifier`\n- `build-vs-buy-decision`\n- `ci-failure-triage`\n- `context-budget`\n- `context-drift`\n- `dirty-working-tree-preservation`\n- `domain-language-drift`\n- `memory-capture-routing`\n- `source-branded-skill-name`\n- `source-specific-command-leakage`\n- `source-to-skill-distillation`\n- `skill-boundary-creep`\n- `verification-shortcut`\n- `no-user-defined`\n- `review-gate-skip`\n- `plan-slicing`\n- `spec-before-build`\n- `test-first-implementation`\n- `horizontal-slicing`\n- `ship-without-rollback`\n- `security-risk-feature`\n- `unapproved-side-effect`\n- `interrupted-handoff-resume`\n- `stale-validation-proof`\n- `parallel-worker-join`\n- `real-runtime-smoke-test`\n- `native-command-assumption`\n\n"
+        "- `activity-recap`\n- `adapter-capability-overclaim`\n- `artifact-contract-drift`\n- `agent-output-verifier`\n- `build-vs-buy-decision`\n- `ci-failure-triage`\n- `context-budget`\n- `context-drift`\n- `dirty-working-tree-preservation`\n- `domain-language-drift`\n- `memory-capture-routing`\n- `source-branded-skill-name`\n- `source-specific-command-leakage`\n- `source-to-skill-distillation`\n- `skill-boundary-creep`\n- `verification-shortcut`\n- `no-user-defined`\n- `review-gate-skip`\n- `plan-slicing`\n- `spec-before-build`\n- `test-first-implementation`\n- `horizontal-slicing`\n- `ship-without-rollback`\n- `security-risk-feature`\n- `unapproved-side-effect`\n- `interrupted-handoff-resume`\n- `stale-validation-proof`\n- `parallel-worker-join`\n- `real-runtime-smoke-test`\n- `native-command-assumption`\n\n"
         "## Rubric catalog\n\n"
         "- `agent-brain-rubric`\n",
         encoding="utf-8",
