@@ -317,7 +317,8 @@ Stop instead of proceeding when:
 - tests are skipped because the change feels small,
 - a tool call, file write, public post, deploy, payment, or destructive action needs approval,
 - the output claims tests passed but does not include test logs,
-- a background loop, retry worker, or scheduled job has no stop condition,
+- a background loop, retry worker, scheduled run, or unattended maintenance job has no stop condition,
+- a noninteractive run would need user clarification before a scoped or destructive decision,
 - secret-like values or private data appear in output,
 - rollback is undefined for a shipped change,
 - learning capture would preserve temporary task state instead of durable workflow knowledge.

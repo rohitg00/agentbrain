@@ -257,6 +257,11 @@ REQUIRED_AGENT_HARNESS_RESUME_TERMS = [
     "stale",
     "resume only the named next action",
 ]
+REQUIRED_AGENT_HARNESS_NONINTERACTIVE_TERMS = [
+    "noninteractive",
+    "scheduled run",
+    "cannot ask questions",
+]
 REQUIRED_AGENT_HARNESS_HANDOFF_TERMS = ["fresh validation proof", "coordination review"]
 REQUIRED_AGENT_HARNESS_TROUBLESHOOTING_TERMS = {
     "dirty working tree": "docs/agent-harness.md troubleshooting must document dirty working tree recovery",
@@ -947,6 +952,13 @@ def validate(root: Path = ROOT) -> list[str]:
         for term in REQUIRED_AGENT_HARNESS_RESUME_TERMS:
             if term not in agent_harness_text_lower:
                 errors.append(f"docs/agent-harness.md resume guidance must mention: {term}")
+        edge_cases = section_body(agent_harness_text, "## Edge Cases").lower()
+        for term in REQUIRED_AGENT_HARNESS_NONINTERACTIVE_TERMS:
+            if term not in edge_cases:
+                errors.append(
+                    "docs/agent-harness.md edge cases must document noninteractive scheduled runs: "
+                    f"{term}"
+                )
         harness_command_refs = agent_harness_command_routing_references(agent_harness_text)
         for command in sorted((root / "commands").glob("*.md")):
             command_name = f"/{command.stem}"

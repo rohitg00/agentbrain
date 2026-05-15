@@ -188,6 +188,10 @@ Still run validation. Docs are executable context for future agents, so broken d
 
 Run verifier and review gates. Existing output still needs evidence before trust.
 
+### The run is noninteractive
+
+For a scheduled run or unattended maintenance job, the agent cannot ask questions or wait for user clarification. It should use the clearest repo-backed default, avoid unapproved side effects, and stop with a handoff when the missing answer would change scope, safety, credentials, or destructive actions.
+
 ## Troubleshooting
 
 ### Validation fails before any change
