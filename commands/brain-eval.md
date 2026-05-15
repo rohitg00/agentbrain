@@ -12,7 +12,7 @@ Use when changing Agent Brain behavior or checking quality.
 
 ## Input contract
 
-Command or skill under test, eval case, rubric.
+Command or skill under test, eval case, rubric, known facts, assumptions, constraints, evidence, and approval state.
 
 If required inputs are missing, ask at most three blocking questions or state explicit assumptions and risk. In noninteractive runs where the agent cannot ask questions, use the safest documented default or stop with a blocker when ambiguity changes the action.
 

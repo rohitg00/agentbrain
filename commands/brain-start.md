@@ -12,7 +12,7 @@ Use when a user starts from a vague request, idea, task, or product ambition.
 
 ## Input contract
 
-Raw request plus any known context.
+Raw request plus known facts, assumptions, constraints, evidence, approval state, and any known context.
 
 If required inputs are missing, ask at most three blocking questions or state explicit assumptions and risk. In noninteractive runs where the agent cannot ask questions, use the safest documented default or stop with a blocker when ambiguity changes the action.
 

@@ -12,7 +12,7 @@ Use when a reviewed artifact is ready for release or publication.
 
 ## Input contract
 
-Release candidate, verification evidence, rollback plan, owner.
+Release candidate, verification evidence, rollback plan, owner, known facts, assumptions, constraints, and approval state.
 
 If required inputs are missing, ask at most three blocking questions or state explicit assumptions and risk. In noninteractive runs where the agent cannot ask questions, use the safest documented default or stop with a blocker when ambiguity changes the action.
 

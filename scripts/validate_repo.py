@@ -428,6 +428,13 @@ REQUIRED_COMMAND_OUTPUT_TERMS = [
     "open questions",
     "next recommended state",
 ]
+REQUIRED_COMMAND_INPUT_CONTRACT_TERMS = [
+    "known facts",
+    "assumptions",
+    "constraints",
+    "evidence",
+    "approval state",
+]
 REQUIRED_COMMAND_QUALITY_BAR_TERMS = ["fresh validation proof"]
 REQUIRED_BUILD_COMMAND_PROOF_TERMS = [
     "failing test before implementation",
@@ -1278,6 +1285,10 @@ def validate(root: Path = ROOT) -> list[str]:
                 errors.append(
                     f"{rel(command, root)} BUILD workflow must require failing test before implementation or validator-first proof"
                 )
+        input_contract = section_body(text, "## Input contract").lower()
+        for required_term in REQUIRED_COMMAND_INPUT_CONTRACT_TERMS:
+            if required_term not in input_contract:
+                errors.append(f"{rel(command, root)} input contract must mention: {required_term}")
         if command.stem == "brain-start":
             workflow_body = section_body(text, "## Workflow").lower()
             for required_term in REQUIRED_START_COMMAND_REPO_INSPECTION_TERMS:

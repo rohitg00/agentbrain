@@ -12,7 +12,7 @@ Use before planning any new product, feature, workflow, or automation.
 
 ## Input contract
 
-Product idea, target user, current workaround, desired outcome.
+Product idea, target user, current workaround, desired outcome, known facts, assumptions, constraints, evidence, and approval state.
 
 If required inputs are missing, ask at most three blocking questions or state explicit assumptions and risk. In noninteractive runs where the agent cannot ask questions, use the safest documented default or stop with a blocker when ambiguity changes the action.
 

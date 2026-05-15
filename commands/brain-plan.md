@@ -12,7 +12,7 @@ Use when the brief/design is strong enough to implement.
 
 ## Input contract
 
-Product Brief, Design Brief, constraints, repo context.
+Product Brief, Design Brief, repo context, known facts, assumptions, constraints, evidence, and approval state.
 
 If required inputs are missing, ask at most three blocking questions or state explicit assumptions and risk. In noninteractive runs where the agent cannot ask questions, use the safest documented default or stop with a blocker when ambiguity changes the action.
 

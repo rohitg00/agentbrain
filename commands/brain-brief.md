@@ -12,7 +12,7 @@ Use after intake, research, and grill have enough signal.
 
 ## Input contract
 
-Problem, user, evidence, constraints, acceptance criteria.
+Problem, user, evidence, constraints, acceptance criteria, known facts, assumptions, and approval state.
 
 If required inputs are missing, ask at most three blocking questions or state explicit assumptions and risk. In noninteractive runs where the agent cannot ask questions, use the safest documented default or stop with a blocker when ambiguity changes the action.
 

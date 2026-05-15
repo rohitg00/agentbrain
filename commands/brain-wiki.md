@@ -12,7 +12,7 @@ Use when ingesting sources or updating durable project knowledge.
 
 ## Input contract
 
-Source material, target knowledge area, staleness or ownership notes.
+Source material, target knowledge area, staleness or ownership notes, known facts, assumptions, constraints, evidence, and approval state.
 
 If required inputs are missing, ask at most three blocking questions or state explicit assumptions and risk. In noninteractive runs where the agent cannot ask questions, use the safest documented default or stop with a blocker when ambiguity changes the action.
 

@@ -12,7 +12,7 @@ Use after build or when evaluating an existing artifact.
 
 ## Input contract
 
-Artifact, claims to verify, available logs or test commands.
+Artifact, claims to verify, available logs or test commands, known facts, assumptions, constraints, evidence, and approval state.
 
 If required inputs are missing, ask at most three blocking questions or state explicit assumptions and risk. In noninteractive runs where the agent cannot ask questions, use the safest documented default or stop with a blocker when ambiguity changes the action.
 

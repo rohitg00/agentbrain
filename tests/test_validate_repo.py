@@ -303,7 +303,7 @@ def write_minimal_repo(root: Path) -> None:
             "## When to use",
             "Use for sample requests.",
             "## Input contract",
-            "Raw request.",
+            "Raw request, known facts, assumptions, constraints, evidence, and approval state.",
             "## Skills to load",
             "Load `sample` for sample routing.",
             "Load `activity-recap` for checked recent-work summaries.",
@@ -334,7 +334,7 @@ def write_minimal_repo(root: Path) -> None:
             "## When to use",
             "Use when eval cases need evidence-backed scoring.",
             "## Input contract",
-            "Eval target and case list.",
+            "Eval target, case list, known facts, assumptions, constraints, evidence, and approval state.",
             "## Skills to load",
             "Load `agent-output-verifier` before trusting generated output.",
             "## Workflow",
@@ -5009,6 +5009,23 @@ def test_evals_readme_must_list_available_cases(tmp_path):
     errors = validate_repo.validate(tmp_path)
 
     assert "evals/README.md missing eval case catalog entry: activity-recap" in errors
+
+
+def test_command_input_contract_must_separate_resume_context(tmp_path):
+    write_minimal_repo(tmp_path)
+    command = tmp_path / "commands" / "brain-sample.md"
+    command.write_text(
+        command.read_text(encoding="utf-8").replace(
+            "Raw request, known facts, assumptions, constraints, evidence, and approval state.",
+            "Raw request.",
+        ),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "commands/brain-sample.md input contract must mention: known facts" in errors
+    assert "commands/brain-sample.md input contract must mention: approval state" in errors
 
 
 def test_evals_readme_case_catalog_entries_must_be_backticked(tmp_path):

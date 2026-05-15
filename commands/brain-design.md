@@ -12,7 +12,7 @@ Use when a product brief needs UX or interaction design before planning.
 
 ## Input contract
 
-Product Brief, user flow, constraints, risk list.
+Product Brief, user flow, constraints, risk list, known facts, assumptions, evidence, and approval state.
 
 If required inputs are missing, ask at most three blocking questions or state explicit assumptions and risk. In noninteractive runs where the agent cannot ask questions, use the safest documented default or stop with a blocker when ambiguity changes the action.
 

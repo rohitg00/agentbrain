@@ -12,7 +12,7 @@ Use when the decision depends on external evidence or unfamiliar domain context.
 
 ## Input contract
 
-Research question, scope, source constraints, freshness needs.
+Research question, scope, source constraints, freshness needs, known facts, assumptions, evidence, and approval state.
 
 If required inputs are missing, ask at most three blocking questions or state explicit assumptions and risk. In noninteractive runs where the agent cannot ask questions, use the safest documented default or stop with a blocker when ambiguity changes the action.
 
