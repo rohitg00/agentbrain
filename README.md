@@ -283,9 +283,12 @@ Fresh proof must be specific enough for the next agent to rerun or audit it. For
 - the exact **command** or source lookup,
 - the **result** and exit status or decision,
 - the **date or commit** the proof applies to,
-- the **artifact checked**, such as a file, schema, template, command, skill, eval, workflow, log, or source.
+- the **artifact checked**, such as a file, schema, template, command, skill, eval, workflow, log, or source,
+- the **source provenance** for claims that came from docs, release notes, issues, benchmarks, traces, or external references,
+- the **recheck trigger** that would make the proof stale, such as changed files, dependency updates, CI drift, source updates, or missing approval,
+- the **expiry** or freshness window when evidence depends on current external state.
 
-Do not reuse stale validation proof after code, docs, schemas, templates, commands, skills, evals, CI, or dependencies change. If any of those artifacts changed after proof was collected, rerun the narrow check and then the full quality gate before handoff.
+Do not reuse stale validation proof after code, docs, schemas, templates, commands, skills, evals, CI, or dependencies change. If any recheck trigger fires or expiry passes, rerun the narrow check and then the full quality gate before handoff.
 
 ## Core Commands
 

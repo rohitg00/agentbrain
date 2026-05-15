@@ -115,6 +115,12 @@ Next action: <smallest safe next step>
 
 A handoff without evidence is incomplete. A handoff that hides uncertainty is unsafe.
 
+## Evidence Freshness
+
+Fresh evidence must be auditable after the run ends. For each validation, CI, source, or review claim, include the exact command or lookup, result, date or commit, artifact checked, source provenance, recheck trigger, and expiry when the evidence depends on current external state.
+
+Treat proof as stale when code, docs, schemas, templates, commands, skills, evals, CI, dependencies, source pages, or approval scope change. Rerun the narrow check that changed first, then rerun the full harness validation before handoff.
+
 ## Stop Conditions
 
 Stop and report a blocker when:
