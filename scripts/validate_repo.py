@@ -135,6 +135,12 @@ REQUIRED_REAL_RUNTIME_SMOKE_EVIDENCE_FIELDS = [
 ]
 REQUIRED_REAL_RUNTIME_SMOKE_READ_ONLY_TERMS = ["read-only", "full validation"]
 REQUIRED_RUNTIME_SMOKE_TEMPLATE_ROUTING_TERM = "loaded skills declared by selected command"
+REQUIRED_RUNTIME_SMOKE_EXACT_COMMAND_TERMS = [
+    "adapter path",
+    "sandbox write mode",
+    "brain command mode",
+    "run scope",
+]
 REQUIRED_WORKFLOWS = [".github/workflows/quality.yml"]
 REQUIRED_QUALITY_WORKFLOW_RUNS = [
     "python -m pip install -r requirements-dev.txt",
@@ -1440,6 +1446,12 @@ def validate(root: Path = ROOT) -> list[str]:
                         "templates/runtime-smoke.md must require pass artifacts to list only "
                         "loaded skills declared by selected command"
                     )
+                for required_term in REQUIRED_RUNTIME_SMOKE_EXACT_COMMAND_TERMS:
+                    if required_term not in template_text_lower:
+                        errors.append(
+                            "templates/runtime-smoke.md exact command guidance must mention: "
+                            f"{required_term}"
+                        )
 
     for required_path in REQUIRED_ROOT:
         if not (root / required_path).exists():

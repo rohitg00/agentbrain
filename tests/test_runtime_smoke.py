@@ -573,6 +573,33 @@ def test_runtime_smoke_rejects_pass_result_when_command_failed(tmp_path: Path):
     assert any("pass smoke_result requires command_exit_status 0" in error for error in errors)
 
 
+def test_pass_runtime_smoke_requires_exact_command_to_record_runtime_boundary_flags(tmp_path: Path):
+    report = runtime_smoke.build_report(
+        root=tmp_path,
+        runtime="generic-cli-runtime",
+        version="1.2.3",
+        sandbox_write_mode="read_only",
+        brain_command_mode="markdown_specs",
+        run_scope="read_only_smoke",
+        blocked_commands=[],
+        exact_command=(
+            "python scripts/runtime_smoke.py --runtime generic-cli-runtime --version 1.2.3 "
+            "--selected-command /brain-start --loaded-skill intake"
+        ),
+        smoke_result="pass",
+        selected_command="/brain-start",
+        loaded_skills=["intake"],
+        adapter_path="adapters/read-only-cli/README.md",
+    )
+
+    errors = runtime_smoke.validate_report_against_schema(report, Path("schemas/runtime-smoke.schema.json"))
+
+    assert any("exact_command must record adapter path flag: --adapter-path adapters/read-only-cli/README.md" in error for error in errors)
+    assert any("exact_command must record sandbox write mode flag: --sandbox-write-mode read_only" in error for error in errors)
+    assert any("exact_command must record brain command mode flag: --brain-command-mode markdown_specs" in error for error in errors)
+    assert any("exact_command must record run scope flag: --run-scope read_only_smoke" in error for error in errors)
+
+
 def test_full_validation_runtime_smoke_requires_durable_transcript_path(tmp_path: Path):
     report = runtime_smoke.build_report(
         root=tmp_path,
