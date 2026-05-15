@@ -33,10 +33,10 @@ Agent Brain skills are small, composable, runtime-neutral operating procedures. 
 
 ## Quality bar for new skills
 
-- The frontmatter description starts with a precise `Use when` trigger.
+- Description starts with a precise Use when trigger.
 - The skill is small enough to compose with commands and other skills.
-- The procedure names concrete steps, not generic advice.
+- Procedure names concrete steps, not generic advice.
 - Verification is runnable or inspectable.
-- The output artifact is explicit.
+- Output artifact is explicit.
 - Failure modes and stop conditions prevent unsafe or unverified progress.
 - At least one command loads the skill, and this catalog links to it.

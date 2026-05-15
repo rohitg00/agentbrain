@@ -575,6 +575,14 @@ REQUIRED_SKILL_TEMPLATE_SECTIONS = [
     "## Failure Modes",
     "## Example",
 ]
+REQUIRED_SKILLS_README_QUALITY_BAR_TERMS = [
+    "description starts with a precise use when trigger",
+    "procedure names concrete steps",
+    "verification is runnable or inspectable",
+    "output artifact is explicit",
+    "failure modes and stop conditions",
+    "at least one command loads the skill",
+]
 REQUIRED_PLAN_SLICING_TERMS = {
     "acceptance checks": "skills/plan-slicing/SKILL.md must require each slice to name acceptance checks",
     "verification command": "skills/plan-slicing/SKILL.md must require each slice to name a verification command",
@@ -1786,6 +1794,10 @@ def validate(root: Path = ROOT) -> list[str]:
     skills_readme = root / "skills" / "README.md"
     if skills_readme.exists():
         skills_readme_text = skills_readme.read_text(errors="ignore")
+        skills_readme_text_lower = skills_readme_text.lower()
+        for required_term in REQUIRED_SKILLS_README_QUALITY_BAR_TERMS:
+            if required_term not in skills_readme_text_lower:
+                errors.append(f"skills/README.md quality bar must mention: {required_term}")
         for skill in sorted((root / "skills").glob("*/SKILL.md")):
             skill_name = skill.parent.name
             expected_link = f"[`{skill_name}`]({skill_name}/SKILL.md)"

@@ -143,6 +143,22 @@ def test_command_catalog_skills_must_match_command_spec(tmp_path: Path) -> None:
     )
 
 
+def test_skill_catalog_quality_bar_must_keep_runtime_checks(tmp_path: Path) -> None:
+    write_minimal_repo(tmp_path)
+    catalog = tmp_path / "skills" / "README.md"
+    catalog.write_text(
+        catalog.read_text(encoding="utf-8").replace(
+            "- Verification is runnable or inspectable.\n",
+            "",
+        ),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "skills/README.md quality bar must mention: verification is runnable or inspectable" in errors
+
+
 def write_minimal_repo(root: Path) -> None:
     for rel in [
         "AGENTBRAIN.md",
@@ -884,7 +900,14 @@ def write_minimal_repo(root: Path) -> None:
         "- [`evidence-research`](evidence-research/SKILL.md) — use for source-backed evidence.\n"
         "- [`qa-evidence`](qa-evidence/SKILL.md) — use for verification proof.\n"
         "- [`runtime-smoke`](runtime-smoke/SKILL.md) — use for real-runtime smoke evidence.\n"
-        "- [`sample`](sample/SKILL.md) — use for sample request routing.\n",
+        "- [`sample`](sample/SKILL.md) — use for sample request routing.\n\n"
+        "## Quality bar for new skills\n\n"
+        "- Description starts with a precise Use when trigger.\n"
+        "- Procedure names concrete steps.\n"
+        "- Verification is runnable or inspectable.\n"
+        "- Output artifact is explicit.\n"
+        "- Failure modes and stop conditions are documented.\n"
+        "- At least one command loads the skill.\n",
         encoding="utf-8",
     )
 
