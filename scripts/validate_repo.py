@@ -58,6 +58,7 @@ REQUIRED_SKILLS = [
 ]
 REQUIRED_EVAL_CASES = [
     "evals/cases/activity-recap.md",
+    "evals/cases/artifact-contract-drift.md",
     "evals/cases/source-to-skill-distillation.md",
     "evals/cases/agent-output-verifier.md",
     "evals/cases/dirty-working-tree-preservation.md",

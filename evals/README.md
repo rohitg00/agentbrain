@@ -16,6 +16,7 @@ Agent Brain evals check whether a command or skill improves judgment instead of 
 
 - `activity-recap` — summarizes recent local work without inventing missing activity.
 - `agent-output-verifier` — blocks unsafe, unsupported, or unverifiable agent output before handoff.
+- `artifact-contract-drift` — requires template, schema, required-field, and validation evidence before accepting harness artifacts.
 - `bad-agent-idea` — challenges weak agent ideas before implementation.
 - `build-vs-buy-decision` — compares whether to build, buy, or avoid automation.
 - `ci-failure-triage` — inspects failing remote workflows, reproduces commands, fixes root cause, and re-checks CI.
