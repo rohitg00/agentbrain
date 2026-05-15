@@ -13,6 +13,7 @@
     "command_exit_status",
     "smoke_result",
     "transcript_path",
+    "transcript_redaction_status",
     "sandbox_write_mode",
     "brain_command_mode",
     "selected_command",
@@ -65,6 +66,14 @@
     "transcript_path": {
       "type": "string",
       "minLength": 1
+    },
+    "transcript_redaction_status": {
+      "enum": [
+        "redacted",
+        "no_sensitive_content",
+        "not_captured",
+        "blocked"
+      ]
     },
     "sandbox_write_mode": {
       "enum": [

@@ -18,6 +18,7 @@ SANDBOX_WRITE_MODES = {"read_only", "workspace_write", "approval_gated", "unrest
 BRAIN_COMMAND_MODES = {"native_commands", "markdown_specs", "mixed", "unknown"}
 RUN_SCOPES = {"read_only_smoke", "full_validation"}
 SMOKE_RESULTS = {"pass", "blocked", "fail"}
+TRANSCRIPT_REDACTION_STATUSES = {"redacted", "no_sensitive_content", "not_captured", "blocked"}
 FULL_VALIDATION_GATE_COMMANDS = [
     "rm -rf scripts/__pycache__ tests/__pycache__",
     "python -m pytest -q",
@@ -98,6 +99,7 @@ def build_report(
     command_exit_status: int = 0,
     smoke_result: str = "pass",
     transcript_path: str = "not_captured_stdout_only",
+    transcript_redaction_status: str = "not_captured",
     selected_command: str = "unknown",
     loaded_skills: list[str] | None = None,
     adapter_path: str = "unknown",
@@ -112,6 +114,8 @@ def build_report(
         raise ValueError(f"unsupported run_scope: {run_scope}")
     if smoke_result not in SMOKE_RESULTS:
         raise ValueError(f"unsupported smoke_result: {smoke_result}")
+    if transcript_redaction_status not in TRANSCRIPT_REDACTION_STATUSES:
+        raise ValueError(f"unsupported transcript_redaction_status: {transcript_redaction_status}")
 
     scope_label = run_scope.replace("read_only", "read-only").replace("_", " ")
     command_label = brain_command_mode.replace("_", " ")
@@ -129,6 +133,7 @@ def build_report(
         f"Command exit status: {command_exit_status}",
         f"Smoke result: {smoke_result}",
         f"Transcript path: {transcript_path}",
+        f"Transcript redaction status: {transcript_redaction_status}",
         f"Blocked commands recorded: {', '.join(blocked_commands) if blocked_commands else 'none'}.",
         f"Validation commands: {', '.join(validation_commands) if validation_commands else 'none'}.",
     ]
@@ -143,6 +148,7 @@ def build_report(
         "command_exit_status": command_exit_status,
         "smoke_result": smoke_result,
         "transcript_path": transcript_path,
+        "transcript_redaction_status": transcript_redaction_status,
         "sandbox_write_mode": sandbox_write_mode,
         "brain_command_mode": brain_command_mode,
         "selected_command": selected_command,
@@ -328,6 +334,12 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     parser.add_argument("--command-exit-status", type=int, default=0, help="Exit status of the smoke command or validation command")
     parser.add_argument("--smoke-result", choices=sorted(SMOKE_RESULTS), default="pass")
     parser.add_argument("--transcript-path", default="not_captured_stdout_only", help="Path or durable location for the runtime transcript/log captured during smoke")
+    parser.add_argument(
+        "--transcript-redaction-status",
+        choices=sorted(TRANSCRIPT_REDACTION_STATUSES),
+        default="not_captured",
+        help="Whether the runtime transcript was redacted, contained no sensitive content, was not captured, or redaction was blocked",
+    )
     parser.add_argument("--blocked-command", action="append", default=[], help="Command that was blocked or intentionally skipped")
     parser.add_argument(
         "--validation-command",
@@ -357,6 +369,7 @@ def main(argv: list[str] | None = None) -> int:
         command_exit_status=args.command_exit_status,
         smoke_result=args.smoke_result,
         transcript_path=args.transcript_path,
+        transcript_redaction_status=args.transcript_redaction_status,
         selected_command=args.selected_command,
         loaded_skills=args.loaded_skill,
         adapter_path=args.adapter_path,

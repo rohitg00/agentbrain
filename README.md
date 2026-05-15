@@ -491,13 +491,15 @@ python scripts/runtime_smoke.py \
   --adapter-path adapters/read-only-cli/README.md \
   --run-scope read_only_smoke \
   --command-exit-status 0 \
-  --smoke-result pass \
+  --smoke-result blocked \
+  --transcript-path artifacts/runtime-smoke/generic-cli-runtime-2026-05-15.log \
+  --transcript-redaction-status redacted \
   --blocked-command "python -m pytest -q" \
   --output runtime-smoke.local.json
 ```
 
 The artifact must be checked against `schemas/runtime-smoke.schema.json` before
-adapter behavior is trusted. Use neutral runtime labels and record blocked
+adapter behavior is trusted. Use neutral runtime labels, record transcript redaction status, and record blocked
 commands honestly; do not call read-only smoke a full validation run.
 
 Also run a targeted exact-name scrub before committing public copy changes:

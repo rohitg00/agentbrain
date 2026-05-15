@@ -1,6 +1,6 @@
 # Runtime Smoke
 
-Schema fields: `runtime`, `version`, `python_executable`, `writable_temp_dir_status`, `git_freshness_result`, `exact_command`, `command_exit_status`, `smoke_result`, `transcript_path`, `sandbox_write_mode`, `brain_command_mode`, `selected_command`, `loaded_skills`, `adapter_path`, `blocked_commands`, `run_scope`, `validation_commands`, `evidence`.
+Schema fields: `runtime`, `version`, `python_executable`, `writable_temp_dir_status`, `git_freshness_result`, `exact_command`, `command_exit_status`, `smoke_result`, `transcript_path`, `transcript_redaction_status`, `sandbox_write_mode`, `brain_command_mode`, `selected_command`, `loaded_skills`, `adapter_path`, `blocked_commands`, `run_scope`, `validation_commands`, `evidence`.
 
 Use this artifact when checking Agent Brain in a real agent runtime rather than only repository fixtures. Record direct evidence so the next maintainer can tell whether the run was a read-only smoke or full validation. Prefer the helper so the JSON artifact is validated against `schemas/runtime-smoke.schema.json` before it is trusted:
 
@@ -18,6 +18,7 @@ python scripts/runtime_smoke.py \
   --command-exit-status 0 \
   --smoke-result blocked \
   --transcript-path artifacts/runtime-smoke/generic-cli-runtime-2026-05-15.log \
+  --transcript-redaction-status redacted \
   --blocked-command "python -m pytest -q blocked by read-only sandbox" \
   --output /tmp/runtime-smoke.json
 ```
@@ -44,6 +45,7 @@ The helper exits non-zero if the generated artifact does not satisfy the schema.
 - **Command exit status:** Numeric exit status from the smoke command or validation command.
 - **Smoke result:** `pass`, `blocked`, or `fail`; use `blocked` when sandbox or approval constraints prevented required proof.
 - **Transcript path:** Durable path or artifact location for the smoke transcript/log. `not_captured_stdout_only` is acceptable only for `read_only_smoke`; `full_validation` requires a durable transcript path. Store only a redacted transcript in public artifacts; remove secrets, tokens, private paths, and unrelated user data before preserving runtime transcripts.
+- **Transcript redaction status:** `redacted`, `no_sensitive_content`, `not_captured`, or `blocked`. Use this to distinguish a public-safe transcript from a missing or unreviewed one before trusting real-runtime smoke evidence.
 - **Sandbox/write mode:** `read_only`, `workspace_write`, `approval_gated`, `unrestricted`, or `unknown`. `full_validation` requires a write-capable mode; use `read_only_smoke` when the runtime cannot write or request approval for writes.
 - **Brain command mode:** Whether `/brain-*` entries were native commands, markdown specs, mixed, or unknown.
 - **Selected command:** The `/brain-*` command route the runtime chose. A `pass` artifact requires a selected `/brain-*` command; use `blocked` or `fail` instead of `pass` when command routing could not be proven.

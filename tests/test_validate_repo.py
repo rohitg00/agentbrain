@@ -308,6 +308,19 @@ def test_runtime_smoke_template_requires_exact_command_boundary_flags(tmp_path: 
     assert "templates/runtime-smoke.md exact command guidance must mention: run scope" in errors
 
 
+def test_runtime_smoke_template_requires_transcript_redaction_status(tmp_path: Path) -> None:
+    write_minimal_repo(tmp_path)
+    runtime_template = tmp_path / "templates" / "runtime-smoke.md"
+    runtime_template.write_text(
+        runtime_template.read_text(encoding="utf-8").replace("transcript redaction status", "transcript cleanup state"),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "templates/runtime-smoke.md must document real-runtime evidence field: transcript redaction status" in errors
+
+
 def test_skill_template_rejects_interactive_questions_section(tmp_path: Path) -> None:
     write_minimal_repo(tmp_path)
     skill_template = tmp_path / "templates" / "skill-template.md"
@@ -799,7 +812,7 @@ def write_minimal_repo(root: Path) -> None:
                 "title": "Runtime Smoke",
                 "type": "object",
                 "additionalProperties": False,
-                "required": ["runtime", "version", "python_executable", "writable_temp_dir_status", "git_freshness_result", "exact_command", "command_exit_status", "smoke_result", "transcript_path", "sandbox_write_mode", "brain_command_mode", "selected_command", "loaded_skills", "adapter_path", "blocked_commands", "run_scope", "evidence"],
+                "required": ["runtime", "version", "python_executable", "writable_temp_dir_status", "git_freshness_result", "exact_command", "command_exit_status", "smoke_result", "transcript_path", "transcript_redaction_status", "sandbox_write_mode", "brain_command_mode", "selected_command", "loaded_skills", "adapter_path", "blocked_commands", "run_scope", "evidence"],
                 "properties": {
                     "runtime": {"type": "string"},
                     "version": {"type": "string"},
@@ -810,6 +823,7 @@ def write_minimal_repo(root: Path) -> None:
                     "command_exit_status": {"type": "integer", "minimum": 0},
                     "smoke_result": {"enum": ["pass", "blocked", "fail"]},
                     "transcript_path": {"type": "string", "minLength": 1},
+                    "transcript_redaction_status": {"enum": ["redacted", "no_sensitive_content", "not_captured", "blocked"]},
                     "sandbox_write_mode": {"enum": ["read_only", "workspace_write", "approval_gated", "unrestricted", "unknown"]},
                     "brain_command_mode": {"enum": ["native_commands", "markdown_specs", "mixed", "unknown"]},
                     "selected_command": {"type": "string"},
@@ -886,6 +900,7 @@ def write_minimal_repo(root: Path) -> None:
                 "command_exit_status": 0,
                 "smoke_result": "pass",
                 "transcript_path": "artifacts/runtime-smoke/sample.log",
+                "transcript_redaction_status": "redacted",
                 "sandbox_write_mode": "read_only",
                 "brain_command_mode": "markdown_specs",
                 "selected_command": "/brain-start",
@@ -920,7 +935,7 @@ def write_minimal_repo(root: Path) -> None:
         encoding="utf-8",
     )
     (templates_dir / "runtime-smoke.md").write_text(
-        "# Runtime Smoke\n\nSchema fields: `runtime`, `version`, `python_executable`, `writable_temp_dir_status`, `git_freshness_result`, `exact_command`, `command_exit_status`, `smoke_result`, `transcript_path`, `sandbox_write_mode`, `brain_command_mode`, `selected_command`, `loaded_skills`, `adapter_path`, `blocked_commands`, `run_scope`, `evidence`. A pass artifact requires loaded skills declared by selected command. Exact command guidance must record runtime label, runtime version, adapter path, sandbox write mode, brain command mode, and run scope.\n",
+        "# Runtime Smoke\n\nSchema fields: `runtime`, `version`, `python_executable`, `writable_temp_dir_status`, `git_freshness_result`, `exact_command`, `command_exit_status`, `smoke_result`, `transcript_path`, `transcript_redaction_status`, `sandbox_write_mode`, `brain_command_mode`, `selected_command`, `loaded_skills`, `adapter_path`, `blocked_commands`, `run_scope`, `evidence`. A pass artifact requires loaded skills declared by selected command. Exact command guidance must record runtime label, runtime version, adapter path, sandbox write mode, brain command mode, and run scope. Runtime evidence must record transcript redaction status.\n",
         encoding="utf-8",
     )
     (templates_dir / "sample-routing-summary.md").write_text(
@@ -1555,7 +1570,7 @@ def write_minimal_repo(root: Path) -> None:
         encoding="utf-8",
     )
     (case_dir / "real-runtime-smoke-test.md").write_text(
-        "# Eval Case: Real Runtime Smoke Test\n\n## User request\nUse Agent Brain in a real agent runtime and report whether the harness is usable.\n\n## Expected behavior\nStart from a clean checkout, preserve user changes, run the baseline validation, choose the matching command and skills, ask the runtime for a small no-write or sandboxed task, then capture the runtime, version, Python executable, writable temp-dir status, git freshness result, exact command, command exit status, smoke result, transcript path, sandbox/write mode, /brain-* native commands or markdown specs, selected command, loaded skills, adapter path, blocked commands, evidence, failure points, and follow-up DevEx fixes. If the runtime is read-only, do not claim full validation; record blocked commands and safe checks instead.\n\n## Harness route\nRun `/brain-eval` with `agent-output-verifier` and `qa-evidence` to check runtime evidence.\n\n## Failure if\nThe agent only validates fixtures, skips the real runtime, hides auth or sandbox blockers, edits without approval, or reports developer experience quality without command output.\n",
+        "# Eval Case: Real Runtime Smoke Test\n\n## User request\nUse Agent Brain in a real agent runtime and report whether the harness is usable.\n\n## Expected behavior\nStart from a clean checkout, preserve user changes, run the baseline validation, choose the matching command and skills, ask the runtime for a small no-write or sandboxed task, then capture the runtime, version, Python executable, writable temp-dir status, git freshness result, exact command, command exit status, smoke result, transcript path, transcript redaction status, sandbox/write mode, /brain-* native commands or markdown specs, selected command, loaded skills, adapter path, blocked commands, evidence, failure points, and follow-up DevEx fixes. If the runtime is read-only, do not claim full validation; record blocked commands and safe checks instead.\n\n## Harness route\nRun `/brain-eval` with `agent-output-verifier` and `qa-evidence` to check runtime evidence.\n\n## Failure if\nThe agent only validates fixtures, skips the real runtime, hides auth or sandbox blockers, edits without approval, or reports developer experience quality without command output.\n",
         encoding="utf-8",
     )
     (case_dir / "native-command-assumption.md").write_text(

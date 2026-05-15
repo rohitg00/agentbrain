@@ -126,6 +126,7 @@ REQUIRED_REAL_RUNTIME_SMOKE_EVIDENCE_FIELDS = [
     "command exit status",
     "smoke result",
     "transcript path",
+    "transcript redaction status",
     "sandbox/write mode",
     "/brain-* native commands or markdown specs",
     "selected command",
@@ -142,6 +143,9 @@ REQUIRED_RUNTIME_SMOKE_EXACT_COMMAND_TERMS = [
     "sandbox write mode",
     "brain command mode",
     "run scope",
+]
+REQUIRED_RUNTIME_SMOKE_TEMPLATE_EVIDENCE_TERMS = [
+    "transcript redaction status",
 ]
 REQUIRED_WORKFLOWS = [".github/workflows/quality.yml"]
 REQUIRED_QUALITY_WORKFLOW_RUNS = [
@@ -1483,6 +1487,12 @@ def validate(root: Path = ROOT) -> list[str]:
                     if required_term not in template_text_lower:
                         errors.append(
                             "templates/runtime-smoke.md exact command guidance must mention: "
+                            f"{required_term}"
+                        )
+                for required_term in REQUIRED_RUNTIME_SMOKE_TEMPLATE_EVIDENCE_TERMS:
+                    if required_term not in template_text_lower:
+                        errors.append(
+                            "templates/runtime-smoke.md must document real-runtime evidence field: "
                             f"{required_term}"
                         )
 

@@ -8,6 +8,7 @@
   "command_exit_status": 0,
   "smoke_result": "blocked",
   "transcript_path": "artifacts/runtime-smoke/cli-runtime-example.log",
+  "transcript_redaction_status": "redacted",
   "sandbox_write_mode": "read_only",
   "brain_command_mode": "markdown_specs",
   "selected_command": "/brain-start",
@@ -29,6 +30,7 @@
     "Command exit status: 0",
     "Smoke result: blocked because local tests could not run in read-only smoke",
     "Transcript path: artifacts/runtime-smoke/cli-runtime-example.log",
+    "Transcript redaction status: redacted",
     "Runtime identified /brain-* entries as markdown specs rather than native commands"
   ]
 }
