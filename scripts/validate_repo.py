@@ -1125,6 +1125,13 @@ def readme_command_catalog_links(text: str) -> dict[str, str]:
 
 def command_catalog_entry_lines(text: str) -> dict[str, str]:
     entries: dict[str, str] = {}
+    for command_name, entry in command_catalog_entry_pairs(text):
+        entries[command_name] = entry
+    return entries
+
+
+def command_catalog_entry_pairs(text: str) -> list[tuple[str, str]]:
+    entries: list[tuple[str, str]] = []
     in_commands = False
     for line in text.splitlines():
         if line == "## Commands":
@@ -1136,8 +1143,18 @@ def command_catalog_entry_lines(text: str) -> dict[str, str]:
             continue
         match = re.match(r"- \[`(/brain-[a-z0-9-]+)`\]\([^)]+\) — (.+)$", line)
         if match:
-            entries[match.group(1)] = match.group(2)
+            entries.append((match.group(1), match.group(2)))
     return entries
+
+
+def duplicate_command_catalog_entries(text: str) -> list[str]:
+    seen: set[str] = set()
+    duplicates: set[str] = set()
+    for command_name, _entry in command_catalog_entry_pairs(text):
+        if command_name in seen:
+            duplicates.add(command_name)
+        seen.add(command_name)
+    return sorted(duplicates)
 
 
 def command_catalog_entry_skills(entry: str) -> set[str]:
@@ -2003,6 +2020,10 @@ def validate(root: Path = ROOT) -> list[str]:
         commands_readme_text = commands_readme.read_text(errors="ignore")
         commands_readme_text_lower = commands_readme_text.lower()
         command_catalog_entries = command_catalog_entry_lines(commands_readme_text)
+        for duplicate_command_name in duplicate_command_catalog_entries(commands_readme_text):
+            errors.append(
+                f"commands/README.md catalog has duplicate command entry: {duplicate_command_name}"
+            )
         command_names = {f"/{command.stem}" for command in command_files}
         for catalog_command_name in sorted(command_catalog_entries):
             if catalog_command_name not in command_names:

@@ -32,6 +32,7 @@ Each catalog entry preserves the command boundary for runtimes with or without n
 ## Failure modes
 
 - Do not assume `/brain-*` entries are native commands in every runtime.
+- Do not add duplicate catalog rows for the same command; update the existing row so real-runtime routing probes see one state, one skill set, and one artifact contract.
 - Do not load broad skill bundles when the command lists a smaller set.
 - Do not produce free-form summaries when a command names a template and schema.
 - Do not continue if the selected route needs approval, credentials, destructive access, or evidence that the runtime cannot provide.
