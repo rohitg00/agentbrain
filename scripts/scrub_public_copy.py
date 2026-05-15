@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import argparse
 import os
+import sys
 from pathlib import Path
 
 PUBLIC_COPY_GLOBS = [
@@ -78,6 +79,9 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> int:
     args = parse_args()
+    if not args.terms:
+        print("Provide at least one exact source name to scrub.", file=sys.stderr)
+        return 2
     root = Path(os.environ.get("AGENTBRAIN_SCRUB_ROOT", Path(__file__).resolve().parents[1])).resolve()
     violations = find_violations(root, args.terms)
     if violations:

@@ -37,9 +37,10 @@ repository drift.
 
 Before committing public changes, also run a targeted exact-name scrub for
 user-shared source names, internal tool names, and source-specific branding. The
-scrub is case-insensitive, so spelling or casing drift cannot bypass the public
-copy gate. Keep only neutral operator-pattern language unless the change is
-explicitly in an approved comparison or benchmark section.
+scrub requires at least one exact source name and is case-insensitive, so spelling
+or casing drift cannot bypass the public copy gate. Keep only neutral
+operator-pattern language unless the change is explicitly in an approved
+comparison or benchmark section.
 
 ```bash
 python scripts/scrub_public_copy.py <exact-source-name> [more-exact-names...]
