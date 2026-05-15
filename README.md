@@ -248,7 +248,7 @@ Use this guide when a command says to produce an artifact. Start with the comman
 | New or revised skill | `templates/skill-template.md` | `schemas/skill.schema.json` |
 | Product scope | `templates/product-brief.md` | `schemas/product-brief.schema.json` |
 | Implementation slices | `templates/implementation-plan.md` | `schemas/implementation-plan.schema.json` |
-| QA or verification proof | `docs/review-gates.md` QA gate | `schemas/qa-evidence.schema.json` |
+| QA or verification proof | `templates/qa-evidence.md` | `schemas/qa-evidence.schema.json` |
 | Eval case run or rubric check | `templates/eval-report.md` | `schemas/eval-report.schema.json` |
 | Trust review before handoff | `templates/review-report.md` | `schemas/review-report.schema.json` |
 | Run handoff or blocked stop | `templates/handoff-report.md` | `schemas/handoff-report.schema.json` |

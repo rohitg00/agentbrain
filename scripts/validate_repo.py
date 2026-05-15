@@ -26,6 +26,7 @@ REQUIRED_ARTIFACT_FILES = [
     "templates/eval-report.md",
     "templates/handoff-report.md",
     "templates/memory-decision.md",
+    "templates/qa-evidence.md",
 ]
 REQUIRED_STATE_MACHINE_VALUES = [
     "INTAKE",
