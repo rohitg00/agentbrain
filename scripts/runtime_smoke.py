@@ -10,6 +10,8 @@ import sys
 import tempfile
 from pathlib import Path
 
+from jsonschema import Draft202012Validator
+
 SANDBOX_WRITE_MODES = {"read_only", "workspace_write", "approval_gated", "unrestricted", "unknown"}
 BRAIN_COMMAND_MODES = {"native_commands", "markdown_specs", "mixed", "unknown"}
 RUN_SCOPES = {"read_only_smoke", "full_validation"}
@@ -100,6 +102,12 @@ def build_report(
     }
 
 
+def validate_report_against_schema(report: dict[str, object], schema_path: Path) -> list[str]:
+    schema = json.loads(Path(schema_path).read_text(encoding="utf-8"))
+    validator = Draft202012Validator(schema)
+    return [error.message for error in sorted(validator.iter_errors(report), key=lambda error: list(error.path))]
+
+
 def parse_args(argv: list[str]) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--runtime", required=True, help="Neutral runtime name, for example generic-cli-runtime")
@@ -109,6 +117,7 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     parser.add_argument("--run-scope", choices=sorted(RUN_SCOPES), default="read_only_smoke")
     parser.add_argument("--blocked-command", action="append", default=[], help="Command that was blocked or intentionally skipped")
     parser.add_argument("--root", type=Path, default=Path.cwd(), help="Repository root to inspect")
+    parser.add_argument("--schema", type=Path, help="Runtime-smoke schema path; defaults to <root>/schemas/runtime-smoke.schema.json")
     parser.add_argument("--output", type=Path, help="Optional JSON output path; stdout is used when omitted")
     return parser.parse_args(argv)
 
@@ -126,6 +135,14 @@ def main(argv: list[str] | None = None) -> int:
         blocked_commands=args.blocked_command,
         exact_command=exact_command,
     )
+    schema_path = args.schema or (args.root / "schemas" / "runtime-smoke.schema.json")
+    errors = validate_report_against_schema(report, schema_path)
+    if errors:
+        sys.stderr.write("runtime smoke schema validation failed:\n")
+        for error in errors:
+            sys.stderr.write(f"- {error}\n")
+        return 1
+
     payload = json.dumps(report, indent=2, sort_keys=True) + "\n"
     if args.output:
         args.output.write_text(payload, encoding="utf-8")

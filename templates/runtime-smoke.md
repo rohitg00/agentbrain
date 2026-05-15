@@ -2,7 +2,20 @@
 
 Schema fields: `runtime`, `version`, `python_executable`, `writable_temp_dir_status`, `git_freshness_result`, `exact_command`, `sandbox_write_mode`, `brain_command_mode`, `blocked_commands`, `run_scope`, `evidence`.
 
-Use this artifact when checking Agent Brain in a real agent runtime rather than only repository fixtures. Record direct evidence so the next maintainer can tell whether the run was a read-only smoke or full validation.
+Use this artifact when checking Agent Brain in a real agent runtime rather than only repository fixtures. Record direct evidence so the next maintainer can tell whether the run was a read-only smoke or full validation. Prefer the helper so the JSON artifact is validated against `schemas/runtime-smoke.schema.json` before it is trusted:
+
+```bash
+python scripts/runtime_smoke.py \
+  --runtime generic-cli-runtime \
+  --version 1.2.3 \
+  --sandbox-write-mode read_only \
+  --brain-command-mode markdown_specs \
+  --run-scope read_only_smoke \
+  --blocked-command "python -m pytest -q blocked by read-only sandbox" \
+  --output /tmp/runtime-smoke.json
+```
+
+The helper exits non-zero if the generated artifact does not satisfy the schema. Do not paste or hand-edit runtime-smoke JSON around that check unless the runtime cannot execute Python; in that case, mark the run as `read_only_smoke`, list the blocked command, and route follow-up through `/brain-verify`.
 
 ## Required Fields
 

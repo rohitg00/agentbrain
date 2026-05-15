@@ -27,3 +27,27 @@ def test_build_report_emits_schema_valid_runtime_smoke_for_plain_checkout(tmp_pa
     assert report["git_freshness_result"].startswith("unavailable:")
     assert "read-only smoke" in "\n".join(report["evidence"]).lower()
     assert "markdown specs" in "\n".join(report["evidence"]).lower()
+
+
+def test_validate_report_against_schema_rejects_incomplete_smoke_artifact():
+    incomplete_report = {
+        "runtime": "generic-cli-runtime",
+        "version": "1.2.3",
+    }
+
+    errors = runtime_smoke.validate_report_against_schema(incomplete_report, Path("schemas/runtime-smoke.schema.json"))
+
+    assert any("python_executable" in error for error in errors)
+    assert any("run_scope" in error for error in errors)
+
+
+def test_main_rejects_schema_invalid_generated_smoke_artifact(monkeypatch, capsys):
+    def invalid_report(**_kwargs):
+        return {"runtime": "generic-cli-runtime", "version": "1.2.3"}
+
+    monkeypatch.setattr(runtime_smoke, "build_report", invalid_report)
+
+    exit_code = runtime_smoke.main(["--runtime", "generic-cli-runtime", "--version", "1.2.3"])
+
+    assert exit_code == 1
+    assert "runtime smoke schema validation failed" in capsys.readouterr().err
