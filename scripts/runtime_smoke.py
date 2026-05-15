@@ -274,6 +274,14 @@ def validate_report_against_schema(
         for required_command in FULL_VALIDATION_GATE_COMMANDS:
             if required_command not in recorded_validation_commands:
                 errors.append(f"full_validation must record successful local gate command: {required_command}")
+        for validation_command in recorded_validation_commands:
+            if isinstance(validation_command, str) and not exact_command_has_flag_value(
+                report.get("exact_command"), "--validation-command", validation_command
+            ):
+                errors.append(
+                    "exact_command must record validation command flag: "
+                    f"--validation-command {validation_command}"
+                )
     if root is not None and report.get("smoke_result") == "pass":
         adapter_path = report.get("adapter_path")
         if isinstance(adapter_path, str) and adapter_path != "unknown":

@@ -22,7 +22,7 @@ python scripts/runtime_smoke.py \
   --output /tmp/runtime-smoke.json
 ```
 
-For `full_validation`, repeat `--validation-command` for each successful local gate command:
+For `full_validation`, repeat `--validation-command` for each successful local gate command; the exact command recorded in the JSON must include these same validation command flags so pass artifacts cannot add gate evidence after the runtime run:
 
 ```bash
 --validation-command "rm -rf scripts/__pycache__ tests/__pycache__" \
