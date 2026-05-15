@@ -121,6 +121,9 @@ REQUIRED_REAL_RUNTIME_SMOKE_EVIDENCE_FIELDS = [
     "writable temp-dir status",
     "git freshness result",
     "exact command",
+    "command exit status",
+    "smoke result",
+    "transcript path",
     "sandbox/write mode",
     "/brain-* native commands or markdown specs",
     "blocked commands",
@@ -500,6 +503,7 @@ REQUIRED_ADAPTER_RUNTIME_SMOKE_EVIDENCE_TERMS = [
     "python executable",
     "smoke result",
     "command exit status",
+    "transcript path",
 ]
 REQUIRED_CONTRIBUTING_VALIDATION_COMMANDS = [
     "pytest -q",

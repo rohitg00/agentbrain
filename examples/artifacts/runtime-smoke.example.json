@@ -7,6 +7,7 @@
   "exact_command": "agent-runtime --sandbox read-only --prompt 'Use Agent Brain as the operating harness'",
   "command_exit_status": 0,
   "smoke_result": "pass",
+  "transcript_path": "artifacts/runtime-smoke/cli-runtime-example.log",
   "sandbox_write_mode": "read_only",
   "brain_command_mode": "markdown_specs",
   "blocked_commands": [
@@ -17,6 +18,7 @@
     "Runtime opened AGENTBRAIN.md and commands/brain-start.md",
     "Command exit status: 0",
     "Smoke result: pass",
+    "Transcript path: artifacts/runtime-smoke/cli-runtime-example.log",
     "Runtime identified /brain-* entries as markdown specs rather than native commands"
   ]
 }

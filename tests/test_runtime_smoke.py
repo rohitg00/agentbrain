@@ -49,6 +49,23 @@ def test_build_report_records_smoke_result_and_command_exit_status(tmp_path: Pat
     assert "Smoke result: pass" in report["evidence"]
 
 
+def test_build_report_records_transcript_path_for_auditable_runtime_smoke(tmp_path: Path):
+    report = runtime_smoke.build_report(
+        root=tmp_path,
+        runtime="generic-cli-runtime",
+        version="1.2.3",
+        sandbox_write_mode="read_only",
+        brain_command_mode="markdown_specs",
+        run_scope="read_only_smoke",
+        blocked_commands=["python -m pytest -q"],
+        exact_command="python scripts/runtime_smoke.py --runtime generic-cli-runtime --version 1.2.3",
+        transcript_path="artifacts/runtime-smoke/generic-cli-runtime-2026-05-15.log",
+    )
+
+    assert report["transcript_path"] == "artifacts/runtime-smoke/generic-cli-runtime-2026-05-15.log"
+    assert "Transcript path: artifacts/runtime-smoke/generic-cli-runtime-2026-05-15.log" in report["evidence"]
+
+
 def test_validate_report_against_schema_rejects_incomplete_smoke_artifact():
     incomplete_report = {
         "runtime": "generic-cli-runtime",

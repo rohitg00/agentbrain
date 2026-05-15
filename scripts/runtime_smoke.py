@@ -70,6 +70,7 @@ def build_report(
     exact_command: str,
     command_exit_status: int = 0,
     smoke_result: str = "pass",
+    transcript_path: str = "not_captured_stdout_only",
 ) -> dict[str, object]:
     root = Path(root)
     if sandbox_write_mode not in SANDBOX_WRITE_MODES:
@@ -91,6 +92,7 @@ def build_report(
         f"Git freshness result: {freshness}",
         f"Command exit status: {command_exit_status}",
         f"Smoke result: {smoke_result}",
+        f"Transcript path: {transcript_path}",
         f"Blocked commands recorded: {', '.join(blocked_commands) if blocked_commands else 'none'}.",
     ]
 
@@ -103,6 +105,7 @@ def build_report(
         "exact_command": exact_command,
         "command_exit_status": command_exit_status,
         "smoke_result": smoke_result,
+        "transcript_path": transcript_path,
         "sandbox_write_mode": sandbox_write_mode,
         "brain_command_mode": brain_command_mode,
         "blocked_commands": blocked_commands,
@@ -137,6 +140,7 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     parser.add_argument("--run-scope", choices=sorted(RUN_SCOPES), default="read_only_smoke")
     parser.add_argument("--command-exit-status", type=int, default=0, help="Exit status of the smoke command or validation command")
     parser.add_argument("--smoke-result", choices=sorted(SMOKE_RESULTS), default="pass")
+    parser.add_argument("--transcript-path", default="not_captured_stdout_only", help="Path or durable location for the runtime transcript/log captured during smoke")
     parser.add_argument("--blocked-command", action="append", default=[], help="Command that was blocked or intentionally skipped")
     parser.add_argument("--root", type=Path, default=Path.cwd(), help="Repository root to inspect")
     parser.add_argument("--schema", type=Path, help="Runtime-smoke schema path; defaults to <root>/schemas/runtime-smoke.schema.json")
@@ -158,6 +162,7 @@ def main(argv: list[str] | None = None) -> int:
         exact_command=exact_command,
         command_exit_status=args.command_exit_status,
         smoke_result=args.smoke_result,
+        transcript_path=args.transcript_path,
     )
     schema_path = args.schema or (args.root / "schemas" / "runtime-smoke.schema.json")
     errors = validate_report_against_schema(report, schema_path)

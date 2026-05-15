@@ -12,6 +12,7 @@
     "exact_command",
     "command_exit_status",
     "smoke_result",
+    "transcript_path",
     "sandbox_write_mode",
     "brain_command_mode",
     "blocked_commands",
@@ -56,6 +57,10 @@
         "blocked",
         "fail"
       ]
+    },
+    "transcript_path": {
+      "type": "string",
+      "minLength": 1
     },
     "sandbox_write_mode": {
       "enum": [

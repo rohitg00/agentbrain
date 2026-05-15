@@ -66,7 +66,7 @@ def write_minimal_repo(root: Path) -> None:
         "validate the JSON evidence against `schemas/runtime-smoke.schema.json` before "
         "trusting adapter behavior. Keep the artifact honest about blocked commands, "
         "command mode, sandbox/write mode, git freshness, runtime version, "
-        "Python executable, smoke result, and command exit status.\n\n"
+        "Python executable, smoke result, command exit status, and transcript path.\n\n"
         "## Failure Modes\n\n"
         "Stop if the runtime cannot load files.\n",
         encoding="utf-8",
@@ -183,7 +183,7 @@ def write_minimal_repo(root: Path) -> None:
                 "title": "Runtime Smoke",
                 "type": "object",
                 "additionalProperties": False,
-                "required": ["runtime", "version", "python_executable", "writable_temp_dir_status", "git_freshness_result", "exact_command", "sandbox_write_mode", "brain_command_mode", "blocked_commands", "run_scope", "evidence"],
+                "required": ["runtime", "version", "python_executable", "writable_temp_dir_status", "git_freshness_result", "exact_command", "command_exit_status", "smoke_result", "transcript_path", "sandbox_write_mode", "brain_command_mode", "blocked_commands", "run_scope", "evidence"],
                 "properties": {
                     "runtime": {"type": "string"},
                     "version": {"type": "string"},
@@ -191,6 +191,9 @@ def write_minimal_repo(root: Path) -> None:
                     "writable_temp_dir_status": {"enum": ["writable", "blocked", "not_checked"]},
                     "git_freshness_result": {"type": "string"},
                     "exact_command": {"type": "string"},
+                    "command_exit_status": {"type": "integer", "minimum": 0},
+                    "smoke_result": {"enum": ["pass", "blocked", "fail"]},
+                    "transcript_path": {"type": "string", "minLength": 1},
                     "sandbox_write_mode": {"enum": ["read_only", "workspace_write", "approval_gated", "unrestricted", "unknown"]},
                     "brain_command_mode": {"enum": ["native_commands", "markdown_specs", "mixed", "unknown"]},
                     "blocked_commands": {"type": "array", "items": {"type": "string"}},
@@ -261,6 +264,9 @@ def write_minimal_repo(root: Path) -> None:
                 "writable_temp_dir_status": "writable",
                 "git_freshness_result": "HEAD equals origin/main",
                 "exact_command": "agent-runtime --sandbox read-only",
+                "command_exit_status": 0,
+                "smoke_result": "pass",
+                "transcript_path": "artifacts/runtime-smoke/sample.log",
                 "sandbox_write_mode": "read_only",
                 "brain_command_mode": "markdown_specs",
                 "blocked_commands": [],
@@ -291,7 +297,7 @@ def write_minimal_repo(root: Path) -> None:
         encoding="utf-8",
     )
     (templates_dir / "runtime-smoke.md").write_text(
-        "# Runtime Smoke\n\nSchema fields: `runtime`, `version`, `python_executable`, `writable_temp_dir_status`, `git_freshness_result`, `exact_command`, `sandbox_write_mode`, `brain_command_mode`, `blocked_commands`, `run_scope`, `evidence`.\n",
+        "# Runtime Smoke\n\nSchema fields: `runtime`, `version`, `python_executable`, `writable_temp_dir_status`, `git_freshness_result`, `exact_command`, `command_exit_status`, `smoke_result`, `transcript_path`, `sandbox_write_mode`, `brain_command_mode`, `blocked_commands`, `run_scope`, `evidence`.\n",
         encoding="utf-8",
     )
     (templates_dir / "sample-routing-summary.md").write_text(
@@ -878,7 +884,7 @@ def write_minimal_repo(root: Path) -> None:
         encoding="utf-8",
     )
     (case_dir / "real-runtime-smoke-test.md").write_text(
-        "# Eval Case: Real Runtime Smoke Test\n\n## User request\nUse Agent Brain in a real agent runtime and report whether the harness is usable.\n\n## Expected behavior\nStart from a clean checkout, preserve user changes, run the baseline validation, choose the matching command and skills, ask the runtime for a small no-write or sandboxed task, then capture the runtime, version, Python executable, writable temp-dir status, git freshness result, exact command, sandbox/write mode, /brain-* native commands or markdown specs, blocked commands, evidence, failure points, and follow-up DevEx fixes. If the runtime is read-only, do not claim full validation; record blocked commands and safe checks instead.\n\n## Harness route\nRun `/brain-eval` with `agent-output-verifier` and `qa-evidence` to check runtime evidence.\n\n## Failure if\nThe agent only validates fixtures, skips the real runtime, hides auth or sandbox blockers, edits without approval, or reports developer experience quality without command output.\n",
+        "# Eval Case: Real Runtime Smoke Test\n\n## User request\nUse Agent Brain in a real agent runtime and report whether the harness is usable.\n\n## Expected behavior\nStart from a clean checkout, preserve user changes, run the baseline validation, choose the matching command and skills, ask the runtime for a small no-write or sandboxed task, then capture the runtime, version, Python executable, writable temp-dir status, git freshness result, exact command, command exit status, smoke result, transcript path, sandbox/write mode, /brain-* native commands or markdown specs, blocked commands, evidence, failure points, and follow-up DevEx fixes. If the runtime is read-only, do not claim full validation; record blocked commands and safe checks instead.\n\n## Harness route\nRun `/brain-eval` with `agent-output-verifier` and `qa-evidence` to check runtime evidence.\n\n## Failure if\nThe agent only validates fixtures, skips the real runtime, hides auth or sandbox blockers, edits without approval, or reports developer experience quality without command output.\n",
         encoding="utf-8",
     )
     (case_dir / "native-command-assumption.md").write_text(
@@ -6369,8 +6375,8 @@ def test_adapter_runtime_smoke_contract_must_name_blocked_commands(tmp_path):
     adapter = tmp_path / "adapters" / "sample-adapter" / "README.md"
     adapter.write_text(
         adapter.read_text(encoding="utf-8").replace(
-            "blocked commands, command mode, sandbox/write mode, git freshness, runtime version, Python executable, smoke result, and command exit status.",
-            "command mode, sandbox/write mode, git freshness, runtime version, Python executable, smoke result, and command exit status.",
+            "blocked commands, command mode, sandbox/write mode, git freshness, runtime version, Python executable, smoke result, command exit status, and transcript path.",
+            "command mode, sandbox/write mode, git freshness, runtime version, Python executable, smoke result, command exit status, and transcript path.",
         ),
         encoding="utf-8",
     )
@@ -6518,8 +6524,8 @@ def test_adapter_runtime_smoke_contract_must_name_smoke_result(tmp_path):
     adapter = tmp_path / "adapters" / "sample-adapter" / "README.md"
     adapter.write_text(
         adapter.read_text(encoding="utf-8").replace(
-            "command mode, sandbox/write mode, git freshness, runtime version, Python executable, smoke result, and command exit status.",
-            "command mode, sandbox/write mode, git freshness, runtime version, Python executable, and command exit status.",
+            "command mode, sandbox/write mode, git freshness, runtime version, Python executable, smoke result, command exit status, and transcript path.",
+            "command mode, sandbox/write mode, git freshness, runtime version, Python executable, command exit status, and transcript path.",
         ),
         encoding="utf-8",
     )
