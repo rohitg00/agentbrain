@@ -1,6 +1,6 @@
 # Handoff Report
 
-Schema fields: `state`, `decision`, `evidence_checked`, `fresh_validation_proof`, `coordination_review`, `facts`, `assumptions`, `open_questions`, `risks`, `next_action`.
+Schema fields: `state`, `decision`, `evidence_checked`, `fresh_validation_proof`, `coordination_review`, `facts`, `assumptions`, `open_questions`, `risks`, `stop_conditions`, `next_action`.
 
 Use this when ending a run, handing work to another operator, or stopping on a blocker. Keep it evidence-first: if a statement was not checked, put it under assumptions or open questions instead of facts.
 
@@ -51,6 +51,12 @@ Questions that change scope, safety, priority, or the next safe step.
 ## Risks
 
 Security, privacy, product, rollback, reliability, maintenance, or evidence risks.
+
+- ...
+
+## Stop Conditions
+
+Specific blockers, approval gaps, loop limits, safety limits, or missing evidence that stopped or would stop the run. If none apply, record `none observed` so the next agent can distinguish a checked field from an omitted field.
 
 - ...
 

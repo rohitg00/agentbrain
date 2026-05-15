@@ -71,7 +71,7 @@ def write_minimal_repo(root: Path) -> None:
                 "title": "Handoff Report",
                 "type": "object",
                 "additionalProperties": False,
-                "required": ["state", "decision", "evidence_checked", "fresh_validation_proof", "coordination_review", "facts", "assumptions", "open_questions", "risks", "next_action"],
+                "required": ["state", "decision", "evidence_checked", "fresh_validation_proof", "coordination_review", "facts", "assumptions", "open_questions", "risks", "stop_conditions", "next_action"],
                 "properties": {
                     "state": {
                         "type": "string",
@@ -97,6 +97,7 @@ def write_minimal_repo(root: Path) -> None:
                     "assumptions": {"type": "array", "items": {"type": "string"}},
                     "open_questions": {"type": "array", "items": {"type": "string"}},
                     "risks": {"type": "array", "items": {"type": "string"}},
+                    "stop_conditions": {"type": "array", "items": {"type": "string"}},
                     "next_action": {"type": "string"},
                 },
             }
@@ -158,7 +159,7 @@ def write_minimal_repo(root: Path) -> None:
     templates_dir.mkdir(exist_ok=True)
     (templates_dir / "handoff-report.md").write_text(
         "# Handoff Report\n\n"
-        "Schema fields: `state`, `decision`, `evidence_checked`, `fresh_validation_proof`, `coordination_review`, `facts`, `assumptions`, `open_questions`, `risks`, `next_action`.\n",
+        "Schema fields: `state`, `decision`, `evidence_checked`, `fresh_validation_proof`, `coordination_review`, `facts`, `assumptions`, `open_questions`, `risks`, `stop_conditions`, `next_action`.\n",
         encoding="utf-8",
     )
     (templates_dir / "memory-decision.md").write_text(
@@ -1456,6 +1457,19 @@ def test_handoff_schema_must_require_resume_ready_fields(tmp_path):
     errors = validate_repo.validate(tmp_path)
 
     assert "schemas/handoff-report.schema.json required fields must include resume-ready field: facts" in errors
+
+
+def test_handoff_schema_must_require_stop_conditions_for_blocked_resume(tmp_path):
+    write_minimal_repo(tmp_path)
+    schema_path = tmp_path / "schemas" / "handoff-report.schema.json"
+    schema = json.loads(schema_path.read_text(encoding="utf-8"))
+    schema["required"] = [field for field in schema["required"] if field != "stop_conditions"]
+    schema["properties"].pop("stop_conditions", None)
+    schema_path.write_text(json.dumps(schema), encoding="utf-8")
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "schemas/handoff-report.schema.json must require stop_conditions for blocked resume" in errors
 
 
 def test_readme_must_define_evidence_freshness_rules(tmp_path):

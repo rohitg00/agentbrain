@@ -214,6 +214,7 @@ REQUIRED_HANDOFF_SCHEMA_RESUME_FIELDS = [
     "open_questions",
     "risks",
 ]
+REQUIRED_HANDOFF_SCHEMA_BLOCKED_RESUME_FIELDS = ["stop_conditions"]
 STALE_STATUS_COMPLETION_TERMS = [
     "complete",
     "done",
@@ -952,6 +953,9 @@ def validate(root: Path = ROOT) -> list[str]:
                     errors.append(
                         f"schemas/handoff-report.schema.json required fields must include resume-ready field: {field}"
                     )
+            for field in REQUIRED_HANDOFF_SCHEMA_BLOCKED_RESUME_FIELDS:
+                if field not in required_fields:
+                    errors.append(f"schemas/handoff-report.schema.json must require {field} for blocked resume")
         for field in required_fields:
             if field not in properties:
                 errors.append(f"{rel(path, root)} required field lacks property definition: {field}")

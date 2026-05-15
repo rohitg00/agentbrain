@@ -13,6 +13,7 @@
     "assumptions",
     "open_questions",
     "risks",
+    "stop_conditions",
     "next_action"
   ],
   "properties": {
@@ -90,6 +91,15 @@
         "type": "string",
         "minLength": 1
       },
+      "default": []
+    },
+    "stop_conditions": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "description": "Specific blockers, approval gaps, loop limits, safety limits, or missing evidence that stopped or would stop the run.",
       "default": []
     },
     "next_action": {
