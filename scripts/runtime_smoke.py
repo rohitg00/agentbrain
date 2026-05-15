@@ -196,6 +196,15 @@ def validate_report_against_schema(
         errors.append("blocked smoke_result must list at least one blocked command")
     if report.get("smoke_result") == "pass" and blocked_count:
         errors.append("pass smoke_result cannot list blocked_commands; use blocked or fail when required commands could not run")
+    if blocked_count and isinstance(blocked_commands, list):
+        for blocked_command in blocked_commands:
+            if isinstance(blocked_command, str) and blocked_command and not exact_command_has_flag_value(
+                report.get("exact_command"), "--blocked-command", blocked_command
+            ):
+                errors.append(
+                    "exact_command must record blocked command flag: "
+                    f"--blocked-command {blocked_command}"
+                )
     if report.get("smoke_result") == "pass" and report.get("command_exit_status") != 0:
         errors.append("pass smoke_result requires command_exit_status 0")
     if report.get("smoke_result") == "pass":

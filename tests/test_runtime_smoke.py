@@ -943,6 +943,32 @@ def test_full_validation_runtime_smoke_requires_routing_evidence(monkeypatch, tm
     assert any("full_validation requires an adapter_path" in error for error in errors)
 
 
+def test_blocked_runtime_smoke_requires_blocked_commands_in_exact_command(tmp_path: Path):
+    report = runtime_smoke.build_report(
+        root=tmp_path,
+        runtime="generic-cli-runtime",
+        version="1.2.3",
+        sandbox_write_mode="read_only",
+        brain_command_mode="markdown_specs",
+        run_scope="read_only_smoke",
+        blocked_commands=["python -m pytest -q blocked by read-only sandbox"],
+        exact_command=(
+            "python scripts/runtime_smoke.py --runtime generic-cli-runtime --version 1.2.3 "
+            "--run-scope read_only_smoke --command-exit-status 1 --smoke-result blocked"
+        ),
+        command_exit_status=1,
+        smoke_result="blocked",
+    )
+
+    errors = runtime_smoke.validate_report_against_schema(report, Path("schemas/runtime-smoke.schema.json"))
+
+    assert any(
+        "exact_command must record blocked command flag: --blocked-command python -m pytest -q blocked by read-only sandbox"
+        in error
+        for error in errors
+    )
+
+
 def test_main_creates_parent_directories_for_runtime_smoke_output(monkeypatch, tmp_path: Path):
     output_path = tmp_path / "artifacts" / "runtime-smoke" / "generic-cli-runtime.json"
 
