@@ -267,6 +267,17 @@ Every agent handoff should be useful without private chat context. End each run,
 
 Do not summarize intent as if it were evidence. If the handoff cannot name proof, mark it `blocked` and route to `/brain-verify`, `/brain-review`, or `/brain-research` before continuing.
 
+## Evidence Freshness Rules
+
+Fresh proof must be specific enough for the next agent to rerun or audit it. For every validation, CI, scrub, source check, or review claim, record:
+
+- the exact **command** or source lookup,
+- the **result** and exit status or decision,
+- the **date or commit** the proof applies to,
+- the **artifact checked**, such as a file, schema, template, command, skill, eval, workflow, log, or source.
+
+Do not reuse stale validation proof after code, docs, schemas, templates, commands, skills, evals, CI, or dependencies change. If any of those artifacts changed after proof was collected, rerun the narrow check and then the full quality gate before handoff.
+
 ## Core Commands
 
 - `/brain-start` — turn a raw request into the correct next state.

@@ -122,10 +122,27 @@ REQUIRED_README_HARNESS_SECTIONS = [
     "## Minimal Harness Prompt",
     "## Command Selection Guide",
     "## Handoff Contract",
+    "## Evidence Freshness Rules",
     "## Edge Cases and Stop Conditions",
     "## Troubleshooting",
     "## Weakest Failure Mode Audit",
     "## Maintainer Checklist",
+]
+REQUIRED_README_EVIDENCE_FRESHNESS_TERMS = [
+    "command",
+    "result",
+    "date or commit",
+    "artifact checked",
+    "stale validation proof",
+    "code",
+    "docs",
+    "schemas",
+    "templates",
+    "commands",
+    "skills",
+    "evals",
+    "CI",
+    "dependencies",
 ]
 REQUIRED_README_MINIMAL_HARNESS_PROMPT_TERMS = [
     "AGENTBRAIN.md",
@@ -1348,6 +1365,10 @@ def validate(root: Path = ROOT) -> list[str]:
         for required_term in REQUIRED_README_HANDOFF_TERMS:
             if required_term.lower() not in handoff_body:
                 errors.append(f"README.md handoff contract must mention: {required_term}")
+        evidence_freshness_body = section_body(readme_text, "## Evidence Freshness Rules").lower()
+        for required_term in REQUIRED_README_EVIDENCE_FRESHNESS_TERMS:
+            if required_term.lower() not in evidence_freshness_body:
+                errors.append(f"README.md evidence freshness rules must mention: {required_term}")
         maintainer_loop_body = section_body(readme_text, "## Maintainer Loop")
         for required_term in REQUIRED_README_MAINTAINER_LOOP_TERMS:
             if required_term not in maintainer_loop_body:
