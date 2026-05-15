@@ -292,20 +292,20 @@ Do not reuse stale validation proof after code, docs, schemas, templates, comman
 
 ## Core Commands
 
-- `/brain-start` — turn a raw request into the correct next state.
-- `/brain-should-this-exist` — test whether the product or agent should exist at all.
-- `/brain-research` — produce a source-backed claim ledger.
-- `/brain-grill` — challenge assumptions, user, market, design, engineering, and risk.
-- `/brain-brief` — create a product brief with evidence and open questions.
-- `/brain-design` — define user flow, interface, states, and edge cases.
-- `/brain-plan` — break work into small, verifiable slices.
-- `/brain-build` — implement only after plan and evidence gates pass.
-- `/brain-verify` — collect tests, traces, screenshots, logs, or other proof.
-- `/brain-review` — review correctness, product fit, security, UX, and maintainability.
-- `/brain-ship` — decide go/no-go with launch checklist and rollback plan.
-- `/brain-learn` — convert repeated success or failure into durable knowledge or skill.
-- `/brain-wiki` — maintain source-backed project knowledge.
-- `/brain-eval` — test the brain, command, or skill against cases and rubrics.
+- [`/brain-start`](commands/brain-start.md) — turn a raw request into the correct next state.
+- [`/brain-should-this-exist`](commands/brain-should-this-exist.md) — test whether the product or agent should exist at all.
+- [`/brain-research`](commands/brain-research.md) — produce a source-backed claim ledger.
+- [`/brain-grill`](commands/brain-grill.md) — challenge assumptions, user, market, design, engineering, and risk.
+- [`/brain-brief`](commands/brain-brief.md) — create a product brief with evidence and open questions.
+- [`/brain-design`](commands/brain-design.md) — define user flow, interface, states, and edge cases.
+- [`/brain-plan`](commands/brain-plan.md) — break work into small, verifiable slices.
+- [`/brain-build`](commands/brain-build.md) — implement only after plan and evidence gates pass.
+- [`/brain-verify`](commands/brain-verify.md) — collect tests, traces, screenshots, logs, or other proof.
+- [`/brain-review`](commands/brain-review.md) — review correctness, product fit, security, UX, and maintainability.
+- [`/brain-ship`](commands/brain-ship.md) — decide go/no-go with launch checklist and rollback plan.
+- [`/brain-learn`](commands/brain-learn.md) — convert repeated success or failure into durable knowledge or skill.
+- [`/brain-wiki`](commands/brain-wiki.md) — maintain source-backed project knowledge.
+- [`/brain-eval`](commands/brain-eval.md) — test the brain, command, or skill against cases and rubrics.
 
 ## Core Skills
 

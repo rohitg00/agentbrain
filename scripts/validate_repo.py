@@ -865,10 +865,27 @@ def readme_command_references(text: str) -> list[str]:
             break
         if not in_core_commands:
             continue
-        match = re.match(r"- `(/brain-[a-z0-9-]+)`", line)
+        match = re.match(r"- (?:`(/brain-[a-z0-9-]+)`|\[`(/brain-[a-z0-9-]+)`\]\(commands/[a-z0-9-]+\.md\))", line)
         if match:
-            entries.add(match.group(1))
+            entries.add(next(group for group in match.groups() if group))
     return sorted(entries)
+
+
+def readme_command_catalog_links(text: str) -> dict[str, str]:
+    entries: dict[str, str] = {}
+    in_core_commands = False
+    for line in text.splitlines():
+        if line == "## Core Commands":
+            in_core_commands = True
+            continue
+        if in_core_commands and line.startswith("## "):
+            break
+        if not in_core_commands:
+            continue
+        match = re.match(r"- \[`(/brain-[a-z0-9-]+)`\]\((commands/[a-z0-9-]+\.md)\)", line)
+        if match:
+            entries[match.group(1)] = match.group(2)
+    return entries
 
 
 def readme_command_selection_references(text: str) -> list[str]:
@@ -1495,12 +1512,19 @@ def validate(root: Path = ROOT) -> list[str]:
             if required_term.lower() not in readme_text_lower:
                 errors.append(message)
         core_command_refs = readme_command_references(readme_text)
+        core_command_links = readme_command_catalog_links(readme_text)
         command_selection_refs = readme_command_selection_references(readme_text)
         all_command_refs = readme_all_command_references(readme_text)
         for command in sorted((root / "commands").glob("*.md")):
             command_name = f"/{command.stem}"
             if command_name not in core_command_refs:
                 errors.append(f"README.md core command catalog missing command: {command_name}")
+            else:
+                expected_link = f"commands/{command.stem}.md"
+                if core_command_links.get(command_name) != expected_link:
+                    errors.append(
+                        f"README.md core command catalog entry must link to {expected_link}: {command_name}"
+                    )
             if command_name not in command_selection_refs:
                 errors.append(f"README.md command selection guide missing command: {command_name}")
         for command_name in core_command_refs:
