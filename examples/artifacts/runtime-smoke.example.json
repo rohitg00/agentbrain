@@ -6,7 +6,7 @@
   "git_freshness_result": "HEAD matched origin/main at example commit after git fetch origin main",
   "exact_command": "agent-runtime --sandbox read-only --prompt 'Use Agent Brain as the operating harness'",
   "command_exit_status": 0,
-  "smoke_result": "pass",
+  "smoke_result": "blocked",
   "transcript_path": "artifacts/runtime-smoke/cli-runtime-example.log",
   "sandbox_write_mode": "read_only",
   "brain_command_mode": "markdown_specs",
@@ -27,7 +27,7 @@
     "Loaded skills: intake, agent-output-verifier",
     "Adapter path: adapters/read-only-cli/README.md",
     "Command exit status: 0",
-    "Smoke result: pass",
+    "Smoke result: blocked because local tests could not run in read-only smoke",
     "Transcript path: artifacts/runtime-smoke/cli-runtime-example.log",
     "Runtime identified /brain-* entries as markdown specs rather than native commands"
   ]

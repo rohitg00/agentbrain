@@ -163,6 +163,27 @@ def test_runtime_smoke_schema_rejects_full_validation_without_writable_temp_dir(
     assert any("writable" in error for error in errors)
 
 
+def test_pass_runtime_smoke_rejects_blocked_commands(tmp_path: Path):
+    report = runtime_smoke.build_report(
+        root=tmp_path,
+        runtime="generic-cli-runtime",
+        version="1.2.3",
+        sandbox_write_mode="read_only",
+        brain_command_mode="markdown_specs",
+        run_scope="read_only_smoke",
+        blocked_commands=["python -m pytest -q blocked by sandbox"],
+        exact_command="python scripts/runtime_smoke.py --runtime generic-cli-runtime --version 1.2.3 --run-scope read_only_smoke --selected-command /brain-verify --loaded-skill runtime-smoke --adapter-path adapters/read-only-cli/README.md --sandbox-write-mode read_only --brain-command-mode markdown_specs",
+        smoke_result="pass",
+        selected_command="/brain-verify",
+        loaded_skills=["runtime-smoke"],
+        adapter_path="adapters/read-only-cli/README.md",
+    )
+
+    errors = runtime_smoke.validate_report_against_schema(report, Path("schemas/runtime-smoke.schema.json"))
+
+    assert any("pass smoke_result cannot list blocked_commands" in error for error in errors)
+
+
 def test_full_validation_runtime_smoke_rejects_blocked_commands(tmp_path: Path):
     report = runtime_smoke.build_report(
         root=tmp_path,

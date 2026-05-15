@@ -49,7 +49,7 @@ The helper exits non-zero if the generated artifact does not satisfy the schema.
 - **Selected command:** The `/brain-*` command route the runtime chose. A `pass` artifact requires a selected `/brain-*` command; use `blocked` or `fail` instead of `pass` when command routing could not be proven.
 - **Loaded skills:** Skills the runtime loaded for the selected command; a `pass` artifact requires at least one loaded skill, and every loaded skill must be named in the selected command's `## Skills to load` section so adapter runs cannot invent routes after the fact. In short: a pass artifact requires loaded skills declared by selected command.
 - **Adapter path:** Adapter README or integration note used to map Agent Brain into the runtime. A `pass` artifact requires a concrete adapter path; use `blocked` or `fail` instead of `pass` when no adapter boundary was available.
-- **Blocked commands:** Commands that could not run and why.
+- **Blocked commands:** Commands that could not run and why. Any artifact with blocked commands must use `smoke_result: blocked` or `smoke_result: fail`; never mark a run as `pass` while required commands are blocked.
 - **Run scope:** `read_only_smoke` or `full_validation`.
 - **Validation commands:** Successful local gate commands run during `full_validation`; include `rm -rf scripts/__pycache__ tests/__pycache__`, `python -m pytest -q`, `python scripts/validate_repo.py`, and `git diff --check`. Leave empty for read-only smoke.
 - **Evidence:** Logs, outputs, files inspected, command results, and blockers.

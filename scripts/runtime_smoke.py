@@ -184,6 +184,8 @@ def validate_report_against_schema(
         errors.append("full_validation cannot list blocked_commands; use read_only_smoke or remove blockers")
     if report.get("smoke_result") == "blocked" and blocked_count == 0:
         errors.append("blocked smoke_result must list at least one blocked command")
+    if report.get("smoke_result") == "pass" and blocked_count:
+        errors.append("pass smoke_result cannot list blocked_commands; use blocked or fail when required commands could not run")
     if report.get("smoke_result") == "pass" and report.get("command_exit_status") != 0:
         errors.append("pass smoke_result requires command_exit_status 0")
     if report.get("smoke_result") == "pass":
