@@ -30,6 +30,7 @@ Before a new agent acts on this repo, make it prove the checkout state instead o
 ```bash
 git status --short
 git log --oneline -5
+git fetch origin main
 rm -rf scripts/__pycache__ tests/__pycache__
 python -m pytest -q
 python scripts/validate_repo.py
@@ -38,12 +39,13 @@ git diff --check
 
 For public docs, commands, skills, templates, schemas, or evals, also run the targeted exact-name scrub before treating baseline validation as complete.
 
-Use the results to answer four setup questions:
+Use the results to answer five setup questions:
 
 1. Is the working tree clean or are there user changes that must be preserved?
 2. What is the latest committed harness behavior?
-3. Do tests and validation pass before new work starts?
-4. Which state, command, skill, template, and schema should handle the request?
+3. Does the freshness check show HEAD equals origin/main so the agent is not editing a stale checkout?
+4. Do tests and validation pass before new work starts?
+5. Which state, command, skill, template, and schema should handle the request?
 
 If any answer is missing, stop with a handoff report. Do not choose a command, edit files, or delegate work from an unverified checkout.
 

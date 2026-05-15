@@ -268,6 +268,10 @@ REQUIRED_AGENT_HARNESS_RESUME_TERMS = [
     "stale",
     "resume only the named next action",
 ]
+REQUIRED_AGENT_HARNESS_FRESH_CHECKOUT_TERMS = [
+    "git fetch origin main",
+    "HEAD equals origin/main",
+]
 REQUIRED_AGENT_HARNESS_NONINTERACTIVE_TERMS = [
     "noninteractive",
     "scheduled run",
@@ -972,6 +976,13 @@ def validate(root: Path = ROOT) -> list[str]:
         for term in REQUIRED_AGENT_HARNESS_RESUME_TERMS:
             if term not in agent_harness_text_lower:
                 errors.append(f"docs/agent-harness.md resume guidance must mention: {term}")
+        fresh_checkout = section_body(agent_harness_text, "## Fresh Checkout Bootstrap")
+        for term in REQUIRED_AGENT_HARNESS_FRESH_CHECKOUT_TERMS:
+            if term.lower() not in fresh_checkout.lower():
+                errors.append(
+                    "docs/agent-harness.md fresh checkout bootstrap must verify remote freshness: "
+                    f"{term}"
+                )
         edge_cases = section_body(agent_harness_text, "## Edge Cases").lower()
         for term in REQUIRED_AGENT_HARNESS_NONINTERACTIVE_TERMS:
             if term not in edge_cases:
