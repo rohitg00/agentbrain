@@ -286,6 +286,11 @@ def validate_report_against_schema(
         errors.append("full_validation requires a write-capable sandbox; use read_only_smoke for read_only runs")
     if report.get("run_scope") == "full_validation" and report.get("transcript_path") == "not_captured_stdout_only":
         errors.append("full_validation requires a durable transcript_path instead of not_captured_stdout_only")
+    if report.get("run_scope") == "full_validation" and report.get("transcript_redaction_status") not in {
+        "redacted",
+        "no_sensitive_content",
+    }:
+        errors.append("full_validation requires reviewed transcript redaction status: redacted or no_sensitive_content")
     if report.get("run_scope") == "full_validation" and report.get("brain_command_mode") == "unknown":
         errors.append("full_validation requires brain_command_mode to be proven as native_commands, markdown_specs, or mixed")
     if report.get("run_scope") == "full_validation" and report.get("selected_command") == "unknown":

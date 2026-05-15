@@ -163,6 +163,12 @@
           },
           "writable_temp_dir_status": {
             "const": "writable"
+          },
+          "transcript_redaction_status": {
+            "enum": [
+              "redacted",
+              "no_sensitive_content"
+            ]
           }
         }
       }
