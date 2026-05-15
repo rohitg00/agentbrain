@@ -1486,6 +1486,7 @@ def validate(root: Path = ROOT) -> list[str]:
     seen_quality_bars: dict[str, str] = {}
     seen_stop_conditions: dict[str, str] = {}
     skills_loaded_by_commands: set[str] = set()
+    required_command_artifact_templates: dict[str, str] = {}
     for command in sorted((root / "commands").glob("*.md")):
         text = command.read_text(errors="ignore")
         expected_heading = f"# /{command.stem}"
@@ -1547,10 +1548,12 @@ def validate(root: Path = ROOT) -> list[str]:
         if "required artifact:" not in output_body:
             errors.append(f"{rel(command, root)} output must name a required artifact")
         required_artifact_template = command_required_artifact_template(text)
-        if required_artifact_template and not (root / required_artifact_template).exists():
-            errors.append(
-                f"{rel(command, root)} required artifact lacks template: {required_artifact_template}"
-            )
+        if required_artifact_template:
+            required_command_artifact_templates[f"/{command.stem}"] = required_artifact_template
+            if not (root / required_artifact_template).exists():
+                errors.append(
+                    f"{rel(command, root)} required artifact lacks template: {required_artifact_template}"
+                )
         for required_term in REQUIRED_COMMAND_OUTPUT_TERMS:
             if required_term not in output_body:
                 errors.append(f"{rel(command, root)} output must mention: {required_term}")
@@ -1722,6 +1725,12 @@ def validate(root: Path = ROOT) -> list[str]:
                 errors.append(f"README.md missing template catalog entry: {template_ref}")
             if template_ref not in artifact_template_refs:
                 errors.append(f"README.md artifact routing guide missing template: {template_ref}")
+        for command_name, template_ref in sorted(required_command_artifact_templates.items()):
+            if template_ref not in artifact_template_refs:
+                errors.append(
+                    "README.md artifact routing guide must list command required artifact template "
+                    f"{template_ref} for {command_name}"
+                )
         mapped_paths = readme_repository_map_paths(readme_text)
         for mapped_path in mapped_paths:
             if not (root / mapped_path).exists():

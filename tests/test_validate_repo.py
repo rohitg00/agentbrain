@@ -1265,6 +1265,25 @@ def test_commands_must_name_required_output_artifact(tmp_path):
     assert "commands/brain-sample.md output must name a required artifact" in errors
 
 
+def test_command_required_artifacts_must_be_listed_in_readme_routing_guide(tmp_path):
+    write_minimal_repo(tmp_path)
+    readme = tmp_path / "README.md"
+    readme.write_text(
+        readme.read_text(encoding="utf-8").replace(
+            "- `templates/sample-routing-summary.md` — sample routing summary template.\n",
+            "",
+        ),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert (
+        "README.md artifact routing guide must list command required artifact template "
+        "templates/sample-routing-summary.md for /brain-sample"
+    ) in errors
+
+
 def test_command_stop_conditions_must_include_noninteractive_fallback_when_the_command_asks_users(tmp_path):
     write_minimal_repo(tmp_path)
     command = tmp_path / "commands" / "brain-sample.md"
