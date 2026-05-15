@@ -71,6 +71,8 @@ def build_report(
     command_exit_status: int = 0,
     smoke_result: str = "pass",
     transcript_path: str = "not_captured_stdout_only",
+    selected_command: str = "unknown",
+    loaded_skills: list[str] | None = None,
 ) -> dict[str, object]:
     root = Path(root)
     if sandbox_write_mode not in SANDBOX_WRITE_MODES:
@@ -84,11 +86,14 @@ def build_report(
 
     scope_label = run_scope.replace("read_only", "read-only").replace("_", " ")
     command_label = brain_command_mode.replace("_", " ")
+    loaded_skills = loaded_skills or []
     freshness = git_freshness_result(root)
     evidence = [
         f"Runtime smoke captured for {runtime} {version} as {scope_label}.",
         f"Python executable: {sys.executable}",
         f"/brain-* command mode: {command_label}.",
+        f"Selected command: {selected_command}",
+        f"Loaded skills: {', '.join(loaded_skills) if loaded_skills else 'none'}",
         f"Git freshness result: {freshness}",
         f"Command exit status: {command_exit_status}",
         f"Smoke result: {smoke_result}",
@@ -108,6 +113,8 @@ def build_report(
         "transcript_path": transcript_path,
         "sandbox_write_mode": sandbox_write_mode,
         "brain_command_mode": brain_command_mode,
+        "selected_command": selected_command,
+        "loaded_skills": loaded_skills,
         "blocked_commands": blocked_commands,
         "run_scope": run_scope,
         "evidence": evidence,
@@ -139,6 +146,8 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     parser.add_argument("--version", required=True, help="Runtime version string reported by the runtime")
     parser.add_argument("--sandbox-write-mode", choices=sorted(SANDBOX_WRITE_MODES), default="unknown")
     parser.add_argument("--brain-command-mode", choices=sorted(BRAIN_COMMAND_MODES), default="markdown_specs")
+    parser.add_argument("--selected-command", default="unknown", help="Agent Brain command route selected by the runtime, for example /brain-start")
+    parser.add_argument("--loaded-skill", action="append", default=[], help="Skill loaded during the smoke run; repeat for multiple skills")
     parser.add_argument("--run-scope", choices=sorted(RUN_SCOPES), default="read_only_smoke")
     parser.add_argument("--command-exit-status", type=int, default=0, help="Exit status of the smoke command or validation command")
     parser.add_argument("--smoke-result", choices=sorted(SMOKE_RESULTS), default="pass")
@@ -165,6 +174,8 @@ def main(argv: list[str] | None = None) -> int:
         command_exit_status=args.command_exit_status,
         smoke_result=args.smoke_result,
         transcript_path=args.transcript_path,
+        selected_command=args.selected_command,
+        loaded_skills=args.loaded_skill,
     )
     schema_path = args.schema or (args.root / "schemas" / "runtime-smoke.schema.json")
     errors = validate_report_against_schema(report, schema_path)

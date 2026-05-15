@@ -10,12 +10,19 @@
   "transcript_path": "artifacts/runtime-smoke/cli-runtime-example.log",
   "sandbox_write_mode": "read_only",
   "brain_command_mode": "markdown_specs",
+  "selected_command": "/brain-start",
+  "loaded_skills": [
+    "intake",
+    "agent-output-verifier"
+  ],
   "blocked_commands": [
     "python -m pytest -q was blocked by read-only sandbox"
   ],
   "run_scope": "read_only_smoke",
   "evidence": [
     "Runtime opened AGENTBRAIN.md and commands/brain-start.md",
+    "Selected command: /brain-start",
+    "Loaded skills: intake, agent-output-verifier",
     "Command exit status: 0",
     "Smoke result: pass",
     "Transcript path: artifacts/runtime-smoke/cli-runtime-example.log",

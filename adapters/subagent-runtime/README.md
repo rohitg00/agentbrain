@@ -45,7 +45,7 @@ Record every real-runtime smoke run with `templates/runtime-smoke.md` and valida
 the JSON evidence against `schemas/runtime-smoke.schema.json` before trusting
 adapter behavior. Keep the artifact honest about read-only smoke versus full
 validation, blocked commands, command mode, sandbox/write mode, git freshness,
-runtime version, Python executable, smoke result, command exit status, and transcript path.
+runtime version, Python executable, smoke result, command exit status, selected command, loaded skills, and transcript path.
 
 For a subagent runtime smoke test, also record the runtime version, the enabled toolsets used for inspection, whether subagents were read-only or write-capable, and the join review that accepted or rejected each subagent result.
 

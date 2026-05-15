@@ -485,6 +485,9 @@ python scripts/runtime_smoke.py \
   --version <runtime-version> \
   --sandbox-write-mode read_only \
   --brain-command-mode markdown_specs \
+  --selected-command /brain-start \
+  --loaded-skill intake \
+  --loaded-skill agent-output-verifier \
   --run-scope read_only_smoke \
   --command-exit-status 0 \
   --smoke-result pass \

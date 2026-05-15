@@ -126,6 +126,8 @@ REQUIRED_REAL_RUNTIME_SMOKE_EVIDENCE_FIELDS = [
     "transcript path",
     "sandbox/write mode",
     "/brain-* native commands or markdown specs",
+    "selected command",
+    "loaded skills",
     "blocked commands",
 ]
 REQUIRED_REAL_RUNTIME_SMOKE_READ_ONLY_TERMS = ["read-only", "full validation"]
@@ -503,6 +505,8 @@ REQUIRED_ADAPTER_RUNTIME_SMOKE_EVIDENCE_TERMS = [
     "python executable",
     "smoke result",
     "command exit status",
+    "selected command",
+    "loaded skills",
     "transcript path",
 ]
 REQUIRED_CONTRIBUTING_VALIDATION_COMMANDS = [
