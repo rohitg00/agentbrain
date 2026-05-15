@@ -844,6 +844,43 @@ def test_schema_examples_must_validate_against_their_schema(tmp_path):
     )
 
 
+def test_implementation_plan_schema_requires_rollback(tmp_path):
+    write_minimal_repo(tmp_path)
+    schema_path = tmp_path / "schemas" / "implementation-plan.schema.json"
+    schema_path.write_text(
+        json.dumps(
+            {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "title": "Implementation Plan",
+                "type": "object",
+                "additionalProperties": False,
+                "required": ["goal", "tasks", "validation"],
+                "properties": {
+                    "goal": {"type": "string"},
+                    "tasks": {"type": "array"},
+                    "validation": {"type": "array"},
+                    "rollback": {"type": "array"},
+                },
+            }
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    (tmp_path / "examples" / "artifacts" / "implementation-plan.example.json").write_text(
+        json.dumps({"goal": "slice", "tasks": [], "validation": [], "rollback": []}) + "\n",
+        encoding="utf-8",
+    )
+    (tmp_path / "templates" / "implementation-plan.md").write_text(
+        "# Implementation Plan\n\n"
+        "Schema fields: `goal`, `tasks`, `validation`, `rollback`.\n",
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "schemas/implementation-plan.schema.json must require rollback so every build slice has an explicit rollback path" in errors
+
+
 def test_markdown_links_must_point_to_existing_local_files(tmp_path):
     write_minimal_repo(tmp_path)
     (tmp_path / "docs" / "agent-harness.md").write_text(

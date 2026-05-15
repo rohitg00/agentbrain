@@ -6,7 +6,8 @@
   "required": [
     "goal",
     "tasks",
-    "validation"
+    "validation",
+    "rollback"
   ],
   "properties": {
     "goal": {

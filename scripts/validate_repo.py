@@ -1167,6 +1167,10 @@ def validate(root: Path = ROOT) -> list[str]:
             errors.append(f"{rel(path, root)} missing title")
         elif schema.get("title") != expected_schema_title:
             errors.append(f"{rel(path, root)} title must match filename: {expected_schema_title}")
+        if path.name == "implementation-plan.schema.json" and "rollback" not in required_fields:
+            errors.append(
+                "schemas/implementation-plan.schema.json must require rollback so every build slice has an explicit rollback path"
+            )
         if path.name == "handoff-report.schema.json":
             state_schema = properties.get("state", {})
             if not isinstance(state_schema, dict) or state_schema.get("enum") != REQUIRED_STATE_MACHINE_VALUES:
