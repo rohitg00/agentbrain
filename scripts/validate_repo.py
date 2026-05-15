@@ -1282,7 +1282,7 @@ def validate(root: Path = ROOT) -> list[str]:
                 errors.append(f"README.md adapter guide missing adapter: {adapter_ref}")
         for adapter_ref in readme_adapters:
             if not (root / adapter_ref).exists():
-                errors.append(f"README.md adapter guide entry points to missing file: {adapter_ref}")
+                errors.append(f"README.md adapter guide entry points to missing adapter: {adapter_ref}")
         artifact_schema_refs = readme_artifact_routing_entries(readme_text, "schemas")
         artifact_template_refs = readme_artifact_routing_entries(readme_text, "templates")
         for template_ref in artifact_template_refs:

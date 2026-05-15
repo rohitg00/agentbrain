@@ -4431,6 +4431,38 @@ def test_readme_must_list_available_skills(tmp_path):
     assert "README.md core skill catalog missing skill: sample" in errors
 
 
+def test_readme_adapter_guide_must_list_available_adapters(tmp_path):
+    write_minimal_repo(tmp_path)
+    readme = tmp_path / "README.md"
+    readme.write_text(
+        readme.read_text(encoding="utf-8").replace(
+            "- `adapters/sample-adapter/README.md` — sample runtime adapter.\n",
+            "",
+        ),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "README.md adapter guide missing adapter: adapters/sample-adapter/README.md" in errors
+
+
+def test_readme_adapter_guide_entries_must_point_to_existing_adapters(tmp_path):
+    write_minimal_repo(tmp_path)
+    readme = tmp_path / "README.md"
+    readme.write_text(
+        readme.read_text(encoding="utf-8").replace(
+            "- `adapters/sample-adapter/README.md` — sample runtime adapter.\n",
+            "- `adapters/sample-adapter/README.md` — sample runtime adapter.\n- `adapters/missing-adapter/README.md` — stale adapter entry.\n",
+        ),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "README.md adapter guide entry points to missing adapter: adapters/missing-adapter/README.md" in errors
+
+
 def test_readme_repository_map_must_not_list_missing_top_level_directories(tmp_path):
     write_minimal_repo(tmp_path)
     readme = tmp_path / "README.md"
