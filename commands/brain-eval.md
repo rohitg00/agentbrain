@@ -10,6 +10,10 @@ Test a command, skill, or artifact against rubric cases.
 
 Use when changing Agent Brain behavior or checking quality.
 
+## When not to use
+
+Do not use as a generic test run when no case, rubric, expected behavior, or failure mode is defined.
+
 ## Input contract
 
 Command or skill under test, eval case, rubric, known facts, assumptions, constraints, evidence, and approval state.

@@ -10,6 +10,10 @@ Implement the next approved slice only.
 
 Use when an implementation plan has a selected task and validation method.
 
+## When not to use
+
+Do not use before an approved plan, acceptance checks, and failing test or validator-first proof exist.
+
 ## Input contract
 
 Implementation Plan task, relevant files, validation command, known facts, assumptions, constraints, evidence, and approval state.

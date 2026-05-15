@@ -54,6 +54,22 @@ def test_adapter_requires_sample_routing_probe(tmp_path: Path) -> None:
     )
 
 
+def test_command_specs_require_when_not_to_use_section(tmp_path: Path) -> None:
+    write_minimal_repo(tmp_path)
+    command = tmp_path / "commands" / "brain-sample.md"
+    command.write_text(
+        command.read_text(encoding="utf-8").replace(
+            "## When not to use\nDo not use when sample routing is not the right state.\n",
+            "",
+        ),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "commands/brain-sample.md missing ## When not to use" in errors
+
+
 def test_handoff_template_requires_resume_protocol(tmp_path: Path) -> None:
     write_minimal_repo(tmp_path)
     handoff_template = tmp_path / "templates" / "handoff-report.md"
@@ -780,6 +796,8 @@ def write_minimal_repo(root: Path) -> None:
             "Route sample work.",
             "## When to use",
             "Use for sample requests.",
+            "## When not to use",
+            "Do not use when sample routing is not the right state.",
             "## Input contract",
             "Raw request, known facts, assumptions, constraints, evidence, and approval state.",
             "## Skills to load",
@@ -814,6 +832,8 @@ def write_minimal_repo(root: Path) -> None:
             "Evaluate harness behavior against cases.",
             "## When to use",
             "Use when eval cases need evidence-backed scoring.",
+            "## When not to use",
+            "Do not use when no eval case, rubric, expected behavior, or failure mode is defined.",
             "## Input contract",
             "Eval target, case list, known facts, assumptions, constraints, evidence, and approval state.",
             "## Skills to load",

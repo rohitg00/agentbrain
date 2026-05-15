@@ -10,6 +10,10 @@ Maintain source-backed project knowledge.
 
 Use when ingesting sources or updating durable project knowledge.
 
+## When not to use
+
+Do not use when the request needs implementation, launch approval, or ungrounded memory capture before source-backed facts are checked.
+
 ## Input contract
 
 Source material, target knowledge area, staleness or ownership notes, known facts, assumptions, constraints, evidence, and approval state.

@@ -10,6 +10,10 @@ Collect evidence that the artifact works.
 
 Use after build or when evaluating an existing artifact.
 
+## When not to use
+
+Do not use as a substitute for fixing known failures, creating missing tests, or approving unsupported claims.
+
 ## Input contract
 
 Artifact, claims to verify, available logs or test commands, known facts, assumptions, constraints, evidence, and approval state.

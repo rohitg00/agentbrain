@@ -10,6 +10,10 @@ Define user flow, interface behavior, states, and edge cases.
 
 Use when a product brief needs UX or interaction design before planning.
 
+## When not to use
+
+Do not use when the interface, workflow, and failure paths are already specified well enough for implementation planning.
+
 ## Input contract
 
 Product Brief, user flow, constraints, risk list, known facts, assumptions, evidence, and approval state.

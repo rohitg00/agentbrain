@@ -10,6 +10,10 @@ Stress-test assumptions before planning or building.
 
 Use when the idea, brief, design, or plan has unresolved assumptions.
 
+## When not to use
+
+Do not use when code, docs, or sources can answer the question directly without interrupting the user.
+
 ## Input contract
 
 Artifact to challenge plus known facts, assumptions, constraints, evidence, and approval state.

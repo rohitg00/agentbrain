@@ -10,6 +10,10 @@ Route raw intent into the correct Agent Brain state.
 
 Use when a user starts from a vague request, idea, task, or product ambition.
 
+## When not to use
+
+Do not use to skip a more specific command once the state, artifact, evidence gap, and stop condition are already clear.
+
 ## Input contract
 
 Raw request plus known facts, assumptions, constraints, evidence, approval state, and any known context.

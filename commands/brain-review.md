@@ -10,6 +10,10 @@ Review artifact quality before merge, launch, or handoff.
 
 Use after verification or before public/shipping decisions.
 
+## When not to use
+
+Do not use as a rubber stamp for output without artifacts, evidence, diff context, or validation proof.
+
 ## Input contract
 
 Artifact or diff, goals, risk areas, known facts, assumptions, constraints, evidence, and approval state.

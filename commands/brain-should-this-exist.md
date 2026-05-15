@@ -10,6 +10,10 @@ Decide whether the idea should exist and whether it should be agentic.
 
 Use before planning any new product, feature, workflow, or automation.
 
+## When not to use
+
+Do not use when the user has already provided source-backed problem evidence, a non-agent alternative review, and explicit approval to proceed.
+
 ## Input contract
 
 Product idea, target user, current workaround, desired outcome, known facts, assumptions, constraints, evidence, and approval state.

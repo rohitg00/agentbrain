@@ -10,6 +10,10 @@ Make a go/no-go launch decision.
 
 Use when a reviewed artifact is ready for release or publication.
 
+## When not to use
+
+Do not use before verification, review, rollback, monitoring, and support ownership are available.
+
 ## Input contract
 
 Release candidate, verification evidence, rollback plan, owner, known facts, assumptions, constraints, and approval state.

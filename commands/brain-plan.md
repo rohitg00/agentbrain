@@ -10,6 +10,10 @@ Break approved work into small verifiable implementation slices.
 
 Use when the brief/design is strong enough to implement.
 
+## When not to use
+
+Do not use when there is no approved scope, acceptance check, or verification command for the next slice.
+
 ## Input contract
 
 Product Brief, Design Brief, repo context, known facts, assumptions, constraints, evidence, and approval state.

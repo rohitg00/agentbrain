@@ -10,6 +10,10 @@ Convert evidence and decisions into a product brief.
 
 Use after intake, research, and grill have enough signal.
 
+## When not to use
+
+Do not use when the request still needs challenge, research, or a non-agent alternative review before scope is safe.
+
 ## Input contract
 
 Problem, user, evidence, constraints, acceptance criteria, known facts, assumptions, and approval state.

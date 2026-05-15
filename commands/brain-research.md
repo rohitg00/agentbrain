@@ -10,6 +10,10 @@ Turn sources and discussion into a claim ledger.
 
 Use when the decision depends on external evidence or unfamiliar domain context.
 
+## When not to use
+
+Do not use when authoritative sources are unavailable and the next safe action is to stop with a blocker instead of speculating.
+
 ## Input contract
 
 Research question, scope, source constraints, freshness needs, known facts, assumptions, evidence, and approval state.

@@ -10,6 +10,10 @@ Capture reusable learning from a completed or failed loop.
 
 Use after repeated success/failure, a tricky fix, or a shipped workflow.
 
+## When not to use
+
+Do not use for one-off session notes, stale status summaries, secrets, or raw private data that should not become durable memory.
+
 ## Input contract
 
 Repeated outcome, trace, decision, proposed durable update, known facts, assumptions, constraints, evidence, and approval state.

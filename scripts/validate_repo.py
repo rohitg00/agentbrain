@@ -599,6 +599,7 @@ REQUIRED_PLAN_SLICING_TERMS = {
 REQUIRED_COMMAND_SECTIONS = [
     "## Purpose",
     "## When to use",
+    "## When not to use",
     "## Input contract",
     "## Skills to load",
     "## Workflow",
