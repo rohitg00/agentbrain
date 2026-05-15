@@ -236,6 +236,7 @@ REQUIRED_AGENT_HARNESS_VALIDATION_COMMANDS = [
     "python -m pytest -q",
     "python scripts/validate_repo.py",
     "git diff --check",
+    "python scripts/scrub_public_copy.py",
 ]
 REQUIRED_AGENT_HARNESS_VALIDATION_GATE_TERMS = {
     "rm -rf scripts/__pycache__ tests/__pycache__": "docs/agent-harness.md validation gate must include cache cleanup before tests",

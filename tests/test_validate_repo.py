@@ -367,6 +367,7 @@ def write_minimal_repo(root: Path) -> None:
         "python -m pytest -q\n"
         "python scripts/validate_repo.py\n"
         "git diff --check\n"
+        "python scripts/scrub_public_copy.py <exact-source-name>\n"
         "targeted exact-name scrub\n"
         "```\n\n"
         "## Fresh Checkout Bootstrap\n"
@@ -929,6 +930,22 @@ def test_agent_harness_install_must_create_virtual_environment_before_install(tm
 
     assert "docs/agent-harness.md validation section must document: python3 -m venv .venv" in errors
     assert "docs/agent-harness.md validation section must document: source .venv/bin/activate" in errors
+
+
+def test_agent_harness_docs_must_include_exact_scrub_command(tmp_path):
+    write_minimal_repo(tmp_path)
+    harness = tmp_path / "docs" / "agent-harness.md"
+    harness.write_text(
+        harness.read_text(encoding="utf-8").replace(
+            "python scripts/scrub_public_copy.py <exact-source-name>\n",
+            "",
+        ),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "docs/agent-harness.md validation section must document: python scripts/scrub_public_copy.py" in errors
 
 
 def test_agent_harness_worker_guidance_must_define_handoff_requirements(tmp_path):

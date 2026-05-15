@@ -19,9 +19,10 @@ rm -rf scripts/__pycache__ tests/__pycache__
 python -m pytest -q
 python scripts/validate_repo.py
 git diff --check
+python scripts/scrub_public_copy.py <exact-source-name> [more-exact-names...]
 ```
 
-Then run the targeted exact-name scrub from `README.md#validation` before committing public copy changes. The harness is ready only when tests, validation, whitespace checks, and the scrub gate pass.
+Replace `<exact-source-name>` with any user-shared source name, internal tool name, or source-specific branding that must not leak into promoted copy. The harness is ready only when tests, validation, whitespace checks, and the scrub gate pass.
 
 ## Fresh Checkout Bootstrap
 
@@ -35,9 +36,10 @@ rm -rf scripts/__pycache__ tests/__pycache__
 python -m pytest -q
 python scripts/validate_repo.py
 git diff --check
+python scripts/scrub_public_copy.py <exact-source-name> [more-exact-names...]
 ```
 
-For public docs, commands, skills, templates, schemas, or evals, also run the targeted exact-name scrub before treating baseline validation as complete.
+For public docs, commands, skills, templates, schemas, or evals, run the exact-name scrub command before treating baseline validation as complete.
 
 Use the results to answer five setup questions:
 
