@@ -47,6 +47,8 @@ adapter behavior. Keep the artifact honest about read-only smoke versus full
 validation, blocked commands, command mode, sandbox/write mode, git freshness,
 runtime version, Python executable, smoke result, command exit status, selected command, loaded skills, and transcript path.
 
+After validation, classify one sample request and confirm the runtime cites the command file, skill file, artifact contract, evidence checked, and stop condition it used.
+
 For a subagent runtime smoke test, also record the runtime version, the enabled toolsets used for inspection, whether subagents were read-only or write-capable, and the join review that accepted or rejected each subagent result.
 
 ## Output Contract

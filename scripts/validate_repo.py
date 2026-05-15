@@ -532,6 +532,14 @@ REQUIRED_ADAPTER_RUNTIME_SMOKE_EVIDENCE_TERMS = [
     "loaded skills",
     "transcript path",
 ]
+REQUIRED_ADAPTER_SAMPLE_ROUTING_PROBE_TERMS = [
+    "sample request",
+    "command file",
+    "skill file",
+    "artifact contract",
+    "evidence checked",
+    "stop condition",
+]
 REQUIRED_CONTRIBUTING_VALIDATION_COMMANDS = [
     "pytest -q",
     "rm -rf scripts/__pycache__ tests/__pycache__",
@@ -2226,6 +2234,11 @@ def validate(root: Path = ROOT) -> list[str]:
                 if evidence_term not in adapter_validation_body_lower:
                     errors.append(
                         f"{rel(markdown_file, root)} validation section must document runtime smoke evidence field: {evidence_term}"
+                    )
+            for probe_term in REQUIRED_ADAPTER_SAMPLE_ROUTING_PROBE_TERMS:
+                if probe_term not in adapter_validation_body_lower:
+                    errors.append(
+                        f"{rel(markdown_file, root)} validation must include sample request routing probe: {probe_term}"
                     )
             adapter_output_contract_body = section_body(adapter_text, "## Output Contract").lower()
             for output_term in REQUIRED_ADAPTER_OUTPUT_CONTRACT_TERMS:

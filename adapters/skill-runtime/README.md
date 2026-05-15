@@ -48,6 +48,8 @@ adapter behavior. Keep the artifact honest about read-only smoke versus full
 validation, blocked commands, command mode, sandbox/write mode, git freshness,
 runtime version, Python executable, smoke result, command exit status, selected command, loaded skills, and transcript path.
 
+After validation, classify one sample request and confirm the runtime cites the command file, skill file, artifact contract, evidence checked, and stop condition it used.
+
 Then perform one dry run with a low-risk request and confirm the agent names the chosen command, loaded skills, evidence checked, stop conditions, and next action.
 
 ## Recommended skill-runtime flow
