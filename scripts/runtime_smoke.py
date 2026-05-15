@@ -57,6 +57,14 @@ def git_freshness_result(root: Path) -> str:
     return f"stale: HEAD {head} differs from origin/main {origin}"
 
 
+def git_fetch_result(root: Path) -> str:
+    fetch_ok, fetch_output = _run_git(root, "fetch", "origin", "main")
+    if not fetch_ok:
+        return f"unavailable: {fetch_output}"
+    suffix = f" ({fetch_output})" if fetch_output else ""
+    return f"fetched: git fetch origin main succeeded{suffix}"
+
+
 def writable_temp_dir_status(root: Path) -> str:
     try:
         with tempfile.NamedTemporaryFile(prefix="agentbrain-smoke-", dir=root, delete=True) as handle:
@@ -121,6 +129,7 @@ def build_report(
     command_label = brain_command_mode.replace("_", " ")
     loaded_skills = loaded_skills or []
     validation_commands = validation_commands or []
+    fetch_result = git_fetch_result(root)
     freshness = git_freshness_result(root)
     evidence = [
         f"Runtime smoke captured for {runtime} {version} as {scope_label}.",
@@ -129,6 +138,7 @@ def build_report(
         f"Selected command: {selected_command}",
         f"Loaded skills: {', '.join(loaded_skills) if loaded_skills else 'none'}",
         f"Adapter path: {adapter_path}",
+        f"Git fetch result: {fetch_result}",
         f"Git freshness result: {freshness}",
         f"Command exit status: {command_exit_status}",
         f"Smoke result: {smoke_result}",
@@ -143,6 +153,7 @@ def build_report(
         "version": version,
         "python_executable": sys.executable,
         "writable_temp_dir_status": writable_temp_dir_status(root),
+        "git_fetch_result": fetch_result,
         "git_freshness_result": freshness,
         "exact_command": exact_command,
         "command_exit_status": command_exit_status,
@@ -317,6 +328,11 @@ def validate_report_against_schema(
     if report.get("run_scope") == "full_validation" and report.get("adapter_path") == "unknown":
         errors.append("full_validation requires an adapter_path for the runtime boundary")
     git_freshness = report.get("git_freshness_result")
+    git_fetch = report.get("git_fetch_result")
+    if report.get("run_scope") == "full_validation" and not (
+        isinstance(git_fetch, str) and git_fetch.startswith("fetched: git fetch origin main succeeded")
+    ):
+        errors.append("full_validation requires successful git fetch evidence")
     if report.get("run_scope") == "full_validation" and not (
         isinstance(git_freshness, str) and git_freshness.startswith("fresh: HEAD equals origin/main")
     ):

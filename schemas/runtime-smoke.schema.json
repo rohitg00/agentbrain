@@ -8,6 +8,7 @@
     "version",
     "python_executable",
     "writable_temp_dir_status",
+    "git_fetch_result",
     "git_freshness_result",
     "exact_command",
     "command_exit_status",
@@ -43,6 +44,10 @@
         "blocked",
         "not_checked"
       ]
+    },
+    "git_fetch_result": {
+      "type": "string",
+      "minLength": 1
     },
     "git_freshness_result": {
       "type": "string",

@@ -123,6 +123,7 @@ REQUIRED_REAL_RUNTIME_SMOKE_EVIDENCE_FIELDS = [
     "version",
     "python executable",
     "writable temp-dir status",
+    "git fetch result",
     "git freshness result",
     "exact command",
     "command exit status",
