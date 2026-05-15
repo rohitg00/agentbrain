@@ -1331,6 +1331,39 @@ def test_build_command_requires_test_or_validator_first_proof(tmp_path):
     assert "commands/brain-build.md BUILD workflow must require failing test before implementation or validator-first proof" in errors
 
 
+def test_build_command_blocks_refactoring_while_red(tmp_path):
+    write_minimal_repo(tmp_path)
+    command = tmp_path / "commands" / "brain-build.md"
+    command.write_text(
+        "\n".join([
+            "# /brain-build",
+            "## Purpose",
+            "State: BUILD",
+            "",
+            "Implement an approved slice.",
+            "## When to use",
+            "Use when a plan names the next implementation slice.",
+            "## Input contract",
+            "Approved plan slice, known facts, assumptions, constraints, evidence, validation command, and approval state.",
+            "## Skills to load",
+            "Load `sample` for sample routing.",
+            "## Workflow",
+            "Write the failing test before implementation, use validator-first proof for docs, then refactor immediately if the design looks messy.",
+            "## Output",
+            "Required artifact: `templates/changed-artifact-plus-implementation-notes.md`. A concrete build decision with evidence, fresh validation proof, assumptions, risks, open questions, and next recommended state.",
+            "## Stop conditions",
+            "Stop when the request is unsafe.",
+            "## Quality bar",
+            "Evidence is checked before output. Fresh validation proof is captured before handoff.",
+        ]),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "commands/brain-build.md BUILD workflow must block refactoring while tests or validators are red" in errors
+
+
 def test_start_command_requires_baseline_repo_inspection_before_routing(tmp_path):
     write_minimal_repo(tmp_path)
     command = tmp_path / "commands" / "brain-start.md"

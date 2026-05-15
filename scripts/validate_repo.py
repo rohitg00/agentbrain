@@ -503,6 +503,10 @@ REQUIRED_BUILD_COMMAND_PROOF_TERMS = [
     "failing test before implementation",
     "validator-first proof",
 ]
+REQUIRED_BUILD_COMMAND_RED_REFACTOR_TERMS = [
+    "do not refactor while red",
+    "never refactor while red",
+]
 REQUIRED_START_COMMAND_REPO_INSPECTION_TERMS = [
     "git status --short",
     "git log --oneline -5",
@@ -1514,6 +1518,10 @@ def validate(root: Path = ROOT) -> list[str]:
             if not any(term in command_text_lower for term in REQUIRED_BUILD_COMMAND_PROOF_TERMS):
                 errors.append(
                     f"{rel(command, root)} BUILD workflow must require failing test before implementation or validator-first proof"
+                )
+            if not any(term in command_text_lower for term in REQUIRED_BUILD_COMMAND_RED_REFACTOR_TERMS):
+                errors.append(
+                    f"{rel(command, root)} BUILD workflow must block refactoring while tests or validators are red"
                 )
         input_contract = section_body(text, "## Input contract").lower()
         for required_term in REQUIRED_COMMAND_INPUT_CONTRACT_TERMS:
