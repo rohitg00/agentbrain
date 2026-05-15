@@ -70,5 +70,6 @@ Stop and fix the adapter when:
 
 - credentials or private project facts would be written into Agent Brain files,
 - a scheduled job has no scope, loop limit, or stop condition,
+- the runtime treats `/brain-*` as a native command without proof, uses unrestricted execution before approval, claims pytest passed when blocked by a read-only sandbox, or hides stderr instead of recording runtime evidence,
 - a converted skill changes the original trigger, verification, or failure-mode contract,
 - the agent reports success without the validation gate or dry-run evidence.

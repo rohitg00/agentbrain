@@ -64,5 +64,6 @@ Stop and fix the adapter when:
 - the agent answers from memory instead of checking files and commands,
 - subagent outputs are trusted without a join review and conflict check,
 - multiple writers edit overlapping files in parallel,
+- the runtime treats `/brain-*` as a native command without proof, uses unrestricted execution before approval, claims pytest passed when blocked by a read-only sandbox, or hides stderr instead of recording runtime evidence,
 - the final response omits evidence checked, validation output, risks, or next action,
 - the run reports messaging delivery details as repo validation proof.

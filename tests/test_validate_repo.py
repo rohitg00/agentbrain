@@ -54,6 +54,42 @@ def test_adapter_requires_sample_routing_probe(tmp_path: Path) -> None:
     )
 
 
+def test_adapter_failure_modes_must_catch_runtime_overclaim_and_false_validation(tmp_path: Path) -> None:
+    write_minimal_repo(tmp_path)
+    adapter = tmp_path / "adapters" / "sample-adapter" / "README.md"
+    adapter.write_text(
+        adapter.read_text(encoding="utf-8")
+        .replace("native command", "command shortcut")
+        .replace("unrestricted execution", "broad execution")
+        .replace("read-only sandbox", "limited sandbox")
+        .replace("stderr", "log output"),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert any(
+        "adapters/sample-adapter/README.md failure modes must document runtime smoke failure: native command"
+        in error
+        for error in errors
+    )
+    assert any(
+        "adapters/sample-adapter/README.md failure modes must document runtime smoke failure: unrestricted execution"
+        in error
+        for error in errors
+    )
+    assert any(
+        "adapters/sample-adapter/README.md failure modes must document runtime smoke failure: read-only sandbox"
+        in error
+        for error in errors
+    )
+    assert any(
+        "adapters/sample-adapter/README.md failure modes must document runtime smoke failure: stderr"
+        in error
+        for error in errors
+    )
+
+
 def test_adapter_validation_requires_read_only_to_full_validation_promotion_criteria(tmp_path: Path) -> None:
     write_minimal_repo(tmp_path)
     adapter = tmp_path / "adapters" / "sample-adapter" / "README.md"
@@ -514,7 +550,7 @@ def write_minimal_repo(root: Path) -> None:
         "## Output Contract\n\n"
         "Runtime adapter output must report state, selected command, loaded skills, capability matrix, run scope, artifact path, transcript path, command exit status, template, schema, validation evidence, freshness, blockers, stop condition, and next action.\n\n"
         "## Failure Modes\n\n"
-        "Stop if the runtime cannot load files.\n",
+        "Stop if the runtime cannot load files, treats /brain-* as a native command without proof, uses unrestricted execution before approval, claims pytest passed when blocked by a read-only sandbox, or hides stderr instead of recording runtime evidence.\n",
         encoding="utf-8",
     )
 
@@ -4578,7 +4614,7 @@ def test_adapter_readmes_must_include_validation_section(tmp_path):
         "## Install\n\n"
         "Use this adapter in a sample runtime.\n\n"
         "## Failure Modes\n\n"
-        "Stop if the runtime cannot load files.\n",
+        "Stop if the runtime cannot load files, treats /brain-* as a native command without proof, uses unrestricted execution before approval, claims pytest passed when blocked by a read-only sandbox, or hides stderr instead of recording runtime evidence.\n",
         encoding="utf-8",
     )
 
@@ -4600,7 +4636,7 @@ def test_adapter_readmes_must_document_full_quality_gate(tmp_path):
         "python scripts/validate_repo.py\n"
         "```\n\n"
         "## Failure Modes\n\n"
-        "Stop if the runtime cannot load files.\n",
+        "Stop if the runtime cannot load files, treats /brain-* as a native command without proof, uses unrestricted execution before approval, claims pytest passed when blocked by a read-only sandbox, or hides stderr instead of recording runtime evidence.\n",
         encoding="utf-8",
     )
 

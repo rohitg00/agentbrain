@@ -62,6 +62,7 @@ Stop and fix the adapter when:
 
 - the runtime asks for a missing native harness backend instead of reading `commands/`,
 - gateway protocol mismatch or embedded fallback hides the actual smoke result,
+- the runtime treats `/brain-*` as a native command without proof, uses unrestricted execution before approval, claims pytest passed when blocked by a read-only sandbox, or hides stderr instead of recording runtime evidence,
 - approval settings are not checked before a side-effecting command,
 - copied skills drift from the source markdown contract,
 - the handoff omits runtime status, evidence checked, blockers, risks, or next action.

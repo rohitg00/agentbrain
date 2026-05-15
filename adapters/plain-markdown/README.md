@@ -61,5 +61,6 @@ Stop and repair the setup when:
 
 - the agent reads every file instead of the smallest relevant command and skills,
 - the agent invents a command, skill, template, or schema that does not exist,
+- the runtime treats `/brain-*` as a native command without proof, uses unrestricted execution before approval, claims pytest passed when blocked by a read-only sandbox, or hides stderr instead of recording runtime evidence,
 - the agent skips validation because the adapter is "just markdown",
 - the handoff omits evidence checked, assumptions, risks, or next action.

@@ -563,6 +563,12 @@ REQUIRED_ADAPTER_SMOKE_PROMOTION_TERMS = [
     "full local gate",
     "blockers",
 ]
+REQUIRED_ADAPTER_FAILURE_MODE_TERMS = [
+    "native command",
+    "unrestricted execution",
+    "read-only sandbox",
+    "stderr",
+]
 REQUIRED_CONTRIBUTING_VALIDATION_COMMANDS = [
     "pytest -q",
     "rm -rf scripts/__pycache__ tests/__pycache__",
@@ -2339,6 +2345,12 @@ def validate(root: Path = ROOT) -> list[str]:
                 if output_term not in adapter_output_contract_body:
                     errors.append(
                         f"{rel(markdown_file, root)} output contract must document handoff field: {output_term}"
+                    )
+            adapter_failure_modes_body = section_body(adapter_text, "## Failure Modes").lower()
+            for failure_term in REQUIRED_ADAPTER_FAILURE_MODE_TERMS:
+                if failure_term not in adapter_failure_modes_body:
+                    errors.append(
+                        f"{rel(markdown_file, root)} failure modes must document runtime smoke failure: {failure_term}"
                     )
 
     for rubric in sorted((root / "evals" / "rubrics").glob("*.md")):
