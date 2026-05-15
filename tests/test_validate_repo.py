@@ -927,7 +927,7 @@ def write_minimal_repo(root: Path) -> None:
                 "title": "Handoff Report",
                 "type": "object",
                 "additionalProperties": False,
-                "required": ["state", "decision", "evidence_checked", "fresh_validation_proof", "coordination_review", "facts", "assumptions", "open_questions", "risks", "stop_conditions", "next_action"],
+                "required": ["state", "decision", "evidence_checked", "fresh_validation_proof", "coordination_review", "user_change_review", "facts", "assumptions", "open_questions", "risks", "stop_conditions", "next_action"],
                 "properties": {
                     "state": {
                         "type": "string",
@@ -949,6 +949,7 @@ def write_minimal_repo(root: Path) -> None:
                     "evidence_checked": {"type": "array", "minItems": 1, "items": {"type": "string"}},
                     "fresh_validation_proof": {"type": "string"},
                     "coordination_review": {"type": "string"},
+                    "user_change_review": {"type": "string"},
                     "facts": {"type": "array", "items": {"type": "string"}},
                     "assumptions": {"type": "array", "items": {"type": "string"}},
                     "open_questions": {"type": "array", "items": {"type": "string"}},
@@ -1054,6 +1055,7 @@ def write_minimal_repo(root: Path) -> None:
                 "evidence_checked": ["python -m pytest -q exited 0"],
                 "fresh_validation_proof": "python -m pytest -q exited 0 at current commit",
                 "coordination_review": "single-writer slice; no parallel outputs accepted",
+                "user_change_review": "git status --short checked; none observed",
                 "facts": ["validation command passed"],
                 "assumptions": [],
                 "open_questions": [],
@@ -1124,7 +1126,7 @@ def write_minimal_repo(root: Path) -> None:
     templates_dir.mkdir(exist_ok=True)
     (templates_dir / "handoff-report.md").write_text(
         "# Handoff Report\n\n"
-        "Schema fields: `state`, `decision`, `evidence_checked`, `fresh_validation_proof`, `coordination_review`, `facts`, `assumptions`, `open_questions`, `risks`, `stop_conditions`, `next_action`.\n\n"
+        "Schema fields: `state`, `decision`, `evidence_checked`, `fresh_validation_proof`, `coordination_review`, `user_change_review`, `facts`, `assumptions`, `open_questions`, `risks`, `stop_conditions`, `next_action`.\n\n"
         "Resume from a previous handoff only after checking whether evidence is stale; resume only the named next action after refreshing proof.\n",
         encoding="utf-8",
     )
@@ -4957,6 +4959,18 @@ def test_handoff_report_schema_requires_coordination_review(tmp_path):
     errors = validate_repo.validate(tmp_path)
 
     assert "schemas/handoff-report.schema.json must require coordination_review" in errors
+
+
+def test_handoff_report_schema_requires_user_change_review(tmp_path):
+    write_minimal_repo(tmp_path)
+    schema_path = tmp_path / "schemas" / "handoff-report.schema.json"
+    schema = json.loads(schema_path.read_text(encoding="utf-8"))
+    schema["required"].remove("user_change_review")
+    schema_path.write_text(json.dumps(schema), encoding="utf-8")
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "schemas/handoff-report.schema.json must require user_change_review" in errors
 
 
 def test_memory_decision_schema_is_required(tmp_path):

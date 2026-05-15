@@ -1499,6 +1499,8 @@ def validate(root: Path = ROOT) -> list[str]:
                 errors.append("schemas/handoff-report.schema.json must require fresh_validation_proof")
             if "coordination_review" not in required_fields:
                 errors.append("schemas/handoff-report.schema.json must require coordination_review")
+            if "user_change_review" not in required_fields:
+                errors.append("schemas/handoff-report.schema.json must require user_change_review")
             for field in REQUIRED_HANDOFF_SCHEMA_RESUME_FIELDS:
                 if field not in required_fields:
                     errors.append(

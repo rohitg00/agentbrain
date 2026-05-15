@@ -9,6 +9,7 @@
     "evidence_checked",
     "fresh_validation_proof",
     "coordination_review",
+    "user_change_review",
     "facts",
     "assumptions",
     "open_questions",
@@ -60,6 +61,11 @@
       "type": "string",
       "minLength": 1,
       "description": "Single-agent or parallel-worker join review covering worker scopes, accepted evidence, rejected or stale outputs, conflicts, and resolution."
+    },
+    "user_change_review": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Current-run git status and preservation action for pre-existing user changes, including none observed when the working tree was checked and clean."
     },
     "facts": {
       "type": "array",
