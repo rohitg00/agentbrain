@@ -12,6 +12,7 @@ From a fresh checkout, use Python 3.11 so local validation matches CI:
 git clone https://github.com/rohitg00/agentbrain.git
 cd agentbrain
 python3 --version  # expect Python 3.11.x
+# If python3 is not Python 3.11, use python3.11 explicitly or stop and report the runtime blocker.
 python3 -m venv .venv
 source .venv/bin/activate
 python3 -m pip install -r requirements-dev.txt

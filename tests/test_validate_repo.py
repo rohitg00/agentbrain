@@ -796,7 +796,7 @@ def write_minimal_repo(root: Path) -> None:
         encoding="utf-8",
     )
     (case_dir / "real-runtime-smoke-test.md").write_text(
-        "# Eval Case: Real Runtime Smoke Test\n\n## User request\nUse Agent Brain in a real coding-agent runtime and report whether the harness is usable.\n\n## Expected behavior\nStart from a clean checkout, preserve user changes, run the baseline validation, choose the matching command and skills, ask the runtime for a small no-write or sandboxed task, then capture the exact command, sandbox mode, evidence, failure points, and follow-up DevEx fixes.\n\n## Harness route\nRun `/brain-eval` with `agent-output-verifier` and `qa-evidence` to check runtime evidence.\n\n## Failure if\nThe agent only validates fixtures, skips the real runtime, hides auth or sandbox blockers, edits without approval, or reports developer experience quality without command output.\n",
+        "# Eval Case: Real Runtime Smoke Test\n\n## User request\nUse Agent Brain in a real agent runtime and report whether the harness is usable.\n\n## Expected behavior\nStart from a clean checkout, preserve user changes, run the baseline validation, choose the matching command and skills, ask the runtime for a small no-write or sandboxed task, then capture the runtime, version, Python executable, writable temp-dir status, git freshness result, exact command, sandbox mode, evidence, failure points, and follow-up DevEx fixes. If the runtime is read-only, do not claim full validation; record blocked commands and safe checks instead.\n\n## Harness route\nRun `/brain-eval` with `agent-output-verifier` and `qa-evidence` to check runtime evidence.\n\n## Failure if\nThe agent only validates fixtures, skips the real runtime, hides auth or sandbox blockers, edits without approval, or reports developer experience quality without command output.\n",
         encoding="utf-8",
     )
     (root / "evals" / "README.md").write_text(
@@ -1149,6 +1149,26 @@ def test_required_eval_cases_include_real_runtime_smoke_test(tmp_path):
     errors = validate_repo.validate(tmp_path)
 
     assert "missing evals/cases/real-runtime-smoke-test.md" in errors
+
+
+def test_real_runtime_smoke_eval_requires_concrete_runtime_evidence_fields(tmp_path):
+    write_minimal_repo(tmp_path)
+    case = tmp_path / "evals" / "cases" / "real-runtime-smoke-test.md"
+    case.write_text(
+        "# Eval Case: Real Runtime Smoke Test\n\n"
+        "## User request\nUse Agent Brain in a real agent runtime.\n\n"
+        "## Expected behavior\nRun the harness and cite evidence.\n\n"
+        "## Harness route\nRun `/brain-eval` with `agent-output-verifier` to check evidence.\n\n"
+        "## Failure if\nThe report relies on prose.\n",
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "evals/cases/real-runtime-smoke-test.md expected behavior must require runtime evidence field: runtime" in errors
+    assert "evals/cases/real-runtime-smoke-test.md expected behavior must require runtime evidence field: version" in errors
+    assert "evals/cases/real-runtime-smoke-test.md expected behavior must require runtime evidence field: writable temp-dir status" in errors
+    assert "evals/cases/real-runtime-smoke-test.md expected behavior must distinguish read-only smoke from full validation" in errors
 
 
 def test_required_eval_cases_include_source_branded_skill_name(tmp_path):

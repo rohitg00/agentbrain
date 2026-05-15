@@ -105,6 +105,14 @@ REQUIRED_EVAL_CASES = [
     "evals/cases/real-runtime-smoke-test.md",
 ]
 REQUIRED_EVAL_DOCS = ["evals/README.md"]
+REQUIRED_REAL_RUNTIME_SMOKE_EVIDENCE_FIELDS = [
+    "runtime",
+    "version",
+    "python executable",
+    "writable temp-dir status",
+    "git freshness result",
+]
+REQUIRED_REAL_RUNTIME_SMOKE_READ_ONLY_TERMS = ["read-only", "full validation"]
 REQUIRED_WORKFLOWS = [".github/workflows/quality.yml"]
 REQUIRED_QUALITY_WORKFLOW_RUNS = [
     "python -m pip install -r requirements-dev.txt",
@@ -1868,6 +1876,16 @@ def validate(root: Path = ROOT) -> list[str]:
         expected_behavior = section_body(text, "## Expected behavior").lower()
         if "evidence" not in expected_behavior:
             errors.append(f"{rel(case, root)} expected behavior must name evidence")
+        if case.name == "real-runtime-smoke-test.md":
+            for field in REQUIRED_REAL_RUNTIME_SMOKE_EVIDENCE_FIELDS:
+                if field.lower() not in expected_behavior:
+                    errors.append(
+                        f"{rel(case, root)} expected behavior must require runtime evidence field: {field}"
+                    )
+            if not all(term in expected_behavior for term in REQUIRED_REAL_RUNTIME_SMOKE_READ_ONLY_TERMS):
+                errors.append(
+                    f"{rel(case, root)} expected behavior must distinguish read-only smoke from full validation"
+                )
         harness_route = section_body(text, "## Harness route")
         if harness_route.strip():
             route_command_refs = set(re.findall(r"`(/brain-[a-z0-9-]+)`", harness_route))

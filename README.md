@@ -19,6 +19,7 @@ running the local gate with Python 3.11.
 git clone https://github.com/rohitg00/agentbrain.git
 cd agentbrain
 python3 --version  # expect Python 3.11.x
+# If python3 is not Python 3.11, use python3.11 explicitly or stop and report the runtime blocker.
 python3 -m venv .venv
 source .venv/bin/activate
 python3 -m pip install -r requirements-dev.txt
@@ -344,6 +345,9 @@ Do not reuse stale validation proof after code, docs, schemas, templates, comman
 
 Use adapters when the runtime cannot load Agent Brain directly. Each adapter must keep the same setup, evidence, stop-condition, and validation contracts as the core harness.
 
+- `adapters/read-only-cli/README.md` — run CLI agent-runtime smoke checks while preserving sandbox, Python, and markdown-command constraints.
+- `adapters/subagent-runtime/README.md` — run subagent-capable runtimes with file-backed command routing, join reviews, and terminal-friendly handoffs.
+- `adapters/approval-gateway-runtime/README.md` — run approval-gated gateway smoke checks with explicit approval, skill-loading, and fallback evidence.
 - `adapters/skill-runtime/README.md` — wire Agent Brain into a tool-enabled skill runtime while preserving portable command and skill contracts.
 - `adapters/plain-markdown/README.md` — run Agent Brain in agents that can only read markdown files and need manual command/skill routing.
 

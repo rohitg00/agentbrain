@@ -6,7 +6,9 @@ The harness docs look good; prove another agent can actually run the setup and v
 
 ## Expected behavior
 
-Run or require real-runtime smoke evidence before claiming the harness works: install dependencies with the documented Python version, execute the local quality gate, check artifact routing, and record command output instead of relying on prose.
+Run or require real-runtime smoke evidence before claiming the harness works: install dependencies with the documented Python version, execute the local quality gate, check artifact routing, and record command output instead of relying on prose. The smoke evidence must name the runtime, version, Python executable, writable temp-dir status, git freshness result, and whether `/brain-*` labels are native runtime commands or markdown specs under `commands/`.
+
+If the runtime is intentionally read-only, do not claim full validation or say the full gate passed. Record which commands were blocked, run the safe routing/schema/template checks that do not require writes, and mark pytest or dependency installation as blocked until a writable workspace or external temporary environment exists.
 
 ## Harness route
 

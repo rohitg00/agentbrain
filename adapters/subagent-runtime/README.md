@@ -1,0 +1,48 @@
+# Subagent Runtime Adapter
+
+Use this adapter when validating Agent Brain inside a skill-enabled runtime that can read files, load skills, run terminal/file checks, and spawn subagents. The adapter should keep the harness evidence-first instead of turning the repo into private chat context.
+
+## Install
+
+Before wiring the subagent runtime to the harness, run `git status --short` and `git log --oneline -5`, then run `git fetch origin main`, `git rev-parse HEAD`, and `git rev-parse origin/main`; confirm HEAD equals origin/main before trusting the checkout. Run baseline validation before editing, and preserve user changes before changing adapter instructions.
+
+1. Verify the runtime version and available toolsets.
+2. Start with `AGENTBRAIN.md`, `PRINCIPLES.md`, `ANTI_RATIONALIZATION.md`, and `docs/state-machine.md`.
+3. Use `commands/` as the command catalog, not private memory.
+4. Load matching `skills/*/SKILL.md` files or the runtime's skill loader when available.
+5. Use subagents for read-only audits and independent reviews, but keep one writer for edits.
+6. Return terminal-friendly handoffs with no platform-specific attachment markers.
+
+## Minimal instruction
+
+```text
+Use Agent Brain as the operating harness. In a subagent-capable runtime, inspect AGENTBRAIN.md first, choose the matching command from commands/, load only the required skills from skills/, produce artifacts from templates/, check schemas/, and run real tool-backed validation before claiming success. Use subagents for independent read-only audits or review, but join their evidence and keep one writer for repo changes.
+```
+
+## Validation
+
+For a normal writable checkout, run the same quality gate from the repository root:
+
+```bash
+python3 -m pip install -r requirements-dev.txt
+rm -rf scripts/__pycache__ tests/__pycache__
+python -m pytest -q
+python scripts/validate_repo.py
+git diff --check
+```
+
+Run a targeted exact-name scrub before public adapter copy changes so source
+runtime names, internal tools, or one-off branding do not leak into reusable
+harness instructions.
+
+For a subagent runtime smoke test, also record the runtime version, the enabled toolsets used for inspection, whether subagents were read-only or write-capable, and the join review that accepted or rejected each subagent result.
+
+## Failure Modes
+
+Stop and fix the adapter when:
+
+- the agent answers from memory instead of checking files and commands,
+- subagent outputs are trusted without a join review and conflict check,
+- multiple writers edit overlapping files in parallel,
+- the final response omits evidence checked, validation output, risks, or next action,
+- the run reports messaging delivery details as repo validation proof.
