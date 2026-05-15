@@ -124,7 +124,9 @@ def build_report(
     }
 
 
-def validate_report_against_schema(report: dict[str, object], schema_path: Path) -> list[str]:
+def validate_report_against_schema(
+    report: dict[str, object], schema_path: Path, *, root: Path | None = None
+) -> list[str]:
     schema = json.loads(Path(schema_path).read_text(encoding="utf-8"))
     validator = Draft202012Validator(schema)
     errors = [error.message for error in sorted(validator.iter_errors(report), key=lambda error: list(error.path))]
@@ -161,6 +163,12 @@ def validate_report_against_schema(report: dict[str, object], schema_path: Path)
         errors.append("full_validation requires fresh git checkout with HEAD equal to origin/main")
     if report.get("run_scope") == "full_validation" and report.get("writable_temp_dir_status") != "writable":
         errors.append("full_validation requires writable temporary directory evidence")
+    if root is not None and report.get("run_scope") == "full_validation":
+        selected_command = report.get("selected_command")
+        if isinstance(selected_command, str) and selected_command.startswith("/brain-"):
+            command_rel = f"commands/{selected_command.removeprefix('/')}.md"
+            if not (Path(root) / command_rel).is_file():
+                errors.append(f"selected command file is missing: {command_rel}")
 
     return errors
 
@@ -205,7 +213,7 @@ def main(argv: list[str] | None = None) -> int:
         adapter_path=args.adapter_path,
     )
     schema_path = args.schema or (args.root / "schemas" / "runtime-smoke.schema.json")
-    errors = validate_report_against_schema(report, schema_path)
+    errors = validate_report_against_schema(report, schema_path, root=args.root)
     if errors:
         sys.stderr.write("runtime smoke schema validation failed:\n")
         for error in errors:

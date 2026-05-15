@@ -180,6 +180,61 @@ def test_full_validation_runtime_smoke_rejects_blocked_commands(tmp_path: Path):
     assert any("full_validation cannot list blocked_commands" in error for error in errors)
 
 
+def test_full_validation_runtime_smoke_rejects_missing_selected_command_file(tmp_path: Path):
+    report = runtime_smoke.build_report(
+        root=tmp_path,
+        runtime="generic-cli-runtime",
+        version="1.2.3",
+        sandbox_write_mode="workspace_write",
+        brain_command_mode="markdown_specs",
+        run_scope="full_validation",
+        blocked_commands=[],
+        exact_command="python scripts/runtime_smoke.py --runtime generic-cli-runtime --version 1.2.3 --run-scope full_validation --selected-command /brain-missing",
+        selected_command="/brain-missing",
+        loaded_skills=["intake"],
+        adapter_path="adapters/read-only-cli/README.md",
+        transcript_path="artifacts/runtime-smoke/generic-cli-runtime-2026-05-15.log",
+    )
+
+    errors = runtime_smoke.validate_report_against_schema(report, Path("schemas/runtime-smoke.schema.json"), root=tmp_path)
+
+    assert any("selected command file is missing: commands/brain-missing.md" in error for error in errors)
+
+
+def test_runtime_smoke_cli_checks_selected_command_file_against_root(tmp_path: Path, capsys):
+    exit_code = runtime_smoke.main(
+        [
+            "--root",
+            str(tmp_path),
+            "--schema",
+            str(Path("schemas/runtime-smoke.schema.json")),
+            "--runtime",
+            "generic-cli-runtime",
+            "--version",
+            "1.2.3",
+            "--sandbox-write-mode",
+            "workspace_write",
+            "--brain-command-mode",
+            "markdown_specs",
+            "--run-scope",
+            "full_validation",
+            "--selected-command",
+            "/brain-missing",
+            "--loaded-skill",
+            "intake",
+            "--adapter-path",
+            "adapters/read-only-cli/README.md",
+            "--transcript-path",
+            "artifacts/runtime-smoke/generic-cli-runtime-2026-05-15.log",
+        ]
+    )
+
+    captured = capsys.readouterr()
+
+    assert exit_code == 1
+    assert "selected command file is missing: commands/brain-missing.md" in captured.err
+
+
 def test_read_only_runtime_smoke_requires_blocker_when_smoke_is_blocked(tmp_path: Path):
     report = runtime_smoke.build_report(
         root=tmp_path,
