@@ -61,12 +61,4 @@ The artifact should be concise, auditable, and ready for the next Agent Brain st
 
 ## Example
 
-Input: "Build an assistant that handles customer refunds."
-
-Better response pattern:
-
-1. identify this as high-risk automation,
-2. ask who approves refunds and what policies apply,
-3. consider non-agent alternatives like form plus approval queue,
-4. require human-in-loop gate,
-5. produce the relevant artifact and next state instead of building immediately.
+A request says, "Position this as the default harness for teams." The skill should identify the buyer/user, alternative non-agent workflows, proof needed for adoption claims, and neutral messaging boundaries, then produce a market grill report that separates evidence from aspiration.

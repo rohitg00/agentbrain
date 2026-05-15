@@ -61,12 +61,4 @@ The artifact should be concise, auditable, and ready for the next Agent Brain st
 
 ## Example
 
-Input: "Build an assistant that handles customer refunds."
-
-Better response pattern:
-
-1. identify this as high-risk automation,
-2. ask who approves refunds and what policies apply,
-3. consider non-agent alternatives like form plus approval queue,
-4. require human-in-loop gate,
-5. produce the relevant artifact and next state instead of building immediately.
+A plan is blocked by "needs approval." The ladder should ask the smallest next question first: what side effect is approval-gated, what safe read-only alternative exists, what assumption can unblock planning, and what evidence would change the route.

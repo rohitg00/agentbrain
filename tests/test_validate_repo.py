@@ -159,6 +159,31 @@ def test_skill_catalog_quality_bar_must_keep_runtime_checks(tmp_path: Path) -> N
     assert "skills/README.md quality bar must mention: verification is runnable or inspectable" in errors
 
 
+def test_skill_examples_must_not_duplicate_another_skill(tmp_path: Path) -> None:
+    write_minimal_repo(tmp_path)
+    first = tmp_path / "skills" / "sample" / "SKILL.md"
+    second_dir = tmp_path / "skills" / "duplicate-sample"
+    second_dir.mkdir()
+    second = second_dir / "SKILL.md"
+    second.write_text(
+        first.read_text(encoding="utf-8").replace(
+            "name: sample",
+            "name: duplicate-sample",
+        ).replace(
+            "# sample",
+            "# duplicate-sample",
+        ),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert any(
+        "example duplicates" in error and "duplicate-sample" in error and "sample" in error
+        for error in errors
+    )
+
+
 def write_minimal_repo(root: Path) -> None:
     for rel in [
         "AGENTBRAIN.md",
@@ -852,10 +877,22 @@ def write_minimal_repo(root: Path) -> None:
         encoding="utf-8",
     )
 
-    for skill_name, purpose in [
-        ("evidence-research", "source-backed research evidence"),
-        ("qa-evidence", "verification proof for review and shipping decisions"),
-        ("runtime-smoke", "real-runtime smoke evidence with sandbox, command-boundary, and blocked-command details"),
+    for skill_name, purpose, example in [
+        (
+            "evidence-research",
+            "source-backed research evidence",
+            "Split an adoption claim into checked sources, unknowns, and recheck triggers before accepting it.",
+        ),
+        (
+            "qa-evidence",
+            "verification proof for review and shipping decisions",
+            "Tie a passing validation claim to exact commands, artifacts checked, and unresolved blockers.",
+        ),
+        (
+            "runtime-smoke",
+            "real-runtime smoke evidence with sandbox, command-boundary, and blocked-command details",
+            "Run a read-only adapter smoke and record command mode, sandbox mode, blocked commands, and transcript path.",
+        ),
     ]:
         skill_dir = root / "skills" / skill_name
         skill_dir.mkdir(parents=True)
@@ -883,7 +920,7 @@ def write_minimal_repo(root: Path) -> None:
                 "## Failure Modes",
                 "Stop when evidence is unavailable, stale, unsafe, or out of scope.",
                 "## Example",
-                "Verify a claim through checked sources before accepting it.",
+                example,
             ]),
             encoding="utf-8",
         )

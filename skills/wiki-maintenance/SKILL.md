@@ -61,12 +61,4 @@ The artifact should be concise, auditable, and ready for the next Agent Brain st
 
 ## Example
 
-Input: "Build an assistant that handles customer refunds."
-
-Better response pattern:
-
-1. identify this as high-risk automation,
-2. ask who approves refunds and what policies apply,
-3. consider non-agent alternatives like form plus approval queue,
-4. require human-in-loop gate,
-5. produce the relevant artifact and next state instead of building immediately.
+A new source contradicts an existing project note. The skill should preserve both claims with provenance, mark freshness and confidence, update only the relevant wiki section, and record a recheck trigger instead of overwriting durable knowledge with unverified synthesis.

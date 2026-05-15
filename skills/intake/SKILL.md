@@ -61,12 +61,4 @@ The artifact should be concise, auditable, and ready for the next Agent Brain st
 
 ## Example
 
-Input: "Build an assistant that handles customer refunds."
-
-Better response pattern:
-
-1. identify this as high-risk automation,
-2. ask who approves refunds and what policies apply,
-3. consider non-agent alternatives like form plus approval queue,
-4. require human-in-loop gate,
-5. produce the relevant artifact and next state instead of building immediately.
+A user says, "Make the harness better." Intake should capture known facts, assumptions, constraints, missing evidence, approval state, and likely next command; in a scheduled run, choose the safest documented default and create an intake summary rather than asking a broad follow-up.

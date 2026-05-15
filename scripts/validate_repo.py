@@ -1618,6 +1618,7 @@ def validate(root: Path = ROOT) -> list[str]:
             if source not in research_text:
                 errors.append(f"docs/research-watchlist.md missing tracked source: {source}")
 
+    seen_skill_examples: dict[str, str] = {}
     for skill in sorted((root / "skills").glob("*/SKILL.md")):
         text = skill.read_text(errors="ignore")
         single_h1_error = validate_single_h1(skill, root)
@@ -1656,6 +1657,14 @@ def validate(root: Path = ROOT) -> list[str]:
             for required_term, message in REQUIRED_PLAN_SLICING_TERMS.items():
                 if required_term not in text_lower:
                     errors.append(message)
+        example = normalized_section_body(text, "## Example")
+        if example:
+            if example in seen_skill_examples:
+                errors.append(
+                    f"{rel(skill, root)} example duplicates {seen_skill_examples[example]}"
+                )
+            else:
+                seen_skill_examples[example] = rel(skill, root)
 
     seen_workflows: dict[str, str] = {}
     seen_quality_bars: dict[str, str] = {}

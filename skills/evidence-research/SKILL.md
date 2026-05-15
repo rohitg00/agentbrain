@@ -61,12 +61,4 @@ The artifact should be concise, auditable, and ready for the next Agent Brain st
 
 ## Example
 
-Input: "Build an assistant that handles customer refunds."
-
-Better response pattern:
-
-1. identify this as high-risk automation,
-2. ask who approves refunds and what policies apply,
-3. consider non-agent alternatives like form plus approval queue,
-4. require human-in-loop gate,
-5. produce the relevant artifact and next state instead of building immediately.
+A claim says, "Developers already want this workflow." The skill should split the claim into source-backed subclaims, record canonical sources, mark unsupported adoption language as unknown, and produce a research claim ledger with recheck triggers before any roadmap or public copy uses the claim.
