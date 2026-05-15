@@ -697,6 +697,22 @@ def write_minimal_repo(root: Path) -> None:
             encoding="utf-8",
         )
 
+    (root / "skills" / "README.md").write_text(
+        "# Skills\n\n"
+        "Portable skills are small runtime-neutral procedures. Load only the skill named by the selected command, and keep examples, verification, and failure modes close to the workflow.\n\n"
+        "## Catalog\n\n"
+        "- [`activity-recap`](activity-recap/SKILL.md) — use for activity recap synthesis.\n"
+        "- [`agent-output-verifier`](agent-output-verifier/SKILL.md) — use for output review before handoff.\n"
+        "- [`ci-recovery`](ci-recovery/SKILL.md) — use for CI failure recovery.\n"
+        "- [`context-memory`](context-memory/SKILL.md) — use for memory routing.\n"
+        "- [`domain-language`](domain-language/SKILL.md) — use for project vocabulary alignment.\n"
+        "- [`evidence-research`](evidence-research/SKILL.md) — use for source-backed evidence.\n"
+        "- [`qa-evidence`](qa-evidence/SKILL.md) — use for verification proof.\n"
+        "- [`runtime-smoke`](runtime-smoke/SKILL.md) — use for real-runtime smoke evidence.\n"
+        "- [`sample`](sample/SKILL.md) — use for sample request routing.\n",
+        encoding="utf-8",
+    )
+
     workflow_dir = root / ".github" / "workflows"
     workflow_dir.mkdir(parents=True)
     (workflow_dir / "quality.yml").write_text(
@@ -6363,3 +6379,28 @@ def test_runtime_smoke_script_is_required_for_real_runtime_evidence(tmp_path):
     errors = validate_repo.validate(tmp_path)
 
     assert "missing scripts/runtime_smoke.py" in errors
+
+
+def test_skills_readme_is_required_as_runtime_catalog(tmp_path):
+    write_minimal_repo(tmp_path)
+    (tmp_path / "skills" / "README.md").unlink()
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "missing skills/README.md" in errors
+
+
+def test_skills_readme_must_catalog_every_skill_with_links(tmp_path):
+    write_minimal_repo(tmp_path)
+    skills_readme = tmp_path / "skills" / "README.md"
+    skills_readme.write_text(
+        skills_readme.read_text(encoding="utf-8").replace(
+            "- [`sample`](sample/SKILL.md) — use for sample request routing.",
+            "",
+        ),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "skills/README.md catalog missing skill link: sample" in errors

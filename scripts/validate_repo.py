@@ -16,7 +16,12 @@ REQUIRED_ROOT = [
     "ANTI_RATIONALIZATION.md",
     "CONTRIBUTING.md",
 ]
-REQUIRED_FILES = ["requirements-dev.txt", "scripts/scrub_public_copy.py", "scripts/runtime_smoke.py"]
+REQUIRED_FILES = [
+    "requirements-dev.txt",
+    "scripts/scrub_public_copy.py",
+    "scripts/runtime_smoke.py",
+    "skills/README.md",
+]
 REQUIRED_DEV_REQUIREMENTS = ["jsonschema", "pytest"]
 REQUIRED_DIRECTORIES = ["schemas"]
 REQUIRED_ARTIFACT_FILES = [
@@ -1653,6 +1658,15 @@ def validate(root: Path = ROOT) -> list[str]:
         skill_name = skill.parent.name
         if skill_name not in skills_loaded_by_commands:
             errors.append(f"{rel(skill, root)} must be loaded by at least one command")
+
+    skills_readme = root / "skills" / "README.md"
+    if skills_readme.exists():
+        skills_readme_text = skills_readme.read_text(errors="ignore")
+        for skill in sorted((root / "skills").glob("*/SKILL.md")):
+            skill_name = skill.parent.name
+            expected_link = f"[`{skill_name}`]({skill_name}/SKILL.md)"
+            if expected_link not in skills_readme_text:
+                errors.append(f"skills/README.md catalog missing skill link: {skill_name}")
 
     readme = root / "README.md"
     if readme.exists():
