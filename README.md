@@ -449,6 +449,7 @@ rm -rf scripts/__pycache__ tests/__pycache__
 python -m pytest -q
 python scripts/validate_repo.py
 git diff --check
+python scripts/scrub_public_copy.py <exact-source-name> [more-exact-names...]
 ```
 
 Also run a targeted exact-name scrub before committing public copy changes:

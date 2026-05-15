@@ -1358,6 +1358,11 @@ def validate(root: Path = ROOT) -> list[str]:
         for run_command in REQUIRED_README_VALIDATION_COMMANDS:
             if run_command not in readme_text:
                 errors.append(f"README.md validation section must document: {run_command}")
+        readme_validation_body = section_body(readme_text, "## Validation")
+        if "python scripts/scrub_public_copy.py" not in readme_validation_body:
+            errors.append(
+                "README.md validation section must document exact scrub script command: python scripts/scrub_public_copy.py"
+            )
         readme_quickstart = section_body(readme_text, "## Quickstart")
         readme_quickstart_lower = readme_quickstart.lower()
         for run_command in REQUIRED_README_QUICKSTART_COMMANDS:
