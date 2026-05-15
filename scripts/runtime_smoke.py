@@ -17,6 +17,11 @@ SANDBOX_WRITE_MODES = {"read_only", "workspace_write", "approval_gated", "unrest
 BRAIN_COMMAND_MODES = {"native_commands", "markdown_specs", "mixed", "unknown"}
 RUN_SCOPES = {"read_only_smoke", "full_validation"}
 SMOKE_RESULTS = {"pass", "blocked", "fail"}
+FULL_VALIDATION_GATE_COMMANDS = [
+    "python -m pytest -q",
+    "python scripts/validate_repo.py",
+    "git diff --check",
+]
 
 
 def _run_git(root: Path, *args: str) -> tuple[bool, str]:
@@ -94,6 +99,7 @@ def build_report(
     selected_command: str = "unknown",
     loaded_skills: list[str] | None = None,
     adapter_path: str = "unknown",
+    validation_commands: list[str] | None = None,
 ) -> dict[str, object]:
     root = Path(root)
     if sandbox_write_mode not in SANDBOX_WRITE_MODES:
@@ -108,6 +114,7 @@ def build_report(
     scope_label = run_scope.replace("read_only", "read-only").replace("_", " ")
     command_label = brain_command_mode.replace("_", " ")
     loaded_skills = loaded_skills or []
+    validation_commands = validation_commands or []
     freshness = git_freshness_result(root)
     evidence = [
         f"Runtime smoke captured for {runtime} {version} as {scope_label}.",
@@ -121,6 +128,7 @@ def build_report(
         f"Smoke result: {smoke_result}",
         f"Transcript path: {transcript_path}",
         f"Blocked commands recorded: {', '.join(blocked_commands) if blocked_commands else 'none'}.",
+        f"Validation commands: {', '.join(validation_commands) if validation_commands else 'none'}.",
     ]
 
     return {
@@ -140,6 +148,7 @@ def build_report(
         "adapter_path": adapter_path,
         "blocked_commands": blocked_commands,
         "run_scope": run_scope,
+        "validation_commands": validation_commands,
         "evidence": evidence,
     }
 
@@ -192,6 +201,12 @@ def validate_report_against_schema(
         errors.append("full_validation requires fresh git checkout with HEAD equal to origin/main")
     if report.get("run_scope") == "full_validation" and report.get("writable_temp_dir_status") != "writable":
         errors.append("full_validation requires writable temporary directory evidence")
+    validation_commands = report.get("validation_commands")
+    recorded_validation_commands = validation_commands if isinstance(validation_commands, list) else []
+    if report.get("run_scope") == "full_validation":
+        for required_command in FULL_VALIDATION_GATE_COMMANDS:
+            if required_command not in recorded_validation_commands:
+                errors.append(f"full_validation must record successful local gate command: {required_command}")
     if root is not None and report.get("smoke_result") == "pass":
         adapter_path = report.get("adapter_path")
         if isinstance(adapter_path, str) and adapter_path != "unknown" and not (Path(root) / adapter_path).is_file():
@@ -236,6 +251,12 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     parser.add_argument("--smoke-result", choices=sorted(SMOKE_RESULTS), default="pass")
     parser.add_argument("--transcript-path", default="not_captured_stdout_only", help="Path or durable location for the runtime transcript/log captured during smoke")
     parser.add_argument("--blocked-command", action="append", default=[], help="Command that was blocked or intentionally skipped")
+    parser.add_argument(
+        "--validation-command",
+        action="append",
+        default=[],
+        help="Successful local gate command completed during full validation; repeat for each gate command",
+    )
     parser.add_argument("--root", type=Path, default=Path.cwd(), help="Repository root to inspect")
     parser.add_argument("--schema", type=Path, help="Runtime-smoke schema path; defaults to <root>/schemas/runtime-smoke.schema.json")
     parser.add_argument("--output", type=Path, help="Optional JSON output path; stdout is used when omitted")
@@ -260,6 +281,7 @@ def main(argv: list[str] | None = None) -> int:
         selected_command=args.selected_command,
         loaded_skills=args.loaded_skill,
         adapter_path=args.adapter_path,
+        validation_commands=args.validation_command,
     )
     schema_path = args.schema or (args.root / "schemas" / "runtime-smoke.schema.json")
     errors = validate_report_against_schema(report, schema_path, root=args.root)

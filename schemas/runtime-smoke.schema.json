@@ -20,6 +20,7 @@
     "adapter_path",
     "blocked_commands",
     "run_scope",
+    "validation_commands",
     "evidence"
   ],
   "properties": {
@@ -110,6 +111,13 @@
         "read_only_smoke",
         "full_validation"
       ]
+    },
+    "validation_commands": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
     },
     "evidence": {
       "type": "array",
