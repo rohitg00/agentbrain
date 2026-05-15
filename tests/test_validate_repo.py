@@ -949,6 +949,41 @@ def test_build_command_requires_test_or_validator_first_proof(tmp_path):
     assert "commands/brain-build.md BUILD workflow must require failing test before implementation or validator-first proof" in errors
 
 
+def test_start_command_requires_baseline_repo_inspection_before_routing(tmp_path):
+    write_minimal_repo(tmp_path)
+    command = tmp_path / "commands" / "brain-start.md"
+    command.write_text(
+        "\n".join([
+            "# /brain-start",
+            "## Purpose",
+            "State: INTAKE",
+            "",
+            "Route raw intent into the correct state.",
+            "## When to use",
+            "Use when a user starts from a vague request.",
+            "## Input contract",
+            "Raw request plus known context.",
+            "## Skills to load",
+            "Load `sample` for sample routing.",
+            "## Workflow",
+            "Capture the raw request and choose the earliest safe command.",
+            "## Output",
+            "A concrete intake decision with evidence, fresh validation proof, assumptions, risks, open questions, and next recommended state.",
+            "## Stop conditions",
+            "Stop when the request is unsafe.",
+            "## Quality bar",
+            "Evidence is checked before output. Fresh validation proof is captured before handoff.",
+        ]),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "commands/brain-start.md workflow must inspect repository state before routing: git status --short" in errors
+    assert "commands/brain-start.md workflow must inspect repository state before routing: git log --oneline -5" in errors
+    assert "commands/brain-start.md workflow must inspect repository state before routing: baseline validation" in errors
+
+
 def test_agent_harness_must_include_fresh_checkout_bootstrap(tmp_path):
     write_minimal_repo(tmp_path)
     harness = tmp_path / "docs" / "agent-harness.md"

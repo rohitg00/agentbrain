@@ -400,6 +400,11 @@ REQUIRED_BUILD_COMMAND_PROOF_TERMS = [
     "failing test before implementation",
     "validator-first proof",
 ]
+REQUIRED_START_COMMAND_REPO_INSPECTION_TERMS = [
+    "git status --short",
+    "git log --oneline -5",
+    "baseline validation",
+]
 COMMAND_ASK_USER_TERMS = [
     "ask at most",
     "ask for human input",
@@ -1240,6 +1245,13 @@ def validate(root: Path = ROOT) -> list[str]:
                 errors.append(
                     f"{rel(command, root)} BUILD workflow must require failing test before implementation or validator-first proof"
                 )
+        if command.stem == "brain-start":
+            workflow_body = section_body(text, "## Workflow").lower()
+            for required_term in REQUIRED_START_COMMAND_REPO_INSPECTION_TERMS:
+                if required_term not in workflow_body:
+                    errors.append(
+                        f"{rel(command, root)} workflow must inspect repository state before routing: {required_term}"
+                    )
         command_text_lower = text.lower()
         if any(term in command_text_lower for term in COMMAND_ASK_USER_TERMS):
             for required_term in COMMAND_NONINTERACTIVE_FALLBACK_TERMS:
