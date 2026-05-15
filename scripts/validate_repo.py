@@ -1807,6 +1807,22 @@ def validate(root: Path = ROOT) -> list[str]:
                     errors.append(
                         f"commands/README.md catalog entry for {command_name} must name routing field: {field}"
                     )
+            command_text = command.read_text(errors="ignore")
+            expected_state = command_lifecycle_state(command_text)
+            if expected_state and f"State: {expected_state}" not in entry:
+                errors.append(
+                    f"commands/README.md catalog entry for {command_name} must match command lifecycle state: {expected_state}"
+                )
+            expected_artifact = command_required_artifact_template(command_text)
+            if expected_artifact and f"Artifact: `{expected_artifact}`" not in entry:
+                errors.append(
+                    f"commands/README.md catalog entry for {command_name} must match command artifact: {expected_artifact}"
+                )
+            for skill_name in command_skills_to_load(command_text):
+                if f"`{skill_name}`" not in entry:
+                    errors.append(
+                        f"commands/README.md catalog entry for {command_name} must include command skill: {skill_name}"
+                    )
 
     readme = root / "README.md"
     if readme.exists():

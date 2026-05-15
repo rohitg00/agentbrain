@@ -67,6 +67,63 @@ def test_command_catalog_entries_must_name_routing_fields(tmp_path: Path) -> Non
     assert "commands/README.md catalog entry for /brain-sample must name routing field: Artifact:" in errors
 
 
+def test_command_catalog_state_must_match_command_spec(tmp_path: Path) -> None:
+    write_minimal_repo(tmp_path)
+    catalog = tmp_path / "commands" / "README.md"
+    catalog.write_text(
+        catalog.read_text(encoding="utf-8").replace(
+            "[`/brain-sample`](brain-sample.md) — State: INTAKE;",
+            "[`/brain-sample`](brain-sample.md) — State: REVIEW;",
+        ),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert (
+        "commands/README.md catalog entry for /brain-sample must match command lifecycle state: INTAKE"
+        in errors
+    )
+
+
+def test_command_catalog_artifact_must_match_command_spec(tmp_path: Path) -> None:
+    write_minimal_repo(tmp_path)
+    catalog = tmp_path / "commands" / "README.md"
+    catalog.write_text(
+        catalog.read_text(encoding="utf-8").replace(
+            "Artifact: `templates/sample-routing-summary.md`;",
+            "Artifact: `templates/eval-report.md`;",
+        ),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert (
+        "commands/README.md catalog entry for /brain-sample must match command artifact: templates/sample-routing-summary.md"
+        in errors
+    )
+
+
+def test_command_catalog_skills_must_match_command_spec(tmp_path: Path) -> None:
+    write_minimal_repo(tmp_path)
+    catalog = tmp_path / "commands" / "README.md"
+    catalog.write_text(
+        catalog.read_text(encoding="utf-8").replace(
+            "Skills: `sample`, `activity-recap`",
+            "Skills: `activity-recap`",
+        ),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert (
+        "commands/README.md catalog entry for /brain-sample must include command skill: sample"
+        in errors
+    )
+
+
 def write_minimal_repo(root: Path) -> None:
     for rel in [
         "AGENTBRAIN.md",
