@@ -51,6 +51,22 @@ def test_command_catalog_requires_artifact_contract(tmp_path: Path) -> None:
     )
 
 
+def test_command_catalog_entries_must_name_routing_fields(tmp_path: Path) -> None:
+    write_minimal_repo(tmp_path)
+    catalog = tmp_path / "commands" / "README.md"
+    catalog.write_text(
+        catalog.read_text(encoding="utf-8").replace(
+            "Artifact: `templates/sample-routing-summary.md`; ",
+            "",
+        ),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "commands/README.md catalog entry for /brain-sample must name routing field: Artifact:" in errors
+
+
 def write_minimal_repo(root: Path) -> None:
     for rel in [
         "AGENTBRAIN.md",
@@ -486,8 +502,9 @@ def write_minimal_repo(root: Path) -> None:
         "Treat each command file as a markdown spec, load only the listed skills, and produce the required artifact.\n\n"
         "Each catalog entry must preserve the lifecycle state, skills to load, required artifact, stop condition, "
         "and native command support boundary so markdown-only runtimes can route work without guessing.\n\n"
-        "- [`/brain-sample`](brain-sample.md) — route sample work through INTAKE.\n"
-        "- [`/brain-eval`](brain-eval.md) — score eval cases with verification evidence.\n",
+        "## Commands\n\n"
+        "- [`/brain-sample`](brain-sample.md) — State: INTAKE; Skills: `sample`, `activity-recap`, `agent-output-verifier`, `ci-recovery`, `context-memory`, `domain-language`, `evidence-research`, `qa-evidence`, `runtime-smoke`; Artifact: `templates/sample-routing-summary.md`; Stop: unsafe request or missing evidence.\n"
+        "- [`/brain-eval`](brain-eval.md) — State: VERIFY; Skills: `agent-output-verifier`, `qa-evidence`, `ci-recovery`, `evidence-research`, `runtime-smoke`; Artifact: `templates/eval-report.md`; Stop: required proof unavailable.\n",
         encoding="utf-8",
     )
     (command_dir / "brain-sample.md").write_text(

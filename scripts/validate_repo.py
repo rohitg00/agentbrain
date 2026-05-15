@@ -1045,6 +1045,23 @@ def readme_command_catalog_links(text: str) -> dict[str, str]:
     return entries
 
 
+def command_catalog_entry_lines(text: str) -> dict[str, str]:
+    entries: dict[str, str] = {}
+    in_commands = False
+    for line in text.splitlines():
+        if line == "## Commands":
+            in_commands = True
+            continue
+        if in_commands and line.startswith("## "):
+            break
+        if not in_commands:
+            continue
+        match = re.match(r"- \[`(/brain-[a-z0-9-]+)`\]\([^)]+\) — (.+)$", line)
+        if match:
+            entries[match.group(1)] = match.group(2)
+    return entries
+
+
 def readme_command_selection_references(text: str) -> list[str]:
     entries: set[str] = set()
     in_command_selection = False
@@ -1771,6 +1788,7 @@ def validate(root: Path = ROOT) -> list[str]:
     if commands_readme.exists():
         commands_readme_text = commands_readme.read_text(errors="ignore")
         commands_readme_text_lower = commands_readme_text.lower()
+        command_catalog_entries = command_catalog_entry_lines(commands_readme_text)
         for required_term in REQUIRED_COMMAND_CATALOG_CONTRACT_TERMS:
             if required_term not in commands_readme_text_lower:
                 errors.append(
@@ -1782,6 +1800,13 @@ def validate(root: Path = ROOT) -> list[str]:
             expected_link = f"[`{command_name}`]({command.name})"
             if expected_link not in commands_readme_text:
                 errors.append(f"commands/README.md catalog missing command link: {command_name}")
+                continue
+            entry = command_catalog_entries.get(command_name, "")
+            for field in ["State:", "Skills:", "Artifact:", "Stop:"]:
+                if field not in entry:
+                    errors.append(
+                        f"commands/README.md catalog entry for {command_name} must name routing field: {field}"
+                    )
 
     readme = root / "README.md"
     if readme.exists():
