@@ -222,6 +222,36 @@ def test_pass_runtime_smoke_rejects_missing_selected_command_file(tmp_path: Path
     assert any("selected command file is missing: commands/brain-missing.md" in error for error in errors)
 
 
+def test_pass_runtime_smoke_rejects_missing_loaded_skill_file(tmp_path: Path):
+    command_dir = tmp_path / "commands"
+    command_dir.mkdir()
+    (command_dir / "brain-start.md").write_text(
+        "# /brain-start\n\n## Skills to load\n\n- `ghost-skill`\n",
+        encoding="utf-8",
+    )
+    adapter_dir = tmp_path / "adapters" / "read-only-cli"
+    adapter_dir.mkdir(parents=True)
+    (adapter_dir / "README.md").write_text("# Read-only CLI adapter\n", encoding="utf-8")
+    report = runtime_smoke.build_report(
+        root=tmp_path,
+        runtime="generic-cli-runtime",
+        version="1.2.3",
+        sandbox_write_mode="read_only",
+        brain_command_mode="markdown_specs",
+        run_scope="read_only_smoke",
+        blocked_commands=[],
+        exact_command="python scripts/runtime_smoke.py --runtime generic-cli-runtime --version 1.2.3 --selected-command /brain-start --loaded-skill ghost-skill",
+        smoke_result="pass",
+        selected_command="/brain-start",
+        loaded_skills=["ghost-skill"],
+        adapter_path="adapters/read-only-cli/README.md",
+    )
+
+    errors = runtime_smoke.validate_report_against_schema(report, Path("schemas/runtime-smoke.schema.json"), root=tmp_path)
+
+    assert any("loaded skill file is missing: skills/ghost-skill/SKILL.md" in error for error in errors)
+
+
 def test_pass_runtime_smoke_rejects_missing_adapter_file(tmp_path: Path):
     commands_dir = tmp_path / "commands"
     commands_dir.mkdir()
