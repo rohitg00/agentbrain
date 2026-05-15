@@ -27,6 +27,8 @@ REQUIRED_ARTIFACT_FILES = [
     "templates/handoff-report.md",
     "templates/memory-decision.md",
     "templates/qa-evidence.md",
+    "schemas/runtime-smoke.schema.json",
+    "templates/runtime-smoke.md",
 ]
 REQUIRED_STATE_MACHINE_VALUES = [
     "INTAKE",

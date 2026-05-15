@@ -1,0 +1,18 @@
+{
+  "runtime": "CLI runtime",
+  "version": "1.2.3",
+  "python_executable": "/usr/bin/python3.11",
+  "writable_temp_dir_status": "writable",
+  "git_freshness_result": "HEAD matched origin/main at example commit after git fetch origin main",
+  "exact_command": "agent-runtime --sandbox read-only --prompt 'Use Agent Brain as the operating harness'",
+  "sandbox_write_mode": "read_only",
+  "brain_command_mode": "markdown_specs",
+  "blocked_commands": [
+    "python -m pytest -q was blocked by read-only sandbox"
+  ],
+  "run_scope": "read_only_smoke",
+  "evidence": [
+    "Runtime opened AGENTBRAIN.md and commands/brain-start.md",
+    "Runtime identified /brain-* entries as markdown specs rather than native commands"
+  ]
+}

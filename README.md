@@ -259,6 +259,7 @@ Use this guide when a command says to produce an artifact. Start with the comman
 | Implementation slices | `templates/implementation-plan.md` | `schemas/implementation-plan.schema.json` |
 | Changed artifact and build notes | `templates/changed-artifact-plus-implementation-notes.md` | Command output contract |
 | QA or verification proof | `templates/qa-evidence.md` | `schemas/qa-evidence.schema.json` |
+| Real-runtime smoke evidence | `templates/runtime-smoke.md` | `schemas/runtime-smoke.schema.json` |
 | Trust review before handoff | `templates/review-report.md` | `schemas/review-report.schema.json` |
 | Launch or merge readiness | `templates/launch-checklist.md` | Command output contract |
 | Durable learning capture | `templates/learning-capture.md` | Command output contract |
