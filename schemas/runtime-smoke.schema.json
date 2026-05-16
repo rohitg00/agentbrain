@@ -158,7 +158,8 @@
         "network_access",
         "native_brain_commands",
         "schema_artifacts",
-        "blocked_command_reporting"
+        "blocked_command_reporting",
+        "preserve_user_changes"
       ],
       "properties": {
         "read_files": {
@@ -184,6 +185,9 @@
         },
         "blocked_command_reporting": {
           "enum": ["yes", "no", "unknown", "blocked"]
+        },
+        "preserve_user_changes": {
+          "enum": ["yes", "no", "unknown", "blocked"]
         }
       }
     },
@@ -198,7 +202,8 @@
         "network_access",
         "native_brain_commands",
         "schema_artifacts",
-        "blocked_command_reporting"
+        "blocked_command_reporting",
+        "preserve_user_changes"
       ],
       "properties": {
         "read_files": {"type": "string", "minLength": 1},
@@ -208,7 +213,8 @@
         "network_access": {"type": "string", "minLength": 1},
         "native_brain_commands": {"type": "string", "minLength": 1},
         "schema_artifacts": {"type": "string", "minLength": 1},
-        "blocked_command_reporting": {"type": "string", "minLength": 1}
+        "blocked_command_reporting": {"type": "string", "minLength": 1},
+        "preserve_user_changes": {"type": "string", "minLength": 1}
       }
     },
     "write_fence": {
@@ -311,6 +317,9 @@
                 "const": "yes"
               },
               "schema_artifacts": {
+                "const": "yes"
+              },
+              "preserve_user_changes": {
                 "const": "yes"
               }
             }

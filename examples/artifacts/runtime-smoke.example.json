@@ -6,7 +6,7 @@
   "git_fetch_result": "fetched: git fetch origin main succeeded",
   "git_freshness_result": "fresh: HEAD equals origin/main at example-commit",
   "git_worktree_status": "clean",
-  "exact_command": "python scripts/runtime_smoke.py --runtime generic-cli-runtime --version 1.2.3 --sandbox-write-mode read_only --brain-command-mode markdown_specs --selected-command /brain-start --loaded-skill intake --adapter-path adapters/read-only-cli/README.md --run-scope read_only_smoke --command-exit-status 0 --smoke-result blocked --transcript-path artifacts/runtime-smoke/cli-runtime-example.log --transcript-redaction-status redacted --blocked-command 'python -m pytest -q was blocked by read-only sandbox' --validation-command 'python -m pytest -q was blocked by read-only sandbox' --capability read_files=yes --capability write_files=blocked --capability run_shell=blocked --capability request_approvals=unknown --capability network_access=unknown --capability native_brain_commands=no --capability schema_artifacts=yes --capability blocked_command_reporting=yes --capability-evidence read_files=transcript-read-repo-root --capability-evidence write_files=read-only-sandbox-blocker --capability-evidence run_shell=read-only-sandbox-blocker --capability-evidence request_approvals=not-exposed-by-runtime-settings --capability-evidence network_access=not-checked-read-only-smoke --capability-evidence native_brain_commands=adapter-markdown-spec-routing --capability-evidence schema_artifacts=validated-json-output --capability-evidence blocked_command_reporting=blocked-command-transcript-line",
+  "exact_command": "python scripts/runtime_smoke.py --runtime generic-cli-runtime --version 1.2.3 --sandbox-write-mode read_only --brain-command-mode markdown_specs --selected-command /brain-start --loaded-skill intake --adapter-path adapters/read-only-cli/README.md --run-scope read_only_smoke --command-exit-status 0 --smoke-result blocked --transcript-path artifacts/runtime-smoke/cli-runtime-example.log --transcript-redaction-status redacted --blocked-command 'python -m pytest -q was blocked by read-only sandbox' --validation-command 'python -m pytest -q was blocked by read-only sandbox' --capability read_files=yes --capability write_files=blocked --capability run_shell=blocked --capability request_approvals=unknown --capability network_access=unknown --capability native_brain_commands=no --capability schema_artifacts=yes --capability blocked_command_reporting=yes --capability preserve_user_changes=yes --capability-evidence read_files=transcript-read-repo-root --capability-evidence write_files=read-only-sandbox-blocker --capability-evidence run_shell=read-only-sandbox-blocker --capability-evidence request_approvals=not-exposed-by-runtime-settings --capability-evidence network_access=not-checked-read-only-smoke --capability-evidence native_brain_commands=adapter-markdown-spec-routing --capability-evidence schema_artifacts=validated-json-output --capability-evidence blocked_command_reporting=blocked-command-transcript-line --capability-evidence preserve_user_changes=clean-worktree-and-empty-write-fence",
   "command_exit_status": 0,
   "smoke_result": "blocked",
   "transcript_path": "artifacts/runtime-smoke/cli-runtime-example.log",
@@ -33,7 +33,8 @@
     "network_access": "unknown",
     "native_brain_commands": "no",
     "schema_artifacts": "yes",
-    "blocked_command_reporting": "yes"
+    "blocked_command_reporting": "yes",
+    "preserve_user_changes": "yes"
   },
   "capability_evidence": {
     "read_files": "transcript-read-repo-root",
@@ -43,7 +44,8 @@
     "network_access": "not-checked-read-only-smoke",
     "native_brain_commands": "adapter-markdown-spec-routing",
     "schema_artifacts": "validated-json-output",
-    "blocked_command_reporting": "blocked-command-transcript-line"
+    "blocked_command_reporting": "blocked-command-transcript-line",
+    "preserve_user_changes": "clean-worktree-and-empty-write-fence"
   },
   "write_fence": {
     "allowed_paths": [],
@@ -69,8 +71,8 @@
     "Transcript redaction status: redacted",
     "Blocked commands recorded: python -m pytest -q was blocked by read-only sandbox.",
     "Validation commands: python -m pytest -q was blocked by read-only sandbox.",
-    "Capability matrix: read_files=yes, write_files=blocked, run_shell=blocked, request_approvals=unknown, network_access=unknown, native_brain_commands=no, schema_artifacts=yes, blocked_command_reporting=yes.",
-    "Capability evidence: read_files=transcript-read-repo-root, write_files=read-only-sandbox-blocker, run_shell=read-only-sandbox-blocker, request_approvals=not-exposed-by-runtime-settings, network_access=not-checked-read-only-smoke, native_brain_commands=adapter-markdown-spec-routing, schema_artifacts=validated-json-output, blocked_command_reporting=blocked-command-transcript-line.",
+    "Capability matrix: read_files=yes, write_files=blocked, run_shell=blocked, request_approvals=unknown, network_access=unknown, native_brain_commands=no, schema_artifacts=yes, blocked_command_reporting=yes, preserve_user_changes=yes.",
+    "Capability evidence: read_files=transcript-read-repo-root, write_files=read-only-sandbox-blocker, run_shell=read-only-sandbox-blocker, request_approvals=not-exposed-by-runtime-settings, network_access=not-checked-read-only-smoke, native_brain_commands=adapter-markdown-spec-routing, schema_artifacts=validated-json-output, blocked_command_reporting=blocked-command-transcript-line, preserve_user_changes=clean-worktree-and-empty-write-fence.",
     "Write fence: allowed=none; disallowed=none; user-owned=none; rollback=not_applicable.",
     "Write fence approval state: unknown"
   ]

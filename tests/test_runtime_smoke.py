@@ -96,6 +96,18 @@ def test_runtime_smoke_rejects_missing_capability_evidence_sources():
     assert "'capability_evidence' is a required property" in errors
 
 
+def test_runtime_smoke_requires_preserve_user_changes_capability():
+    report = json.loads(Path("examples/artifacts/runtime-smoke.example.json").read_text(encoding="utf-8"))
+    report["capability_matrix"].pop("preserve_user_changes", None)
+    report["capability_evidence"].pop("preserve_user_changes", None)
+
+    errors = runtime_smoke.validate_report_against_schema(
+        report, Path("schemas/runtime-smoke.schema.json"), root=Path.cwd()
+    )
+
+    assert "'preserve_user_changes' is a required property" in errors
+
+
 def test_pass_runtime_smoke_rejects_unknown_capability_evidence():
     report = json.loads(Path("examples/artifacts/runtime-smoke.example.json").read_text(encoding="utf-8"))
     report["smoke_result"] = "pass"
@@ -2882,6 +2894,8 @@ def test_main_creates_parent_directories_for_runtime_smoke_output(monkeypatch, t
             "schema_artifacts=unknown",
             "--capability",
             "blocked_command_reporting=yes",
+            "--capability",
+            "preserve_user_changes=unknown",
             "--capability-evidence",
             "read_files=unknown",
             "--capability-evidence",
@@ -2898,6 +2912,8 @@ def test_main_creates_parent_directories_for_runtime_smoke_output(monkeypatch, t
             "schema_artifacts=unknown",
             "--capability-evidence",
             "blocked_command_reporting=blocked-command-transcript-line",
+            "--capability-evidence",
+            "preserve_user_changes=unknown",
             "--output",
             str(output_path),
         ]
@@ -2994,6 +3010,8 @@ def test_main_quotes_exact_command_values_for_full_validation_flags(monkeypatch,
             "native_brain_commands=no",
             "--capability",
             "blocked_command_reporting=yes",
+            "--capability",
+            "preserve_user_changes=yes",
             "--capability-evidence",
             "read_files=transcript-read-repo-root",
             "--capability-evidence",
@@ -3010,6 +3028,8 @@ def test_main_quotes_exact_command_values_for_full_validation_flags(monkeypatch,
             "schema_artifacts=validated-json-output",
             "--capability-evidence",
             "blocked_command_reporting=no-blockers-in-full-validation",
+            "--capability-evidence",
+            "preserve_user_changes=write-fence-reviewed-before-output",
             "--output",
             str(output_path),
         ]

@@ -622,6 +622,7 @@ REQUIRED_ADAPTER_RUNTIME_SMOKE_CAPABILITIES = [
     "native_brain_commands",
     "schema_artifacts",
     "blocked_command_reporting",
+    "preserve_user_changes",
 ]
 REQUIRED_ADAPTER_SAMPLE_ROUTING_PROBE_TERMS = [
     "sample request",

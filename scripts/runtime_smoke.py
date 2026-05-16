@@ -50,9 +50,16 @@ CAPABILITY_NAMES = [
     "native_brain_commands",
     "schema_artifacts",
     "blocked_command_reporting",
+    "preserve_user_changes",
 ]
 CAPABILITY_STATUSES = {"yes", "no", "unknown", "blocked"}
-FULL_VALIDATION_REQUIRED_CAPABILITIES = ["read_files", "write_files", "run_shell", "schema_artifacts"]
+FULL_VALIDATION_REQUIRED_CAPABILITIES = [
+    "read_files",
+    "write_files",
+    "run_shell",
+    "schema_artifacts",
+    "preserve_user_changes",
+]
 SECRET_LIKE_PATTERNS = [
     re.compile(r"\bgh[pousr]_[A-Za-z0-9_]{20,}\b"),
     re.compile(r"-----BEGIN (?:RSA |OPENSSH |EC |DSA )?PRIVATE KEY-----"),

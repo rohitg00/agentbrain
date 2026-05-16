@@ -16,7 +16,7 @@ Choose the adapter by matching the request's required capabilities against runti
 
 Use this selection pass before any real-runtime smoke:
 
-1. List the required capabilities for the task: read files, write files, run shell commands, request approvals, reach the network, expose native `/brain-*` commands, emit artifacts, and report blocked commands.
+1. List the required capabilities for the task: read files, write files, run shell commands, request approvals, reach the network, expose native `/brain-*` commands, emit artifacts, report blocked commands, and preserve user changes.
 2. Compare those needs with observed runtime evidence from the active adapter, runtime settings, command output, or a prior runtime smoke artifact.
 3. Pick the least-powerful adapter that can safely complete the next slice. Use `adapters/read-only-cli/README.md` when writes, installs, network, or approvals are unavailable.
 4. Promote from read-only smoke to full validation only when the full validation promotion criteria are met: write access, shell access, dependency install, transcript capture, redaction, and the full local gate are available.
