@@ -19,7 +19,7 @@ Before the first real-runtime smoke, record whether the runtime can read files, 
 ## Minimal instruction
 
 ```text
-Use Agent Brain as the operating harness. In an approval-gated runtime, read AGENTBRAIN.md, choose the matching markdown spec from commands/, load only the relevant skills from skills/, produce the required artifact from templates/, check schemas/, and stop before side effects unless approval evidence is present. /brain-* labels are repo command specs, not native runtime commands by default. Treat /brain-* entries as markdown specs unless this runtime maps them to native commands; do not invent unsupported command routes. In noninteractive runs, do not ask questions; use documented assumptions or stop with a blocker when missing context changes the action.
+Use Agent Brain as the operating harness. In an approval-gated runtime, read AGENTBRAIN.md, choose the matching markdown spec from commands/, load only the command-listed skills from skills/, produce the required artifact from templates/, check schemas/, and stop before side effects unless approval evidence is present. /brain-* labels are repo command specs, not native runtime commands by default. Treat /brain-* entries as markdown specs unless this runtime maps them to native commands; do not invent unsupported command routes. In noninteractive runs, do not ask questions; use documented assumptions or stop with a blocker when missing context changes the action.
 ```
 
 ## Validation

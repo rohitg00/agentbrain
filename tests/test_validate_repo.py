@@ -66,6 +66,26 @@ def test_required_skills_include_command_routing(tmp_path: Path) -> None:
     assert "missing skills/command-routing/SKILL.md" in errors
 
 
+def test_adapter_minimal_instruction_must_load_only_command_listed_skills(tmp_path: Path) -> None:
+    write_minimal_repo(tmp_path)
+    adapter = tmp_path / "adapters" / "sample-adapter" / "README.md"
+    adapter.write_text(
+        adapter.read_text(encoding="utf-8").replace(
+            "load only the command-listed skills from skills/",
+            "load the relevant files from skills/",
+        ),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert any(
+        "adapters/sample-adapter/README.md minimal instruction must load only command-listed skills"
+        in error
+        for error in errors
+    )
+
+
 def test_skill_output_artifact_must_cite_matching_template(tmp_path: Path) -> None:
     write_minimal_repo(tmp_path)
     skill = tmp_path / "skills" / "sample" / "SKILL.md"
@@ -1394,7 +1414,7 @@ def write_minimal_repo(root: Path) -> None:
         "## Capability Matrix\n\n"
         "Record whether the runtime can read files, write files, run shell commands, request approvals, reach the network, map /brain-* entries as native commands, emit artifacts, and report blocked commands. Mark unknown capabilities as unknown instead of assuming support. Use yes, no, unknown, or blocked for each capability so later agents can compare runtime smoke runs without inferring support. Require an evidence source for each capability: observed command output, adapter docs, runtime settings, or `unknown` when unverified.\n\n"
         "## Minimal instruction\n\n"
-        "Use Agent Brain as the operating harness. Read AGENTBRAIN.md, route through commands/, load skills/, produce artifacts from templates/, and validate schemas/. Treat /brain-* entries as markdown specs unless this runtime maps them to native commands; do not invent unsupported command routes. In noninteractive runs, do not ask questions; use documented assumptions or stop with a blocker when missing context changes the action.\n\n"
+        "Use Agent Brain as the operating harness. Read AGENTBRAIN.md, route through commands/, load only the command-listed skills from skills/, produce artifacts from templates/, and validate schemas/. Treat /brain-* entries as markdown specs unless this runtime maps them to native commands; do not invent unsupported command routes. In noninteractive runs, do not ask questions; use documented assumptions or stop with a blocker when missing context changes the action.\n\n"
         "## Validation\n\n"
         "python3 -m pip install -r requirements-dev.txt\n"
         "rm -rf scripts/__pycache__ tests/__pycache__\n"
@@ -8108,7 +8128,7 @@ def test_adapter_readmes_must_include_minimal_instruction(tmp_path):
     adapter = tmp_path / "adapters" / "sample-adapter" / "README.md"
     adapter.write_text(
         adapter.read_text(encoding="utf-8").replace(
-            "## Minimal instruction\n\nUse Agent Brain as the operating harness. Read AGENTBRAIN.md, route through commands/, load skills/, produce artifacts from templates/, and validate schemas/. Treat /brain-* entries as markdown specs unless this runtime maps them to native commands; do not invent unsupported command routes. In noninteractive runs, do not ask questions; use documented assumptions or stop with a blocker when missing context changes the action.\n\n",
+            "## Minimal instruction\n\nUse Agent Brain as the operating harness. Read AGENTBRAIN.md, route through commands/, load only the command-listed skills from skills/, produce artifacts from templates/, and validate schemas/. Treat /brain-* entries as markdown specs unless this runtime maps them to native commands; do not invent unsupported command routes. In noninteractive runs, do not ask questions; use documented assumptions or stop with a blocker when missing context changes the action.\n\n",
             "",
         ),
         encoding="utf-8",

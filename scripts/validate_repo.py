@@ -561,6 +561,7 @@ REQUIRED_ADAPTER_MINIMAL_INSTRUCTION_ARTIFACTS = [
     "templates/",
     "schemas/",
 ]
+REQUIRED_ADAPTER_COMMAND_LISTED_SKILL_TERMS = ["load only", "command-listed skills"]
 REQUIRED_ADAPTER_COMMAND_BOUNDARY_TERMS = [
     "markdown specs",
     "native commands",
@@ -1819,6 +1820,15 @@ def validate(root: Path = ROOT) -> list[str]:
         adapter_path = rel(adapter, root)
         adapter_text = adapter.read_text(errors="ignore")
         adapter_text_lower = adapter_text.lower()
+        minimal_instruction = section_body(adapter_text, "## Minimal instruction")
+        minimal_instruction_lower = minimal_instruction.lower()
+        if minimal_instruction.strip():
+            for term in REQUIRED_ADAPTER_COMMAND_LISTED_SKILL_TERMS:
+                if term not in minimal_instruction_lower:
+                    errors.append(
+                        f"{adapter_path} minimal instruction must load only command-listed skills"
+                    )
+                    break
         for capability in REQUIRED_ADAPTER_RUNTIME_SMOKE_CAPABILITIES:
             if f"--capability {capability}=" not in adapter_text_lower:
                 errors.append(f"{adapter_path} runtime smoke command must name capability: {capability}")

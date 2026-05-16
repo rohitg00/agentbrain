@@ -20,7 +20,7 @@ Before the first real-runtime smoke, record whether the runtime can read files, 
 ## Minimal instruction
 
 ```text
-Use Agent Brain as the operating harness. Before building, read AGENTBRAIN.md, choose the matching command in commands/, load only the relevant files from skills/, produce the required artifact from templates/, check the matching contract in schemas/, and do not skip evidence, stop conditions, or non-agent alternative review. Treat /brain-* entries as markdown specs unless this runtime maps them to native commands; do not invent unsupported command routes. In noninteractive runs, do not ask questions; use documented assumptions or stop with a blocker when missing context changes the action.
+Use Agent Brain as the operating harness. Before building, read AGENTBRAIN.md, choose the matching command in commands/, load only the command-listed skills from skills/, produce the required artifact from templates/, check the matching contract in schemas/, and do not skip evidence, stop conditions, or non-agent alternative review. Treat /brain-* entries as markdown specs unless this runtime maps them to native commands; do not invent unsupported command routes. In noninteractive runs, do not ask questions; use documented assumptions or stop with a blocker when missing context changes the action.
 ```
 
 ## Validation
