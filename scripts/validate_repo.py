@@ -520,6 +520,7 @@ REQUIRED_ADAPTER_CAPABILITY_MATRIX_TERMS = [
     "blocked commands",
     "unknown",
 ]
+REQUIRED_ADAPTER_CAPABILITY_STATUS_PHRASE = "yes, no, unknown, or blocked"
 REQUIRED_ADAPTER_VALIDATION_COMMANDS = [
     "python3 -m pip install -r requirements-dev.txt",
     "rm -rf scripts/__pycache__ tests/__pycache__",
@@ -2582,6 +2583,10 @@ def validate(root: Path = ROOT) -> list[str]:
                     errors.append(
                         f"{rel(markdown_file, root)} capability matrix must document runtime boundary: {required_term}"
                     )
+            if REQUIRED_ADAPTER_CAPABILITY_STATUS_PHRASE not in capability_matrix_body:
+                errors.append(
+                    f"{rel(markdown_file, root)} capability matrix must define status vocabulary: {REQUIRED_ADAPTER_CAPABILITY_STATUS_PHRASE}"
+                )
             for run_command in REQUIRED_ADAPTER_VALIDATION_COMMANDS:
                 if run_command not in adapter_text:
                     errors.append(f"{rel(markdown_file, root)} validation section must document: {run_command}")

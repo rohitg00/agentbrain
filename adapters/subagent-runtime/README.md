@@ -15,7 +15,7 @@ Before wiring the subagent runtime to the harness, run `git status --short` and 
 
 ## Capability Matrix
 
-Before the first real-runtime smoke, record whether the runtime can read files, write files, run shell commands, request approvals, reach the network, map `/brain-*` entries as native commands, emit template/schema-backed artifacts, and report blocked commands. Mark unknown capabilities as `unknown` instead of assuming support.
+Before the first real-runtime smoke, record whether the runtime can read files, write files, run shell commands, request approvals, reach the network, map `/brain-*` entries as native commands, emit template/schema-backed artifacts, and report blocked commands. Mark unknown capabilities as `unknown` instead of assuming support. Use yes, no, unknown, or blocked for each capability so later agents can compare runtime smoke runs without inferring support.
 
 ## Minimal instruction
 
