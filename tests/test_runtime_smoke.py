@@ -27,6 +27,19 @@ def test_checked_in_runtime_smoke_example_satisfies_runtime_validator():
     assert errors == []
 
 
+def test_checked_in_real_runtime_smoke_artifacts_satisfy_runtime_validator():
+    artifact_paths = sorted(Path("artifacts/runtime-smoke").glob("*.json"))
+
+    assert artifact_paths, "expected at least one checked-in real runtime smoke artifact"
+    for artifact_path in artifact_paths:
+        report = json.loads(artifact_path.read_text(encoding="utf-8"))
+        errors = runtime_smoke.validate_report_against_schema(
+            report, Path("schemas/runtime-smoke.schema.json"), root=Path.cwd()
+        )
+
+        assert errors == [], artifact_path
+
+
 def test_runtime_smoke_rejects_selected_command_that_is_not_in_checkout():
     report = json.loads(Path("examples/artifacts/runtime-smoke.example.json").read_text(encoding="utf-8"))
     report["selected_command"] = "/brain-missing"
