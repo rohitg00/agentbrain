@@ -366,6 +366,15 @@ def validate_report_against_schema(
     run_scope = report.get("run_scope")
     if isinstance(run_scope, str) and not exact_command_has_flag_value(report.get("exact_command"), "--run-scope", run_scope):
         errors.append(f"exact_command must record run scope flag: --run-scope {run_scope}")
+    capability_matrix = report.get("capability_matrix")
+    if isinstance(capability_matrix, dict):
+        for capability_name in CAPABILITY_NAMES:
+            capability_status = capability_matrix.get(capability_name)
+            if not isinstance(capability_status, str) or capability_status == "unknown":
+                continue
+            capability_flag = f"{capability_name}={capability_status}"
+            if not exact_command_has_flag_value(report.get("exact_command"), "--capability", capability_flag):
+                errors.append(f"exact_command must record capability flag: --capability {capability_flag}")
     if report.get("smoke_result") == "pass" and report.get("command_exit_status") != 0:
         errors.append("pass smoke_result requires command_exit_status 0")
     if report.get("smoke_result") == "fail" and report.get("command_exit_status") == 0:
