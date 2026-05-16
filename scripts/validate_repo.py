@@ -612,6 +612,7 @@ REQUIRED_ADAPTER_RUNTIME_SMOKE_COMMAND_FLAGS = [
     "--write-fence-approval-state",
     "--output",
     "--capability",
+    "--capability-evidence",
 ]
 REQUIRED_ADAPTER_RUNTIME_SMOKE_CAPABILITIES = [
     "read_files",

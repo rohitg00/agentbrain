@@ -143,6 +143,22 @@ def test_adapter_minimal_instruction_must_load_only_command_listed_skills(tmp_pa
     )
 
 
+def test_adapter_validation_must_record_capability_evidence_flags(tmp_path: Path) -> None:
+    write_minimal_repo(tmp_path)
+    adapter = tmp_path / "adapters" / "sample-adapter" / "README.md"
+    adapter.write_text(
+        adapter.read_text(encoding="utf-8").replace("--capability-evidence", "--capability-source"),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert (
+        "adapters/sample-adapter/README.md runtime_smoke.py command must include flag: --capability-evidence"
+        in errors
+    )
+
+
 def test_skill_output_artifact_must_cite_matching_template(tmp_path: Path) -> None:
     write_minimal_repo(tmp_path)
     skill = tmp_path / "skills" / "sample" / "SKILL.md"
