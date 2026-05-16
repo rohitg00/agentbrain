@@ -336,6 +336,19 @@ def validate_report_against_schema(
         if contains_secret_like_value(report.get(field)):
             errors.append(f"runtime smoke artifact contains secret-like value in {field}; redact before output")
 
+    transcript_path = report.get("transcript_path")
+    if root is not None and isinstance(transcript_path, str) and not transcript_path_is_external_reference(transcript_path):
+        transcript_file = Path(root) / transcript_path
+        if transcript_file.is_file():
+            try:
+                transcript_text = transcript_file.read_text(encoding="utf-8")
+            except UnicodeDecodeError:
+                transcript_text = ""
+            if contains_secret_like_value(transcript_text):
+                errors.append(
+                    "runtime smoke transcript contains secret-like value; redact transcript before trusting artifact"
+                )
+
     evidence = report.get("evidence")
     if isinstance(evidence, list):
         evidence_lines = [line for line in evidence if isinstance(line, str)]
