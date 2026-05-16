@@ -254,6 +254,26 @@ def test_adapter_runtime_smoke_command_must_name_each_capability(tmp_path: Path)
     )
 
 
+def test_command_catalog_entry_must_match_command_stop_condition(tmp_path: Path) -> None:
+    write_minimal_repo(tmp_path)
+    catalog = tmp_path / "commands" / "README.md"
+    catalog.write_text(
+        catalog.read_text(encoding="utf-8").replace(
+            "Stop: request is unsafe or missing evidence.",
+            "Stop: unrelated runtime blocker.",
+        ),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert any(
+        "commands/README.md catalog entry for /brain-sample must match command stop condition: request is unsafe"
+        in error
+        for error in errors
+    )
+
+
 def test_command_examples_must_name_every_loaded_skill(tmp_path: Path) -> None:
     write_minimal_repo(tmp_path)
     command = tmp_path / "commands" / "brain-sample.md"
@@ -1714,8 +1734,8 @@ def write_minimal_repo(root: Path) -> None:
         "and native command support boundary so markdown-only runtimes can route work without guessing.\n\n"
         "Tie-break ambiguous routes by choosing the earliest safe lifecycle state, preferring verification for proof gaps, preferring review for trust gaps, and stopping when no command fits.\n\n"
         "## Commands\n\n"
-        "- [`/brain-sample`](brain-sample.md) — State: INTAKE; Use when: sample requests; Skills: `sample`, `activity-recap`, `agent-output-verifier`, `ci-recovery`, `context-memory`, `domain-language`, `evidence-research`, `qa-evidence`, `runtime-smoke`; Artifact: `templates/sample-routing-summary.md`; Native: markdown spec unless runtime maps `/brain-sample` to a native command; Stop: unsafe request or missing evidence.\n"
-        "- [`/brain-eval`](brain-eval.md) — State: VERIFY; Use when: eval cases need evidence-backed scoring; Skills: `agent-output-verifier`, `qa-evidence`, `ci-recovery`, `evidence-research`, `runtime-smoke`; Artifact: `templates/eval-report.md`; Native: markdown spec unless runtime maps `/brain-eval` to a native command; Stop: required proof unavailable.\n",
+        "- [`/brain-sample`](brain-sample.md) — State: INTAKE; Use when: sample requests; Skills: `sample`, `activity-recap`, `agent-output-verifier`, `ci-recovery`, `context-memory`, `domain-language`, `evidence-research`, `qa-evidence`, `runtime-smoke`; Artifact: `templates/sample-routing-summary.md`; Native: markdown spec unless runtime maps `/brain-sample` to a native command; Stop: request is unsafe or missing evidence.\n"
+        "- [`/brain-eval`](brain-eval.md) — State: VERIFY; Use when: eval cases need evidence-backed scoring; Skills: `agent-output-verifier`, `qa-evidence`, `ci-recovery`, `evidence-research`, `runtime-smoke`; Artifact: `templates/eval-report.md`; Native: markdown spec unless runtime maps `/brain-eval` to a native command; Stop: required proof is unavailable.\n",
         encoding="utf-8",
     )
     (command_dir / "brain-sample.md").write_text(

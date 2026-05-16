@@ -1253,6 +1253,29 @@ def command_catalog_entry_use_when(entry: str) -> str:
     return normalize_use_when(match.group(1)) if match else ""
 
 
+def command_catalog_entry_stop(entry: str) -> str:
+    match = re.search(r"Stop: (.*?)(?:;|$)", entry)
+    return normalize_stop_condition(match.group(1)) if match else ""
+
+
+def command_expected_stop_condition(text: str) -> str:
+    stop_conditions = section_body(text, "## Stop conditions")
+    for line in stop_conditions.splitlines():
+        stripped = line.strip()
+        if not stripped.startswith("- "):
+            continue
+        return normalize_stop_condition(stripped.removeprefix("- "))
+    return normalize_stop_condition(stop_conditions)
+
+
+def normalize_stop_condition(value: str) -> str:
+    normalized = re.sub(r"\s+", " ", value.strip().lower()).rstrip(".,;:")
+    for prefix in ["stop when ", "stop if ", "the "]:
+        if normalized.startswith(prefix):
+            normalized = normalized.removeprefix(prefix).strip()
+    return normalized.rstrip(".,;:")
+
+
 def normalize_use_when(value: str) -> str:
     normalized = re.sub(r"\s+", " ", value.strip().lower()).rstrip(".")
     for prefix in ["use when ", "use for ", "use after ", "use before ", "use "]:
@@ -2317,6 +2340,13 @@ def validate(root: Path = ROOT) -> list[str]:
             if expected_artifact and f"Artifact: `{expected_artifact}`" not in entry:
                 errors.append(
                     f"commands/README.md catalog entry for {command_name} must match command artifact: {expected_artifact}"
+                )
+            expected_stop_condition = command_expected_stop_condition(command_text)
+            catalog_stop_condition = command_catalog_entry_stop(entry)
+            if expected_stop_condition and catalog_stop_condition and expected_stop_condition not in catalog_stop_condition:
+                errors.append(
+                    "commands/README.md catalog entry for "
+                    f"{command_name} must match command stop condition: {expected_stop_condition}"
                 )
             expected_skills = set(command_skills_to_load(command_text))
             catalog_skills = command_catalog_entry_skills(entry)
