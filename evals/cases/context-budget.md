@@ -10,7 +10,7 @@ Use local evidence to load only the smallest relevant governance docs, command, 
 
 ## Harness route
 
-Run `/brain-eval` with `agent-output-verifier` and `qa-evidence` to check evidence before routing to `/brain-start`, `/brain-plan`, `/brain-build`, or `/brain-review`.
+Run `/brain-eval` with `agent-output-verifier` and `qa-evidence` to check evidence before routing to `/brain-start`, `/brain-plan`, `/brain-build`, or `/brain-review`. Route files: `commands/brain-build.md`, `commands/brain-eval.md`, `commands/brain-plan.md`, `commands/brain-review.md`, `commands/brain-start.md`, `skills/agent-output-verifier/SKILL.md`, `skills/qa-evidence/SKILL.md`.
 
 ## Failure if
 

@@ -2718,13 +2718,21 @@ def validate(root: Path = ROOT) -> list[str]:
                 errors.append(f"{rel(case, root)} harness route must name at least one /brain- command")
             for command_name in sorted(route_command_refs):
                 command_file = command_name.removeprefix("/")
-                if not (root / "commands" / f"{command_file}.md").exists():
+                command_path = f"commands/{command_file}.md"
+                if not (root / command_path).exists():
                     errors.append(f"{rel(case, root)} harness route references missing command: {command_name}")
+                elif f"`{command_path}`" not in harness_route:
+                    errors.append(
+                        f"{rel(case, root)} harness route must cite selected command file: {command_path}"
+                    )
             route_skill_refs = set(re.findall(r"`([a-z0-9]+(?:-[a-z0-9]+)*)`", harness_route))
             existing_route_skill_refs = []
             for skill_name in sorted(route_skill_refs):
-                if (root / "skills" / skill_name / "SKILL.md").exists():
+                skill_path = f"skills/{skill_name}/SKILL.md"
+                if (root / skill_path).exists():
                     existing_route_skill_refs.append(skill_name)
+                    if f"`{skill_path}`" not in harness_route:
+                        errors.append(f"{rel(case, root)} harness route must cite skill file: {skill_path}")
                 else:
                     errors.append(f"{rel(case, root)} harness route references missing skill: {skill_name}")
             if not existing_route_skill_refs:

@@ -12,7 +12,7 @@ If the runtime is intentionally read-only, do not claim full validation or say t
 
 ## Harness route
 
-Run `/brain-eval` and `/brain-verify` with `runtime-smoke`, `agent-output-verifier`, and `qa-evidence` to check runtime evidence.
+Run `/brain-eval` and `/brain-verify` with `runtime-smoke`, `agent-output-verifier`, and `qa-evidence` to check runtime evidence. Route files: `commands/brain-eval.md`, `commands/brain-verify.md`, `skills/agent-output-verifier/SKILL.md`, `skills/qa-evidence/SKILL.md`, `skills/runtime-smoke/SKILL.md`.
 
 ## Failure if
 

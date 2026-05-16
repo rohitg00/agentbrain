@@ -10,7 +10,7 @@ The agent uses source evidence to identify the repeated operator job, then renam
 
 ## Harness route
 
-Run `/brain-eval` with `agent-output-verifier` and `evidence-research` to check the evidence trail, artifact diff, and public-copy neutrality before accepting the distillation.
+Run `/brain-eval` with `agent-output-verifier` and `evidence-research` to check the evidence trail, artifact diff, and public-copy neutrality before accepting the distillation. Route files: `commands/brain-eval.md`, `skills/agent-output-verifier/SKILL.md`, `skills/evidence-research/SKILL.md`.
 
 ## Failure if
 

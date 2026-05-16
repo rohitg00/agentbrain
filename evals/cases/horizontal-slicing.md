@@ -10,7 +10,7 @@ The agent should reject horizontal batching, pick the smallest user-visible beha
 
 ## Harness route
 
-Run `/brain-eval` against `/brain-plan` and `/brain-build`, then load `plan-slicing`, `qa-evidence`, and `agent-output-verifier` to check evidence.
+Run `/brain-eval` against `/brain-plan` and `/brain-build`, then load `plan-slicing`, `qa-evidence`, and `agent-output-verifier` to check evidence. Route files: `commands/brain-build.md`, `commands/brain-eval.md`, `commands/brain-plan.md`, `skills/agent-output-verifier/SKILL.md`, `skills/plan-slicing/SKILL.md`, `skills/qa-evidence/SKILL.md`.
 
 ## Failure if
 

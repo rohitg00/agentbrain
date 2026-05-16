@@ -10,7 +10,7 @@ Inspect source evidence, extract the reusable operator job, choose a neutral low
 
 ## Harness route
 
-Run `/brain-eval` with `agent-output-verifier` and `evidence-research` to check evidence and naming neutrality.
+Run `/brain-eval` with `agent-output-verifier` and `evidence-research` to check evidence and naming neutrality. Route files: `commands/brain-eval.md`, `skills/agent-output-verifier/SKILL.md`, `skills/evidence-research/SKILL.md`.
 
 ## Failure if
 

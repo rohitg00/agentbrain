@@ -12,7 +12,7 @@ The agent should cite the template path, schema path, required fields checked, a
 
 ## Harness route
 
-Run `/brain-eval` with `agent-output-verifier` to check schema and template evidence.
+Run `/brain-eval` with `agent-output-verifier` to check schema and template evidence. Route files: `commands/brain-eval.md`, `skills/agent-output-verifier/SKILL.md`.
 
 ## Failure if
 
