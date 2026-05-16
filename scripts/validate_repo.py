@@ -2388,7 +2388,7 @@ def validate(root: Path = ROOT) -> list[str]:
                 errors.append(f"commands/README.md catalog missing command link: {command_name}")
                 continue
             entry = command_catalog_entries.get(command_name, "")
-            for field in ["State:", "Use when:", "Skills:", "Artifact:", "Native:", "Stop:"]:
+            for field in ["State:", "Use when:", "Skills:", "Artifact:", "Schema:", "Native:", "Stop:"]:
                 if field not in entry:
                     errors.append(
                         f"commands/README.md catalog entry for {command_name} must name routing field: {field}"

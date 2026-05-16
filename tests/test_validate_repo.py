@@ -615,6 +615,26 @@ def test_command_catalog_native_boundary_must_reference_current_command(tmp_path
     )
 
 
+def test_command_catalog_entry_must_declare_schema_boundary(tmp_path: Path) -> None:
+    write_minimal_repo(tmp_path)
+    commands_readme = tmp_path / "commands" / "README.md"
+    commands_readme.write_text(
+        commands_readme.read_text(encoding="utf-8").replace(
+            " Schema: none; Native: markdown spec unless runtime maps `/brain-sample` to a native command;",
+            " Native: markdown spec unless runtime maps `/brain-sample` to a native command;",
+        ),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert any(
+        "commands/README.md catalog entry for /brain-sample must name routing field: Schema:"
+        in error
+        for error in errors
+    )
+
+
 def test_adapter_requires_output_contract(tmp_path: Path) -> None:
     write_minimal_repo(tmp_path)
     adapter = tmp_path / "adapters" / "sample-adapter" / "README.md"
@@ -2064,7 +2084,7 @@ def write_minimal_repo(root: Path) -> None:
         "and native command support boundary so markdown-only runtimes can route work without guessing.\n\n"
         "Tie-break ambiguous routes by choosing the earliest safe lifecycle state, preferring verification for proof gaps, preferring review for trust gaps, and stopping when no command fits.\n\n"
         "## Commands\n\n"
-        "- [`/brain-sample`](brain-sample.md) — State: INTAKE; Use when: sample requests; Skills: `sample`, `activity-recap`, `agent-output-verifier`, `ci-recovery`, `command-routing`, `context-memory`, `domain-language`, `evidence-research`, `qa-evidence`, `runtime-smoke`; Artifact: `templates/sample-routing-summary.md`; Native: markdown spec unless runtime maps `/brain-sample` to a native command; Stop: request is unsafe or missing evidence.\n"
+        "- [`/brain-sample`](brain-sample.md) — State: INTAKE; Use when: sample requests; Skills: `sample`, `activity-recap`, `agent-output-verifier`, `ci-recovery`, `command-routing`, `context-memory`, `domain-language`, `evidence-research`, `qa-evidence`, `runtime-smoke`; Artifact: `templates/sample-routing-summary.md`; Schema: none; Native: markdown spec unless runtime maps `/brain-sample` to a native command; Stop: request is unsafe or missing evidence.\n"
         "- [`/brain-eval`](brain-eval.md) — State: VERIFY; Use when: eval cases need evidence-backed scoring; Skills: `adapter-capability-probe`, `agent-output-verifier`, `artifact-contract`, `qa-evidence`, `ci-recovery`, `evidence-research`, `runtime-smoke`; Artifact: `templates/eval-report.md`; Schema: `schemas/eval-report.schema.json`; Native: markdown spec unless runtime maps `/brain-eval` to a native command; Stop: required proof is unavailable.\n",
         encoding="utf-8",
     )
