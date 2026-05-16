@@ -169,8 +169,8 @@ def build_report(
 
     scope_label = run_scope.replace("read_only", "read-only").replace("_", " ")
     command_label = brain_command_mode.replace("_", " ")
-    loaded_skills = loaded_skills or []
-    validation_commands = validation_commands or []
+    loaded_skills = ["runtime-smoke"] if loaded_skills is None else loaded_skills
+    validation_commands = validation_commands if validation_commands is not None else (blocked_commands or ["not_checked"])
     write_fence = {
         "allowed_paths": write_fence_allowed_paths or [],
         "disallowed_paths": write_fence_disallowed_paths or [],
@@ -604,7 +604,7 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     parser.add_argument(
         "--validation-command",
         action="append",
-        default=[],
+        default=None,
         help="Successful local gate command completed during full validation; repeat for each gate command",
     )
     parser.add_argument(

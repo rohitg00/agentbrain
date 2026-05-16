@@ -23,7 +23,9 @@
     "python -m pytest -q was blocked by read-only sandbox"
   ],
   "run_scope": "read_only_smoke",
-  "validation_commands": [],
+  "validation_commands": [
+    "python -m pytest -q was blocked by read-only sandbox"
+  ],
   "capability_matrix": {
     "read_files": "yes",
     "write_files": "blocked",

@@ -1209,11 +1209,11 @@ def write_minimal_repo(root: Path) -> None:
                     "sandbox_write_mode": {"enum": ["read_only", "workspace_write", "approval_gated", "unrestricted", "unknown"]},
                     "brain_command_mode": {"enum": ["native_commands", "markdown_specs", "mixed", "unknown"]},
                     "selected_command": {"type": "string"},
-                    "loaded_skills": {"type": "array", "items": {"type": "string"}},
+                    "loaded_skills": {"type": "array", "minItems": 1, "items": {"type": "string"}},
                     "adapter_path": {"type": "string"},
                     "blocked_commands": {"type": "array", "items": {"type": "string"}},
                     "run_scope": {"enum": ["read_only_smoke", "full_validation"]},
-                    "validation_commands": {"type": "array", "items": {"type": "string"}},
+                    "validation_commands": {"type": "array", "minItems": 1, "items": {"type": "string"}},
                     "evidence": {"type": "array", "minItems": 1, "items": {"type": "string"}},
                 },
             }
@@ -1295,7 +1295,7 @@ def write_minimal_repo(root: Path) -> None:
                 "adapter_path": "adapters/read-only-cli/README.md",
                 "blocked_commands": [],
                 "run_scope": "read_only_smoke",
-                "validation_commands": [],
+                "validation_commands": ["python -m pytest -q blocked by read-only sandbox"],
                 "evidence": ["opened commands/brain-start.md"],
             }
         )
@@ -7250,6 +7250,36 @@ def test_runtime_smoke_artifact_contract_is_required(tmp_path):
     errors = validate_repo.validate(tmp_path)
 
     assert "missing schemas/runtime-smoke.schema.json" in errors
+
+
+def test_runtime_smoke_schema_requires_loaded_skill_evidence(tmp_path):
+    write_minimal_repo(tmp_path)
+    schema_path = tmp_path / "schemas" / "runtime-smoke.schema.json"
+    schema = json.loads(schema_path.read_text(encoding="utf-8"))
+    schema["properties"]["loaded_skills"].pop("minItems", None)
+    schema_path.write_text(json.dumps(schema), encoding="utf-8")
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert (
+        "schemas/runtime-smoke.schema.json loaded_skills must require at least one loaded skill"
+        in errors
+    )
+
+
+def test_runtime_smoke_schema_requires_validation_command_evidence(tmp_path):
+    write_minimal_repo(tmp_path)
+    schema_path = tmp_path / "schemas" / "runtime-smoke.schema.json"
+    schema = json.loads(schema_path.read_text(encoding="utf-8"))
+    schema["properties"]["validation_commands"].pop("minItems", None)
+    schema_path.write_text(json.dumps(schema), encoding="utf-8")
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert (
+        "schemas/runtime-smoke.schema.json validation_commands must require at least one validation command or blocked-command record"
+        in errors
+    )
 
 
 def test_template_must_not_list_schema_fields_that_do_not_exist(tmp_path):

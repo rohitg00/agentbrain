@@ -151,6 +151,10 @@ REQUIRED_RUNTIME_SMOKE_EXACT_COMMAND_TERMS = [
 REQUIRED_RUNTIME_SMOKE_TEMPLATE_EVIDENCE_TERMS = [
     "transcript redaction status",
 ]
+REQUIRED_RUNTIME_SMOKE_MIN_ITEM_FIELDS = {
+    "loaded_skills": "at least one loaded skill",
+    "validation_commands": "at least one validation command or blocked-command record",
+}
 REQUIRED_WORKFLOWS = [".github/workflows/quality.yml"]
 REQUIRED_QUALITY_WORKFLOW_RUNS = [
     "python -m pip install -r requirements-dev.txt",
@@ -1597,6 +1601,12 @@ def validate(root: Path = ROOT) -> list[str]:
                             f"templates/handoff-report.md resume protocol must mention: {required_term}"
                         )
             if path.name == "runtime-smoke.schema.json":
+                for field, reason in REQUIRED_RUNTIME_SMOKE_MIN_ITEM_FIELDS.items():
+                    field_schema = properties.get(field, {})
+                    if not isinstance(field_schema, dict) or field_schema.get("minItems", 0) < 1:
+                        errors.append(
+                            f"schemas/runtime-smoke.schema.json {field} must require {reason}"
+                        )
                 template_text_lower = template_text.lower()
                 if REQUIRED_RUNTIME_SMOKE_TEMPLATE_ROUTING_TERM not in template_text_lower:
                     errors.append(

@@ -1565,6 +1565,8 @@ def test_main_creates_parent_directories_for_runtime_smoke_output(monkeypatch, t
             "not_captured",
             "--blocked-command",
             "python -m pytest -q blocked by read-only sandbox",
+            "--loaded-skill",
+            "runtime-smoke",
             "--output",
             str(output_path),
         ]
