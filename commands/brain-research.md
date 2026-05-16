@@ -47,6 +47,7 @@ The output must include:
 - risks,
 - open questions,
 - next recommended state.
+- artifact path.
 
 ## Stop conditions
 

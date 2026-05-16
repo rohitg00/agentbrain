@@ -1581,7 +1581,7 @@ def write_minimal_repo(root: Path) -> None:
             "Inspect `git status --short` and preserve user changes before modifying files, running write-capable tools, or trusting generated artifacts.",
             "Inspect inputs and decide the next action.",
             "## Output",
-            "Required artifact: **Sample Routing Summary** using `templates/sample-routing-summary.md`. A concrete next action with decision, evidence, fresh validation proof, assumptions, risks, open questions, and next recommended state.",
+            "Required artifact: **Sample Routing Summary** using `templates/sample-routing-summary.md`. A concrete next action with decision, evidence, fresh validation proof, assumptions, risks, open questions, and next recommended state, and artifact path.",
             "## Stop conditions",
             "Stop when the request is unsafe.",
             "## Quality bar",
@@ -1614,7 +1614,7 @@ def write_minimal_repo(root: Path) -> None:
             "Inspect `git status --short` and preserve user changes before modifying files, running write-capable tools, or trusting generated artifacts.",
             "Select cases, collect proof, compare behavior to expected outcomes.",
             "## Output",
-            "Required artifact: **Eval Report** using `templates/eval-report.md` and `schemas/eval-report.schema.json`. A concrete eval decision with evidence, fresh validation proof, assumptions, risks, open questions, and next recommended state.",
+            "Required artifact: **Eval Report** using `templates/eval-report.md` and `schemas/eval-report.schema.json`. A concrete eval decision with evidence, fresh validation proof, assumptions, risks, open questions, and next recommended state, and artifact path.",
             "## Stop conditions",
             "Stop when required proof is unavailable.",
             "## Quality bar",
@@ -2556,7 +2556,7 @@ def test_commands_must_include_handoff_fields_in_output(tmp_path):
     command = tmp_path / "commands" / "brain-sample.md"
     command.write_text(
         command.read_text(encoding="utf-8").replace(
-            "Required artifact: **Sample Routing Summary** using `templates/sample-routing-summary.md`. A concrete next action with decision, evidence, fresh validation proof, assumptions, risks, open questions, and next recommended state.",
+            "Required artifact: **Sample Routing Summary** using `templates/sample-routing-summary.md`. A concrete next action with decision, evidence, fresh validation proof, assumptions, risks, open questions, and next recommended state, and artifact path.",
             "Required artifact: **Sample Routing Summary** using `templates/sample-routing-summary.md`. A concrete next action with evidence only.",
         ),
         encoding="utf-8",
@@ -2675,7 +2675,7 @@ def test_command_stop_conditions_must_include_noninteractive_fallback_when_the_c
             "Inspect `git status --short` and preserve user changes before modifying files, running write-capable tools, or trusting generated artifacts.",
             "Inspect inputs and decide the next action.",
             "## Output",
-            "A concrete next action with decision, evidence, fresh validation proof, assumptions, risks, open questions, and next recommended state.",
+            "A concrete next action with decision, evidence, fresh validation proof, assumptions, risks, open questions, and next recommended state, and artifact path.",
             "## Stop conditions",
             "Stop and ask for human input when the required context is unavailable.",
             "## Quality bar",
@@ -2708,7 +2708,7 @@ def test_build_command_requires_test_or_validator_first_proof(tmp_path):
             "## Workflow",
             "Implement the slice, then run the validation command.",
             "## Output",
-            "A concrete build decision with evidence, assumptions, risks, open questions, and next recommended state.",
+            "A concrete build decision with evidence, assumptions, risks, open questions, and next recommended state, and artifact path.",
             "## Stop conditions",
             "Stop when the request is unsafe.",
             "## Quality bar",
@@ -2741,7 +2741,7 @@ def test_build_command_blocks_refactoring_while_red(tmp_path):
             "## Workflow",
             "Write the failing test before implementation, use validator-first proof for docs, then refactor immediately if the design looks messy.",
             "## Output",
-            "Required artifact: `templates/changed-artifact-plus-implementation-notes.md`. A concrete build decision with evidence, fresh validation proof, assumptions, risks, open questions, and next recommended state.",
+            "Required artifact: `templates/changed-artifact-plus-implementation-notes.md`. A concrete build decision with evidence, fresh validation proof, assumptions, risks, open questions, and next recommended state, and artifact path.",
             "## Stop conditions",
             "Stop when the request is unsafe.",
             "## Quality bar",
@@ -2774,7 +2774,7 @@ def test_start_command_requires_baseline_repo_inspection_before_routing(tmp_path
             "## Workflow",
             "Capture the raw request and choose the earliest safe command.",
             "## Output",
-            "A concrete intake decision with evidence, fresh validation proof, assumptions, risks, open questions, and next recommended state.",
+            "A concrete intake decision with evidence, fresh validation proof, assumptions, risks, open questions, and next recommended state, and artifact path.",
             "## Stop conditions",
             "Stop when the request is unsafe.",
             "## Quality bar",
@@ -4047,7 +4047,7 @@ def test_command_quality_bars_must_not_be_reused_boilerplate(tmp_path):
             "Inspect `git status --short` and preserve user changes before modifying files, running write-capable tools, or trusting generated artifacts.",
             "Inspect inputs and decide the next action.",
             "## Output",
-            "A concrete next action with decision, evidence, fresh validation proof, assumptions, risks, open questions, and next recommended state.",
+            "A concrete next action with decision, evidence, fresh validation proof, assumptions, risks, open questions, and next recommended state, and artifact path.",
             "## Stop conditions",
             "Stop when the request is unsafe.",
             "## Quality bar",
@@ -5642,7 +5642,7 @@ def test_command_filenames_must_be_lowercase_kebab_case(tmp_path):
             "Inspect `git status --short` and preserve user changes before modifying files, running write-capable tools, or trusting generated artifacts.",
             "Inspect inputs and decide the next action.",
             "## Output",
-            "A concrete next action with decision, evidence, fresh validation proof, assumptions, risks, open questions, and next recommended state.",
+            "A concrete next action with decision, evidence, fresh validation proof, assumptions, risks, open questions, and next recommended state, and artifact path.",
             "## Stop conditions",
             "Stop when the request is unsafe.",
             "## Quality bar",
@@ -5675,7 +5675,7 @@ def test_command_filenames_must_use_brain_prefix(tmp_path):
             "Inspect `git status --short` and preserve user changes before modifying files, running write-capable tools, or trusting generated artifacts.",
             "Inspect inputs and decide the next action.",
             "## Output",
-            "A concrete next action with decision, evidence, fresh validation proof, assumptions, risks, open questions, and next recommended state.",
+            "A concrete next action with decision, evidence, fresh validation proof, assumptions, risks, open questions, and next recommended state, and artifact path.",
             "## Stop conditions",
             "Stop when the request is unsafe.",
             "## Quality bar",
@@ -5708,7 +5708,7 @@ def test_commands_must_name_skills_to_load(tmp_path):
             "Inspect `git status --short` and preserve user changes before modifying files, running write-capable tools, or trusting generated artifacts.",
             "Inspect inputs and decide the next action.",
             "## Output",
-            "A concrete next action with decision, evidence, fresh validation proof, assumptions, risks, open questions, and next recommended state.",
+            "A concrete next action with decision, evidence, fresh validation proof, assumptions, risks, open questions, and next recommended state, and artifact path.",
             "## Stop conditions",
             "Stop when the request is unsafe.",
             "## Quality bar",
@@ -7588,6 +7588,22 @@ def test_command_required_artifacts_must_have_templates(tmp_path):
     errors = validate_repo.validate(tmp_path)
 
     assert "commands/brain-sample.md required artifact lacks template: templates/unmapped-decision-record.md" in errors
+
+
+def test_command_output_must_name_artifact_path_for_runtime_handoff(tmp_path):
+    write_minimal_repo(tmp_path)
+    command = tmp_path / "commands" / "brain-sample.md"
+    command.write_text(
+        command.read_text(encoding="utf-8").replace(
+            ", and artifact path.",
+            ".",
+        ),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "commands/brain-sample.md output must mention: artifact path" in errors
 
 
 def test_adapter_docs_must_include_fresh_checkout_bootstrap(tmp_path):

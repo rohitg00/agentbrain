@@ -708,6 +708,7 @@ REQUIRED_COMMAND_OUTPUT_TERMS = [
     "risks",
     "open questions",
     "next recommended state",
+    "artifact path",
 ]
 REQUIRED_COMMAND_INPUT_CONTRACT_TERMS = [
     "known facts",
