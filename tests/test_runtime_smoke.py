@@ -234,6 +234,46 @@ def test_build_report_records_runtime_capability_matrix_for_adapter_comparison(t
     assert "Capability matrix: " in "\n".join(report["evidence"])
 
 
+def test_runtime_smoke_exact_command_must_record_every_capability_status(tmp_path: Path):
+    report = runtime_smoke.build_report(
+        root=tmp_path,
+        runtime="generic-cli-runtime",
+        version="1.2.3",
+        sandbox_write_mode="read_only",
+        brain_command_mode="markdown_specs",
+        run_scope="read_only_smoke",
+        blocked_commands=["python -m pytest -q blocked by read-only sandbox"],
+        exact_command=(
+            "python scripts/runtime_smoke.py --runtime generic-cli-runtime --version 1.2.3 "
+            "--sandbox-write-mode read_only --brain-command-mode markdown_specs "
+            "--run-scope read_only_smoke --blocked-command 'python -m pytest -q blocked by read-only sandbox' "
+            "--selected-command /brain-verify --loaded-skill runtime-smoke "
+            "--adapter-path adapters/read-only-cli/README.md --smoke-result blocked "
+            "--command-exit-status 0 --transcript-path not_captured_stdout_only "
+            "--transcript-redaction-status not_captured --capability read_files=yes"
+        ),
+        smoke_result="blocked",
+        selected_command="/brain-verify",
+        loaded_skills=["runtime-smoke"],
+        adapter_path="adapters/read-only-cli/README.md",
+        capability_matrix={
+            "read_files": "yes",
+            "write_files": "blocked",
+            "run_shell": "blocked",
+            "request_approvals": "unknown",
+            "network_access": "unknown",
+            "native_brain_commands": "no",
+            "schema_artifacts": "yes",
+            "blocked_command_reporting": "yes",
+        },
+    )
+
+    errors = runtime_smoke.validate_report_against_schema(report, Path("schemas/runtime-smoke.schema.json"))
+
+    assert "exact_command must record capability flag: --capability write_files=blocked" in errors
+    assert "exact_command must record capability flag: --capability request_approvals=unknown" in errors
+
+
 def test_runtime_smoke_rejects_artifacts_missing_boundary_evidence_lines(tmp_path: Path):
     report = runtime_smoke.build_report(
         root=tmp_path,
@@ -1807,6 +1847,22 @@ def test_main_creates_parent_directories_for_runtime_smoke_output(monkeypatch, t
             "python -m pytest -q blocked by read-only sandbox",
             "--loaded-skill",
             "runtime-smoke",
+            "--capability",
+            "read_files=unknown",
+            "--capability",
+            "write_files=unknown",
+            "--capability",
+            "run_shell=unknown",
+            "--capability",
+            "request_approvals=unknown",
+            "--capability",
+            "network_access=unknown",
+            "--capability",
+            "native_brain_commands=unknown",
+            "--capability",
+            "schema_artifacts=unknown",
+            "--capability",
+            "blocked_command_reporting=unknown",
             "--output",
             str(output_path),
         ]
@@ -1894,9 +1950,15 @@ def test_main_quotes_exact_command_values_for_full_validation_flags(monkeypatch,
             "--capability",
             "run_shell=yes",
             "--capability",
+            "request_approvals=unknown",
+            "--capability",
+            "network_access=unknown",
+            "--capability",
             "schema_artifacts=yes",
             "--capability",
             "native_brain_commands=no",
+            "--capability",
+            "blocked_command_reporting=unknown",
             "--output",
             str(output_path),
         ]

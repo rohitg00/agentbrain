@@ -412,7 +412,7 @@ def validate_report_against_schema(
             errors.append("markdown_specs mode cannot claim native_brain_commands capability yes")
         for capability_name in CAPABILITY_NAMES:
             capability_status = capability_matrix.get(capability_name)
-            if not isinstance(capability_status, str) or capability_status == "unknown":
+            if not isinstance(capability_status, str):
                 continue
             capability_flag = f"{capability_name}={capability_status}"
             if not exact_command_has_flag_value(report.get("exact_command"), "--capability", capability_flag):
