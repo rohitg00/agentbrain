@@ -1036,17 +1036,25 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
         default=None,
         help="Successful local gate command completed during full validation; repeat for each gate command",
     )
+    capability_names_help = ", ".join(CAPABILITY_NAMES)
+    capability_statuses_help = ", ".join(sorted(CAPABILITY_STATUSES))
     parser.add_argument(
         "--capability",
         action="append",
         default=[],
-        help="Runtime capability as name=status; names are read_files, write_files, run_shell, request_approvals, network_access, native_brain_commands, schema_artifacts, blocked_command_reporting; statuses are yes, no, unknown, blocked",
+        help=(
+            "Runtime capability as name=status; names are "
+            f"{capability_names_help}; statuses are {capability_statuses_help}"
+        ),
     )
     parser.add_argument(
         "--capability-evidence",
         action="append",
         default=[],
-        help="Evidence source for a runtime capability as name=source; repeat for every capability recorded in the matrix",
+        help=(
+            "Evidence source for a runtime capability as name=source; repeat for every "
+            f"capability recorded in the matrix: {capability_names_help}"
+        ),
     )
     parser.add_argument(
         "--write-fence-allowed-path",

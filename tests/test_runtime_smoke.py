@@ -1,9 +1,20 @@
 import json
 from pathlib import Path
 
+import pytest
 from jsonschema import Draft202012Validator
 
 from scripts import runtime_smoke
+
+
+def test_runtime_smoke_help_lists_every_capability(capsys):
+    with pytest.raises(SystemExit) as exit_info:
+        runtime_smoke.parse_args(["--help"])
+
+    assert exit_info.value.code == 0
+    help_text = capsys.readouterr().out
+    for capability_name in runtime_smoke.CAPABILITY_NAMES:
+        assert capability_name in help_text
 
 
 def test_checked_in_runtime_smoke_example_satisfies_runtime_validator():
