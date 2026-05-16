@@ -28,11 +28,12 @@ If required inputs are missing, ask at most three blocking questions or state ex
 ## Workflow
 
 1. Inspect `git status --short` and preserve user changes before modifying files, running write-capable tools, or trusting generated artifacts.
-2. Start from checked evidence, decisions, constraints, and open questions.
-3. Resolve or label missing user, problem, scope, and success criteria.
-4. Use `problem-grill` for weak scope and `evidence-research` for claims.
-5. Produce a Product Brief that names facts, assumptions, risks, non-goals, and next state.
-6. Stop if the brief would hide uncertainty or convert guesses into requirements.
+2. Treat `/brain-brief` as a markdown command spec unless the active runtime proves native command support.
+3. Start from checked evidence, decisions, constraints, and open questions.
+4. Resolve or label missing user, problem, scope, and success criteria.
+5. Use `problem-grill` for weak scope and `evidence-research` for claims.
+6. Produce a Product Brief that names facts, assumptions, risks, non-goals, and next state.
+7. Stop if the brief would hide uncertainty or convert guesses into requirements.
 
 ## Output
 

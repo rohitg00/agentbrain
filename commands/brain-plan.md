@@ -28,11 +28,12 @@ If required inputs are missing, ask at most three blocking questions or state ex
 ## Workflow
 
 1. Inspect `git status --short` and preserve user changes before modifying files, running write-capable tools, or trusting generated artifacts.
-2. Start from an approved brief/design and list all constraints.
-3. Use `plan-slicing` to split work into the smallest independently verifiable slices.
-4. Attach acceptance checks, rollback notes, and dependencies to each slice.
-5. Produce an Implementation Plan that a builder can execute without guessing.
-6. Stop if the work is too broad, untestable, or missing a first reversible slice.
+2. Treat `/brain-plan` as a markdown command spec unless the active runtime proves native command support.
+3. Start from an approved brief/design and list all constraints.
+4. Use `plan-slicing` to split work into the smallest independently verifiable slices.
+5. Attach acceptance checks, rollback notes, and dependencies to each slice.
+6. Produce an Implementation Plan that a builder can execute without guessing.
+7. Stop if the work is too broad, untestable, or missing a first reversible slice.
 
 ## Output
 

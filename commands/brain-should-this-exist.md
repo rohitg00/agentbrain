@@ -28,11 +28,12 @@ If required inputs are missing, ask at most three blocking questions or state ex
 ## Workflow
 
 1. Inspect `git status --short` and preserve user changes before modifying files, running write-capable tools, or trusting generated artifacts.
-2. Name the target user, job, pain, current alternative, and success metric.
-3. Test simpler non-agent options before proposing an agent.
-4. Use `problem-grill` and `market-grill` to find kill criteria, demand gaps, and risk.
-5. Produce a Non-Agent Alternative Review with decision, evidence, risks, and next state.
-6. Stop if the user/problem is undefined or the idea lacks measurable value.
+2. Treat `/brain-should-this-exist` as a markdown command spec unless the active runtime proves native command support.
+3. Name the target user, job, pain, current alternative, and success metric.
+4. Test simpler non-agent options before proposing an agent.
+5. Use `problem-grill` and `market-grill` to find kill criteria, demand gaps, and risk.
+6. Produce a Non-Agent Alternative Review with decision, evidence, risks, and next state.
+7. Stop if the user/problem is undefined or the idea lacks measurable value.
 
 ## Output
 

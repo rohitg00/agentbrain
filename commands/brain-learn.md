@@ -29,11 +29,12 @@ If required inputs are missing, ask at most three blocking questions or state ex
 ## Workflow
 
 1. Inspect `git status --short` and preserve user changes before modifying files, running write-capable tools, or trusting generated artifacts.
-2. Identify the repeated outcome, failure mode, correction, or durable decision.
-3. Decide whether it belongs in memory, wiki, skill, template, eval, or nowhere.
-4. Use `learning-capture` and `context-memory`; add `wiki-maintenance` for source-backed project knowledge.
-5. Produce Learning Capture with evidence, scope, update target, and next state.
-6. Stop if the lesson is temporary task progress, private data, or stale implementation status.
+2. Treat `/brain-learn` as a markdown command spec unless the active runtime proves native command support.
+3. Identify the repeated outcome, failure mode, correction, or durable decision.
+4. Decide whether it belongs in memory, wiki, skill, template, eval, or nowhere.
+5. Use `learning-capture` and `context-memory`; add `wiki-maintenance` for source-backed project knowledge.
+6. Produce Learning Capture with evidence, scope, update target, and next state.
+7. Stop if the lesson is temporary task progress, private data, or stale implementation status.
 
 ## Output
 

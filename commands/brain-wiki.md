@@ -29,11 +29,12 @@ If required inputs are missing, ask at most three blocking questions or state ex
 ## Workflow
 
 1. Inspect `git status --short` and preserve user changes before modifying files, running write-capable tools, or trusting generated artifacts.
-2. Check the source material, target knowledge area, owner, and staleness risk.
-3. Use `wiki-maintenance`; add `activity-recap` for recent local repo evidence and `evidence-research` for external claims or freshness.
-4. Update project knowledge with citations, decisions, and open questions.
-5. Produce a Wiki Update summarizing changed pages, evidence, and follow-up.
-6. Stop if sources are missing, conflicting, or too weak for a durable knowledge update.
+2. Treat `/brain-wiki` as a markdown command spec unless the active runtime proves native command support.
+3. Check the source material, target knowledge area, owner, and staleness risk.
+4. Use `wiki-maintenance`; add `activity-recap` for recent local repo evidence and `evidence-research` for external claims or freshness.
+5. Update project knowledge with citations, decisions, and open questions.
+6. Produce a Wiki Update summarizing changed pages, evidence, and follow-up.
+7. Stop if sources are missing, conflicting, or too weak for a durable knowledge update.
 
 ## Output
 

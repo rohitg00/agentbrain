@@ -28,11 +28,12 @@ If required inputs are missing, ask at most three blocking questions or state ex
 ## Workflow
 
 1. Inspect `git status --short` and preserve user changes before modifying files, running write-capable tools, or trusting generated artifacts.
-2. Define the user journey, interface states, empty states, errors, permissions, and edge cases.
-3. Use `design-grill` to challenge flows and `engineering-grill` for feasibility risks.
-4. Specify behavior before implementation details.
-5. Produce a Design Brief with state transitions, acceptance checks, and unresolved risks.
-6. Stop if critical states, accessibility, or failure paths are missing.
+2. Treat `/brain-design` as a markdown command spec unless the active runtime proves native command support.
+3. Define the user journey, interface states, empty states, errors, permissions, and edge cases.
+4. Use `design-grill` to challenge flows and `engineering-grill` for feasibility risks.
+5. Specify behavior before implementation details.
+6. Produce a Design Brief with state transitions, acceptance checks, and unresolved risks.
+7. Stop if critical states, accessibility, or failure paths are missing.
 
 ## Output
 

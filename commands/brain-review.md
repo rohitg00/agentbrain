@@ -28,11 +28,12 @@ If required inputs are missing, ask at most three blocking questions or state ex
 ## Workflow
 
 1. Inspect `git status --short` and preserve user changes before modifying files, running write-capable tools, or trusting generated artifacts.
-2. Inspect the artifact, evidence, diff, risks, permissions, and side effects.
-3. Use `agent-output-verifier` for trust checks and `engineering-grill` for maintainability/security.
-4. Classify findings by blocker, warning, or accepted risk.
-5. Produce a Review Report with decision, evidence, required fixes, and next state.
-6. Stop if unsupported claims, secrets, unsafe side effects, or skipped gates remain.
+2. Treat `/brain-review` as a markdown command spec unless the active runtime proves native command support.
+3. Inspect the artifact, evidence, diff, risks, permissions, and side effects.
+4. Use `agent-output-verifier` for trust checks and `engineering-grill` for maintainability/security.
+5. Classify findings by blocker, warning, or accepted risk.
+6. Produce a Review Report with decision, evidence, required fixes, and next state.
+7. Stop if unsupported claims, secrets, unsafe side effects, or skipped gates remain.
 
 ## Output
 

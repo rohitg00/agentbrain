@@ -30,11 +30,12 @@ If required inputs are missing, ask at most three blocking questions or state ex
 ## Workflow
 
 1. Inspect `git status --short` and preserve user changes before modifying files, running write-capable tools, or trusting generated artifacts.
-2. Identify which assumptions are product, market, design, engineering, safety, or launch risks.
-3. Load the relevant grill skills and challenge the strongest weak points first.
-4. Write rebuttals, failure modes, counterexamples, and kill criteria.
-5. Produce a Grill Report with must-fix blockers and the safest next state.
-6. Stop if the idea should be killed, narrowed, or rerouted before planning.
+2. Treat `/brain-grill` as a markdown command spec unless the active runtime proves native command support.
+3. Identify which assumptions are product, market, design, engineering, safety, or launch risks.
+4. Load the relevant grill skills and challenge the strongest weak points first.
+5. Write rebuttals, failure modes, counterexamples, and kill criteria.
+6. Produce a Grill Report with must-fix blockers and the safest next state.
+7. Stop if the idea should be killed, narrowed, or rerouted before planning.
 
 ## Output
 

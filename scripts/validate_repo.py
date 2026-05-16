@@ -735,6 +735,7 @@ REQUIRED_COMMAND_WORKFLOW_USER_CHANGE_TERMS = [
     "git status --short",
     "preserve user changes",
 ]
+REQUIRED_COMMAND_WORKFLOW_NATIVE_BOUNDARY = "markdown command spec unless the active runtime proves native command support"
 REQUIRED_SKILL_OUTPUT_ARTIFACT_RESUME_FIELDS = ["evidence", "blockers", "next action"]
 GENERIC_SKILL_WHEN_NOT_TO_USE = (
     "do not use this skill when a simpler checklist, script, or existing command handles the work safely."
@@ -2170,6 +2171,11 @@ def validate(root: Path = ROOT) -> list[str]:
                     errors.append(
                         f"{rel(command, root)} workflow must preserve user changes before action: {required_term}"
                     )
+            if REQUIRED_COMMAND_WORKFLOW_NATIVE_BOUNDARY not in workflow:
+                errors.append(
+                    f"{rel(command, root)} workflow must document native command boundary: "
+                    f"{REQUIRED_COMMAND_WORKFLOW_NATIVE_BOUNDARY}"
+                )
             if workflow in seen_workflows:
                 errors.append(
                     f"{rel(command, root)} workflow duplicates {seen_workflows[workflow]}"

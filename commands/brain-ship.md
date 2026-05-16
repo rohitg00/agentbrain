@@ -28,11 +28,12 @@ If required inputs are missing, ask at most three blocking questions or state ex
 ## Workflow
 
 1. Inspect `git status --short` and preserve user changes before modifying files, running write-capable tools, or trusting generated artifacts.
-2. Confirm verification and review evidence are current.
-3. Use `launch-gate` to check rollout, rollback, monitoring, support, and ownership.
-4. Use `qa-evidence` if release proof is incomplete.
-5. Produce a Launch Checklist with go/no-go decision, risks, rollback, and follow-up.
-6. Stop if rollback, approval, or monitoring is missing for a risky change.
+2. Treat `/brain-ship` as a markdown command spec unless the active runtime proves native command support.
+3. Confirm verification and review evidence are current.
+4. Use `launch-gate` to check rollout, rollback, monitoring, support, and ownership.
+5. Use `qa-evidence` if release proof is incomplete.
+6. Produce a Launch Checklist with go/no-go decision, risks, rollback, and follow-up.
+7. Stop if rollback, approval, or monitoring is missing for a risky change.
 
 ## Output
 

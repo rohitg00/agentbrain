@@ -29,13 +29,14 @@ If required inputs are missing, ask at most three blocking questions or state ex
 ## Workflow
 
 1. Inspect `git status --short` and preserve user changes before modifying files, running write-capable tools, or trusting generated artifacts.
-2. Inspect repository state with `git status --short` and `git log --oneline -5` before routing so local drift and recent work shape the starting state.
-3. Run or require baseline validation when the request may lead to edits, verification claims, or handoff; treat missing baseline validation as a blocker for unsafe routing.
-4. Capture the raw request, user goal, visible constraints, and urgency.
-5. Classify the earliest safe state instead of assuming build work.
-6. Load `intake`; add `question-ladder` only when missing context blocks routing; add `domain-language` when vocabulary ambiguity changes state choice or artifact naming.
-7. Produce an Intake Summary with facts, assumptions, blockers, and recommended next command.
-8. Stop if the request needs approval, secrets, destructive action, or a user decision before routing.
+2. Treat `/brain-start` as a markdown command spec unless the active runtime proves native command support.
+3. Inspect repository state with `git status --short` and `git log --oneline -5` before routing so local drift and recent work shape the starting state.
+4. Run or require baseline validation when the request may lead to edits, verification claims, or handoff; treat missing baseline validation as a blocker for unsafe routing.
+5. Capture the raw request, user goal, visible constraints, and urgency.
+6. Classify the earliest safe state instead of assuming build work.
+7. Load `intake`; add `question-ladder` only when missing context blocks routing; add `domain-language` when vocabulary ambiguity changes state choice or artifact naming.
+8. Produce an Intake Summary with facts, assumptions, blockers, and recommended next command.
+9. Stop if the request needs approval, secrets, destructive action, or a user decision before routing.
 
 ## Output
 
