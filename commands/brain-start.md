@@ -23,6 +23,7 @@ If required inputs are missing, ask at most three blocking questions or state ex
 ## Skills to load
 
 - `intake` for routing raw intent into the earliest safe state.
+- `command-routing` when the selected `/brain-*` route must be chosen or verified against the command catalog.
 - `question-ladder` when the request needs staged clarification without overloading the user.
 - `domain-language` when overloaded project terms affect routing, artifact naming, or the next state.
 
@@ -34,7 +35,7 @@ If required inputs are missing, ask at most three blocking questions or state ex
 4. Run or require baseline validation when the request may lead to edits, verification claims, or handoff; treat missing baseline validation as a blocker for unsafe routing.
 5. Capture the raw request, user goal, visible constraints, and urgency.
 6. Classify the earliest safe state instead of assuming build work.
-7. Load `intake`; add `question-ladder` only when missing context blocks routing; add `domain-language` when vocabulary ambiguity changes state choice or artifact naming.
+7. Load `intake` and `command-routing`; add `question-ladder` only when missing context blocks routing; add `domain-language` when vocabulary ambiguity changes state choice or artifact naming.
 8. Produce an Intake Summary with facts, assumptions, blockers, and recommended next command.
 9. Stop if the request needs approval, secrets, destructive action, or a user decision before routing.
 
@@ -71,4 +72,4 @@ A good `/brain-start` run classifies the request into the earliest safe state, n
 
 ## Example
 
-User request: start from a vague task or product ambition. Selected command: `/brain-start`. Command file: `commands/brain-start.md`. Loaded skills: `intake`, `question-ladder`, and `domain-language`. Skill files: `skills/intake/SKILL.md`, `skills/question-ladder/SKILL.md`, and `skills/domain-language/SKILL.md`. Artifact: write `templates/intake-summary.md`. Verification: inspect repository state, run baseline validation when appropriate, preserve user changes, and record fresh validation proof before choosing the next `/brain-*` route. Stop condition: stop if no safe default exists for missing context. Next state: RESEARCH.
+User request: start from a vague task or product ambition. Selected command: `/brain-start`. Command file: `commands/brain-start.md`. Loaded skills: `intake`, `command-routing`, `question-ladder`, and `domain-language`. Skill files: `skills/intake/SKILL.md`, `skills/command-routing/SKILL.md`, `skills/question-ladder/SKILL.md`, and `skills/domain-language/SKILL.md`. Artifact: write `templates/intake-summary.md`. Verification: inspect repository state, run baseline validation when appropriate, preserve user changes, verify the command catalog route, and record fresh validation proof before choosing the next `/brain-*` route. Stop condition: stop if no safe default exists for missing context. Next state: RESEARCH.

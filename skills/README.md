@@ -16,6 +16,7 @@ Agent Brain skills are small, composable, runtime-neutral operating procedures. 
 - [`adapter-capability-probe`](adapter-capability-probe/SKILL.md) — Use when a command, adapter, or runtime smoke depends on proving an agent runtime's capabilities before trusting command routing, writes, shell access, or validation claims.
 - [`agent-output-verifier`](agent-output-verifier/SKILL.md) — Use when agent-produced work needs a safety, evidence, and reliability check before handoff, merge, or trust.
 - [`ci-recovery`](ci-recovery/SKILL.md) — Use when local validation and remote workflow status must be reconciled before trust, merge, or shipment.
+- [`command-routing`](command-routing/SKILL.md) — Use when an agent runtime must choose or verify a /brain-* command route from a user request, handoff, adapter transcript, or stale command catalog.
 - [`context-memory`](context-memory/SKILL.md) — Use when deciding what project context should be remembered, retrieved, updated, or deliberately forgotten.
 - [`design-grill`](design-grill/SKILL.md) — Use when a design needs pressure-testing for UX, information architecture, states, and accessibility.
 - [`domain-language`](domain-language/SKILL.md) — Use when project vocabulary is fuzzy, overloaded, disputed, or needed before naming docs, schemas, commands, skills, code, plans, or memory.
