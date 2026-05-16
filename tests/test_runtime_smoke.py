@@ -119,6 +119,33 @@ def test_runtime_smoke_rejects_duplicate_validation_commands_in_report_and_exact
     assert f"exact_command must not duplicate validation command flag: {validation_command}" in errors
 
 
+def test_runtime_smoke_rejects_duplicate_write_fence_values_in_report_and_exact_command():
+    report = json.loads(Path("examples/artifacts/runtime-smoke.example.json").read_text(encoding="utf-8"))
+    report["write_fence"]["allowed_paths"] = ["artifacts/runtime-smoke/", "artifacts/runtime-smoke/"]
+    report["write_fence"]["disallowed_paths"] = [".git/", ".git/"]
+    report["write_fence"]["user_owned_files"] = ["README.md", "README.md"]
+    report["exact_command"] = (
+        report["exact_command"]
+        + " --write-fence-allowed-path artifacts/runtime-smoke/"
+        + " --write-fence-allowed-path artifacts/runtime-smoke/"
+        + " --write-fence-disallowed-path .git/"
+        + " --write-fence-disallowed-path .git/"
+        + " --write-fence-user-owned-file README.md"
+        + " --write-fence-user-owned-file README.md"
+    )
+
+    errors = runtime_smoke.validate_report_against_schema(
+        report, Path("schemas/runtime-smoke.schema.json"), root=Path.cwd()
+    )
+
+    assert "write_fence.allowed_paths must not duplicate path: artifacts/runtime-smoke/" in errors
+    assert "write_fence.disallowed_paths must not duplicate path: .git/" in errors
+    assert "write_fence.user_owned_files must not duplicate path: README.md" in errors
+    assert "exact_command must not duplicate write fence flag: --write-fence-allowed-path artifacts/runtime-smoke/" in errors
+    assert "exact_command must not duplicate write fence flag: --write-fence-disallowed-path .git/" in errors
+    assert "exact_command must not duplicate write fence flag: --write-fence-user-owned-file README.md" in errors
+
+
 def test_runtime_smoke_schema_requires_full_validation_capabilities():
     schema = json.loads(Path("schemas/runtime-smoke.schema.json").read_text(encoding="utf-8"))
     report = json.loads(Path("examples/artifacts/runtime-smoke.example.json").read_text(encoding="utf-8"))

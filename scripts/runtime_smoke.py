@@ -446,6 +446,16 @@ def validate_report_against_schema(
         if capability_name in seen_capability_names:
             errors.append(f"exact_command must not duplicate capability name: {capability_name}")
         seen_capability_names.add(capability_name)
+    for flag in [
+        "--write-fence-allowed-path",
+        "--write-fence-disallowed-path",
+        "--write-fence-user-owned-file",
+    ]:
+        seen_write_fence_flag_values: set[str] = set()
+        for value in exact_command_flag_values(report.get("exact_command"), flag):
+            if value in seen_write_fence_flag_values:
+                errors.append(f"exact_command must not duplicate write fence flag: {flag} {value}")
+            seen_write_fence_flag_values.add(value)
 
     transcript_path = report.get("transcript_path")
     if root is not None and isinstance(transcript_path, str) and not transcript_path_is_external_reference(transcript_path):
@@ -515,6 +525,19 @@ def validate_report_against_schema(
                 "exact_command must record validation command flag: "
                 f"--validation-command {validation_command}"
             )
+    write_fence = report.get("write_fence")
+    if isinstance(write_fence, dict):
+        for field_name in ["allowed_paths", "disallowed_paths", "user_owned_files"]:
+            values = write_fence.get(field_name)
+            if not isinstance(values, list):
+                continue
+            seen_paths: set[str] = set()
+            for value in values:
+                if not isinstance(value, str):
+                    continue
+                if value in seen_paths:
+                    errors.append(f"write_fence.{field_name} must not duplicate path: {value}")
+                seen_paths.add(value)
 
     runtime = report.get("runtime")
     if isinstance(runtime, str) and not exact_command_has_flag_value(
