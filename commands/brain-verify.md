@@ -22,12 +22,12 @@ If required inputs are missing, ask at most three blocking questions or state ex
 
 ## Skills to load
 
-- `qa-evidence` to collect tests, logs, traces, screenshots, citations, or diff proof.
-- `runtime-smoke` when harness usability depends on a real agent runtime, adapter, sandbox, or `/brain-*` command boundary.
-- `adapter-capability-probe` when runtime smoke needs concrete proof of command routing, sandbox, write, shell, approval, artifact, or blocked-command capabilities.
-- `artifact-contract` when verification depends on template, schema, example, command output, or handoff field alignment.
-- `ci-recovery` when remote workflow status must be reconciled with local validation.
-- `agent-output-verifier` when the proof is attached to agent-produced output.
+- `qa-evidence` from `skills/qa-evidence/SKILL.md` to collect tests, logs, traces, screenshots, citations, or diff proof.
+- `runtime-smoke` from `skills/runtime-smoke/SKILL.md` when harness usability depends on a real agent runtime, adapter, sandbox, or `/brain-*` command boundary.
+- `adapter-capability-probe` from `skills/adapter-capability-probe/SKILL.md` when runtime smoke needs concrete proof of command routing, sandbox, write, shell, approval, artifact, or blocked-command capabilities.
+- `artifact-contract` from `skills/artifact-contract/SKILL.md` when verification depends on template, schema, example, command output, or handoff field alignment.
+- `ci-recovery` from `skills/ci-recovery/SKILL.md` when remote workflow status must be reconciled with local validation.
+- `agent-output-verifier` from `skills/agent-output-verifier/SKILL.md` when the proof is attached to agent-produced output.
 
 ## Workflow
 

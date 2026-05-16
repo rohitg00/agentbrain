@@ -1399,6 +1399,15 @@ def command_skills_to_load(text: str) -> list[str]:
     return sorted(set(re.findall(r"`([a-z0-9]+(?:-[a-z0-9]+)*)`", body)))
 
 
+def command_skill_entry_cites_file(text: str, skill_name: str) -> bool:
+    body = section_body(text, "## Skills to load")
+    expected_file = f"skills/{skill_name}/SKILL.md"
+    for line in body.splitlines():
+        if f"`{skill_name}`" in line:
+            return f"`{expected_file}`" in line
+    return False
+
+
 def command_example_loaded_skills(example: str) -> list[str]:
     loaded_skill_blocks = re.findall(
         r"loaded skills?:\s*([^.]*)",
@@ -2283,6 +2292,11 @@ def validate(root: Path = ROOT) -> list[str]:
         if not skill_names:
             errors.append(f"{rel(command, root)} skills-to-load section must name at least one skill")
         for skill_name in skill_names:
+            expected_skill_path = f"skills/{skill_name}/SKILL.md"
+            if not command_skill_entry_cites_file(text, skill_name):
+                errors.append(
+                    f"{rel(command, root)} skills-to-load entry must cite skill file for {skill_name}: {expected_skill_path}"
+                )
             skill_file = root / "skills" / skill_name / "SKILL.md"
             if not skill_file.exists():
                 errors.append(

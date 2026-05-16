@@ -22,8 +22,8 @@ If required inputs are missing, ask at most three blocking questions or state ex
 
 ## Skills to load
 
-- `launch-gate` to decide go/no-go with rollout, rollback, monitoring, and proof.
-- `qa-evidence` when release evidence is incomplete or stale.
+- `launch-gate` from `skills/launch-gate/SKILL.md` to decide go/no-go with rollout, rollback, monitoring, and proof.
+- `qa-evidence` from `skills/qa-evidence/SKILL.md` when release evidence is incomplete or stale.
 
 ## Workflow
 

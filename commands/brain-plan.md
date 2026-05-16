@@ -22,8 +22,8 @@ If required inputs are missing, ask at most three blocking questions or state ex
 
 ## Skills to load
 
-- `plan-slicing` to split work into small vertical slices with acceptance checks.
-- `engineering-grill` when implementation risk or feasibility is still uncertain.
+- `plan-slicing` from `skills/plan-slicing/SKILL.md` to split work into small vertical slices with acceptance checks.
+- `engineering-grill` from `skills/engineering-grill/SKILL.md` when implementation risk or feasibility is still uncertain.
 
 ## Workflow
 

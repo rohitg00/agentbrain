@@ -22,8 +22,8 @@ If required inputs are missing, ask at most three blocking questions or state ex
 
 ## Skills to load
 
-- `agent-output-verifier` to block unsupported, unsafe, or hallucinated output.
-- `engineering-grill` when correctness, maintainability, or security risk needs deeper challenge.
+- `agent-output-verifier` from `skills/agent-output-verifier/SKILL.md` to block unsupported, unsafe, or hallucinated output.
+- `engineering-grill` from `skills/engineering-grill/SKILL.md` when correctness, maintainability, or security risk needs deeper challenge.
 
 ## Workflow
 

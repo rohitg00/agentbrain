@@ -77,6 +77,25 @@ def test_required_skills_include_artifact_contract(tmp_path: Path) -> None:
     assert "missing skills/artifact-contract/SKILL.md" in errors
 
 
+def test_command_skill_to_load_entry_must_cite_skill_file(tmp_path: Path) -> None:
+    write_minimal_repo(tmp_path)
+    command = tmp_path / "commands" / "brain-sample.md"
+    command.write_text(
+        command.read_text(encoding="utf-8").replace(
+            "Load `sample` from `skills/sample/SKILL.md` for sample routing.",
+            "Load `sample` for sample routing.",
+        ),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert (
+        "commands/brain-sample.md skills-to-load entry must cite skill file for sample: skills/sample/SKILL.md"
+        in errors
+    )
+
+
 def test_adapter_minimal_instruction_must_load_only_command_listed_skills(tmp_path: Path) -> None:
     write_minimal_repo(tmp_path)
     adapter = tmp_path / "adapters" / "sample-adapter" / "README.md"
@@ -1942,16 +1961,16 @@ def write_minimal_repo(root: Path) -> None:
             "## Input contract",
             "Raw request, known facts, assumptions, constraints, evidence, and approval state.",
             "## Skills to load",
-            "Load `sample` for sample routing.",
-            "Load `activity-recap` for checked recent-work summaries.",
-            "Load `agent-output-verifier` before trusting generated output.",
-            "Load `ci-recovery` when remote workflow proof must be reconciled.",
-            "Load `command-routing` when the command route must be checked against the command catalog.",
-            "Load `context-memory` before durable memory routing.",
-            "Load `domain-language` before naming project terms.",
-            "Load `evidence-research` when claims need source-backed evidence.",
-            "Load `qa-evidence` when proof must support review or shipping.",
-            "Load `runtime-smoke` when proof depends on a real agent runtime or adapter.",
+            "Load `sample` from `skills/sample/SKILL.md` for sample routing.",
+            "Load `activity-recap` from `skills/activity-recap/SKILL.md` for checked recent-work summaries.",
+            "Load `agent-output-verifier` from `skills/agent-output-verifier/SKILL.md` before trusting generated output.",
+            "Load `ci-recovery` from `skills/ci-recovery/SKILL.md` when remote workflow proof must be reconciled.",
+            "Load `command-routing` from `skills/command-routing/SKILL.md` when the command route must be checked against the command catalog.",
+            "Load `context-memory` from `skills/context-memory/SKILL.md` before durable memory routing.",
+            "Load `domain-language` from `skills/domain-language/SKILL.md` before naming project terms.",
+            "Load `evidence-research` from `skills/evidence-research/SKILL.md` when claims need source-backed evidence.",
+            "Load `qa-evidence` from `skills/qa-evidence/SKILL.md` when proof must support review or shipping.",
+            "Load `runtime-smoke` from `skills/runtime-smoke/SKILL.md` when proof depends on a real agent runtime or adapter.",
             "## Workflow",
             "Inspect `git status --short` and preserve user changes before modifying files, running write-capable tools, or trusting generated artifacts.",
             "Treat `/brain-sample` as a markdown command spec unless the active runtime proves native command support.",
@@ -1981,13 +2000,13 @@ def write_minimal_repo(root: Path) -> None:
             "## Input contract",
             "Eval target, case list, known facts, assumptions, constraints, evidence, and approval state.",
             "## Skills to load",
-            "Load `adapter-capability-probe` when runtime smoke depends on concrete adapter capability evidence.",
-            "Load `agent-output-verifier` before trusting generated output.",
-            "Load `artifact-contract` when eval artifacts, templates, schemas, examples, or handoff fields must stay aligned.",
-            "Load `qa-evidence` to tie eval conclusions to concrete logs, cases, and rubric evidence.",
-            "Load `ci-recovery` when eval evidence depends on remote workflow status.",
-            "Load `evidence-research` when eval evidence depends on source-backed claims.",
-            "Load `runtime-smoke` when eval evidence depends on a real agent runtime, adapter, sandbox, or command boundary.",
+            "Load `adapter-capability-probe` from `skills/adapter-capability-probe/SKILL.md` when runtime smoke depends on concrete adapter capability evidence.",
+            "Load `agent-output-verifier` from `skills/agent-output-verifier/SKILL.md` before trusting generated output.",
+            "Load `artifact-contract` from `skills/artifact-contract/SKILL.md` when eval artifacts, templates, schemas, examples, or handoff fields must stay aligned.",
+            "Load `qa-evidence` from `skills/qa-evidence/SKILL.md` to tie eval conclusions to concrete logs, cases, and rubric evidence.",
+            "Load `ci-recovery` from `skills/ci-recovery/SKILL.md` when eval evidence depends on remote workflow status.",
+            "Load `evidence-research` from `skills/evidence-research/SKILL.md` when eval evidence depends on source-backed claims.",
+            "Load `runtime-smoke` from `skills/runtime-smoke/SKILL.md` when eval evidence depends on a real agent runtime, adapter, sandbox, or command boundary.",
             "## Workflow",
             "Inspect `git status --short` and preserve user changes before modifying files, running write-capable tools, or trusting generated artifacts.",
             "Treat `/brain-eval` as a markdown command spec unless the active runtime proves native command support.",
@@ -2961,7 +2980,7 @@ def test_commands_must_not_reuse_the_same_workflow_body(tmp_path):
                 "## Input contract",
                 "Raw request.",
                 "## Skills to load",
-                "Load `sample` for sample routing.",
+                "Load `sample` from `skills/sample/SKILL.md` for sample routing.",
                 "## Workflow",
                 duplicate_workflow,
                 "## Output",
@@ -3098,7 +3117,7 @@ def test_command_stop_conditions_must_include_noninteractive_fallback_when_the_c
             "## Input contract",
             "Ask the user for missing context. In noninteractive runs where the agent cannot ask questions, use the safest documented default or stop with a blocker when ambiguity changes the action.",
             "## Skills to load",
-            "Load `sample` for sample routing.",
+            "Load `sample` from `skills/sample/SKILL.md` for sample routing.",
             "## Workflow",
             "Inspect `git status --short` and preserve user changes before modifying files, running write-capable tools, or trusting generated artifacts.",
             "Inspect inputs and decide the next action.",
@@ -3132,7 +3151,7 @@ def test_build_command_requires_test_or_validator_first_proof(tmp_path):
             "## Input contract",
             "Approved plan slice and validation command.",
             "## Skills to load",
-            "Load `sample` for sample routing.",
+            "Load `sample` from `skills/sample/SKILL.md` for sample routing.",
             "## Workflow",
             "Implement the slice, then run the validation command.",
             "## Output",
@@ -3165,7 +3184,7 @@ def test_build_command_blocks_refactoring_while_red(tmp_path):
             "## Input contract",
             "Approved plan slice, known facts, assumptions, constraints, evidence, validation command, and approval state.",
             "## Skills to load",
-            "Load `sample` for sample routing.",
+            "Load `sample` from `skills/sample/SKILL.md` for sample routing.",
             "## Workflow",
             "Write the failing test before implementation, use validator-first proof for docs, then refactor immediately if the design looks messy.",
             "## Output",
@@ -3198,7 +3217,7 @@ def test_start_command_requires_baseline_repo_inspection_before_routing(tmp_path
             "## Input contract",
             "Raw request plus known context.",
             "## Skills to load",
-            "Load `sample` for sample routing.",
+            "Load `sample` from `skills/sample/SKILL.md` for sample routing.",
             "## Workflow",
             "Capture the raw request and choose the earliest safe command.",
             "## Output",
@@ -4429,16 +4448,16 @@ def test_command_skills_to_load_must_name_at_least_one_skill(tmp_path):
     command.write_text(
         command.read_text(encoding="utf-8").replace(
             "## Skills to load\n"
-            "Load `sample` for sample routing.\n"
-            "Load `activity-recap` for checked recent-work summaries.\n"
-            "Load `agent-output-verifier` before trusting generated output.\n"
-            "Load `ci-recovery` when remote workflow proof must be reconciled.\n"
-            "Load `command-routing` when the command route must be checked against the command catalog.\n"
-            "Load `context-memory` before durable memory routing.\n"
-            "Load `domain-language` before naming project terms.\n"
-            "Load `evidence-research` when claims need source-backed evidence.\n"
-            "Load `qa-evidence` when proof must support review or shipping.\n"
-            "Load `runtime-smoke` when proof depends on a real agent runtime or adapter.",
+            "Load `sample` from `skills/sample/SKILL.md` for sample routing.\n"
+            "Load `activity-recap` from `skills/activity-recap/SKILL.md` for checked recent-work summaries.\n"
+            "Load `agent-output-verifier` from `skills/agent-output-verifier/SKILL.md` before trusting generated output.\n"
+            "Load `ci-recovery` from `skills/ci-recovery/SKILL.md` when remote workflow proof must be reconciled.\n"
+            "Load `command-routing` from `skills/command-routing/SKILL.md` when the command route must be checked against the command catalog.\n"
+            "Load `context-memory` from `skills/context-memory/SKILL.md` before durable memory routing.\n"
+            "Load `domain-language` from `skills/domain-language/SKILL.md` before naming project terms.\n"
+            "Load `evidence-research` from `skills/evidence-research/SKILL.md` when claims need source-backed evidence.\n"
+            "Load `qa-evidence` from `skills/qa-evidence/SKILL.md` when proof must support review or shipping.\n"
+            "Load `runtime-smoke` from `skills/runtime-smoke/SKILL.md` when proof depends on a real agent runtime or adapter.",
             "## Skills to load\n"
             "Load the relevant skill for sample routing.",
         ),
@@ -4463,16 +4482,16 @@ def test_command_quality_bars_must_not_be_reused_boilerplate(tmp_path):
             "## Input contract",
             "Raw request.",
             "## Skills to load",
-            "Load `sample` for sample routing.",
-            "Load `activity-recap` for checked recent-work summaries.",
-            "Load `agent-output-verifier` before trusting generated output.",
-            "Load `ci-recovery` when remote workflow proof must be reconciled.",
-            "Load `command-routing` when the command route must be checked against the command catalog.",
-            "Load `context-memory` before durable memory routing.",
-            "Load `domain-language` before naming project terms.",
-            "Load `evidence-research` when claims need source-backed evidence.",
-            "Load `qa-evidence` when proof must support review or shipping.",
-            "Load `runtime-smoke` when proof depends on a real agent runtime or adapter.",
+            "Load `sample` from `skills/sample/SKILL.md` for sample routing.",
+            "Load `activity-recap` from `skills/activity-recap/SKILL.md` for checked recent-work summaries.",
+            "Load `agent-output-verifier` from `skills/agent-output-verifier/SKILL.md` before trusting generated output.",
+            "Load `ci-recovery` from `skills/ci-recovery/SKILL.md` when remote workflow proof must be reconciled.",
+            "Load `command-routing` from `skills/command-routing/SKILL.md` when the command route must be checked against the command catalog.",
+            "Load `context-memory` from `skills/context-memory/SKILL.md` before durable memory routing.",
+            "Load `domain-language` from `skills/domain-language/SKILL.md` before naming project terms.",
+            "Load `evidence-research` from `skills/evidence-research/SKILL.md` when claims need source-backed evidence.",
+            "Load `qa-evidence` from `skills/qa-evidence/SKILL.md` when proof must support review or shipping.",
+            "Load `runtime-smoke` from `skills/runtime-smoke/SKILL.md` when proof depends on a real agent runtime or adapter.",
             "## Workflow",
             "Inspect `git status --short` and preserve user changes before modifying files, running write-capable tools, or trusting generated artifacts.",
             "Inspect inputs and decide the next action.",
@@ -4517,7 +4536,7 @@ def test_command_stop_conditions_must_not_be_reused_boilerplate(tmp_path):
             "## Input contract",
             "Raw request.",
             "## Skills to load",
-            "Load `sample` for sample routing.",
+            "Load `sample` from `skills/sample/SKILL.md` for sample routing.",
             "## Workflow",
             "Inspect other inputs and decide the next action.",
             "## Output",
@@ -6549,7 +6568,7 @@ def test_agent_harness_command_routing_must_cover_every_command(tmp_path):
             "## Input contract",
             "Raw request.",
             "## Skills to load",
-            "Load `sample` for extra routing.",
+            "Load `sample` from `skills/sample/SKILL.md` for extra routing.",
             "## Workflow",
             "Inspect extra inputs and decide the next action.",
             "## Output",
