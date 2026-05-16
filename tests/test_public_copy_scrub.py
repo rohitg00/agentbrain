@@ -98,6 +98,32 @@ def test_scrub_rejects_exact_source_name_in_adapter_catalog(tmp_path: Path) -> N
     assert "adapters/README.md:3" in result.stdout
 
 
+def test_scrub_rejects_exact_source_name_in_repo_automation_copy(tmp_path: Path) -> None:
+    banned = "".join(["Source", "Brand"])
+    (tmp_path / "scripts").mkdir()
+    (tmp_path / "tests").mkdir()
+    (tmp_path / ".github" / "workflows").mkdir(parents=True)
+    (tmp_path / "scripts" / "helper.py").write_text(
+        f'PUBLIC_LABEL = "{banned}"\n',
+        encoding="utf-8",
+    )
+    (tmp_path / "tests" / "test_helper.py").write_text(
+        f'def test_label():\n    assert "{banned}"\n',
+        encoding="utf-8",
+    )
+    (tmp_path / ".github" / "workflows" / "quality.yml").write_text(
+        f"name: {banned} quality\n",
+        encoding="utf-8",
+    )
+
+    result = run_scrub(tmp_path, banned)
+
+    assert result.returncode == 1
+    assert "scripts/helper.py:1" in result.stdout
+    assert "tests/test_helper.py:2" in result.stdout
+    assert ".github/workflows/quality.yml:1" in result.stdout
+
+
 def test_scrub_requires_at_least_one_exact_name(tmp_path: Path) -> None:
     (tmp_path / "README.md").write_text(
         "# Harness\n\nNeutral public copy.\n",
