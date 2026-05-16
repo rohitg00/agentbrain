@@ -39,7 +39,7 @@ If required inputs are missing, ask at most three blocking questions or state ex
 
 ## Output
 
-Required artifact: **Changed artifact plus implementation notes** using `templates/changed-artifact-plus-implementation-notes.md`.
+Required artifact: **Changed artifact plus implementation notes** using `templates/changed-artifact-plus-implementation-notes.md` and `schemas/changed-artifact-plus-implementation-notes.schema.json`.
 
 The output must include:
 
@@ -70,4 +70,4 @@ A good `/brain-build` run implements one approved slice, preserves the planned s
 
 ## Example
 
-User request: implement one approved plan slice. Selected command: `/brain-build`. Command file: `commands/brain-build.md`. Loaded skills: `plan-slicing` and `qa-evidence`. Skill files: `skills/plan-slicing/SKILL.md` and `skills/qa-evidence/SKILL.md`. Artifact: write `templates/changed-artifact-plus-implementation-notes.md`. Verification: record failing behavior proof or validator-first proof, passing proof, risks, and fresh validation proof before the next recommended state. Stop condition: stop if no approved slice, failing proof, or passing validation exists. Next state: VERIFY.
+User request: implement one approved plan slice. Selected command: `/brain-build`. Command file: `commands/brain-build.md`. Loaded skills: `plan-slicing` and `qa-evidence`. Skill files: `skills/plan-slicing/SKILL.md` and `skills/qa-evidence/SKILL.md`. Artifact: write `templates/changed-artifact-plus-implementation-notes.md`. Artifact schema: `schemas/changed-artifact-plus-implementation-notes.schema.json`. Verification: record failing behavior proof or validator-first proof, passing proof, risks, and fresh validation proof before the next recommended state. Stop condition: stop if no approved slice, failing proof, or passing validation exists. Next state: VERIFY.

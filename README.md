@@ -259,7 +259,7 @@ Use this guide when a command says to produce an artifact. Start with the comman
 | Product scope | `templates/product-brief.md` | `schemas/product-brief.schema.json` |
 | Interface or workflow design | `templates/design-brief.md` | Command output contract |
 | Implementation slices | `templates/implementation-plan.md` | `schemas/implementation-plan.schema.json` |
-| Changed artifact and build notes | `templates/changed-artifact-plus-implementation-notes.md` | Command output contract |
+| Changed artifact and build notes | `templates/changed-artifact-plus-implementation-notes.md` | `schemas/changed-artifact-plus-implementation-notes.schema.json` |
 | QA or verification proof | `templates/qa-evidence.md` | `schemas/qa-evidence.schema.json` |
 | Real-runtime smoke evidence | `templates/runtime-smoke.md` | `schemas/runtime-smoke.schema.json` |
 | Trust review before handoff | `templates/review-report.md` | `schemas/review-report.schema.json` |

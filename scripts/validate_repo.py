@@ -34,6 +34,7 @@ REQUIRED_ARTIFACT_FILES = [
     "templates/handoff-report.md",
     "templates/memory-decision.md",
     "templates/qa-evidence.md",
+    "schemas/changed-artifact-plus-implementation-notes.schema.json",
     "schemas/runtime-smoke.schema.json",
     "templates/runtime-smoke.md",
 ]

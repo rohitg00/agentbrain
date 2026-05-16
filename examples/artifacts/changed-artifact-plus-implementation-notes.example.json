@@ -1,0 +1,24 @@
+{
+  "changed_artifacts": [
+    "commands/brain-build.md",
+    "tests/test_validate_repo.py"
+  ],
+  "slice": "Add a validator-backed build artifact schema contract.",
+  "test_first_proof": {
+    "red": "python -m pytest tests/test_validate_repo.py::test_build_output_artifact_requires_schema_contract -q failed before the schema was required.",
+    "green": "python -m pytest tests/test_validate_repo.py::test_build_output_artifact_requires_schema_contract -q passed after adding the schema contract."
+  },
+  "implementation_notes": [
+    "The build output artifact records changed files, slice scope, test-first proof, validation, risks, rollback, and next action."
+  ],
+  "validation": [
+    "python -m pytest -q",
+    "python scripts/validate_repo.py",
+    "git diff --check"
+  ],
+  "risks": [],
+  "rollback": [
+    "Revert the schema, example, and command citation changes together."
+  ],
+  "next_action": "Continue hardening the next weakest command or runtime artifact contract."
+}
