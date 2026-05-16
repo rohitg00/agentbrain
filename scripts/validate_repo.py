@@ -601,6 +601,16 @@ REQUIRED_ADAPTER_RUNTIME_SMOKE_COMMAND_FLAGS = [
     "--write-fence-approval-state",
     "--capability",
 ]
+REQUIRED_ADAPTER_RUNTIME_SMOKE_CAPABILITIES = [
+    "read_files",
+    "write_files",
+    "run_shell",
+    "request_approvals",
+    "network_access",
+    "native_brain_commands",
+    "schema_artifacts",
+    "blocked_command_reporting",
+]
 REQUIRED_ADAPTER_SAMPLE_ROUTING_PROBE_TERMS = [
     "sample request",
     "command file",
@@ -1773,6 +1783,14 @@ def validate(root: Path = ROOT) -> list[str]:
         for term in REQUIRED_ADAPTER_README_CONTRACT_TERMS:
             if term not in adapter_contract:
                 errors.append(f"adapters/README.md adapter contract must mention: {term}")
+
+    for adapter in adapter_files:
+        adapter_path = rel(adapter, root)
+        adapter_text = adapter.read_text(errors="ignore")
+        adapter_text_lower = adapter_text.lower()
+        for capability in REQUIRED_ADAPTER_RUNTIME_SMOKE_CAPABILITIES:
+            if f"--capability {capability}=" not in adapter_text_lower:
+                errors.append(f"{adapter_path} runtime smoke command must name capability: {capability}")
 
     for required_path in REQUIRED_DOCS:
         if not (root / required_path).exists():
