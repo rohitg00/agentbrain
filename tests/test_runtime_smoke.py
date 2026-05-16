@@ -928,6 +928,50 @@ def test_build_report_records_runtime_capability_matrix_for_adapter_comparison(t
     assert "Capability matrix: " in "\n".join(report["evidence"])
 
 
+def test_read_only_runtime_smoke_rejects_write_capability_overclaim(tmp_path: Path):
+    report = runtime_smoke.build_report(
+        root=tmp_path,
+        runtime="generic-cli-runtime",
+        version="1.2.3",
+        sandbox_write_mode="read_only",
+        brain_command_mode="markdown_specs",
+        run_scope="read_only_smoke",
+        blocked_commands=[],
+        exact_command=(
+            "python scripts/runtime_smoke.py --runtime generic-cli-runtime --version 1.2.3 "
+            "--run-scope read_only_smoke --selected-command /brain-start "
+            "--loaded-skill intake --adapter-path adapters/read-only-cli/README.md "
+            "--sandbox-write-mode read_only --brain-command-mode markdown_specs "
+            "--transcript-path artifacts/runtime-smoke/generic-cli-runtime-2026-05-15.log "
+            "--smoke-result pass --command-exit-status 0 --transcript-redaction-status redacted "
+            "--capability read_files=yes --capability write_files=yes --capability run_shell=no "
+            "--capability request_approvals=no --capability network_access=no "
+            "--capability native_brain_commands=no --capability schema_artifacts=yes "
+            "--capability blocked_command_reporting=yes"
+        ),
+        smoke_result="pass",
+        selected_command="/brain-start",
+        loaded_skills=["intake"],
+        adapter_path="adapters/read-only-cli/README.md",
+        transcript_path="artifacts/runtime-smoke/generic-cli-runtime-2026-05-15.log",
+        transcript_redaction_status="redacted",
+        capability_matrix={
+            "read_files": "yes",
+            "write_files": "yes",
+            "run_shell": "no",
+            "request_approvals": "no",
+            "network_access": "no",
+            "native_brain_commands": "no",
+            "schema_artifacts": "yes",
+            "blocked_command_reporting": "yes",
+        },
+    )
+
+    errors = runtime_smoke.validate_report_against_schema(report, Path("schemas/runtime-smoke.schema.json"))
+
+    assert "read_only sandbox_write_mode cannot claim write_files capability yes" in errors
+
+
 def test_runtime_smoke_exact_command_must_record_every_capability_status(tmp_path: Path):
     report = runtime_smoke.build_report(
         root=tmp_path,

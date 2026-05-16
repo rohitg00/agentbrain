@@ -546,6 +546,9 @@ def validate_report_against_schema(
     if isinstance(capability_matrix, dict):
         native_brain_command_status = capability_matrix.get("native_brain_commands")
         brain_command_mode = report.get("brain_command_mode")
+        sandbox_write_mode = report.get("sandbox_write_mode")
+        if sandbox_write_mode == "read_only" and capability_matrix.get("write_files") == "yes":
+            errors.append("read_only sandbox_write_mode cannot claim write_files capability yes")
         if brain_command_mode == "native_commands" and native_brain_command_status != "yes":
             errors.append("native_commands mode requires native_brain_commands capability yes")
         if brain_command_mode == "mixed" and native_brain_command_status != "yes":
