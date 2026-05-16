@@ -891,28 +891,32 @@ def validate_report_against_schema(
             output_paths = exact_command_flag_values(report.get("exact_command"), "--output")
             allowed_paths = write_fence.get("allowed_paths")
             disallowed_paths = write_fence.get("disallowed_paths")
-            for output_path in output_paths:
-                if output_path == "-":
+            artifact_paths = [
+                ("output path", output_path) for output_path in output_paths if output_path != "-"
+            ]
+            artifact_paths.append(("transcript path", str(report.get("transcript_path"))))
+            for artifact_path_label, artifact_path in artifact_paths:
+                if transcript_path_is_external_reference(artifact_path):
                     continue
-                output_path_for_boundary = output_path
+                artifact_path_for_boundary = artifact_path
                 if root is not None:
                     try:
-                        output_path_for_boundary = Path(output_path).resolve().relative_to(Path(root).resolve()).as_posix()
+                        artifact_path_for_boundary = Path(artifact_path).resolve().relative_to(Path(root).resolve()).as_posix()
                     except (OSError, ValueError):
-                        output_path_for_boundary = output_path
+                        artifact_path_for_boundary = artifact_path
                 if not isinstance(allowed_paths, list) or not path_is_inside_declared_boundary(
-                    output_path_for_boundary, allowed_paths
+                    artifact_path_for_boundary, allowed_paths
                 ):
                     errors.append(
-                        "full_validation output path must be inside write_fence.allowed_paths: "
-                        f"{output_path}"
+                        f"full_validation {artifact_path_label} must be inside write_fence.allowed_paths: "
+                        f"{artifact_path}"
                     )
                 if isinstance(disallowed_paths, list) and path_is_inside_declared_boundary(
-                    output_path_for_boundary, disallowed_paths
+                    artifact_path_for_boundary, disallowed_paths
                 ):
                     errors.append(
-                        "full_validation output path must not be inside write_fence.disallowed_paths: "
-                        f"{output_path}"
+                        f"full_validation {artifact_path_label} must not be inside write_fence.disallowed_paths: "
+                        f"{artifact_path}"
                     )
     if root is not None:
         adapter_path = report.get("adapter_path")

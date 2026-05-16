@@ -2923,6 +2923,88 @@ def test_main_quotes_exact_command_values_for_full_validation_flags(monkeypatch,
     )
 
 
+def test_full_validation_transcript_path_must_stay_inside_write_fence():
+    report = json.loads(Path("examples/artifacts/runtime-smoke.example.json").read_text(encoding="utf-8"))
+    report.update(
+        {
+            "sandbox_write_mode": "workspace_write",
+            "run_scope": "full_validation",
+            "smoke_result": "pass",
+            "blocked_commands": [],
+            "validation_commands": runtime_smoke.FULL_VALIDATION_GATE_COMMANDS,
+            "transcript_path": "logs/runtime-smoke/full-validation.log",
+            "transcript_redaction_status": "redacted",
+            "write_fence": {
+                "allowed_paths": ["artifacts/runtime-smoke/"],
+                "disallowed_paths": [".git/"],
+                "user_owned_files": [],
+                "rollback_command": "git restore artifacts/runtime-smoke/",
+                "approval_state": "not_required",
+            },
+        }
+    )
+    report["capability_matrix"].update(
+        {
+            "read_files": "yes",
+            "write_files": "yes",
+            "run_shell": "yes",
+            "request_approvals": "no",
+            "network_access": "no",
+            "native_brain_commands": "no",
+            "schema_artifacts": "yes",
+            "blocked_command_reporting": "yes",
+        }
+    )
+    report["capability_evidence"] = {
+        name: f"transcript-proof-{name}" for name in runtime_smoke.CAPABILITY_NAMES
+    }
+    report["exact_command"] = (
+        "python scripts/runtime_smoke.py --runtime generic-cli-runtime --version 1.2.3 "
+        "--sandbox-write-mode workspace_write --brain-command-mode markdown_specs "
+        "--selected-command /brain-start --loaded-skill intake "
+        "--adapter-path adapters/read-only-cli/README.md --run-scope full_validation "
+        "--command-exit-status 0 --smoke-result pass "
+        "--transcript-path logs/runtime-smoke/full-validation.log "
+        "--transcript-redaction-status redacted --output artifacts/runtime-smoke/run.json "
+        "--write-fence-allowed-path artifacts/runtime-smoke/ --write-fence-disallowed-path .git/ "
+        "--write-fence-rollback-command 'git restore artifacts/runtime-smoke/' "
+        "--write-fence-approval-state not_required "
+        + " ".join(
+            f"--validation-command '{command}'" for command in runtime_smoke.FULL_VALIDATION_GATE_COMMANDS
+        )
+        + " "
+        + " ".join(
+            f"--capability {name}={status}" for name, status in report["capability_matrix"].items()
+        )
+        + " "
+        + " ".join(
+            f"--capability-evidence {name}={source}"
+            for name, source in report["capability_evidence"].items()
+        )
+    )
+    report["evidence"] = [
+        line.replace("read-only smoke", "full validation")
+        .replace("read_only", "workspace_write")
+        .replace("Smoke result: blocked", "Smoke result: pass")
+        .replace("Transcript path: artifacts/runtime-smoke/cli-runtime-example.log", "Transcript path: logs/runtime-smoke/full-validation.log")
+        .replace("Blocked commands recorded: python -m pytest -q was blocked by read-only sandbox.", "Blocked commands recorded: none.")
+        .replace(
+            "Validation commands: python -m pytest -q was blocked by read-only sandbox.",
+            "Validation commands: " + ", ".join(runtime_smoke.FULL_VALIDATION_GATE_COMMANDS) + ".",
+        )
+        .replace("Write fence: allowed=none; disallowed=none; user-owned=none; rollback=not_applicable.", "Write fence: allowed=artifacts/runtime-smoke/; disallowed=.git/; user-owned=none; rollback=git restore artifacts/runtime-smoke/.")
+        .replace("Write fence approval state: unknown", "Write fence approval state: not_required")
+        for line in report["evidence"]
+    ]
+
+    errors = runtime_smoke.validate_report_against_schema(report, Path("schemas/runtime-smoke.schema.json"))
+
+    assert (
+        "full_validation transcript path must be inside write_fence.allowed_paths: logs/runtime-smoke/full-validation.log"
+        in errors
+    )
+
+
 def test_main_rejects_schema_invalid_generated_smoke_artifact(monkeypatch, capsys):
     def invalid_report(**_kwargs):
         return {"runtime": "generic-cli-runtime", "version": "1.2.3"}
