@@ -1,12 +1,12 @@
 {
-  "runtime": "CLI runtime",
+  "runtime": "generic-cli-runtime",
   "version": "1.2.3",
   "python_executable": "/usr/bin/python3.11",
   "writable_temp_dir_status": "writable",
   "git_fetch_result": "fetched: git fetch origin main succeeded",
   "git_freshness_result": "fresh: HEAD equals origin/main at example-commit",
   "git_worktree_status": "clean",
-  "exact_command": "agent-runtime --sandbox read-only --prompt 'Use Agent Brain as the operating harness'",
+  "exact_command": "python scripts/runtime_smoke.py --runtime generic-cli-runtime --version 1.2.3 --sandbox-write-mode read_only --brain-command-mode markdown_specs --selected-command /brain-start --loaded-skill intake --adapter-path adapters/read-only-cli/README.md --run-scope read_only_smoke --command-exit-status 0 --smoke-result blocked --transcript-path artifacts/runtime-smoke/cli-runtime-example.log --transcript-redaction-status redacted --blocked-command 'python -m pytest -q was blocked by read-only sandbox' --validation-command 'python -m pytest -q was blocked by read-only sandbox' --capability read_files=yes --capability write_files=blocked --capability run_shell=blocked --capability native_brain_commands=no --capability schema_artifacts=yes --capability blocked_command_reporting=yes",
   "command_exit_status": 0,
   "smoke_result": "blocked",
   "transcript_path": "artifacts/runtime-smoke/cli-runtime-example.log",
@@ -15,8 +15,7 @@
   "brain_command_mode": "markdown_specs",
   "selected_command": "/brain-start",
   "loaded_skills": [
-    "intake",
-    "agent-output-verifier"
+    "intake"
   ],
   "adapter_path": "adapters/read-only-cli/README.md",
   "blocked_commands": [
@@ -44,21 +43,24 @@
     "approval_state": "unknown"
   },
   "evidence": [
-    "Runtime opened AGENTBRAIN.md and commands/brain-start.md",
+    "Runtime smoke captured for generic-cli-runtime 1.2.3 as read-only smoke.",
+    "Python executable: /usr/bin/python3.11",
+    "Writable temp-dir status: writable",
+    "/brain-* command mode: markdown specs.",
     "Selected command: /brain-start",
-    "Loaded skills: intake, agent-output-verifier",
+    "Loaded skills: intake",
     "Adapter path: adapters/read-only-cli/README.md",
     "Git fetch result: fetched: git fetch origin main succeeded",
-    "Writable temp-dir status: writable",
     "Git freshness result: fresh: HEAD equals origin/main at example-commit",
     "Git worktree status: clean",
     "Command exit status: 0",
-    "Smoke result: blocked because local tests could not run in read-only smoke",
+    "Smoke result: blocked",
     "Transcript path: artifacts/runtime-smoke/cli-runtime-example.log",
     "Transcript redaction status: redacted",
+    "Blocked commands recorded: python -m pytest -q was blocked by read-only sandbox.",
+    "Validation commands: python -m pytest -q was blocked by read-only sandbox.",
     "Capability matrix: read_files=yes, write_files=blocked, run_shell=blocked, request_approvals=unknown, network_access=unknown, native_brain_commands=no, schema_artifacts=yes, blocked_command_reporting=yes.",
     "Write fence: allowed=none; disallowed=none; user-owned=none; rollback=not_applicable.",
-    "Write fence approval state: unknown",
-    "Runtime identified /brain-* entries as markdown specs rather than native commands"
+    "Write fence approval state: unknown"
   ]
 }

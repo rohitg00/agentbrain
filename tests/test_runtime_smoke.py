@@ -6,6 +6,16 @@ from jsonschema import Draft202012Validator
 from scripts import runtime_smoke
 
 
+def test_checked_in_runtime_smoke_example_satisfies_runtime_validator():
+    report = json.loads(Path("examples/artifacts/runtime-smoke.example.json").read_text(encoding="utf-8"))
+
+    errors = runtime_smoke.validate_report_against_schema(
+        report, Path("schemas/runtime-smoke.schema.json"), root=Path.cwd()
+    )
+
+    assert errors == []
+
+
 def test_runtime_smoke_rejects_secret_like_values_before_artifact_output(tmp_path: Path):
     token = "gh" + "p_" + "A" * 24
     report = runtime_smoke.build_report(
