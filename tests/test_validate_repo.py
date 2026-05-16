@@ -42,6 +42,29 @@ def test_skill_schema_rejects_vague_names_descriptions_and_triggers() -> None:
     assert "$.trigger" in errors
 
 
+def test_skill_schema_examples_must_include_verification_proof() -> None:
+    schema = json.loads(Path("schemas/skill.schema.json").read_text(encoding="utf-8"))
+    validator = Draft202012Validator(schema)
+    artifact = {
+        "name": "runtime-smoke",
+        "description": "Use when proving a runtime can execute a harness workflow.",
+        "lifecycle_stage": "VERIFY",
+        "trigger": "Use when adapter docs or harness setup changes need runtime evidence.",
+        "inputs": ["adapter README", "runtime settings"],
+        "procedure": ["run a smoke command", "record evidence"],
+        "anti_rationalization": ["Do not claim full validation from read-only smoke."],
+        "when_not_to_use": ["Do not use when static schema validation is sufficient."],
+        "verification": ["python scripts/validate_repo.py"],
+        "output_artifact": "templates/runtime-smoke.md",
+        "failure_modes": ["missing transcript evidence"],
+        "examples": ["Trigger: adapter changed. Action: run runtime smoke."],
+    }
+
+    errors = sorted(error.json_path for error in validator.iter_errors(artifact))
+
+    assert "$.examples[0]" in errors
+
+
 def test_required_eval_cases_include_command_routing_drift(tmp_path: Path) -> None:
     write_minimal_repo(tmp_path)
     (tmp_path / "evals" / "cases" / "command-routing-drift.md").unlink()

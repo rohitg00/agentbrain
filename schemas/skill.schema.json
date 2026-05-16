@@ -104,7 +104,8 @@
     "examples": {
       "type": "array",
       "items": {
-        "type": "string"
+        "type": "string",
+        "pattern": "Trigger: .+ Action: .+ Verification: .+"
       },
       "minItems": 1,
       "default": []

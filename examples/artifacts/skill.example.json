@@ -28,6 +28,6 @@
     "Example adds fields not allowed by the closed schema."
   ],
   "examples": [
-    "Add examples/artifacts/handoff-report.example.json for schemas/handoff-report.schema.json."
+    "Trigger: schema added or changed. Action: add examples/artifacts/handoff-report.example.json for schemas/handoff-report.schema.json. Verification: run python scripts/validate_repo.py and confirm the example validates against the schema."
   ]
 }
