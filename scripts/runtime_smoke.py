@@ -478,6 +478,11 @@ def validate_report_against_schema(
             capability_status = capability_matrix.get(capability_name)
             if not isinstance(capability_status, str):
                 continue
+            if report.get("smoke_result") == "pass" and capability_status == "unknown":
+                errors.append(
+                    "pass smoke_result requires concrete capability status: "
+                    f"{capability_name} cannot be unknown"
+                )
             capability_flag = f"{capability_name}={capability_status}"
             if not exact_command_has_flag_value(report.get("exact_command"), "--capability", capability_flag):
                 errors.append(f"exact_command must record capability flag: --capability {capability_flag}")
