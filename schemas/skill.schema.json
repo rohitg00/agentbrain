@@ -10,6 +10,7 @@
     "trigger",
     "inputs",
     "procedure",
+    "anti_rationalization",
     "when_not_to_use",
     "verification",
     "output_artifact",

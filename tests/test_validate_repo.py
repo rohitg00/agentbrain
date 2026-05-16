@@ -154,6 +154,28 @@ def test_skill_must_declare_lifecycle_stage_after_heading(tmp_path: Path) -> Non
     assert "skills/sample/SKILL.md must declare lifecycle stage after heading" in errors
 
 
+def test_skill_schema_requires_anti_rationalization_for_shortcut_resistance(tmp_path: Path) -> None:
+    write_minimal_repo(tmp_path)
+    schema_path = tmp_path / "schemas" / "skill.schema.json"
+    shutil.copy(validate_repo.ROOT / "schemas" / "skill.schema.json", schema_path)
+    (tmp_path / "examples" / "artifacts").mkdir(parents=True, exist_ok=True)
+    shutil.copy(
+        validate_repo.ROOT / "examples" / "artifacts" / "skill.example.json",
+        tmp_path / "examples" / "artifacts" / "skill.example.json",
+    )
+    schema = json.loads(schema_path.read_text(encoding="utf-8"))
+    schema["required"].remove("anti_rationalization")
+    schema_path.write_text(json.dumps(schema), encoding="utf-8")
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert any(
+        "schemas/skill.schema.json must require anti_rationalization so skills reject known shortcut failure modes"
+        in error
+        for error in errors
+    )
+
+
 def test_handoff_schema_requires_artifact_paths_for_resume(tmp_path: Path) -> None:
     write_minimal_repo(tmp_path)
     schema_path = tmp_path / "schemas" / "handoff-report.schema.json"

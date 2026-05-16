@@ -339,6 +339,7 @@ REQUIRED_SKILL_SCHEMA_FIELDS = [
     "lifecycle_stage",
     "output_artifact",
     "when_not_to_use",
+    "anti_rationalization",
 ]
 REQUIRED_SKILL_SCHEMA_NONEMPTY_ARRAY_FIELDS = [
     "inputs",
@@ -1578,6 +1579,7 @@ def validate(root: Path = ROOT) -> list[str]:
                         "lifecycle_stage": "so skills declare their SDLC fit",
                         "output_artifact": "so skills name the handoff contract",
                         "when_not_to_use": "so skills preserve adapter boundaries and avoid boundary creep",
+                        "anti_rationalization": "so skills reject known shortcut failure modes",
                     }[field]
                     errors.append(f"schemas/skill.schema.json must require {field} {field_reason}")
             for field in REQUIRED_SKILL_SCHEMA_NONEMPTY_ARRAY_FIELDS:
