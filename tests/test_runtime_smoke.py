@@ -160,6 +160,22 @@ def test_runtime_smoke_rejects_duplicate_capability_names_in_exact_command():
     assert "exact_command must not duplicate capability name: read_files" in errors
 
 
+def test_runtime_smoke_rejects_unsupported_capability_names_in_exact_command():
+    report = json.loads(Path("examples/artifacts/runtime-smoke.example.json").read_text(encoding="utf-8"))
+    report["exact_command"] = (
+        report["exact_command"]
+        + " --capability teleport_files=yes"
+        + " --capability-evidence teleport_files=imaginary-adapter-docs"
+    )
+
+    errors = runtime_smoke.validate_report_against_schema(
+        report, Path("schemas/runtime-smoke.schema.json"), root=Path.cwd()
+    )
+
+    assert "exact_command contains unsupported capability flag name: teleport_files" in errors
+    assert "exact_command contains unsupported capability evidence flag name: teleport_files" in errors
+
+
 def test_runtime_smoke_rejects_missing_capability_evidence_sources():
     report = json.loads(Path("examples/artifacts/runtime-smoke.example.json").read_text(encoding="utf-8"))
     report.pop("capability_evidence", None)

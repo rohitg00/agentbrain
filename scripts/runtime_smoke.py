@@ -522,6 +522,8 @@ def validate_report_against_schema(
     seen_capability_names: set[str] = set()
     for capability_flag_value in capability_flag_values:
         capability_name = capability_name_from_flag_value(capability_flag_value)
+        if capability_name not in CAPABILITY_NAMES:
+            errors.append(f"exact_command contains unsupported capability flag name: {capability_name}")
         if capability_name in seen_capability_names:
             errors.append(f"exact_command must not duplicate capability name: {capability_name}")
         seen_capability_names.add(capability_name)
@@ -529,6 +531,11 @@ def validate_report_against_schema(
     seen_capability_evidence_names: set[str] = set()
     for capability_evidence_flag_value in capability_evidence_flag_values:
         capability_evidence_name = capability_name_from_flag_value(capability_evidence_flag_value)
+        if capability_evidence_name not in CAPABILITY_NAMES:
+            errors.append(
+                "exact_command contains unsupported capability evidence flag name: "
+                f"{capability_evidence_name}"
+            )
         if capability_evidence_name in seen_capability_evidence_names:
             errors.append(f"exact_command must not duplicate capability evidence name: {capability_evidence_name}")
         seen_capability_evidence_names.add(capability_evidence_name)
