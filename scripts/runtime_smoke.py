@@ -30,6 +30,7 @@ CAPABILITY_NAMES = [
     "blocked_command_reporting",
 ]
 CAPABILITY_STATUSES = {"yes", "no", "unknown", "blocked"}
+FULL_VALIDATION_REQUIRED_CAPABILITIES = ["read_files", "write_files", "run_shell", "schema_artifacts"]
 SECRET_LIKE_PATTERNS = [
     re.compile(r"\bgh[pousr]_[A-Za-z0-9_]{20,}\b"),
     re.compile(r"-----BEGIN (?:RSA |OPENSSH |EC |DSA )?PRIVATE KEY-----"),
@@ -381,6 +382,10 @@ def validate_report_against_schema(
             capability_flag = f"{capability_name}={capability_status}"
             if not exact_command_has_flag_value(report.get("exact_command"), "--capability", capability_flag):
                 errors.append(f"exact_command must record capability flag: --capability {capability_flag}")
+        if report.get("run_scope") == "full_validation":
+            for capability_name in FULL_VALIDATION_REQUIRED_CAPABILITIES:
+                if capability_matrix.get(capability_name) != "yes":
+                    errors.append(f"full_validation requires proven runtime capability: {capability_name}=yes")
     if report.get("smoke_result") == "pass" and report.get("command_exit_status") != 0:
         errors.append("pass smoke_result requires command_exit_status 0")
     if report.get("smoke_result") == "fail" and report.get("command_exit_status") == 0:

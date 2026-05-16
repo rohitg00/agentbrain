@@ -1162,6 +1162,79 @@ def test_full_validation_runtime_smoke_requires_every_declared_command_skill(tmp
     assert any("selected command /brain-verify declared skill was not loaded: agent-output-verifier" in error for error in errors)
 
 
+def test_full_validation_requires_proven_core_runtime_capabilities(monkeypatch, tmp_path: Path):
+    monkeypatch.setattr(runtime_smoke, "git_freshness_result", lambda _root: "fresh: HEAD equals origin/main at abc123")
+    monkeypatch.setattr(runtime_smoke, "git_fetch_result", lambda _root: "fetched: git fetch origin main succeeded")
+    commands_dir = tmp_path / "commands"
+    commands_dir.mkdir()
+    (commands_dir / "brain-verify.md").write_text(
+        "# /brain-verify\n\n"
+        "## Skills to load\n\n"
+        "Load `runtime-smoke` for real-runtime proof.\n",
+        encoding="utf-8",
+    )
+    skill_dir = tmp_path / "skills" / "runtime-smoke"
+    skill_dir.mkdir(parents=True)
+    (skill_dir / "SKILL.md").write_text("# runtime-smoke\n", encoding="utf-8")
+    adapter_dir = tmp_path / "adapters" / "read-only-cli"
+    adapter_dir.mkdir(parents=True)
+    (adapter_dir / "README.md").write_text("# Read-only CLI adapter\n", encoding="utf-8")
+    transcript_path = "artifacts/runtime-smoke/generic-cli-runtime-2026-05-15.log"
+    transcript_file = tmp_path / transcript_path
+    transcript_file.parent.mkdir(parents=True)
+    transcript_file.write_text("redacted runtime transcript\n", encoding="utf-8")
+    exact_command = (
+        "python scripts/runtime_smoke.py --runtime generic-cli-runtime --version 1.2.3 "
+        "--run-scope full_validation --selected-command /brain-verify "
+        "--loaded-skill runtime-smoke --adapter-path adapters/read-only-cli/README.md "
+        "--sandbox-write-mode workspace_write --brain-command-mode markdown_specs "
+        f"--transcript-path {transcript_path} --transcript-redaction-status redacted "
+        "--smoke-result pass --command-exit-status 0 "
+        "--validation-command 'rm -rf scripts/__pycache__ tests/__pycache__' "
+        "--validation-command 'python -m pytest -q' "
+        "--validation-command 'python scripts/validate_repo.py' "
+        "--validation-command 'git diff --check' "
+        "--write-fence-allowed-path tests/ --write-fence-disallowed-path .env "
+        "--write-fence-rollback-command 'git checkout -- tests/'"
+    )
+    report = runtime_smoke.build_report(
+        root=tmp_path,
+        runtime="generic-cli-runtime",
+        version="1.2.3",
+        sandbox_write_mode="workspace_write",
+        brain_command_mode="markdown_specs",
+        run_scope="full_validation",
+        blocked_commands=[],
+        exact_command=exact_command,
+        command_exit_status=0,
+        smoke_result="pass",
+        transcript_path=transcript_path,
+        transcript_redaction_status="redacted",
+        selected_command="/brain-verify",
+        loaded_skills=["runtime-smoke"],
+        adapter_path="adapters/read-only-cli/README.md",
+        validation_commands=runtime_smoke.FULL_VALIDATION_GATE_COMMANDS,
+        write_fence_allowed_paths=["tests/"],
+        write_fence_disallowed_paths=[".env"],
+        write_fence_rollback_command="git checkout -- tests/",
+        capability_matrix={
+            "read_files": "unknown",
+            "write_files": "unknown",
+            "run_shell": "unknown",
+            "schema_artifacts": "unknown",
+        },
+    )
+
+    errors = runtime_smoke.validate_report_against_schema(
+        report, Path("schemas/runtime-smoke.schema.json"), root=tmp_path
+    )
+
+    assert any("full_validation requires proven runtime capability: read_files=yes" in error for error in errors)
+    assert any("full_validation requires proven runtime capability: write_files=yes" in error for error in errors)
+    assert any("full_validation requires proven runtime capability: run_shell=yes" in error for error in errors)
+    assert any("full_validation requires proven runtime capability: schema_artifacts=yes" in error for error in errors)
+
+
 def test_pass_read_only_runtime_smoke_rejects_loaded_skills_not_named_by_selected_command(tmp_path: Path):
     commands_dir = tmp_path / "commands"
     commands_dir.mkdir()
@@ -1695,6 +1768,16 @@ def test_main_quotes_exact_command_values_for_full_validation_flags(monkeypatch,
             "README.md if dirty before the run",
             "--write-fence-rollback-command",
             "git restore --staged . && git restore artifacts/runtime-smoke/",
+            "--capability",
+            "read_files=yes",
+            "--capability",
+            "write_files=yes",
+            "--capability",
+            "run_shell=yes",
+            "--capability",
+            "schema_artifacts=yes",
+            "--capability",
+            "native_brain_commands=no",
             "--output",
             str(output_path),
         ]
