@@ -461,7 +461,15 @@ def validate_report_against_schema(
     validator = Draft202012Validator(schema)
     errors = [error.message for error in sorted(validator.iter_errors(report), key=lambda error: list(error.path))]
 
-    for field in ["exact_command", "transcript_path", "blocked_commands", "validation_commands", "write_fence", "evidence"]:
+    for field in [
+        "exact_command",
+        "transcript_path",
+        "blocked_commands",
+        "validation_commands",
+        "capability_evidence",
+        "write_fence",
+        "evidence",
+    ]:
         if contains_secret_like_value(report.get(field)):
             errors.append(f"runtime smoke artifact contains secret-like value in {field}; redact before output")
     for field in [
@@ -470,6 +478,7 @@ def validate_report_against_schema(
         "transcript_path",
         "blocked_commands",
         "validation_commands",
+        "capability_evidence",
         "write_fence",
         "evidence",
     ]:

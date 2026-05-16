@@ -78,6 +78,52 @@ def test_runtime_smoke_rejects_private_python_executable_paths_in_artifact():
     assert "runtime smoke artifact contains private absolute path in evidence; use a repo-relative path or redact before output" in errors
 
 
+def test_runtime_smoke_rejects_private_paths_in_capability_evidence():
+    report = json.loads(Path("examples/artifacts/runtime-smoke.example.json").read_text(encoding="utf-8"))
+    report["capability_evidence"]["read_files"] = "/Users/example/runtime/capability.log"
+    report["exact_command"] = report["exact_command"].replace(
+        "--capability-evidence read_files=adapter-docs-and-file-read",
+        "--capability-evidence read_files=/Users/example/runtime/capability.log",
+    )
+    report["evidence"] = [
+        line.replace(
+            "read_files=adapter-docs-and-file-read",
+            "read_files=/Users/example/runtime/capability.log",
+        )
+        if line.startswith("Capability evidence: ")
+        else line
+        for line in report["evidence"]
+    ]
+
+    errors = runtime_smoke.validate_report_against_schema(
+        report, Path("schemas/runtime-smoke.schema.json"), root=Path.cwd()
+    )
+
+    assert "runtime smoke artifact contains private absolute path in capability_evidence; use a repo-relative path or redact before output" in errors
+
+
+def test_runtime_smoke_rejects_secret_like_values_in_capability_evidence():
+    report = json.loads(Path("examples/artifacts/runtime-smoke.example.json").read_text(encoding="utf-8"))
+    secret_source = "api" + "_token=" + "abcdefghijklmnopqrstuvwxyz123456"
+    report["capability_evidence"]["network_access"] = secret_source
+    report["exact_command"] = report["exact_command"].replace(
+        "--capability-evidence network_access=not-checked-read-only-smoke",
+        f"--capability-evidence network_access={secret_source}",
+    )
+    report["evidence"] = [
+        line.replace("network_access=not-checked-read-only-smoke", f"network_access={secret_source}")
+        if line.startswith("Capability evidence: ")
+        else line
+        for line in report["evidence"]
+    ]
+
+    errors = runtime_smoke.validate_report_against_schema(
+        report, Path("schemas/runtime-smoke.schema.json"), root=Path.cwd()
+    )
+
+    assert "runtime smoke artifact contains secret-like value in capability_evidence; redact before output" in errors
+
+
 def test_runtime_smoke_rejects_duplicate_loaded_skills_in_report():
     report = json.loads(Path("examples/artifacts/runtime-smoke.example.json").read_text(encoding="utf-8"))
     report["loaded_skills"] = ["intake", "command-routing", "intake"]
