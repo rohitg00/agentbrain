@@ -100,6 +100,57 @@ def test_pass_runtime_smoke_rejects_unknown_runtime_version(tmp_path: Path):
     assert any("pass smoke_result requires a concrete runtime version" in error for error in errors)
 
 
+def test_pass_runtime_smoke_requires_all_selected_command_skills_even_for_read_only(tmp_path: Path):
+    command = tmp_path / "commands" / "brain-verify.md"
+    command.parent.mkdir(parents=True)
+    command.write_text(
+        "# /brain-verify\n\n"
+        "## Skills to load\n\n"
+        "- `runtime-smoke` for real-runtime evidence.\n"
+        "- `qa-evidence` for validation artifacts.\n",
+        encoding="utf-8",
+    )
+    adapter = tmp_path / "adapters" / "read-only-cli" / "README.md"
+    adapter.parent.mkdir(parents=True)
+    adapter.write_text("# Read-Only CLI Adapter\n", encoding="utf-8")
+    for skill in ["runtime-smoke", "qa-evidence"]:
+        skill_file = tmp_path / "skills" / skill / "SKILL.md"
+        skill_file.parent.mkdir(parents=True)
+        skill_file.write_text(f"# {skill}\n", encoding="utf-8")
+    transcript = tmp_path / "artifacts" / "runtime-smoke" / "generic-cli-runtime-2026-05-15.log"
+    transcript.parent.mkdir(parents=True)
+    transcript.write_text("no sensitive content\n", encoding="utf-8")
+    report = runtime_smoke.build_report(
+        root=tmp_path,
+        runtime="generic-cli-runtime",
+        version="1.2.3",
+        sandbox_write_mode="read_only",
+        brain_command_mode="markdown_specs",
+        run_scope="read_only_smoke",
+        blocked_commands=[],
+        exact_command=(
+            "python scripts/runtime_smoke.py --runtime generic-cli-runtime --version 1.2.3 "
+            "--run-scope read_only_smoke --selected-command /brain-verify "
+            "--loaded-skill runtime-smoke --adapter-path adapters/read-only-cli/README.md "
+            "--sandbox-write-mode read_only --brain-command-mode markdown_specs "
+            "--transcript-path artifacts/runtime-smoke/generic-cli-runtime-2026-05-15.log "
+            "--smoke-result pass --command-exit-status 0 --transcript-redaction-status no_sensitive_content"
+        ),
+        smoke_result="pass",
+        selected_command="/brain-verify",
+        loaded_skills=["runtime-smoke"],
+        adapter_path="adapters/read-only-cli/README.md",
+        transcript_path="artifacts/runtime-smoke/generic-cli-runtime-2026-05-15.log",
+        transcript_redaction_status="no_sensitive_content",
+    )
+
+    errors = runtime_smoke.validate_report_against_schema(
+        report, Path("schemas/runtime-smoke.schema.json"), root=tmp_path
+    )
+
+    assert "selected command /brain-verify declared skill was not loaded: qa-evidence" in errors
+
+
 def test_pass_runtime_smoke_rejects_missing_durable_transcript(tmp_path: Path):
     report = runtime_smoke.build_report(
         root=tmp_path,
