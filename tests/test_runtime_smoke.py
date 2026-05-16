@@ -176,6 +176,36 @@ def test_build_report_records_runtime_capability_matrix_for_adapter_comparison(t
     assert "Capability matrix: " in "\n".join(report["evidence"])
 
 
+def test_runtime_smoke_rejects_artifacts_missing_boundary_evidence_lines(tmp_path: Path):
+    report = runtime_smoke.build_report(
+        root=tmp_path,
+        runtime="generic-cli-runtime",
+        version="1.2.3",
+        sandbox_write_mode="read_only",
+        brain_command_mode="markdown_specs",
+        run_scope="read_only_smoke",
+        blocked_commands=["python -m pytest -q blocked by read-only sandbox"],
+        exact_command=(
+            "python scripts/runtime_smoke.py --runtime generic-cli-runtime --version 1.2.3 "
+            "--sandbox-write-mode read_only --brain-command-mode markdown_specs "
+            "--run-scope read_only_smoke --blocked-command 'python -m pytest -q blocked by read-only sandbox'"
+        ),
+        selected_command="/brain-verify",
+        loaded_skills=["runtime-smoke"],
+        adapter_path="adapters/read-only-cli/README.md",
+    )
+    report["evidence"] = [
+        line
+        for line in report["evidence"]
+        if not line.startswith(("Selected command: ", "Capability matrix: "))
+    ]
+
+    errors = runtime_smoke.validate_report_against_schema(report, Path("schemas/runtime-smoke.schema.json"))
+
+    assert "runtime smoke evidence must include line starting with: Selected command: " in errors
+    assert "runtime smoke evidence must include line starting with: Capability matrix: " in errors
+
+
 def test_runtime_smoke_requires_exact_command_capability_flags_for_claimed_capabilities(tmp_path: Path):
     report = runtime_smoke.build_report(
         root=tmp_path,

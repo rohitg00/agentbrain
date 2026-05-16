@@ -19,6 +19,25 @@ BRAIN_COMMAND_MODES = {"native_commands", "markdown_specs", "mixed", "unknown"}
 RUN_SCOPES = {"read_only_smoke", "full_validation"}
 SMOKE_RESULTS = {"pass", "blocked", "fail"}
 TRANSCRIPT_REDACTION_STATUSES = {"redacted", "no_sensitive_content", "not_captured", "blocked"}
+REQUIRED_EVIDENCE_PREFIXES = [
+    "Python executable: ",
+    "Writable temp-dir status: ",
+    "/brain-* command mode: ",
+    "Selected command: ",
+    "Loaded skills: ",
+    "Adapter path: ",
+    "Git fetch result: ",
+    "Git freshness result: ",
+    "Git worktree status: ",
+    "Command exit status: ",
+    "Smoke result: ",
+    "Transcript path: ",
+    "Transcript redaction status: ",
+    "Blocked commands recorded: ",
+    "Validation commands: ",
+    "Capability matrix: ",
+    "Write fence: ",
+]
 CAPABILITY_NAMES = [
     "read_files",
     "write_files",
@@ -309,6 +328,13 @@ def validate_report_against_schema(
     for field in ["exact_command", "transcript_path", "blocked_commands", "validation_commands", "write_fence", "evidence"]:
         if contains_secret_like_value(report.get(field)):
             errors.append(f"runtime smoke artifact contains secret-like value in {field}; redact before output")
+
+    evidence = report.get("evidence")
+    if isinstance(evidence, list):
+        evidence_lines = [line for line in evidence if isinstance(line, str)]
+        for prefix in REQUIRED_EVIDENCE_PREFIXES:
+            if not any(line.startswith(prefix) for line in evidence_lines):
+                errors.append(f"runtime smoke evidence must include line starting with: {prefix}")
 
     blocked_commands = report.get("blocked_commands")
     blocked_count = len(blocked_commands) if isinstance(blocked_commands, list) else 0
