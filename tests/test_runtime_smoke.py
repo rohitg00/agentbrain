@@ -96,6 +96,40 @@ def test_runtime_smoke_rejects_missing_capability_evidence_sources():
     assert "'capability_evidence' is a required property" in errors
 
 
+def test_pass_runtime_smoke_rejects_unknown_capability_evidence():
+    report = json.loads(Path("examples/artifacts/runtime-smoke.example.json").read_text(encoding="utf-8"))
+    report["smoke_result"] = "pass"
+    report["blocked_commands"] = []
+    report["capability_matrix"]["request_approvals"] = "no"
+    report["capability_matrix"]["network_access"] = "no"
+    report["capability_evidence"]["network_access"] = "unknown"
+    report["exact_command"] = (
+        report["exact_command"]
+        .replace("--smoke-result blocked", "--smoke-result pass")
+        .replace("--blocked-command 'python -m pytest -q was blocked by read-only sandbox' ", "")
+        .replace("--capability request_approvals=unknown", "--capability request_approvals=no")
+        .replace("--capability network_access=unknown", "--capability network_access=no")
+        .replace(
+            "--capability-evidence network_access=not-checked-read-only-smoke",
+            "--capability-evidence network_access=unknown",
+        )
+    )
+    report["evidence"] = [
+        line.replace("Smoke result: blocked", "Smoke result: pass")
+        .replace("Blocked commands recorded: python -m pytest -q was blocked by read-only sandbox.", "Blocked commands recorded: none.")
+        .replace("request_approvals=unknown", "request_approvals=no")
+        .replace("network_access=unknown", "network_access=no")
+        .replace("network_access=not-checked-read-only-smoke", "network_access=unknown")
+        for line in report["evidence"]
+    ]
+
+    errors = runtime_smoke.validate_report_against_schema(
+        report, Path("schemas/runtime-smoke.schema.json")
+    )
+
+    assert "pass smoke_result requires concrete capability evidence: network_access cannot be unknown" in errors
+
+
 def test_runtime_smoke_rejects_duplicate_blocked_commands_in_report_and_exact_command():
     report = json.loads(Path("examples/artifacts/runtime-smoke.example.json").read_text(encoding="utf-8"))
     blocked_command = "python -m pytest -q blocked by read-only sandbox"

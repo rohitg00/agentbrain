@@ -686,6 +686,11 @@ def validate_report_against_schema(
                 if not isinstance(capability_evidence_source, str) or not capability_evidence_source.strip():
                     errors.append(f"capability_evidence must record evidence source for: {capability_name}")
                     continue
+                if report.get("smoke_result") == "pass" and capability_evidence_source.strip().lower() == "unknown":
+                    errors.append(
+                        "pass smoke_result requires concrete capability evidence: "
+                        f"{capability_name} cannot be unknown"
+                    )
                 capability_evidence_flag = f"{capability_name}={capability_evidence_source}"
                 if not exact_command_has_flag_value(
                     report.get("exact_command"), "--capability-evidence", capability_evidence_flag
