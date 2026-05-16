@@ -1,6 +1,6 @@
 # Runtime Smoke
 
-Schema fields: `runtime`, `version`, `python_executable`, `writable_temp_dir_status`, `git_fetch_result`, `git_freshness_result`, `git_worktree_status`, `exact_command`, `command_exit_status`, `smoke_result`, `transcript_path`, `transcript_redaction_status`, `sandbox_write_mode`, `brain_command_mode`, `selected_command`, `loaded_skills`, `adapter_path`, `blocked_commands`, `run_scope`, `validation_commands`, `capability_matrix`, `write_fence`, `evidence`.
+Schema fields: `runtime`, `version`, `python_executable`, `writable_temp_dir_status`, `git_fetch_result`, `git_freshness_result`, `git_worktree_status`, `exact_command`, `command_exit_status`, `smoke_result`, `transcript_path`, `transcript_redaction_status`, `sandbox_write_mode`, `brain_command_mode`, `selected_command`, `loaded_skills`, `adapter_path`, `blocked_commands`, `run_scope`, `validation_commands`, `capability_matrix`, `capability_evidence`, `write_fence`, `evidence`.
 
 Use this artifact when checking Agent Brain in a real agent runtime rather than only repository fixtures. Record direct evidence so the next maintainer can tell whether the run was a read-only smoke or full validation. Prefer the helper so the JSON artifact is validated against `schemas/runtime-smoke.schema.json` before it is trusted:
 
@@ -28,6 +28,14 @@ python scripts/runtime_smoke.py \
   --capability native_brain_commands=no \
   --capability schema_artifacts=yes \
   --capability blocked_command_reporting=yes \
+  --capability-evidence read_files=transcript-read-repo-root \
+  --capability-evidence write_files=read-only-sandbox-blocker \
+  --capability-evidence run_shell=read-only-sandbox-blocker \
+  --capability-evidence request_approvals=not-exposed-by-runtime-settings \
+  --capability-evidence network_access=not-checked-read-only-smoke \
+  --capability-evidence native_brain_commands=adapter-markdown-spec-routing \
+  --capability-evidence schema_artifacts=validated-json-output \
+  --capability-evidence blocked_command_reporting=blocked-command-transcript-line \
   --output /tmp/runtime-smoke.json
 ```
 
@@ -70,6 +78,7 @@ The helper exits non-zero if the generated artifact does not satisfy the schema.
 - **Run scope:** `read_only_smoke` or `full_validation`.
 - **Validation commands:** Successful local gate commands run during `full_validation`; include `rm -rf scripts/__pycache__ tests/__pycache__`, `python -m pytest -q`, `python scripts/validate_repo.py`, and `git diff --check`. Use `not_checked` for read-only smoke when validation did not run. If a read-only or blocked smoke records an attempted validation command, the exact command must include the matching `--validation-command` flag so validation evidence is not reconstructed after the run.
 - **Capability matrix:** Machine-checkable runtime boundary with `read_files`, `write_files`, `run_shell`, `request_approvals`, `network_access`, `native_brain_commands`, `schema_artifacts`, and `blocked_command_reporting`. Values are `yes`, `no`, `unknown`, or `blocked`; prefer `unknown` over inferring support for blocked or failed runs, but a `pass` artifact must use concrete `yes`, `no`, or `blocked` statuses for every capability so a trusted smoke cannot hide untested runtime boundaries.
+- **Capability evidence:** Evidence source for every capability in the matrix. Record the observed command output, transcript line, adapter doc line, runtime setting, or explicit `unknown` reason that justifies each `yes`, `no`, `unknown`, or `blocked` value; the helper requires matching `--capability-evidence name=source` flags so capability proof cannot be reconstructed after the run.
 - **Write fence:** Object that records `allowed_paths`, `disallowed_paths`, `user_owned_files`, `rollback_command`, and `approval_state`. `full_validation` requires all five so a write-capable runtime proves the intended write boundary, confirms whether approval was granted or not required, avoids user-owned dirty files, and leaves a concrete rollback command before it edits artifacts. If `--output` writes a runtime-smoke JSON file inside the checkout, that output path must be inside `allowed_paths` and must not be inside `disallowed_paths`; otherwise the helper rejects the artifact so output writes cannot bypass the fence. If the sandbox/write mode is `unrestricted`, use `approval_state: approved`; `not_required` is only acceptable when the runtime has an enforceable workspace or approval-gated write boundary.
 - **Evidence:** Logs, outputs, files inspected, command results, and blockers.
 

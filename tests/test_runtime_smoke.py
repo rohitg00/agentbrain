@@ -85,6 +85,17 @@ def test_runtime_smoke_rejects_duplicate_capability_names_in_exact_command():
     assert "exact_command must not duplicate capability name: read_files" in errors
 
 
+def test_runtime_smoke_rejects_missing_capability_evidence_sources():
+    report = json.loads(Path("examples/artifacts/runtime-smoke.example.json").read_text(encoding="utf-8"))
+    report.pop("capability_evidence", None)
+
+    errors = runtime_smoke.validate_report_against_schema(
+        report, Path("schemas/runtime-smoke.schema.json"), root=Path.cwd()
+    )
+
+    assert "'capability_evidence' is a required property" in errors
+
+
 def test_runtime_smoke_rejects_duplicate_blocked_commands_in_report_and_exact_command():
     report = json.loads(Path("examples/artifacts/runtime-smoke.example.json").read_text(encoding="utf-8"))
     blocked_command = "python -m pytest -q blocked by read-only sandbox"
@@ -2771,6 +2782,22 @@ def test_main_creates_parent_directories_for_runtime_smoke_output(monkeypatch, t
             "schema_artifacts=unknown",
             "--capability",
             "blocked_command_reporting=yes",
+            "--capability-evidence",
+            "read_files=unknown",
+            "--capability-evidence",
+            "write_files=unknown",
+            "--capability-evidence",
+            "run_shell=unknown",
+            "--capability-evidence",
+            "request_approvals=unknown",
+            "--capability-evidence",
+            "network_access=unknown",
+            "--capability-evidence",
+            "native_brain_commands=unknown",
+            "--capability-evidence",
+            "schema_artifacts=unknown",
+            "--capability-evidence",
+            "blocked_command_reporting=blocked-command-transcript-line",
             "--output",
             str(output_path),
         ]
@@ -2867,6 +2894,22 @@ def test_main_quotes_exact_command_values_for_full_validation_flags(monkeypatch,
             "native_brain_commands=no",
             "--capability",
             "blocked_command_reporting=yes",
+            "--capability-evidence",
+            "read_files=transcript-read-repo-root",
+            "--capability-evidence",
+            "write_files=temp-write-output",
+            "--capability-evidence",
+            "run_shell=validation-command-output",
+            "--capability-evidence",
+            "request_approvals=runtime-settings-no-approval-api",
+            "--capability-evidence",
+            "network_access=not-needed-for-validation",
+            "--capability-evidence",
+            "native_brain_commands=adapter-markdown-spec-routing",
+            "--capability-evidence",
+            "schema_artifacts=validated-json-output",
+            "--capability-evidence",
+            "blocked_command_reporting=no-blockers-in-full-validation",
             "--output",
             str(output_path),
         ]

@@ -37,6 +37,7 @@ REQUIRED_EVIDENCE_PREFIXES = [
     "Blocked commands recorded: ",
     "Validation commands: ",
     "Capability matrix: ",
+    "Capability evidence: ",
     "Write fence: ",
     "Write fence approval state: ",
 ]
@@ -199,6 +200,7 @@ def build_report(
     write_fence_rollback_command: str = "not_applicable",
     write_fence_approval_state: str = "unknown",
     capability_matrix: dict[str, str] | None = None,
+    capability_evidence: dict[str, str] | None = None,
 ) -> dict[str, object]:
     root = Path(root)
     if sandbox_write_mode not in SANDBOX_WRITE_MODES:
@@ -233,6 +235,14 @@ def build_report(
             if status not in CAPABILITY_STATUSES:
                 raise ValueError(f"unsupported capability status for {name}: {status}")
             recorded_capability_matrix[name] = status
+    recorded_capability_evidence = {name: "unknown" for name in CAPABILITY_NAMES}
+    if capability_evidence:
+        for name, evidence_source in capability_evidence.items():
+            if name not in recorded_capability_evidence:
+                raise ValueError(f"unsupported capability evidence name: {name}")
+            if not evidence_source:
+                raise ValueError(f"empty capability evidence source for {name}")
+            recorded_capability_evidence[name] = evidence_source
     fetch_result = git_fetch_result(root)
     freshness = git_freshness_result(root)
     worktree_status = git_worktree_status(root)
@@ -256,6 +266,9 @@ def build_report(
         f"Validation commands: {', '.join(validation_commands) if validation_commands else 'none'}.",
         "Capability matrix: "
         + ", ".join(f"{name}={recorded_capability_matrix[name]}" for name in CAPABILITY_NAMES)
+        + ".",
+        "Capability evidence: "
+        + ", ".join(f"{name}={recorded_capability_evidence[name]}" for name in CAPABILITY_NAMES)
         + ".",
         "Write fence: "
         f"allowed={', '.join(write_fence['allowed_paths']) if write_fence['allowed_paths'] else 'none'}; "
@@ -287,6 +300,7 @@ def build_report(
         "run_scope": run_scope,
         "validation_commands": validation_commands,
         "capability_matrix": recorded_capability_matrix,
+        "capability_evidence": recorded_capability_evidence,
         "write_fence": write_fence,
         "evidence": evidence,
     }
@@ -400,6 +414,20 @@ def parse_capability_flags(values: list[str]) -> dict[str, str]:
     return capability_matrix
 
 
+def parse_capability_evidence_flags(values: list[str]) -> dict[str, str]:
+    capability_evidence: dict[str, str] = {}
+    for value in values:
+        if "=" not in value:
+            raise ValueError(f"capability evidence must use name=source format: {value}")
+        name, source = value.split("=", 1)
+        if name not in CAPABILITY_NAMES:
+            raise ValueError(f"unsupported capability evidence name: {name}")
+        if not source.strip():
+            raise ValueError(f"empty capability evidence source for {name}")
+        capability_evidence[name] = source
+    return capability_evidence
+
+
 def validate_report_against_schema(
     report: dict[str, object], schema_path: Path, *, root: Path | None = None
 ) -> list[str]:
@@ -454,6 +482,13 @@ def validate_report_against_schema(
         if capability_name in seen_capability_names:
             errors.append(f"exact_command must not duplicate capability name: {capability_name}")
         seen_capability_names.add(capability_name)
+    capability_evidence_flag_values = exact_command_flag_values(report.get("exact_command"), "--capability-evidence")
+    seen_capability_evidence_names: set[str] = set()
+    for capability_evidence_flag_value in capability_evidence_flag_values:
+        capability_evidence_name = capability_name_from_flag_value(capability_evidence_flag_value)
+        if capability_evidence_name in seen_capability_evidence_names:
+            errors.append(f"exact_command must not duplicate capability evidence name: {capability_evidence_name}")
+        seen_capability_evidence_names.add(capability_evidence_name)
     for flag in [
         "--write-fence-allowed-path",
         "--write-fence-disallowed-path",
@@ -642,6 +677,23 @@ def validate_report_against_schema(
             capability_flag = f"{capability_name}={capability_status}"
             if not exact_command_has_flag_value(report.get("exact_command"), "--capability", capability_flag):
                 errors.append(f"exact_command must record capability flag: --capability {capability_flag}")
+        capability_evidence = report.get("capability_evidence")
+        if not isinstance(capability_evidence, dict):
+            errors.append("runtime smoke must record capability_evidence for every capability")
+        else:
+            for capability_name in CAPABILITY_NAMES:
+                capability_evidence_source = capability_evidence.get(capability_name)
+                if not isinstance(capability_evidence_source, str) or not capability_evidence_source.strip():
+                    errors.append(f"capability_evidence must record evidence source for: {capability_name}")
+                    continue
+                capability_evidence_flag = f"{capability_name}={capability_evidence_source}"
+                if not exact_command_has_flag_value(
+                    report.get("exact_command"), "--capability-evidence", capability_evidence_flag
+                ):
+                    errors.append(
+                        "exact_command must record capability evidence flag: "
+                        f"--capability-evidence {capability_evidence_flag}"
+                    )
         if report.get("run_scope") == "full_validation":
             for capability_name in FULL_VALIDATION_REQUIRED_CAPABILITIES:
                 if capability_matrix.get(capability_name) != "yes":
@@ -928,6 +980,12 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
         help="Runtime capability as name=status; names are read_files, write_files, run_shell, request_approvals, network_access, native_brain_commands, schema_artifacts, blocked_command_reporting; statuses are yes, no, unknown, blocked",
     )
     parser.add_argument(
+        "--capability-evidence",
+        action="append",
+        default=[],
+        help="Evidence source for a runtime capability as name=source; repeat for every capability recorded in the matrix",
+    )
+    parser.add_argument(
         "--write-fence-allowed-path",
         action="append",
         default=[],
@@ -968,6 +1026,7 @@ def main(argv: list[str] | None = None) -> int:
     exact_command = "python scripts/runtime_smoke.py " + " ".join(shlex.quote(arg) for arg in raw_argv)
     try:
         capability_matrix = parse_capability_flags(args.capability)
+        capability_evidence = parse_capability_evidence_flags(args.capability_evidence)
     except ValueError as exc:
         sys.stderr.write(f"runtime smoke argument error: {exc}\n")
         return 2
@@ -995,6 +1054,7 @@ def main(argv: list[str] | None = None) -> int:
         write_fence_rollback_command=args.write_fence_rollback_command,
         write_fence_approval_state=args.write_fence_approval_state,
         capability_matrix=capability_matrix,
+        capability_evidence=capability_evidence,
     )
     schema_path = args.schema or (args.root / "schemas" / "runtime-smoke.schema.json")
     errors = validate_report_against_schema(report, schema_path, root=args.root)

@@ -566,7 +566,7 @@ def test_adapter_requires_output_contract(tmp_path: Path) -> None:
     adapter.write_text(
         adapter.read_text(encoding="utf-8").replace(
             "\n## Output Contract\n\n"
-            "Runtime adapter output must report state, selected command, loaded skills, capability matrix, run scope, artifact path, transcript path, command exit status, template, schema, validation evidence, user change review, freshness, blockers, stop condition, and next action.\n",
+            "Runtime adapter output must report state, selected command, loaded skills, capability matrix, capability evidence, run scope, artifact path, transcript path, command exit status, template, schema, validation evidence, user change review, freshness, blockers, stop condition, and next action.\n",
             "\n",
         ),
         encoding="utf-8",
@@ -585,7 +585,7 @@ def test_adapter_runtime_smoke_command_must_capture_capability_flags(tmp_path: P
     adapter = tmp_path / "adapters" / "sample-adapter" / "README.md"
     adapter.write_text(
         adapter.read_text(encoding="utf-8").replace(
-            " --capability read_files=yes --capability write_files=blocked --capability run_shell=blocked --capability request_approvals=unknown --capability network_access=unknown --capability native_brain_commands=no --capability schema_artifacts=yes --capability blocked_command_reporting=yes",
+            " --capability read_files=yes --capability write_files=blocked --capability run_shell=blocked --capability request_approvals=unknown --capability network_access=unknown --capability native_brain_commands=no --capability schema_artifacts=yes --capability blocked_command_reporting=yes --capability-evidence read_files=transcript-read-repo-root --capability-evidence write_files=read-only-sandbox-blocker --capability-evidence run_shell=read-only-sandbox-blocker --capability-evidence request_approvals=not-exposed-by-runtime-settings --capability-evidence network_access=not-checked-read-only-smoke --capability-evidence native_brain_commands=adapter-markdown-spec-routing --capability-evidence schema_artifacts=validated-json-output --capability-evidence blocked_command_reporting=blocked-command-transcript-line",
             "",
         ),
         encoding="utf-8",
@@ -846,7 +846,7 @@ def test_adapter_output_contract_requires_capability_matrix_and_run_scope(tmp_pa
     adapter = tmp_path / "adapters" / "sample-adapter" / "README.md"
     adapter.write_text(
         adapter.read_text(encoding="utf-8").replace(
-            "capability matrix, run scope, ",
+            "capability matrix, capability evidence, run scope, ",
             "",
         ),
         encoding="utf-8",
@@ -1515,18 +1515,18 @@ def write_minimal_repo(root: Path) -> None:
         "python -m pytest -q\n"
         "python scripts/validate_repo.py\n"
         "git diff --check\n"
-        "Run `python scripts/runtime_smoke.py --runtime <neutral-runtime-name> --version <runtime-version> --selected-command /brain-start --loaded-skill intake --adapter-path <adapter-readme> --sandbox-write-mode <sandbox-write-mode> --brain-command-mode <brain-command-mode> --run-scope read_only_smoke --smoke-result <smoke-result> --command-exit-status <exit-status> --transcript-path <transcript-path> --transcript-redaction-status <redaction-status> --validation-command <validation-command> --write-fence-approval-state <approval-state> --output <runtime-smoke-artifact> --capability read_files=yes --capability write_files=blocked --capability run_shell=blocked --capability request_approvals=unknown --capability network_access=unknown --capability native_brain_commands=no --capability schema_artifacts=yes --capability blocked_command_reporting=yes` for read-only smoke evidence, or use `--run-scope full_validation` only when the full local gate can run without runtime blockers.\n\n"
+        "Run `python scripts/runtime_smoke.py --runtime <neutral-runtime-name> --version <runtime-version> --selected-command /brain-start --loaded-skill intake --adapter-path <adapter-readme> --sandbox-write-mode <sandbox-write-mode> --brain-command-mode <brain-command-mode> --run-scope read_only_smoke --smoke-result <smoke-result> --command-exit-status <exit-status> --transcript-path <transcript-path> --transcript-redaction-status <redaction-status> --validation-command <validation-command> --write-fence-approval-state <approval-state> --output <runtime-smoke-artifact> --capability read_files=yes --capability write_files=blocked --capability run_shell=blocked --capability request_approvals=unknown --capability network_access=unknown --capability native_brain_commands=no --capability schema_artifacts=yes --capability blocked_command_reporting=yes --capability-evidence read_files=transcript-read-repo-root --capability-evidence write_files=read-only-sandbox-blocker --capability-evidence run_shell=read-only-sandbox-blocker --capability-evidence request_approvals=not-exposed-by-runtime-settings --capability-evidence network_access=not-checked-read-only-smoke --capability-evidence native_brain_commands=adapter-markdown-spec-routing --capability-evidence schema_artifacts=validated-json-output --capability-evidence blocked_command_reporting=blocked-command-transcript-line` for read-only smoke evidence, or use `--run-scope full_validation` only when the full local gate can run without runtime blockers.\n\n"
         "Run a targeted exact-name scrub before public adapter copy changes.\n\n"
         "Record every real-runtime smoke run with `templates/runtime-smoke.md` and "
         "validate the JSON evidence against `schemas/runtime-smoke.schema.json` before "
         "trusting adapter behavior. Keep the artifact honest about blocked commands, "
         "command mode, sandbox/write mode, git freshness, runtime version, "
-        "Python executable, smoke result, command exit status, selected command, loaded skills, transcript path, and redacted transcript.\n\n"
+        "Python executable, smoke result, command exit status, selected command, loaded skills, capability matrix, capability evidence, transcript path, and redacted transcript.\n\n"
         "After validation, classify one sample request and confirm the runtime cites the command file, skill file, artifact contract, evidence checked, and stop condition it used.\n\n"
         "Promote read-only smoke to full validation only when write access, shell access, dependency install, and the full local gate are available; otherwise keep the result marked read-only smoke with blockers.\n\n"
         "Before full validation writes, set a write fence that names allowed paths, disallowed paths, user-owned files, rollback command, and approval state.\n\n"
         "## Output Contract\n\n"
-        "Runtime adapter output must report state, selected command, loaded skills, capability matrix, run scope, artifact path, transcript path, command exit status, template, schema, validation evidence, user change review, freshness, blockers, stop condition, and next action.\n\n"
+        "Runtime adapter output must report state, selected command, loaded skills, capability matrix, capability evidence, run scope, artifact path, transcript path, command exit status, template, schema, validation evidence, user change review, freshness, blockers, stop condition, and next action.\n\n"
         "## Failure Modes\n\n"
         "Stop if the runtime cannot load files, treats /brain-* as a native command without proof, uses unrestricted execution before approval, claims pytest passed when blocked by a read-only sandbox, or hides stderr instead of recording runtime evidence.\n",
         encoding="utf-8",
@@ -2517,7 +2517,7 @@ def write_minimal_repo(root: Path) -> None:
         encoding="utf-8",
     )
     (case_dir / "real-runtime-smoke-test.md").write_text(
-        "# Eval Case: Real Runtime Smoke Test\n\n## User request\nUse Agent Brain in a real agent runtime and report whether the harness is usable.\n\n## Expected behavior\nStart from a clean checkout, preserve user changes, run the baseline validation, choose the matching command and skills, ask the runtime for a small no-write or sandboxed task, then capture the runtime, version, Python executable, writable temp-dir status, git fetch result, git freshness result, exact command, command exit status, smoke result, transcript path, transcript redaction status, sandbox/write mode, /brain-* native commands or markdown specs, selected command, loaded skills, adapter path, blocked commands, evidence, failure points, and follow-up DevEx fixes. If the runtime is read-only, do not claim full validation; record blocked commands and safe checks instead.\n\n## Harness route\nRun `/brain-eval` with `agent-output-verifier` and `qa-evidence` to check runtime evidence.\n\n## Failure if\nThe agent only validates fixtures, skips the real runtime, hides auth or sandbox blockers, edits without approval, or reports developer experience quality without command output.\n",
+        "# Eval Case: Real Runtime Smoke Test\n\n## User request\nUse Agent Brain in a real agent runtime and report whether the harness is usable.\n\n## Expected behavior\nStart from a clean checkout, preserve user changes, run the baseline validation, choose the matching command and skills, ask the runtime for a small no-write or sandboxed task, then capture the runtime, version, Python executable, writable temp-dir status, git fetch result, git freshness result, exact command, command exit status, smoke result, transcript path, transcript redaction status, sandbox/write mode, /brain-* native commands or markdown specs, selected command, loaded skills, adapter path, blocked commands, capability matrix, capability evidence, evidence, failure points, and follow-up DevEx fixes. If the runtime is read-only, do not claim full validation; record blocked commands and safe checks instead.\n\n## Harness route\nRun `/brain-eval` with `agent-output-verifier` and `qa-evidence` to check runtime evidence.\n\n## Failure if\nThe agent only validates fixtures, skips the real runtime, hides auth or sandbox blockers, edits without approval, or reports developer experience quality without command output.\n",
         encoding="utf-8",
     )
     (case_dir / "native-command-assumption.md").write_text(
@@ -8274,8 +8274,8 @@ def test_adapter_runtime_smoke_contract_must_name_blocked_commands(tmp_path):
     adapter = tmp_path / "adapters" / "sample-adapter" / "README.md"
     adapter.write_text(
         adapter.read_text(encoding="utf-8").replace(
-            "blocked commands, command mode, sandbox/write mode, git freshness, runtime version, Python executable, smoke result, command exit status, selected command, loaded skills, transcript path, and redacted transcript.",
-            "command mode, sandbox/write mode, git freshness, runtime version, Python executable, smoke result, command exit status, selected command, loaded skills, transcript path, and redacted transcript.",
+            "blocked commands, command mode, sandbox/write mode, git freshness, runtime version, Python executable, smoke result, command exit status, selected command, loaded skills, capability matrix, capability evidence, transcript path, and redacted transcript.",
+            "command mode, sandbox/write mode, git freshness, runtime version, Python executable, smoke result, command exit status, selected command, loaded skills, capability matrix, capability evidence, transcript path, and redacted transcript.",
         ),
         encoding="utf-8",
     )
@@ -8290,7 +8290,7 @@ def test_adapter_validation_must_include_runtime_smoke_command(tmp_path):
     adapter = tmp_path / "adapters" / "sample-adapter" / "README.md"
     adapter.write_text(
         adapter.read_text(encoding="utf-8").replace(
-            "Run `python scripts/runtime_smoke.py --runtime <neutral-runtime-name> --version <runtime-version> --selected-command /brain-start --loaded-skill intake --adapter-path <adapter-readme> --sandbox-write-mode <sandbox-write-mode> --brain-command-mode <brain-command-mode> --run-scope read_only_smoke --smoke-result <smoke-result> --command-exit-status <exit-status> --transcript-path <transcript-path> --transcript-redaction-status <redaction-status> --validation-command <validation-command> --write-fence-approval-state <approval-state> --output <runtime-smoke-artifact> --capability read_files=yes --capability write_files=blocked --capability run_shell=blocked --capability request_approvals=unknown --capability network_access=unknown --capability native_brain_commands=no --capability schema_artifacts=yes --capability blocked_command_reporting=yes` for read-only smoke evidence, or use `--run-scope full_validation` only when the full local gate can run without runtime blockers.\n\n",
+            "Run `python scripts/runtime_smoke.py --runtime <neutral-runtime-name> --version <runtime-version> --selected-command /brain-start --loaded-skill intake --adapter-path <adapter-readme> --sandbox-write-mode <sandbox-write-mode> --brain-command-mode <brain-command-mode> --run-scope read_only_smoke --smoke-result <smoke-result> --command-exit-status <exit-status> --transcript-path <transcript-path> --transcript-redaction-status <redaction-status> --validation-command <validation-command> --write-fence-approval-state <approval-state> --output <runtime-smoke-artifact> --capability read_files=yes --capability write_files=blocked --capability run_shell=blocked --capability request_approvals=unknown --capability network_access=unknown --capability native_brain_commands=no --capability schema_artifacts=yes --capability blocked_command_reporting=yes --capability-evidence read_files=transcript-read-repo-root --capability-evidence write_files=read-only-sandbox-blocker --capability-evidence run_shell=read-only-sandbox-blocker --capability-evidence request_approvals=not-exposed-by-runtime-settings --capability-evidence network_access=not-checked-read-only-smoke --capability-evidence native_brain_commands=adapter-markdown-spec-routing --capability-evidence schema_artifacts=validated-json-output --capability-evidence blocked_command_reporting=blocked-command-transcript-line` for read-only smoke evidence, or use `--run-scope full_validation` only when the full local gate can run without runtime blockers.\n\n",
             "",
         ),
         encoding="utf-8",
@@ -8423,7 +8423,7 @@ def test_adapter_runtime_smoke_contract_must_name_smoke_result(tmp_path):
     adapter = tmp_path / "adapters" / "sample-adapter" / "README.md"
     adapter.write_text(
         adapter.read_text(encoding="utf-8").replace(
-            "command mode, sandbox/write mode, git freshness, runtime version, Python executable, smoke result, command exit status, selected command, loaded skills, transcript path, and redacted transcript.",
+            "command mode, sandbox/write mode, git freshness, runtime version, Python executable, smoke result, command exit status, selected command, loaded skills, capability matrix, capability evidence, transcript path, and redacted transcript.",
             "command mode, sandbox/write mode, git freshness, runtime version, Python executable, command exit status, selected command, loaded skills, and transcript path.",
         ),
         encoding="utf-8",

@@ -25,6 +25,7 @@
     "run_scope",
     "validation_commands",
     "capability_matrix",
+    "capability_evidence",
     "write_fence",
     "evidence"
   ],
@@ -184,6 +185,30 @@
         "blocked_command_reporting": {
           "enum": ["yes", "no", "unknown", "blocked"]
         }
+      }
+    },
+    "capability_evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "read_files",
+        "write_files",
+        "run_shell",
+        "request_approvals",
+        "network_access",
+        "native_brain_commands",
+        "schema_artifacts",
+        "blocked_command_reporting"
+      ],
+      "properties": {
+        "read_files": {"type": "string", "minLength": 1},
+        "write_files": {"type": "string", "minLength": 1},
+        "run_shell": {"type": "string", "minLength": 1},
+        "request_approvals": {"type": "string", "minLength": 1},
+        "network_access": {"type": "string", "minLength": 1},
+        "native_brain_commands": {"type": "string", "minLength": 1},
+        "schema_artifacts": {"type": "string", "minLength": 1},
+        "blocked_command_reporting": {"type": "string", "minLength": 1}
       }
     },
     "write_fence": {

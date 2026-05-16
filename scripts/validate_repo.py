@@ -143,6 +143,8 @@ REQUIRED_REAL_RUNTIME_SMOKE_EVIDENCE_FIELDS = [
     "loaded skills",
     "adapter path",
     "blocked commands",
+    "capability matrix",
+    "capability evidence",
 ]
 REQUIRED_REAL_RUNTIME_SMOKE_READ_ONLY_TERMS = ["read-only", "full validation"]
 REQUIRED_RUNTIME_SMOKE_TEMPLATE_ROUTING_TERM = "loaded skills declared by selected command"
