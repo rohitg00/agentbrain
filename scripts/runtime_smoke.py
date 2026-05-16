@@ -438,7 +438,7 @@ def validate_report_against_schema(
                     "exact_command must record write fence flag: "
                     f"--write-fence-rollback-command {rollback_command}"
                 )
-    if root is not None and report.get("smoke_result") == "pass":
+    if root is not None:
         adapter_path = report.get("adapter_path")
         if isinstance(adapter_path, str) and adapter_path != "unknown":
             if not adapter_path_is_adapter_readme(adapter_path):
