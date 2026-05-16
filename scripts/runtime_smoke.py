@@ -523,10 +523,14 @@ def validate_report_against_schema(
         errors.append(f"exact_command must record selected command flag: --selected-command {selected_command}")
     loaded_skills = report.get("loaded_skills")
     if isinstance(loaded_skills, list):
+        seen_loaded_skills: set[str] = set()
         for skill in loaded_skills:
-            if isinstance(skill, str) and skill and not exact_command_has_flag_value(
-                report.get("exact_command"), "--loaded-skill", skill
-            ):
+            if not (isinstance(skill, str) and skill):
+                continue
+            if skill in seen_loaded_skills:
+                errors.append(f"loaded_skills must not duplicate skill: {skill}")
+            seen_loaded_skills.add(skill)
+            if not exact_command_has_flag_value(report.get("exact_command"), "--loaded-skill", skill):
                 errors.append(f"exact_command must record loaded skill flag: --loaded-skill {skill}")
     adapter_path = report.get("adapter_path")
     if isinstance(adapter_path, str) and adapter_path != "unknown" and not exact_command_has_flag_value(

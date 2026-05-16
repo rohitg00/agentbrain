@@ -46,6 +46,17 @@ def test_runtime_smoke_rejects_duplicate_loaded_skill_flags_in_exact_command():
     assert "exact_command must not duplicate loaded skill flag: intake" in errors
 
 
+def test_runtime_smoke_rejects_duplicate_loaded_skills_in_report():
+    report = json.loads(Path("examples/artifacts/runtime-smoke.example.json").read_text(encoding="utf-8"))
+    report["loaded_skills"] = ["intake", "command-routing", "intake"]
+
+    errors = runtime_smoke.validate_report_against_schema(
+        report, Path("schemas/runtime-smoke.schema.json"), root=Path.cwd()
+    )
+
+    assert "loaded_skills must not duplicate skill: intake" in errors
+
+
 def test_runtime_smoke_rejects_duplicate_capability_names_in_exact_command():
     report = json.loads(Path("examples/artifacts/runtime-smoke.example.json").read_text(encoding="utf-8"))
     report["exact_command"] = report["exact_command"].replace(
