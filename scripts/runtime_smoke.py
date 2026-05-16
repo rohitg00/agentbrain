@@ -78,6 +78,24 @@ FULL_VALIDATION_GATE_COMMANDS = [
     "python scripts/validate_repo.py",
     "git diff --check",
 ]
+SINGLETON_PROVENANCE_FLAGS = [
+    "--runtime",
+    "--version",
+    "--sandbox-write-mode",
+    "--brain-command-mode",
+    "--selected-command",
+    "--adapter-path",
+    "--run-scope",
+    "--command-exit-status",
+    "--smoke-result",
+    "--transcript-path",
+    "--transcript-redaction-status",
+    "--write-fence-rollback-command",
+    "--write-fence-approval-state",
+    "--root",
+    "--schema",
+    "--output",
+]
 
 
 def _run_git(root: Path, *args: str) -> tuple[bool, str]:
@@ -310,10 +328,7 @@ def exact_command_has_flag_value(exact_command: object, flag: str, value: str) -
 def exact_command_flag_values(exact_command: object, flag: str) -> list[str]:
     if not isinstance(exact_command, str):
         return []
-    try:
-        tokens = shlex.split(exact_command)
-    except ValueError:
-        tokens = exact_command.split()
+    tokens = exact_command_tokens(exact_command)
 
     values: list[str] = []
     for index, token in enumerate(tokens):
@@ -399,6 +414,9 @@ def validate_report_against_schema(
             )
     if not exact_command_invokes_runtime_smoke(report.get("exact_command")):
         errors.append("exact_command must invoke scripts/runtime_smoke.py")
+    for flag in SINGLETON_PROVENANCE_FLAGS:
+        if len(exact_command_flag_values(report.get("exact_command"), flag)) > 1:
+            errors.append(f"exact_command must not contain duplicate singleton provenance flag: {flag}")
 
     transcript_path = report.get("transcript_path")
     if root is not None and isinstance(transcript_path, str) and not transcript_path_is_external_reference(transcript_path):
