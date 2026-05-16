@@ -1,41 +1,29 @@
 # Agent Brain
 
 <p align="center">
-  <img src="assets/agentbrain-banner.svg" alt="Agent Brain — universal operating harness for AI agents" width="100%">
+  <a href="https://github.com/rohitg00/agentbrain/actions/workflows/quality.yml"><img src="https://github.com/rohitg00/agentbrain/actions/workflows/quality.yml/badge.svg" alt="Quality"></a>
+  <a href="https://github.com/rohitg00/agentbrain/blob/main/LICENSE"><img src="https://img.shields.io/github/license/rohitg00/agentbrain" alt="License"></a>
+  <a href="https://github.com/rohitg00/agentbrain/stargazers"><img src="https://img.shields.io/github/stars/rohitg00/agentbrain?style=social" alt="GitHub stars"></a>
+  <img src="https://img.shields.io/badge/Python-3.11-3776AB?logo=python&logoColor=white" alt="Python 3.11">
+  <img src="https://img.shields.io/badge/runtime-agent--agnostic-111827" alt="Agent agnostic">
 </p>
 
-<p align="center">
-  <a href="https://github.com/rohitg00/agentbrain/actions"><img alt="validation" src="https://img.shields.io/badge/validation-501%20tests%20passing-22c55e?style=for-the-badge"></a>
-  <img alt="universal harness" src="https://img.shields.io/badge/universal-agent%20harness-7c3aed?style=for-the-badge">
-  <img alt="runtime agnostic" src="https://img.shields.io/badge/runtime-agnostic-06b6d4?style=for-the-badge">
-  <img alt="evidence first" src="https://img.shields.io/badge/evidence-first-f59e0b?style=for-the-badge">
-</p>
+**A portable operating harness for coding agents.**
 
-<p align="center">
-  <sub>Works with the agents and IDEs you already use — not only one vendor runtime.</sub>
-</p>
+Agent Brain is a drop-in brain for agent workspaces: commands, skills, schemas,
+templates, review gates, evals, adapters, and handoff contracts that force
+evidence before code and verification before trust.
 
-<p align="center">
-  <img alt="agent logo" src="assets/logos/agent-a.svg" height="32">
-  &nbsp;&nbsp;
-  <img alt="agent logo" src="assets/logos/agent-b.svg" height="32">
-  &nbsp;&nbsp;
-  <img alt="agent logo" src="assets/logos/agent-c.svg" height="32">
-  &nbsp;&nbsp;
-  <img alt="agent logo" src="assets/logos/agent-d.svg" height="32">
-  &nbsp;&nbsp;
-  <img alt="agent logo" src="assets/logos/agent-e.svg" height="32">
-  &nbsp;&nbsp;
-  <strong>+ any coding agent that can read files</strong>
-</p>
+It is not a decorative prompt pack, an IDE plugin, or another agent framework.
+Bring the coding agent you already use. Agent Brain supplies the operating
+discipline around the model.
 
----
+Use it when you want an agent to stop guessing, pick the right lifecycle state,
+produce the right artifact, and prove the work before it claims progress.
 
-**Your coding agent is fast. Agent Brain makes it careful.**
-
-Agent Brain is a universal operating harness for AI agents: command specs, skills, schemas, templates, evals, adapters, and review gates that tell any capable agent what to do before it writes code, what evidence to collect, and when to stop.
-
-It is not a single-vendor skill pack, not an IDE plugin, and not another agent framework. Bring the coding agent you already use. Agent Brain supplies the operating discipline around the model.
+Works with agent runtimes that can read files and follow repository-local
+instructions: terminal coding agents, IDE agents, subagent runners,
+approval-gated runtimes, and custom CLI or hosted agents.
 
 Most agent failures are not syntax errors. They are judgment errors:
 
@@ -46,22 +34,18 @@ Most agent failures are not syntax errors. They are judgment errors:
 - shipping without rollback,
 - turning one messy run into permanent memory.
 
-Agent Brain fixes the workflow around the model.
+Agent Brain keeps the first question sharp:
 
-> Should this exist? Should it be an agent? What evidence would prove or kill it?
+> Should this exist, should it be an agent, and what evidence would prove or kill it?
 
-## Comparisons
+It gives agents three non-negotiable habits:
 
-Agent Brain is useful because it sits one layer above the runtime. It does not care which model, IDE, terminal agent, or orchestration stack is underneath.
-
-- **Claude Code / Claude:** gives the model a stricter operating contract than “be helpful.”
-- **Cursor / IDE agents:** forces planning, review, rollback, and evidence before code churn.
-- **GitHub Copilot:** adds product judgment, handoff artifacts, and verification discipline around completions.
-- **ChatGPT / Gemini:** turns chat answers into inspectable commands, artifacts, schemas, and stop conditions.
-- **Windsurf / Aider / Cline / OpenCode / Replit:** keeps autonomous or semi-autonomous runs from drifting, overclaiming, or skipping proof.
-- **Custom agent stacks:** works as plain markdown plus tests, so any file-reading agent can adopt it.
-
-That is the claim: **Agent Brain is the portable brain layer for agents that can read a repo and follow instructions.**
+- **Plan before build.** Route vague requests through intake, research, challenge,
+  brief, design, and plan before implementation.
+- **Verify before trust.** Treat tests, logs, diffs, screenshots, citations, and
+  approvals as proof; treat confident summaries as claims.
+- **Learn only from evidence.** Turn repeated successful workflows into small,
+  neutral skills without copying external branding or temporary task chatter.
 
 ## Quickstart
 
@@ -116,7 +100,7 @@ python scripts/scrub_public_copy.py <exact-source-name> [more-exact-names...]
 Expected result:
 
 ```text
-500 passed
+all tests pass
 Validation passed
 no whitespace diff errors
 ```
