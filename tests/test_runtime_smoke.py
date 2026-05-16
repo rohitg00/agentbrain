@@ -72,6 +72,44 @@ def test_runtime_smoke_rejects_secret_like_values_in_local_transcript(tmp_path: 
     assert "runtime smoke transcript contains secret-like value; redact transcript before trusting artifact" in errors
 
 
+def test_runtime_smoke_rejects_private_absolute_paths_in_local_transcript(tmp_path: Path):
+    transcript = tmp_path / "artifacts" / "runtime-smoke" / "generic-cli-runtime-2026-05-15.log"
+    transcript.parent.mkdir(parents=True)
+    transcript.write_text(
+        "runtime transcript included a private checkout path: /Users/example/work/project\n",
+        encoding="utf-8",
+    )
+    report = runtime_smoke.build_report(
+        root=tmp_path,
+        runtime="generic-cli-runtime",
+        version="1.2.3",
+        sandbox_write_mode="read_only",
+        brain_command_mode="markdown_specs",
+        run_scope="read_only_smoke",
+        blocked_commands=[],
+        exact_command=(
+            "python scripts/runtime_smoke.py --runtime generic-cli-runtime --version 1.2.3 "
+            "--run-scope read_only_smoke --selected-command /brain-verify "
+            "--loaded-skill runtime-smoke --adapter-path adapters/read-only-cli/README.md "
+            "--sandbox-write-mode read_only --brain-command-mode markdown_specs "
+            "--transcript-path artifacts/runtime-smoke/generic-cli-runtime-2026-05-15.log "
+            "--smoke-result pass --command-exit-status 0 --transcript-redaction-status redacted"
+        ),
+        smoke_result="pass",
+        selected_command="/brain-verify",
+        loaded_skills=["runtime-smoke"],
+        adapter_path="adapters/read-only-cli/README.md",
+        transcript_path="artifacts/runtime-smoke/generic-cli-runtime-2026-05-15.log",
+        transcript_redaction_status="redacted",
+    )
+
+    errors = runtime_smoke.validate_report_against_schema(
+        report, Path("schemas/runtime-smoke.schema.json"), root=tmp_path
+    )
+
+    assert "runtime smoke transcript contains private absolute path; redact transcript before trusting artifact" in errors
+
+
 def test_pass_runtime_smoke_rejects_unknown_runtime_version(tmp_path: Path):
     report = runtime_smoke.build_report(
         root=tmp_path,

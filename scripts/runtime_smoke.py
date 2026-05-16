@@ -68,6 +68,10 @@ SECRET_LIKE_PATTERNS = [
         re.IGNORECASE,
     ),
 ]
+PRIVATE_ABSOLUTE_PATH_PATTERNS = [
+    re.compile(r"(?<![A-Za-z0-9_.-])/(?:Users|home)/[^\s:'\"]+"),
+    re.compile(r"\b[A-Za-z]:\\\\Users\\\\[^\s:'\"]+"),
+]
 FULL_VALIDATION_GATE_COMMANDS = [
     "rm -rf scripts/__pycache__ tests/__pycache__",
     "python -m pytest -q",
@@ -337,6 +341,16 @@ def contains_secret_like_value(value: object) -> bool:
     return False
 
 
+def contains_private_absolute_path(value: object) -> bool:
+    if isinstance(value, str):
+        return any(pattern.search(value) for pattern in PRIVATE_ABSOLUTE_PATH_PATTERNS)
+    if isinstance(value, list):
+        return any(contains_private_absolute_path(item) for item in value)
+    if isinstance(value, dict):
+        return any(contains_private_absolute_path(item) for item in value.values())
+    return False
+
+
 def version_is_concrete(value: object) -> bool:
     if not isinstance(value, str):
         return False
@@ -380,6 +394,10 @@ def validate_report_against_schema(
             if contains_secret_like_value(transcript_text):
                 errors.append(
                     "runtime smoke transcript contains secret-like value; redact transcript before trusting artifact"
+                )
+            if contains_private_absolute_path(transcript_text):
+                errors.append(
+                    "runtime smoke transcript contains private absolute path; redact transcript before trusting artifact"
                 )
 
     evidence = report.get("evidence")
