@@ -596,6 +596,11 @@ def validate_report_against_schema(
             "exact_command must record command exit status flag: "
             f"--command-exit-status {command_exit_status}"
         )
+    transcript_path = report.get("transcript_path")
+    if isinstance(transcript_path, str) and not exact_command_has_flag_value(
+        report.get("exact_command"), "--transcript-path", transcript_path
+    ):
+        errors.append(f"exact_command must record transcript path flag: --transcript-path {transcript_path}")
     transcript_redaction_status = report.get("transcript_redaction_status")
     if isinstance(transcript_redaction_status, str) and not exact_command_has_flag_value(
         report.get("exact_command"), "--transcript-redaction-status", transcript_redaction_status

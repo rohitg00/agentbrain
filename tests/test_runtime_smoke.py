@@ -1803,6 +1803,44 @@ def test_pass_runtime_smoke_requires_transcript_path_in_exact_command(tmp_path: 
     )
 
 
+def test_blocked_runtime_smoke_requires_transcript_path_in_exact_command(tmp_path: Path):
+    report = runtime_smoke.build_report(
+        root=tmp_path,
+        runtime="generic-cli-runtime",
+        version="1.2.3",
+        sandbox_write_mode="read_only",
+        brain_command_mode="markdown_specs",
+        run_scope="read_only_smoke",
+        blocked_commands=["python -m pytest -q blocked by read-only sandbox"],
+        exact_command=(
+            "python scripts/runtime_smoke.py --runtime generic-cli-runtime --version 1.2.3 "
+            "--run-scope read_only_smoke --selected-command /brain-verify "
+            "--loaded-skill runtime-smoke --adapter-path adapters/read-only-cli/README.md "
+            "--sandbox-write-mode read_only --brain-command-mode markdown_specs "
+            "--smoke-result blocked --command-exit-status 1 "
+            "--transcript-redaction-status blocked "
+            "--blocked-command 'python -m pytest -q blocked by read-only sandbox' "
+            "--capability blocked_command_reporting=yes"
+        ),
+        command_exit_status=1,
+        smoke_result="blocked",
+        transcript_path="artifacts/runtime-smoke/generic-cli-runtime-2026-05-15.log",
+        transcript_redaction_status="blocked",
+        selected_command="/brain-verify",
+        loaded_skills=["runtime-smoke"],
+        adapter_path="adapters/read-only-cli/README.md",
+        capability_matrix={"blocked_command_reporting": "yes"},
+    )
+
+    errors = runtime_smoke.validate_report_against_schema(report, Path("schemas/runtime-smoke.schema.json"))
+
+    assert any(
+        "exact_command must record transcript path flag: --transcript-path artifacts/runtime-smoke/generic-cli-runtime-2026-05-15.log"
+        in error
+        for error in errors
+    )
+
+
 def test_pass_runtime_smoke_requires_result_and_redaction_flags_in_exact_command(tmp_path: Path):
     report = runtime_smoke.build_report(
         root=tmp_path,
