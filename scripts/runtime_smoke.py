@@ -294,6 +294,39 @@ def exact_command_has_flag_value(exact_command: object, flag: str, value: str) -
     return False
 
 
+def exact_command_flag_values(exact_command: object, flag: str) -> list[str]:
+    if not isinstance(exact_command, str):
+        return []
+    try:
+        tokens = shlex.split(exact_command)
+    except ValueError:
+        tokens = exact_command.split()
+
+    values: list[str] = []
+    for index, token in enumerate(tokens):
+        if token == flag and index + 1 < len(tokens):
+            values.append(tokens[index + 1])
+        elif token.startswith(f"{flag}="):
+            values.append(token.split("=", 1)[1])
+    return values
+
+
+def path_is_inside_declared_boundary(path_value: str, boundary_values: list[object]) -> bool:
+    normalized_path = Path(path_value).as_posix().lstrip("./")
+    for boundary_value in boundary_values:
+        if not isinstance(boundary_value, str) or not boundary_value.strip():
+            continue
+        normalized_boundary = Path(boundary_value).as_posix().lstrip("./")
+        if not normalized_boundary:
+            continue
+        if normalized_boundary.endswith("/"):
+            if normalized_path.startswith(normalized_boundary):
+                return True
+        elif normalized_path == normalized_boundary or normalized_path.startswith(f"{normalized_boundary}/"):
+            return True
+    return False
+
+
 def contains_secret_like_value(value: object) -> bool:
     if isinstance(value, str):
         return any(pattern.search(value) for pattern in SECRET_LIKE_PATTERNS)
@@ -626,6 +659,24 @@ def validate_report_against_schema(
                     "exact_command must record write fence flag: "
                     f"--write-fence-approval-state {approval_state}"
                 )
+            output_paths = exact_command_flag_values(report.get("exact_command"), "--output")
+            allowed_paths = write_fence.get("allowed_paths")
+            for output_path in output_paths:
+                if output_path == "-":
+                    continue
+                output_path_for_boundary = output_path
+                if root is not None:
+                    try:
+                        output_path_for_boundary = Path(output_path).resolve().relative_to(Path(root).resolve()).as_posix()
+                    except (OSError, ValueError):
+                        output_path_for_boundary = output_path
+                if not isinstance(allowed_paths, list) or not path_is_inside_declared_boundary(
+                    output_path_for_boundary, allowed_paths
+                ):
+                    errors.append(
+                        "full_validation output path must be inside write_fence.allowed_paths: "
+                        f"{output_path}"
+                    )
     if root is not None:
         adapter_path = report.get("adapter_path")
         if isinstance(adapter_path, str) and adapter_path != "unknown":
