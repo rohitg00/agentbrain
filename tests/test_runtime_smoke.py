@@ -46,6 +46,20 @@ def test_runtime_smoke_rejects_duplicate_loaded_skill_flags_in_exact_command():
     assert "exact_command must not duplicate loaded skill flag: intake" in errors
 
 
+def test_runtime_smoke_rejects_duplicate_capability_names_in_exact_command():
+    report = json.loads(Path("examples/artifacts/runtime-smoke.example.json").read_text(encoding="utf-8"))
+    report["exact_command"] = report["exact_command"].replace(
+        "--capability read_files=yes",
+        "--capability read_files=no --capability read_files=yes",
+    )
+
+    errors = runtime_smoke.validate_report_against_schema(
+        report, Path("schemas/runtime-smoke.schema.json"), root=Path.cwd()
+    )
+
+    assert "exact_command must not duplicate capability name: read_files" in errors
+
+
 def test_runtime_smoke_schema_requires_full_validation_capabilities():
     schema = json.loads(Path("schemas/runtime-smoke.schema.json").read_text(encoding="utf-8"))
     report = json.loads(Path("examples/artifacts/runtime-smoke.example.json").read_text(encoding="utf-8"))

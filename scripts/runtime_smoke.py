@@ -339,6 +339,10 @@ def exact_command_flag_values(exact_command: object, flag: str) -> list[str]:
     return values
 
 
+def capability_name_from_flag_value(flag_value: str) -> str:
+    return flag_value.split("=", 1)[0] if "=" in flag_value else flag_value
+
+
 def path_is_inside_declared_boundary(path_value: str, boundary_values: list[object]) -> bool:
     normalized_path = Path(path_value).as_posix().lstrip("./")
     for boundary_value in boundary_values:
@@ -423,6 +427,13 @@ def validate_report_against_schema(
         if loaded_skill_flag_value in seen_loaded_skill_flags:
             errors.append(f"exact_command must not duplicate loaded skill flag: {loaded_skill_flag_value}")
         seen_loaded_skill_flags.add(loaded_skill_flag_value)
+    capability_flag_values = exact_command_flag_values(report.get("exact_command"), "--capability")
+    seen_capability_names: set[str] = set()
+    for capability_flag_value in capability_flag_values:
+        capability_name = capability_name_from_flag_value(capability_flag_value)
+        if capability_name in seen_capability_names:
+            errors.append(f"exact_command must not duplicate capability name: {capability_name}")
+        seen_capability_names.add(capability_name)
 
     transcript_path = report.get("transcript_path")
     if root is not None and isinstance(transcript_path, str) and not transcript_path_is_external_reference(transcript_path):
