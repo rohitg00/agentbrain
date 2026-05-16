@@ -602,6 +602,10 @@ def validate_report_against_schema(
             approval_state = write_fence.get("approval_state")
             if approval_state not in {"approved", "not_required"}:
                 errors.append("full_validation requires write_fence with approval_state")
+            elif report.get("sandbox_write_mode") == "unrestricted" and approval_state != "approved":
+                errors.append(
+                    "full_validation in unrestricted sandbox requires explicit write_fence approval_state approved"
+                )
             elif not exact_command_has_flag_value(
                 report.get("exact_command"), "--write-fence-approval-state", str(approval_state)
             ):
