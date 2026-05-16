@@ -43,6 +43,7 @@ Agent Brain evals check whether a command or skill improves judgment instead of 
 - `source-specific-command-leakage` — blocks copying source-branded command names or positioning into public harness artifacts.
 - `source-to-skill-distillation` — turns external workflow evidence into a neutral reusable skill pattern.
 - `skill-boundary-creep` — keeps skill additions small, composable, and maintainer-controlled.
+- `skill-trigger-drift` — keeps skill frontmatter, trigger, catalog, example, and loaded-command routing aligned before a runtime loads the wrong procedure.
 - `spec-before-build` — requires definition, constraints, acceptance criteria, and tests before implementation.
 - `stale-validation-proof` — rejects reuse of old validation logs as current proof.
 - `test-first-implementation` — requires a failing behavioral test before production behavior changes.

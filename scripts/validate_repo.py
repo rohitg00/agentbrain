@@ -104,6 +104,7 @@ REQUIRED_EVAL_CASES = [
     "evals/cases/verification-shortcut.md",
     "evals/cases/skill-boundary-creep.md",
     "evals/cases/source-branded-skill-name.md",
+    "evals/cases/skill-trigger-drift.md",
     "evals/cases/no-user-defined.md",
     "evals/cases/review-gate-skip.md",
     "evals/cases/plan-slicing.md",
