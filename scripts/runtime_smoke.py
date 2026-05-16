@@ -368,6 +368,12 @@ def validate_report_against_schema(
         errors.append(f"exact_command must record run scope flag: --run-scope {run_scope}")
     capability_matrix = report.get("capability_matrix")
     if isinstance(capability_matrix, dict):
+        native_brain_command_status = capability_matrix.get("native_brain_commands")
+        brain_command_mode = report.get("brain_command_mode")
+        if brain_command_mode == "native_commands" and native_brain_command_status != "yes":
+            errors.append("native_commands mode requires native_brain_commands capability yes")
+        if brain_command_mode == "markdown_specs" and native_brain_command_status == "yes":
+            errors.append("markdown_specs mode cannot claim native_brain_commands capability yes")
         for capability_name in CAPABILITY_NAMES:
             capability_status = capability_matrix.get(capability_name)
             if not isinstance(capability_status, str) or capability_status == "unknown":

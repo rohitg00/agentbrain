@@ -1536,6 +1536,56 @@ def test_blocked_runtime_smoke_requires_blocked_commands_in_exact_command(tmp_pa
     )
 
 
+def test_runtime_smoke_rejects_native_command_mode_without_matching_capability_flag(tmp_path: Path):
+    report = runtime_smoke.build_report(
+        root=tmp_path,
+        runtime="generic-cli-runtime",
+        version="1.2.3",
+        sandbox_write_mode="read_only",
+        brain_command_mode="native_commands",
+        run_scope="read_only_smoke",
+        blocked_commands=[],
+        exact_command=(
+            "python scripts/runtime_smoke.py --runtime generic-cli-runtime --version 1.2.3 "
+            "--brain-command-mode native_commands --capability native_brain_commands=no"
+        ),
+        smoke_result="pass",
+        selected_command="/brain-start",
+        loaded_skills=["intake"],
+        adapter_path="adapters/read-only-cli/README.md",
+        capability_matrix={"native_brain_commands": "no"},
+    )
+
+    errors = runtime_smoke.validate_report_against_schema(report, Path("schemas/runtime-smoke.schema.json"))
+
+    assert any("native_commands mode requires native_brain_commands capability yes" in error for error in errors)
+
+
+def test_runtime_smoke_rejects_markdown_specs_mode_claiming_native_command_capability(tmp_path: Path):
+    report = runtime_smoke.build_report(
+        root=tmp_path,
+        runtime="generic-cli-runtime",
+        version="1.2.3",
+        sandbox_write_mode="read_only",
+        brain_command_mode="markdown_specs",
+        run_scope="read_only_smoke",
+        blocked_commands=[],
+        exact_command=(
+            "python scripts/runtime_smoke.py --runtime generic-cli-runtime --version 1.2.3 "
+            "--brain-command-mode markdown_specs --capability native_brain_commands=yes"
+        ),
+        smoke_result="pass",
+        selected_command="/brain-start",
+        loaded_skills=["intake"],
+        adapter_path="adapters/read-only-cli/README.md",
+        capability_matrix={"native_brain_commands": "yes"},
+    )
+
+    errors = runtime_smoke.validate_report_against_schema(report, Path("schemas/runtime-smoke.schema.json"))
+
+    assert any("markdown_specs mode cannot claim native_brain_commands capability yes" in error for error in errors)
+
+
 def test_main_creates_parent_directories_for_runtime_smoke_output(monkeypatch, tmp_path: Path):
     output_path = tmp_path / "artifacts" / "runtime-smoke" / "generic-cli-runtime.json"
 
