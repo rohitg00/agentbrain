@@ -417,6 +417,12 @@ def validate_report_against_schema(
     for flag in SINGLETON_PROVENANCE_FLAGS:
         if len(exact_command_flag_values(report.get("exact_command"), flag)) > 1:
             errors.append(f"exact_command must not contain duplicate singleton provenance flag: {flag}")
+    loaded_skill_flag_values = exact_command_flag_values(report.get("exact_command"), "--loaded-skill")
+    seen_loaded_skill_flags: set[str] = set()
+    for loaded_skill_flag_value in loaded_skill_flag_values:
+        if loaded_skill_flag_value in seen_loaded_skill_flags:
+            errors.append(f"exact_command must not duplicate loaded skill flag: {loaded_skill_flag_value}")
+        seen_loaded_skill_flags.add(loaded_skill_flag_value)
 
     transcript_path = report.get("transcript_path")
     if root is not None and isinstance(transcript_path, str) and not transcript_path_is_external_reference(transcript_path):

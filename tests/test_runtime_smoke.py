@@ -16,6 +16,36 @@ def test_checked_in_runtime_smoke_example_satisfies_runtime_validator():
     assert errors == []
 
 
+def test_runtime_smoke_rejects_selected_command_that_is_not_in_checkout():
+    report = json.loads(Path("examples/artifacts/runtime-smoke.example.json").read_text(encoding="utf-8"))
+    report["selected_command"] = "/brain-missing"
+    report["exact_command"] = report["exact_command"].replace("/brain-start", "/brain-missing")
+    report["evidence"] = [
+        line.replace("/brain-start", "/brain-missing") if line.startswith("Selected command: ") else line
+        for line in report["evidence"]
+    ]
+
+    errors = runtime_smoke.validate_report_against_schema(
+        report, Path("schemas/runtime-smoke.schema.json"), root=Path.cwd()
+    )
+
+    assert "selected command file is missing: commands/brain-missing.md" in errors
+
+
+def test_runtime_smoke_rejects_duplicate_loaded_skill_flags_in_exact_command():
+    report = json.loads(Path("examples/artifacts/runtime-smoke.example.json").read_text(encoding="utf-8"))
+    report["exact_command"] = report["exact_command"].replace(
+        "--loaded-skill intake",
+        "--loaded-skill intake --loaded-skill intake",
+    )
+
+    errors = runtime_smoke.validate_report_against_schema(
+        report, Path("schemas/runtime-smoke.schema.json"), root=Path.cwd()
+    )
+
+    assert "exact_command must not duplicate loaded skill flag: intake" in errors
+
+
 def test_runtime_smoke_schema_requires_full_validation_capabilities():
     schema = json.loads(Path("schemas/runtime-smoke.schema.json").read_text(encoding="utf-8"))
     report = json.loads(Path("examples/artifacts/runtime-smoke.example.json").read_text(encoding="utf-8"))
