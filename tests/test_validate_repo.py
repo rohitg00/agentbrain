@@ -238,6 +238,26 @@ def test_adapter_requires_output_contract(tmp_path: Path) -> None:
     )
 
 
+def test_adapter_runtime_smoke_command_must_capture_capability_flags(tmp_path: Path) -> None:
+    write_minimal_repo(tmp_path)
+    adapter = tmp_path / "adapters" / "sample-adapter" / "README.md"
+    adapter.write_text(
+        adapter.read_text(encoding="utf-8").replace(
+            " --capability read_files=yes --capability blocked_command_reporting=yes",
+            "",
+        ),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert any(
+        "adapters/sample-adapter/README.md runtime_smoke.py command must include flag: --capability"
+        in error
+        for error in errors
+    )
+
+
 def test_adapters_directory_requires_catalog_for_every_adapter(tmp_path: Path) -> None:
     write_minimal_repo(tmp_path)
     (tmp_path / "adapters" / "README.md").write_text(
@@ -1130,7 +1150,7 @@ def write_minimal_repo(root: Path) -> None:
         "python -m pytest -q\n"
         "python scripts/validate_repo.py\n"
         "git diff --check\n"
-        "Run `python scripts/runtime_smoke.py --runtime <neutral-runtime-name> --version <runtime-version> --selected-command /brain-start --loaded-skill intake --adapter-path <adapter-readme> --sandbox-write-mode <sandbox-write-mode> --brain-command-mode <brain-command-mode> --run-scope read_only_smoke --smoke-result <smoke-result> --command-exit-status <exit-status> --transcript-path <transcript-path> --transcript-redaction-status <redaction-status> --validation-command <validation-command>` for read-only smoke evidence, or use `--run-scope full_validation` only when the full local gate can run without runtime blockers.\n\n"
+        "Run `python scripts/runtime_smoke.py --runtime <neutral-runtime-name> --version <runtime-version> --selected-command /brain-start --loaded-skill intake --adapter-path <adapter-readme> --sandbox-write-mode <sandbox-write-mode> --brain-command-mode <brain-command-mode> --run-scope read_only_smoke --smoke-result <smoke-result> --command-exit-status <exit-status> --transcript-path <transcript-path> --transcript-redaction-status <redaction-status> --validation-command <validation-command> --capability read_files=yes --capability blocked_command_reporting=yes` for read-only smoke evidence, or use `--run-scope full_validation` only when the full local gate can run without runtime blockers.\n\n"
         "Run a targeted exact-name scrub before public adapter copy changes.\n\n"
         "Record every real-runtime smoke run with `templates/runtime-smoke.md` and "
         "validate the JSON evidence against `schemas/runtime-smoke.schema.json` before "
@@ -7746,7 +7766,7 @@ def test_adapter_validation_must_include_runtime_smoke_command(tmp_path):
     adapter = tmp_path / "adapters" / "sample-adapter" / "README.md"
     adapter.write_text(
         adapter.read_text(encoding="utf-8").replace(
-            "Run `python scripts/runtime_smoke.py --runtime <neutral-runtime-name> --version <runtime-version> --selected-command /brain-start --loaded-skill intake --adapter-path <adapter-readme> --sandbox-write-mode <sandbox-write-mode> --brain-command-mode <brain-command-mode> --run-scope read_only_smoke --smoke-result <smoke-result> --command-exit-status <exit-status> --transcript-path <transcript-path> --transcript-redaction-status <redaction-status> --validation-command <validation-command>` for read-only smoke evidence, or use `--run-scope full_validation` only when the full local gate can run without runtime blockers.\n\n",
+            "Run `python scripts/runtime_smoke.py --runtime <neutral-runtime-name> --version <runtime-version> --selected-command /brain-start --loaded-skill intake --adapter-path <adapter-readme> --sandbox-write-mode <sandbox-write-mode> --brain-command-mode <brain-command-mode> --run-scope read_only_smoke --smoke-result <smoke-result> --command-exit-status <exit-status> --transcript-path <transcript-path> --transcript-redaction-status <redaction-status> --validation-command <validation-command> --capability read_files=yes --capability blocked_command_reporting=yes` for read-only smoke evidence, or use `--run-scope full_validation` only when the full local gate can run without runtime blockers.\n\n",
             "",
         ),
         encoding="utf-8",
