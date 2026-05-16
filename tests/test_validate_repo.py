@@ -1806,7 +1806,7 @@ def write_minimal_repo(root: Path) -> None:
         "Tie-break ambiguous routes by choosing the earliest safe lifecycle state, preferring verification for proof gaps, preferring review for trust gaps, and stopping when no command fits.\n\n"
         "## Commands\n\n"
         "- [`/brain-sample`](brain-sample.md) — State: INTAKE; Use when: sample requests; Skills: `sample`, `activity-recap`, `agent-output-verifier`, `ci-recovery`, `context-memory`, `domain-language`, `evidence-research`, `qa-evidence`, `runtime-smoke`; Artifact: `templates/sample-routing-summary.md`; Native: markdown spec unless runtime maps `/brain-sample` to a native command; Stop: request is unsafe or missing evidence.\n"
-        "- [`/brain-eval`](brain-eval.md) — State: VERIFY; Use when: eval cases need evidence-backed scoring; Skills: `agent-output-verifier`, `qa-evidence`, `ci-recovery`, `evidence-research`, `runtime-smoke`; Artifact: `templates/eval-report.md`; Native: markdown spec unless runtime maps `/brain-eval` to a native command; Stop: required proof is unavailable.\n",
+        "- [`/brain-eval`](brain-eval.md) — State: VERIFY; Use when: eval cases need evidence-backed scoring; Skills: `agent-output-verifier`, `qa-evidence`, `ci-recovery`, `evidence-research`, `runtime-smoke`; Artifact: `templates/eval-report.md`; Schema: `schemas/eval-report.schema.json`; Native: markdown spec unless runtime maps `/brain-eval` to a native command; Stop: required proof is unavailable.\n",
         encoding="utf-8",
     )
     (command_dir / "brain-sample.md").write_text(
@@ -2355,6 +2355,16 @@ def test_build_output_artifact_requires_schema_contract(tmp_path):
     errors = validate_repo.validate(tmp_path)
 
     assert "missing schemas/changed-artifact-plus-implementation-notes.schema.json" in errors
+
+
+def test_command_catalog_entries_cite_matching_artifact_schema(tmp_path):
+    write_minimal_repo(tmp_path)
+    catalog = tmp_path / "commands" / "README.md"
+    catalog.write_text(catalog.read_text().replace("; Schema: `schemas/eval-report.schema.json`", ""), encoding="utf-8")
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "commands/README.md catalog entry for /brain-eval must cite matching artifact schema: schemas/eval-report.schema.json" in errors
 
 
 def test_each_schema_requires_a_matching_valid_example(tmp_path):

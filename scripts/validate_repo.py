@@ -2348,6 +2348,11 @@ def validate(root: Path = ROOT) -> list[str]:
                 errors.append(
                     f"commands/README.md catalog entry for {command_name} must match command artifact: {expected_artifact}"
                 )
+            expected_artifact_schema = matching_artifact_schema(expected_artifact, root) if expected_artifact else ""
+            if expected_artifact_schema and f"`{expected_artifact_schema}`" not in entry:
+                errors.append(
+                    f"commands/README.md catalog entry for {command_name} must cite matching artifact schema: {expected_artifact_schema}"
+                )
             expected_stop_condition = command_expected_stop_condition(command_text)
             catalog_stop_condition = command_catalog_entry_stop(entry)
             if expected_stop_condition and catalog_stop_condition and expected_stop_condition not in catalog_stop_condition:
