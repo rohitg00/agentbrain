@@ -422,10 +422,18 @@ def validate_report_against_schema(
         if len(exact_command_flag_values(report.get("exact_command"), flag)) > 1:
             errors.append(f"exact_command must not contain duplicate singleton provenance flag: {flag}")
     loaded_skill_flag_values = exact_command_flag_values(report.get("exact_command"), "--loaded-skill")
+    loaded_skill_report_values = {
+        skill for skill in report.get("loaded_skills", []) if isinstance(skill, str) and skill
+    }
     seen_loaded_skill_flags: set[str] = set()
     for loaded_skill_flag_value in loaded_skill_flag_values:
         if loaded_skill_flag_value in seen_loaded_skill_flags:
             errors.append(f"exact_command must not duplicate loaded skill flag: {loaded_skill_flag_value}")
+        if loaded_skill_flag_value not in loaded_skill_report_values:
+            errors.append(
+                "exact_command loaded skill flag is not recorded in loaded_skills: "
+                f"{loaded_skill_flag_value}"
+            )
         seen_loaded_skill_flags.add(loaded_skill_flag_value)
     blocked_command_flag_values = exact_command_flag_values(report.get("exact_command"), "--blocked-command")
     seen_blocked_command_flags: set[str] = set()
