@@ -91,6 +91,7 @@ REQUIRED_SKILLS = [
 REQUIRED_EVAL_CASES = [
     "evals/cases/activity-recap.md",
     "evals/cases/adapter-capability-overclaim.md",
+    "evals/cases/adapter-selection-mismatch.md",
     "evals/cases/artifact-contract-drift.md",
     "evals/cases/source-to-skill-distillation.md",
     "evals/cases/agent-output-verifier.md",

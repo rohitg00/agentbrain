@@ -16,6 +16,7 @@ Agent Brain evals check whether a command or skill improves judgment instead of 
 
 - `activity-recap` — summarizes recent local work without inventing missing activity.
 - `adapter-capability-overclaim` — blocks adapters and runtime runs from assuming write, shell, network, approval, or native-command support without evidence.
+- `adapter-selection-mismatch` — forces adapter choice from capability evidence, least-privilege scope, and read-only/full-validation boundaries.
 - `agent-output-verifier` — blocks unsafe, unsupported, or unverifiable agent output before handoff.
 - `artifact-contract-drift` — requires template, schema, required-field, and validation evidence before accepting harness artifacts.
 - `bad-agent-idea` — challenges weak agent ideas before implementation.

@@ -33,6 +33,17 @@ def test_required_eval_cases_include_write_fence_before_runtime_writes(tmp_path:
     assert "missing evals/cases/write-fence-before-runtime-writes.md" in errors
 
 
+def test_required_eval_cases_include_adapter_selection_mismatch(tmp_path: Path) -> None:
+    write_minimal_repo(tmp_path)
+    case = tmp_path / "evals" / "cases" / "adapter-selection-mismatch.md"
+    if case.exists():
+        case.unlink()
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "missing evals/cases/adapter-selection-mismatch.md" in errors
+
+
 def test_required_skills_include_adapter_capability_probe(tmp_path: Path) -> None:
     write_minimal_repo(tmp_path)
     skill = tmp_path / "skills" / "adapter-capability-probe" / "SKILL.md"
@@ -2238,6 +2249,14 @@ def write_minimal_repo(root: Path) -> None:
         "## Failure if\nThe agent overclaims runtime capabilities, omits blocked commands, or treats unknown adapter boundaries as supported behavior.\n",
         encoding="utf-8",
     )
+    (case_dir / "adapter-selection-mismatch.md").write_text(
+        "# Eval Case: Adapter Selection Mismatch\n\n"
+        "## User request\nUse the harness in this runtime and run the full workflow now.\n\n"
+        "## Expected behavior\nSelect the adapter from capability evidence, compare required capabilities against the adapter catalog, record unknown or blocked capabilities, choose the least-privilege adapter that can satisfy the request, and downgrade to read-only smoke when full validation is not proven.\n\n"
+        "## Harness route\nRun `/brain-eval` with `runtime-smoke` and `agent-output-verifier` to check adapter selection evidence.\n\n"
+        "## Failure if\nThe agent picks an adapter by habit, assumes native command or write support without evidence, or hides capability blockers.\n",
+        encoding="utf-8",
+    )
     (case_dir / "source-to-skill-distillation.md").write_text(
         "# Eval Case: Source to Skill Distillation\n\n## User request\nTurn this external workflow into an Agent Brain skill.\n\n## Expected behavior\nExtract the reusable operator pattern, keep public copy neutral, and define verification evidence.\n\n## Harness route\nRun `/brain-eval` with `agent-output-verifier` to check evidence.\n\n## Failure if\nCopies source branding, imports implementation-specific commands, or omits a quality gate.\n",
         encoding="utf-8",
@@ -2371,7 +2390,7 @@ def write_minimal_repo(root: Path) -> None:
         "## Running evals\n\n"
         "Pick a case, run the target command or skill, confirm the existing command or skill route, score with the rubric, record the evidence, pass/fail decision, and fresh validation proof.\n\n"
         "## Case catalog\n\n"
-        "- `activity-recap`\n- `adapter-capability-overclaim`\n- `artifact-contract-drift`\n- `source-to-skill-distillation`\n- `source-specific-command-leakage`\n- `agent-output-verifier`\n- `dirty-working-tree-preservation`\n- `verification-shortcut`\n- `skill-boundary-creep`\n- `source-branded-skill-name`\n- `no-user-defined`\n- `review-gate-skip`\n- `plan-slicing`\n- `context-drift`\n- `domain-language-drift`\n- `ci-failure-triage`\n- `command-routing-drift`\n- `spec-before-build`\n- `test-first-implementation`\n- `horizontal-slicing`\n- `ship-without-rollback`\n- `security-risk-feature`\n- `unapproved-side-effect`\n- `interrupted-handoff-resume`\n- `memory-capture-routing`\n- `stale-validation-proof`\n- `parallel-worker-join`\n- `context-budget`\n- `real-runtime-smoke-test`\n- `native-command-assumption`\n- `write-fence-before-runtime-writes`\n\n"
+        "- `activity-recap`\n- `adapter-capability-overclaim`\n- `adapter-selection-mismatch`\n- `artifact-contract-drift`\n- `source-to-skill-distillation`\n- `source-specific-command-leakage`\n- `agent-output-verifier`\n- `dirty-working-tree-preservation`\n- `verification-shortcut`\n- `skill-boundary-creep`\n- `source-branded-skill-name`\n- `no-user-defined`\n- `review-gate-skip`\n- `plan-slicing`\n- `context-drift`\n- `domain-language-drift`\n- `ci-failure-triage`\n- `command-routing-drift`\n- `spec-before-build`\n- `test-first-implementation`\n- `horizontal-slicing`\n- `ship-without-rollback`\n- `security-risk-feature`\n- `unapproved-side-effect`\n- `interrupted-handoff-resume`\n- `memory-capture-routing`\n- `stale-validation-proof`\n- `parallel-worker-join`\n- `context-budget`\n- `real-runtime-smoke-test`\n- `native-command-assumption`\n- `write-fence-before-runtime-writes`\n\n"
         "## Rubric catalog\n\n"
         "- `agent-brain-rubric`\n",
         encoding="utf-8",
@@ -6179,7 +6198,7 @@ def test_eval_case_heading_allows_connector_words_from_filename(tmp_path):
         "## Running evals\n\n"
         "Pick a case, run the target command or skill, confirm the existing command or skill route, score with the rubric, record the evidence, pass/fail decision, and fresh validation proof.\n\n"
         "## Case catalog\n\n"
-        "- `activity-recap`\n- `adapter-capability-overclaim`\n- `artifact-contract-drift`\n- `agent-output-verifier`\n- `build-vs-buy-decision`\n- `ci-failure-triage`\n- `command-routing-drift`\n- `context-budget`\n- `context-drift`\n- `dirty-working-tree-preservation`\n- `domain-language-drift`\n- `memory-capture-routing`\n- `source-branded-skill-name`\n- `source-specific-command-leakage`\n- `source-to-skill-distillation`\n- `skill-boundary-creep`\n- `verification-shortcut`\n- `no-user-defined`\n- `review-gate-skip`\n- `plan-slicing`\n- `spec-before-build`\n- `test-first-implementation`\n- `horizontal-slicing`\n- `ship-without-rollback`\n- `security-risk-feature`\n- `unapproved-side-effect`\n- `interrupted-handoff-resume`\n- `stale-validation-proof`\n- `parallel-worker-join`\n- `real-runtime-smoke-test`\n- `native-command-assumption`\n- `write-fence-before-runtime-writes`\n\n"
+        "- `activity-recap`\n- `adapter-capability-overclaim`\n- `adapter-selection-mismatch`\n- `artifact-contract-drift`\n- `agent-output-verifier`\n- `build-vs-buy-decision`\n- `ci-failure-triage`\n- `command-routing-drift`\n- `context-budget`\n- `context-drift`\n- `dirty-working-tree-preservation`\n- `domain-language-drift`\n- `memory-capture-routing`\n- `source-branded-skill-name`\n- `source-specific-command-leakage`\n- `source-to-skill-distillation`\n- `skill-boundary-creep`\n- `verification-shortcut`\n- `no-user-defined`\n- `review-gate-skip`\n- `plan-slicing`\n- `spec-before-build`\n- `test-first-implementation`\n- `horizontal-slicing`\n- `ship-without-rollback`\n- `security-risk-feature`\n- `unapproved-side-effect`\n- `interrupted-handoff-resume`\n- `stale-validation-proof`\n- `parallel-worker-join`\n- `real-runtime-smoke-test`\n- `native-command-assumption`\n- `write-fence-before-runtime-writes`\n\n"
         "## Rubric catalog\n\n"
         "- `agent-brain-rubric`\n",
         encoding="utf-8",
