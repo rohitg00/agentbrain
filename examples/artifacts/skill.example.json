@@ -2,7 +2,7 @@
   "name": "artifact-example-check",
   "description": "Use when maintaining schema examples for public harness artifacts.",
   "lifecycle_stage": "VERIFY",
-  "trigger": "A schema is added or changed and agents need a concrete valid example.",
+  "trigger": "Use when a schema is added or changed and agents need a concrete valid example.",
   "inputs": [
     "schema file",
     "matching template",

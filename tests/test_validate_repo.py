@@ -3,6 +3,8 @@ import shutil
 import subprocess
 from pathlib import Path
 
+from jsonschema import Draft202012Validator
+
 from scripts import validate_repo
 
 
@@ -13,6 +15,31 @@ def test_commands_directory_requires_catalog(tmp_path: Path) -> None:
     errors = validate_repo.validate(tmp_path)
 
     assert any("missing commands/README.md" in error for error in errors)
+
+
+def test_skill_schema_rejects_vague_names_descriptions_and_triggers() -> None:
+    schema = json.loads(Path("schemas/skill.schema.json").read_text(encoding="utf-8"))
+    validator = Draft202012Validator(schema)
+    artifact = {
+        "name": "Generic Skill",
+        "description": "Handles engineering workflows.",
+        "lifecycle_stage": "INTAKE",
+        "trigger": "Route the work.",
+        "inputs": ["request"],
+        "procedure": ["inspect evidence"],
+        "anti_rationalization": ["do not guess"],
+        "when_not_to_use": ["when another route is explicit"],
+        "verification": ["check the artifact"],
+        "output_artifact": "templates/intake-summary.md",
+        "failure_modes": ["missing evidence"],
+        "examples": ["Trigger: vague request. Action: route it."],
+    }
+
+    errors = sorted(error.json_path for error in validator.iter_errors(artifact))
+
+    assert "$.name" in errors
+    assert "$.description" in errors
+    assert "$.trigger" in errors
 
 
 def test_required_eval_cases_include_command_routing_drift(tmp_path: Path) -> None:

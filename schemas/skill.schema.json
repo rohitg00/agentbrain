@@ -20,11 +20,13 @@
   "properties": {
     "name": {
       "type": "string",
-      "minLength": 1
+      "minLength": 1,
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
     },
     "description": {
       "type": "string",
-      "minLength": 1
+      "minLength": 1,
+      "pattern": "^Use when .+"
     },
     "lifecycle_stage": {
       "type": "string",
@@ -44,7 +46,8 @@
     },
     "trigger": {
       "type": "string",
-      "minLength": 1
+      "minLength": 1,
+      "pattern": "^Use (when|after|before|for) .+"
     },
     "inputs": {
       "type": "array",
