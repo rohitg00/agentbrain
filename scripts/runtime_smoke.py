@@ -433,6 +433,12 @@ def validate_report_against_schema(
         if blocked_command_flag_value in seen_blocked_command_flags:
             errors.append(f"exact_command must not duplicate blocked command flag: {blocked_command_flag_value}")
         seen_blocked_command_flags.add(blocked_command_flag_value)
+    validation_command_flag_values = exact_command_flag_values(report.get("exact_command"), "--validation-command")
+    seen_validation_command_flags: set[str] = set()
+    for validation_command_flag_value in validation_command_flag_values:
+        if validation_command_flag_value in seen_validation_command_flags:
+            errors.append(f"exact_command must not duplicate validation command flag: {validation_command_flag_value}")
+        seen_validation_command_flags.add(validation_command_flag_value)
     capability_flag_values = exact_command_flag_values(report.get("exact_command"), "--capability")
     seen_capability_names: set[str] = set()
     for capability_flag_value in capability_flag_values:
@@ -497,9 +503,13 @@ def validate_report_against_schema(
                 )
     validation_commands = report.get("validation_commands")
     recorded_validation_commands = validation_commands if isinstance(validation_commands, list) else []
+    seen_validation_commands: set[str] = set()
     for validation_command in recorded_validation_commands:
         if not isinstance(validation_command, str) or validation_command == "not_checked":
             continue
+        if validation_command in seen_validation_commands:
+            errors.append(f"validation_commands must not duplicate command: {validation_command}")
+        seen_validation_commands.add(validation_command)
         if not exact_command_has_flag_value(report.get("exact_command"), "--validation-command", validation_command):
             errors.append(
                 "exact_command must record validation command flag: "

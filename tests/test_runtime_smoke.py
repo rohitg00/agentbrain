@@ -105,6 +105,20 @@ def test_runtime_smoke_rejects_duplicate_blocked_commands_in_report_and_exact_co
     assert f"exact_command must not duplicate blocked command flag: {blocked_command}" in errors
 
 
+def test_runtime_smoke_rejects_duplicate_validation_commands_in_report_and_exact_command():
+    report = json.loads(Path("examples/artifacts/runtime-smoke.example.json").read_text(encoding="utf-8"))
+    validation_command = "python -m pytest -q was blocked by read-only sandbox"
+    report["validation_commands"] = [validation_command, validation_command]
+    report["exact_command"] = report["exact_command"] + f" --validation-command '{validation_command}'"
+
+    errors = runtime_smoke.validate_report_against_schema(
+        report, Path("schemas/runtime-smoke.schema.json"), root=Path.cwd()
+    )
+
+    assert f"validation_commands must not duplicate command: {validation_command}" in errors
+    assert f"exact_command must not duplicate validation command flag: {validation_command}" in errors
+
+
 def test_runtime_smoke_schema_requires_full_validation_capabilities():
     schema = json.loads(Path("schemas/runtime-smoke.schema.json").read_text(encoding="utf-8"))
     report = json.loads(Path("examples/artifacts/runtime-smoke.example.json").read_text(encoding="utf-8"))
