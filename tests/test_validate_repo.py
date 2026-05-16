@@ -230,6 +230,24 @@ def test_skill_schema_requires_anti_rationalization_for_shortcut_resistance(tmp_
     )
 
 
+def test_skill_schema_requires_nonempty_anti_rationalization_items(tmp_path: Path) -> None:
+    write_minimal_repo(tmp_path)
+    schema_path = tmp_path / "schemas" / "skill.schema.json"
+    shutil.copy(validate_repo.ROOT / "schemas" / "skill.schema.json", schema_path)
+    (tmp_path / "examples" / "artifacts").mkdir(parents=True, exist_ok=True)
+    shutil.copy(
+        validate_repo.ROOT / "examples" / "artifacts" / "skill.example.json",
+        tmp_path / "examples" / "artifacts" / "skill.example.json",
+    )
+    schema = json.loads(schema_path.read_text(encoding="utf-8"))
+    schema["properties"]["anti_rationalization"].pop("minItems", None)
+    schema_path.write_text(json.dumps(schema), encoding="utf-8")
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "schemas/skill.schema.json anti_rationalization must require at least one concrete item" in errors
+
+
 def test_handoff_schema_requires_artifact_paths_for_resume(tmp_path: Path) -> None:
     write_minimal_repo(tmp_path)
     schema_path = tmp_path / "schemas" / "handoff-report.schema.json"

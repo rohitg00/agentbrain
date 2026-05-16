@@ -67,6 +67,7 @@
       "items": {
         "type": "string"
       },
+      "minItems": 1,
       "default": []
     },
     "when_not_to_use": {

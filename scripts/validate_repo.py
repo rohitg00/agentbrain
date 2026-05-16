@@ -348,6 +348,7 @@ REQUIRED_SKILL_SCHEMA_FIELDS = [
 REQUIRED_SKILL_SCHEMA_NONEMPTY_ARRAY_FIELDS = [
     "inputs",
     "procedure",
+    "anti_rationalization",
     "when_not_to_use",
     "verification",
     "failure_modes",
