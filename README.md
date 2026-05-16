@@ -1,14 +1,25 @@
 # Agent Brain
 
 <p align="center">
+  <img src="docs/assets/agentbrain-hero.svg" alt="Agent Brain animated operating harness banner" width="100%">
+</p>
+
+<p align="center">
+  <strong>A beautiful, portable brain layer for serious coding agents.</strong><br>
+  Commands, skills, schemas, templates, evals, and proof gates — packaged as a drop-in operating harness.
+</p>
+
+<p align="center">
   <a href="https://github.com/rohitg00/agentbrain/actions/workflows/quality.yml"><img src="https://github.com/rohitg00/agentbrain/actions/workflows/quality.yml/badge.svg" alt="Quality"></a>
   <a href="https://github.com/rohitg00/agentbrain/blob/main/LICENSE"><img src="https://img.shields.io/github/license/rohitg00/agentbrain" alt="License"></a>
   <a href="https://github.com/rohitg00/agentbrain/stargazers"><img src="https://img.shields.io/github/stars/rohitg00/agentbrain?style=social" alt="GitHub stars"></a>
   <img src="https://img.shields.io/badge/Python-3.11-3776AB?logo=python&logoColor=white" alt="Python 3.11">
-  <img src="https://img.shields.io/badge/runtime-agent--agnostic-111827" alt="Agent agnostic">
+  <img src="https://img.shields.io/badge/DevEx-agent--harness-ff6b35" alt="Agent harness DevEx">
 </p>
 
-**A portable operating harness for coding agents.**
+<p align="center">
+  <code>raw request</code> → <code>state</code> → <code>command</code> → <code>skill</code> → <code>artifact</code> → <code>evidence</code> → <code>handoff</code>
+</p>
 
 Agent Brain is a drop-in brain for agent workspaces: commands, skills, schemas,
 templates, review gates, evals, adapters, and handoff contracts that force
@@ -16,7 +27,7 @@ evidence before code and verification before trust.
 
 It is not a decorative prompt pack, an IDE plugin, or another agent framework.
 Bring the coding agent you already use. Agent Brain supplies the operating
-discipline around the model.
+discipline and DevEx around the model.
 
 Use it when you want an agent to stop guessing, pick the right lifecycle state,
 produce the right artifact, and prove the work before it claims progress.

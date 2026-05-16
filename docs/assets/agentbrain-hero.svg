@@ -1,0 +1,109 @@
+<svg width="1200" height="420" viewBox="0 0 1200 420" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Agent Brain operating harness diagram</title>
+  <desc id="desc">Animated SVG banner showing Agent Brain routing a raw request through lifecycle state, commands, skills, artifacts, evidence gates, and verified handoff.</desc>
+  <style>
+    :root { color-scheme: light dark; }
+    .bg { fill: #f7f3ea; }
+    .ink { fill: #15110d; }
+    .muted { fill: #696158; }
+    .line-strong { stroke: #15110d; stroke-width: 2.4; }
+    .accent { fill: #ff6b35; }
+    .panel { fill: #fffaf1; stroke: #d8ccb7; stroke-width: 1.5; }
+    .panel-dark { fill: #15110d; stroke: #15110d; }
+    .panel-soft { fill: #efe6d4; stroke: #d8ccb7; stroke-width: 1.5; }
+    .tiny { font: 500 14px ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; letter-spacing: .04em; }
+    .label { font: 700 24px ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    .body { font: 500 15px ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    .mono { font: 650 16px ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; }
+    .chip { font: 650 13px ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; letter-spacing: .03em; }
+    .dash { stroke-dasharray: 7 9; animation: dash 10s linear infinite; }
+    .pulse { animation: pulse 2.8s ease-in-out infinite; transform-origin: center; }
+    .pulse2 { animation: pulse 2.8s ease-in-out .7s infinite; transform-origin: center; }
+    .pulse3 { animation: pulse 2.8s ease-in-out 1.4s infinite; transform-origin: center; }
+    .float { animation: float 5.5s ease-in-out infinite; transform-origin: center; }
+    .float2 { animation: float 5.5s ease-in-out .9s infinite; transform-origin: center; }
+    .scan { animation: scan 5.8s ease-in-out infinite; }
+    @keyframes dash { to { stroke-dashoffset: -160; } }
+    @keyframes pulse { 0%,100% { opacity: .42; transform: scale(.92); } 45% { opacity: 1; transform: scale(1.08); } }
+    @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }
+    @keyframes scan { 0%,100% { transform: translateX(0); opacity: .18; } 45% { transform: translateX(78px); opacity: .34; } }
+    @media (prefers-reduced-motion: reduce) { .dash, .pulse, .pulse2, .pulse3, .float, .float2, .scan { animation: none; } }
+  </style>
+
+  <rect class="bg" width="1200" height="420" rx="28"/>
+  <path d="M0 72H1200M0 144H1200M0 216H1200M0 288H1200M0 360H1200M120 0V420M240 0V420M360 0V420M480 0V420M600 0V420M720 0V420M840 0V420M960 0V420M1080 0V420" stroke="#e5dccb" stroke-width="1" opacity="0.55"/>
+
+  <g transform="translate(64 54)">
+    <rect width="308" height="310" rx="24" fill="#15110d"/>
+    <circle cx="66" cy="72" r="18" fill="#ff6b35" class="pulse"/>
+    <circle cx="146" cy="72" r="18" fill="#efe6d4" opacity=".92" class="pulse2"/>
+    <circle cx="226" cy="72" r="18" fill="#8f8170" opacity=".88" class="pulse3"/>
+    <path d="M84 72H128M164 72H208M66 90V128M146 90V128M226 90V128M66 128H226" stroke="#fffaf1" stroke-width="3" stroke-linecap="round" opacity=".75"/>
+    <rect x="42" y="152" width="224" height="46" rx="12" fill="#fffaf1"/>
+    <text x="60" y="181" class="mono" fill="#15110d">/brain-start</text>
+    <rect x="42" y="212" width="224" height="46" rx="12" fill="#fffaf1" opacity=".9"/>
+    <text x="60" y="241" class="mono" fill="#15110d">evidence first</text>
+    <text x="42" y="296" class="tiny" fill="#efe6d4">PORTABLE OPERATING HARNESS</text>
+  </g>
+
+  <g transform="translate(392 48)">
+    <text x="0" y="24" class="tiny muted">AGENT BRAIN</text>
+    <text x="0" y="58" class="label ink">The brain layer for serious agent work</text>
+    <text x="0" y="88" class="body muted">Commands, skills, schemas, templates, evals, and proof gates that turn</text>
+    <text x="0" y="112" class="body muted">a capable coding agent into a careful teammate.</text>
+  </g>
+
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#15110d"/>
+    </marker>
+    <linearGradient id="scanGrad" x1="0" x2="1" y1="0" y2="0">
+      <stop offset="0" stop-color="#ff6b35" stop-opacity="0"/>
+      <stop offset="0.5" stop-color="#ff6b35" stop-opacity="1"/>
+      <stop offset="1" stop-color="#ff6b35" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <g transform="translate(392 184)">
+    <path d="M124 52H202" class="line-strong dash" marker-end="url(#arrow)"/>
+    <path d="M330 52H408" class="line-strong dash" marker-end="url(#arrow)"/>
+    <path d="M536 52H614" class="line-strong dash" marker-end="url(#arrow)"/>
+
+    <g class="float">
+      <rect class="panel" x="0" y="0" width="124" height="104" rx="18"/>
+      <text x="20" y="34" class="chip muted">RAW</text>
+      <text x="20" y="64" class="mono ink">request</text>
+      <text x="20" y="87" class="tiny muted">messy intent</text>
+    </g>
+
+    <g>
+      <rect class="panel-soft" x="206" y="0" width="124" height="104" rx="18"/>
+      <text x="226" y="34" class="chip muted">ROUTE</text>
+      <text x="226" y="64" class="mono ink">state</text>
+      <text x="226" y="87" class="tiny muted">choose path</text>
+      <rect x="222" y="14" width="78" height="78" rx="14" fill="url(#scanGrad)" opacity=".16" class="scan"/>
+    </g>
+
+    <g class="float2">
+      <rect class="panel" x="412" y="0" width="124" height="104" rx="18"/>
+      <text x="432" y="34" class="chip muted">LOAD</text>
+      <text x="432" y="64" class="mono ink">skills</text>
+      <text x="432" y="87" class="tiny muted">+ commands</text>
+    </g>
+
+    <g>
+      <rect class="panel-dark" x="618" y="0" width="150" height="104" rx="18"/>
+      <text x="638" y="34" class="chip" fill="#d8ccb7">PROVE</text>
+      <text x="638" y="64" class="mono" fill="#fffaf1">artifact</text>
+      <text x="638" y="87" class="tiny" fill="#d8ccb7">tests · logs</text>
+    </g>
+  </g>
+
+  <g transform="translate(392 320)">
+    <rect class="panel-soft" width="768" height="62" rx="18"/>
+    <circle cx="36" cy="31" r="7" class="accent pulse"/>
+    <text x="56" y="25" class="mono ink">plan → build → verify → review → ship → learn</text>
+    <text x="56" y="47" class="tiny muted">stops early when evidence says the agent should not build</text>
+    <text x="642" y="38" class="chip ink">AGENTBRAIN.md</text>
+  </g>
+</svg>
