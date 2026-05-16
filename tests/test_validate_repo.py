@@ -817,6 +817,20 @@ def test_command_examples_must_cite_routing_files(tmp_path: Path) -> None:
     assert "commands/brain-sample.md example must cite loaded skill file: skills/sample/SKILL.md" in errors
 
 
+def test_command_examples_must_not_be_duplicated_between_routes(tmp_path: Path) -> None:
+    write_minimal_repo(tmp_path)
+    original = tmp_path / "commands" / "brain-sample.md"
+    duplicate = tmp_path / "commands" / "brain-copy.md"
+    duplicate.write_text(
+        original.read_text(encoding="utf-8").replace("# /brain-sample", "# /brain-copy"),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "commands/brain-sample.md example duplicates commands/brain-copy.md" in errors
+
+
 def test_runtime_smoke_template_requires_loaded_skills_to_match_selected_command(tmp_path: Path) -> None:
     write_minimal_repo(tmp_path)
     runtime_template = tmp_path / "templates" / "runtime-smoke.md"

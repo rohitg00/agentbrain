@@ -2045,6 +2045,7 @@ def validate(root: Path = ROOT) -> list[str]:
     seen_workflows: dict[str, str] = {}
     seen_quality_bars: dict[str, str] = {}
     seen_stop_conditions: dict[str, str] = {}
+    seen_command_examples: dict[str, str] = {}
     skills_loaded_by_commands: set[str] = set()
     skills_loaded_by_command: dict[str, set[str]] = {}
     required_command_artifact_templates: dict[str, str] = {}
@@ -2154,8 +2155,15 @@ def validate(root: Path = ROOT) -> list[str]:
             else:
                 seen_quality_bars[quality_bar] = rel(command, root)
         example = section_body(text, "## Example")
+        example_normalized = normalized_section_body(text, "## Example")
         example_lower = example.lower()
         if example:
+            if example_normalized in seen_command_examples:
+                errors.append(
+                    f"{rel(command, root)} example duplicates {seen_command_examples[example_normalized]}"
+                )
+            else:
+                seen_command_examples[example_normalized] = rel(command, root)
             for required_term in REQUIRED_COMMAND_EXAMPLE_TERMS:
                 if required_term not in example_lower:
                     errors.append(f"{rel(command, root)} example must mention: {required_term}")
