@@ -2228,6 +2228,11 @@ def validate(root: Path = ROOT) -> list[str]:
                     f"{rel(command, root)} example must cite selected command file: {command_file_ref}"
                 )
             loaded_skill_names = command_skills_to_load(text)
+            example_loaded_skill_names = command_example_loaded_skills(example)
+            if loaded_skill_names and not example_loaded_skill_names:
+                errors.append(
+                    f"{rel(command, root)} example must include a parseable 'Loaded skills:' line"
+                )
             for skill_name in loaded_skill_names:
                 if f"`{skill_name}`" not in example:
                     errors.append(f"{rel(command, root)} example must mention loaded skill: {skill_name}")
@@ -2236,7 +2241,7 @@ def validate(root: Path = ROOT) -> list[str]:
                     errors.append(
                         f"{rel(command, root)} example must cite loaded skill file: {expected_skill_file}"
                     )
-            for skill_name in command_example_loaded_skills(example):
+            for skill_name in example_loaded_skill_names:
                 if skill_name not in loaded_skill_names:
                     errors.append(
                         f"{rel(command, root)} example lists undeclared loaded skill: {skill_name}"

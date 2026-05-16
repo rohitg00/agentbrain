@@ -395,6 +395,26 @@ def test_command_examples_must_name_every_loaded_skill(tmp_path: Path) -> None:
     )
 
 
+def test_command_examples_must_use_parseable_loaded_skills_label(tmp_path: Path) -> None:
+    write_minimal_repo(tmp_path)
+    command = tmp_path / "commands" / "brain-sample.md"
+    command.write_text(
+        command.read_text(encoding="utf-8").replace(
+            "Loaded skills: `sample`, `activity-recap`, `agent-output-verifier`, `ci-recovery`, `command-routing`, `context-memory`, `domain-language`, `evidence-research`, `qa-evidence`, and `runtime-smoke`.",
+            "The loaded skills are `sample`, `activity-recap`, `agent-output-verifier`, `ci-recovery`, `command-routing`, `context-memory`, `domain-language`, `evidence-research`, `qa-evidence`, and `runtime-smoke`.",
+        ),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert any(
+        "commands/brain-sample.md example must include a parseable 'Loaded skills:' line"
+        in error
+        for error in errors
+    )
+
+
 def test_command_examples_must_cite_every_loaded_skill_file(tmp_path: Path) -> None:
     write_minimal_repo(tmp_path)
     command = tmp_path / "commands" / "brain-sample.md"
