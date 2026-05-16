@@ -60,6 +60,40 @@ def test_runtime_smoke_rejects_duplicate_capability_names_in_exact_command():
     assert "exact_command must not duplicate capability name: read_files" in errors
 
 
+def test_runtime_smoke_rejects_duplicate_blocked_commands_in_report_and_exact_command():
+    report = json.loads(Path("examples/artifacts/runtime-smoke.example.json").read_text(encoding="utf-8"))
+    blocked_command = "python -m pytest -q blocked by read-only sandbox"
+    report["run_scope"] = "read_only_smoke"
+    report["smoke_result"] = "blocked"
+    report["command_exit_status"] = 1
+    report["transcript_redaction_status"] = "blocked"
+    report["blocked_commands"] = [blocked_command, blocked_command]
+    report["capability_matrix"]["blocked_command_reporting"] = "yes"
+    report["exact_command"] = (
+        "python scripts/runtime_smoke.py --runtime generic-cli-runtime --version 1.2.3 "
+        "--run-scope read_only_smoke --sandbox-write-mode read_only "
+        "--brain-command-mode markdown_specs --selected-command /brain-start "
+        "--loaded-skill intake --loaded-skill command-routing "
+        "--smoke-result blocked --command-exit-status 1 "
+        "--transcript-path artifacts/runtime-smoke/generic-cli-runtime.log "
+        "--transcript-redaction-status blocked "
+        "--adapter-path adapters/read-only-cli/README.md "
+        "--blocked-command 'python -m pytest -q blocked by read-only sandbox' "
+        "--blocked-command 'python -m pytest -q blocked by read-only sandbox' "
+        + " ".join(
+            f"--capability {name}={status}"
+            for name, status in report["capability_matrix"].items()
+        )
+    )
+
+    errors = runtime_smoke.validate_report_against_schema(
+        report, Path("schemas/runtime-smoke.schema.json"), root=Path.cwd()
+    )
+
+    assert f"blocked_commands must not duplicate command: {blocked_command}" in errors
+    assert f"exact_command must not duplicate blocked command flag: {blocked_command}" in errors
+
+
 def test_runtime_smoke_schema_requires_full_validation_capabilities():
     schema = json.loads(Path("schemas/runtime-smoke.schema.json").read_text(encoding="utf-8"))
     report = json.loads(Path("examples/artifacts/runtime-smoke.example.json").read_text(encoding="utf-8"))

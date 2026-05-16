@@ -427,6 +427,12 @@ def validate_report_against_schema(
         if loaded_skill_flag_value in seen_loaded_skill_flags:
             errors.append(f"exact_command must not duplicate loaded skill flag: {loaded_skill_flag_value}")
         seen_loaded_skill_flags.add(loaded_skill_flag_value)
+    blocked_command_flag_values = exact_command_flag_values(report.get("exact_command"), "--blocked-command")
+    seen_blocked_command_flags: set[str] = set()
+    for blocked_command_flag_value in blocked_command_flag_values:
+        if blocked_command_flag_value in seen_blocked_command_flags:
+            errors.append(f"exact_command must not duplicate blocked command flag: {blocked_command_flag_value}")
+        seen_blocked_command_flags.add(blocked_command_flag_value)
     capability_flag_values = exact_command_flag_values(report.get("exact_command"), "--capability")
     seen_capability_names: set[str] = set()
     for capability_flag_value in capability_flag_values:
@@ -461,6 +467,14 @@ def validate_report_against_schema(
 
     blocked_commands = report.get("blocked_commands")
     blocked_count = len(blocked_commands) if isinstance(blocked_commands, list) else 0
+    if isinstance(blocked_commands, list):
+        seen_blocked_commands: set[str] = set()
+        for blocked_command in blocked_commands:
+            if not isinstance(blocked_command, str):
+                continue
+            if blocked_command in seen_blocked_commands:
+                errors.append(f"blocked_commands must not duplicate command: {blocked_command}")
+            seen_blocked_commands.add(blocked_command)
     if report.get("run_scope") == "full_validation" and blocked_count:
         errors.append("full_validation cannot list blocked_commands; use read_only_smoke or remove blockers")
     if report.get("smoke_result") == "blocked" and blocked_count == 0:

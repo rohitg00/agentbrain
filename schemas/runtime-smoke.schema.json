@@ -125,6 +125,7 @@
     },
     "blocked_commands": {
       "type": "array",
+      "uniqueItems": true,
       "items": {
         "type": "string",
         "minLength": 1
