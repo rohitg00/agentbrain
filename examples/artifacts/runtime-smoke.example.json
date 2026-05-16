@@ -40,7 +40,8 @@
     "allowed_paths": [],
     "disallowed_paths": [],
     "user_owned_files": [],
-    "rollback_command": "not_applicable"
+    "rollback_command": "not_applicable",
+    "approval_state": "unknown"
   },
   "evidence": [
     "Runtime opened AGENTBRAIN.md and commands/brain-start.md",
@@ -56,6 +57,8 @@
     "Transcript path: artifacts/runtime-smoke/cli-runtime-example.log",
     "Transcript redaction status: redacted",
     "Capability matrix: read_files=yes, write_files=blocked, run_shell=blocked, request_approvals=unknown, network_access=unknown, native_brain_commands=no, schema_artifacts=yes, blocked_command_reporting=yes.",
+    "Write fence: allowed=none; disallowed=none; user-owned=none; rollback=not_applicable.",
+    "Write fence approval state: unknown",
     "Runtime identified /brain-* entries as markdown specs rather than native commands"
   ]
 }

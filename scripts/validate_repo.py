@@ -598,6 +598,7 @@ REQUIRED_ADAPTER_RUNTIME_SMOKE_COMMAND_FLAGS = [
     "--transcript-path",
     "--transcript-redaction-status",
     "--validation-command",
+    "--write-fence-approval-state",
     "--capability",
 ]
 REQUIRED_ADAPTER_SAMPLE_ROUTING_PROBE_TERMS = [
@@ -623,6 +624,7 @@ REQUIRED_ADAPTER_WRITE_FENCE_TERMS = [
     "disallowed paths",
     "user-owned files",
     "rollback command",
+    "approval state",
 ]
 REQUIRED_ADAPTER_FAILURE_MODE_TERMS = [
     "native command",

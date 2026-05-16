@@ -191,7 +191,8 @@
         "allowed_paths",
         "disallowed_paths",
         "user_owned_files",
-        "rollback_command"
+        "rollback_command",
+        "approval_state"
       ],
       "properties": {
         "allowed_paths": {
@@ -218,6 +219,14 @@
         "rollback_command": {
           "type": "string",
           "minLength": 1
+        },
+        "approval_state": {
+          "enum": [
+            "approved",
+            "not_required",
+            "blocked",
+            "unknown"
+          ]
         }
       }
     },

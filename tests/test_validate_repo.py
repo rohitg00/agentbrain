@@ -397,7 +397,7 @@ def test_adapter_validation_requires_write_fence_before_full_validation(tmp_path
     adapter = tmp_path / "adapters" / "sample-adapter" / "README.md"
     adapter.write_text(
         adapter.read_text(encoding="utf-8").replace(
-            "Before full validation writes, set a write fence that names allowed paths, disallowed paths, user-owned files, and rollback command.\n\n",
+            "Before full validation writes, set a write fence that names allowed paths, disallowed paths, user-owned files, rollback command, and approval state.\n\n",
             "",
         ),
         encoding="utf-8",
@@ -410,6 +410,11 @@ def test_adapter_validation_requires_write_fence_before_full_validation(tmp_path
         in error
         for error in errors
     )
+    assert any(
+        "adapters/sample-adapter/README.md validation must document write fence before full validation: approval state"
+        in error
+        for error in errors
+    )
 
 
 def test_adapter_runtime_smoke_command_must_include_boundary_flags(tmp_path: Path) -> None:
@@ -419,7 +424,8 @@ def test_adapter_runtime_smoke_command_must_include_boundary_flags(tmp_path: Pat
         adapter.read_text(encoding="utf-8")
         .replace(" --sandbox-write-mode <sandbox-write-mode>", "")
         .replace(" --brain-command-mode <brain-command-mode>", "")
-        .replace(" --transcript-path <transcript-path>", ""),
+        .replace(" --transcript-path <transcript-path>", "")
+        .replace(" --write-fence-approval-state <approval-state>", ""),
         encoding="utf-8",
     )
 
@@ -437,6 +443,11 @@ def test_adapter_runtime_smoke_command_must_include_boundary_flags(tmp_path: Pat
     )
     assert any(
         "adapters/sample-adapter/README.md runtime_smoke.py command must include flag: --transcript-path"
+        in error
+        for error in errors
+    )
+    assert any(
+        "adapters/sample-adapter/README.md runtime_smoke.py command must include flag: --write-fence-approval-state"
         in error
         for error in errors
     )
@@ -1150,7 +1161,7 @@ def write_minimal_repo(root: Path) -> None:
         "python -m pytest -q\n"
         "python scripts/validate_repo.py\n"
         "git diff --check\n"
-        "Run `python scripts/runtime_smoke.py --runtime <neutral-runtime-name> --version <runtime-version> --selected-command /brain-start --loaded-skill intake --adapter-path <adapter-readme> --sandbox-write-mode <sandbox-write-mode> --brain-command-mode <brain-command-mode> --run-scope read_only_smoke --smoke-result <smoke-result> --command-exit-status <exit-status> --transcript-path <transcript-path> --transcript-redaction-status <redaction-status> --validation-command <validation-command> --capability read_files=yes --capability blocked_command_reporting=yes` for read-only smoke evidence, or use `--run-scope full_validation` only when the full local gate can run without runtime blockers.\n\n"
+        "Run `python scripts/runtime_smoke.py --runtime <neutral-runtime-name> --version <runtime-version> --selected-command /brain-start --loaded-skill intake --adapter-path <adapter-readme> --sandbox-write-mode <sandbox-write-mode> --brain-command-mode <brain-command-mode> --run-scope read_only_smoke --smoke-result <smoke-result> --command-exit-status <exit-status> --transcript-path <transcript-path> --transcript-redaction-status <redaction-status> --validation-command <validation-command> --write-fence-approval-state <approval-state> --capability read_files=yes --capability blocked_command_reporting=yes` for read-only smoke evidence, or use `--run-scope full_validation` only when the full local gate can run without runtime blockers.\n\n"
         "Run a targeted exact-name scrub before public adapter copy changes.\n\n"
         "Record every real-runtime smoke run with `templates/runtime-smoke.md` and "
         "validate the JSON evidence against `schemas/runtime-smoke.schema.json` before "
@@ -1159,7 +1170,7 @@ def write_minimal_repo(root: Path) -> None:
         "Python executable, smoke result, command exit status, selected command, loaded skills, transcript path, and redacted transcript.\n\n"
         "After validation, classify one sample request and confirm the runtime cites the command file, skill file, artifact contract, evidence checked, and stop condition it used.\n\n"
         "Promote read-only smoke to full validation only when write access, shell access, dependency install, and the full local gate are available; otherwise keep the result marked read-only smoke with blockers.\n\n"
-        "Before full validation writes, set a write fence that names allowed paths, disallowed paths, user-owned files, and rollback command.\n\n"
+        "Before full validation writes, set a write fence that names allowed paths, disallowed paths, user-owned files, rollback command, and approval state.\n\n"
         "## Output Contract\n\n"
         "Runtime adapter output must report state, selected command, loaded skills, capability matrix, run scope, artifact path, transcript path, command exit status, template, schema, validation evidence, user change review, freshness, blockers, stop condition, and next action.\n\n"
         "## Failure Modes\n\n"
@@ -7798,7 +7809,7 @@ def test_adapter_validation_must_include_runtime_smoke_command(tmp_path):
     adapter = tmp_path / "adapters" / "sample-adapter" / "README.md"
     adapter.write_text(
         adapter.read_text(encoding="utf-8").replace(
-            "Run `python scripts/runtime_smoke.py --runtime <neutral-runtime-name> --version <runtime-version> --selected-command /brain-start --loaded-skill intake --adapter-path <adapter-readme> --sandbox-write-mode <sandbox-write-mode> --brain-command-mode <brain-command-mode> --run-scope read_only_smoke --smoke-result <smoke-result> --command-exit-status <exit-status> --transcript-path <transcript-path> --transcript-redaction-status <redaction-status> --validation-command <validation-command> --capability read_files=yes --capability blocked_command_reporting=yes` for read-only smoke evidence, or use `--run-scope full_validation` only when the full local gate can run without runtime blockers.\n\n",
+            "Run `python scripts/runtime_smoke.py --runtime <neutral-runtime-name> --version <runtime-version> --selected-command /brain-start --loaded-skill intake --adapter-path <adapter-readme> --sandbox-write-mode <sandbox-write-mode> --brain-command-mode <brain-command-mode> --run-scope read_only_smoke --smoke-result <smoke-result> --command-exit-status <exit-status> --transcript-path <transcript-path> --transcript-redaction-status <redaction-status> --validation-command <validation-command> --write-fence-approval-state <approval-state> --capability read_files=yes --capability blocked_command_reporting=yes` for read-only smoke evidence, or use `--run-scope full_validation` only when the full local gate can run without runtime blockers.\n\n",
             "",
         ),
         encoding="utf-8",

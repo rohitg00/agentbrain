@@ -19,6 +19,7 @@ BRAIN_COMMAND_MODES = {"native_commands", "markdown_specs", "mixed", "unknown"}
 RUN_SCOPES = {"read_only_smoke", "full_validation"}
 SMOKE_RESULTS = {"pass", "blocked", "fail"}
 TRANSCRIPT_REDACTION_STATUSES = {"redacted", "no_sensitive_content", "not_captured", "blocked"}
+WRITE_FENCE_APPROVAL_STATES = {"approved", "not_required", "blocked", "unknown"}
 REQUIRED_EVIDENCE_PREFIXES = [
     "Python executable: ",
     "Writable temp-dir status: ",
@@ -37,6 +38,7 @@ REQUIRED_EVIDENCE_PREFIXES = [
     "Validation commands: ",
     "Capability matrix: ",
     "Write fence: ",
+    "Write fence approval state: ",
 ]
 CAPABILITY_NAMES = [
     "read_files",
@@ -173,6 +175,7 @@ def build_report(
     write_fence_disallowed_paths: list[str] | None = None,
     write_fence_user_owned_files: list[str] | None = None,
     write_fence_rollback_command: str = "not_applicable",
+    write_fence_approval_state: str = "unknown",
     capability_matrix: dict[str, str] | None = None,
 ) -> dict[str, object]:
     root = Path(root)
@@ -186,6 +189,8 @@ def build_report(
         raise ValueError(f"unsupported smoke_result: {smoke_result}")
     if transcript_redaction_status not in TRANSCRIPT_REDACTION_STATUSES:
         raise ValueError(f"unsupported transcript_redaction_status: {transcript_redaction_status}")
+    if write_fence_approval_state not in WRITE_FENCE_APPROVAL_STATES:
+        raise ValueError(f"unsupported write_fence_approval_state: {write_fence_approval_state}")
 
     scope_label = run_scope.replace("read_only", "read-only").replace("_", " ")
     command_label = brain_command_mode.replace("_", " ")
@@ -196,6 +201,7 @@ def build_report(
         "disallowed_paths": write_fence_disallowed_paths or [],
         "user_owned_files": write_fence_user_owned_files or [],
         "rollback_command": write_fence_rollback_command,
+        "approval_state": write_fence_approval_state,
     }
     recorded_capability_matrix = {name: "unknown" for name in CAPABILITY_NAMES}
     if capability_matrix:
@@ -234,6 +240,7 @@ def build_report(
         f"disallowed={', '.join(write_fence['disallowed_paths']) if write_fence['disallowed_paths'] else 'none'}; "
         f"user-owned={', '.join(write_fence['user_owned_files']) if write_fence['user_owned_files'] else 'none'}; "
         f"rollback={write_fence_rollback_command}.",
+        f"Write fence approval state: {write_fence_approval_state}",
     ]
 
     return {
@@ -585,6 +592,16 @@ def validate_report_against_schema(
                     "exact_command must record write fence flag: "
                     f"--write-fence-rollback-command {rollback_command}"
                 )
+            approval_state = write_fence.get("approval_state")
+            if approval_state not in {"approved", "not_required"}:
+                errors.append("full_validation requires write_fence with approval_state")
+            elif not exact_command_has_flag_value(
+                report.get("exact_command"), "--write-fence-approval-state", str(approval_state)
+            ):
+                errors.append(
+                    "exact_command must record write fence flag: "
+                    f"--write-fence-approval-state {approval_state}"
+                )
     if root is not None:
         adapter_path = report.get("adapter_path")
         if isinstance(adapter_path, str) and adapter_path != "unknown":
@@ -673,6 +690,12 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
         default="not_applicable",
         help="Rollback command for full-validation writes",
     )
+    parser.add_argument(
+        "--write-fence-approval-state",
+        choices=sorted(WRITE_FENCE_APPROVAL_STATES),
+        default="unknown",
+        help="Approval state for full-validation writes: approved, not_required, blocked, or unknown",
+    )
     parser.add_argument("--root", type=Path, default=Path.cwd(), help="Repository root to inspect")
     parser.add_argument("--schema", type=Path, help="Runtime-smoke schema path; defaults to <root>/schemas/runtime-smoke.schema.json")
     parser.add_argument("--output", type=Path, help="Optional JSON output path; stdout is used when omitted")
@@ -710,6 +733,7 @@ def main(argv: list[str] | None = None) -> int:
         write_fence_disallowed_paths=args.write_fence_disallowed_path,
         write_fence_user_owned_files=args.write_fence_user_owned_file,
         write_fence_rollback_command=args.write_fence_rollback_command,
+        write_fence_approval_state=args.write_fence_approval_state,
         capability_matrix=capability_matrix,
     )
     schema_path = args.schema or (args.root / "schemas" / "runtime-smoke.schema.json")
