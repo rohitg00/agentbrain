@@ -2659,6 +2659,65 @@ def test_full_validation_runtime_smoke_requires_durable_transcript_path(tmp_path
     assert any("full_validation requires a durable transcript_path" in error for error in errors)
 
 
+def test_full_validation_runtime_smoke_requires_durable_output_artifact_path(tmp_path: Path):
+    report = runtime_smoke.build_report(
+        root=tmp_path,
+        runtime="generic-cli-runtime",
+        version="1.2.3",
+        sandbox_write_mode="workspace_write",
+        brain_command_mode="markdown_specs",
+        run_scope="full_validation",
+        blocked_commands=[],
+        exact_command=(
+            "python scripts/runtime_smoke.py --runtime generic-cli-runtime --version 1.2.3 "
+            "--run-scope full_validation --sandbox-write-mode workspace_write "
+            "--brain-command-mode markdown_specs --selected-command /brain-verify "
+            "--loaded-skill runtime-smoke --adapter-path adapters/read-only-cli/README.md "
+            "--transcript-path artifacts/runtime-smoke/generic-cli-runtime-2026-05-15.log "
+            "--transcript-redaction-status redacted --smoke-result pass --command-exit-status 0 "
+            "--validation-command 'rm -rf scripts/__pycache__ tests/__pycache__' "
+            "--validation-command 'python -m pytest -q' "
+            "--validation-command 'python scripts/validate_repo.py' "
+            "--validation-command 'git diff --check' "
+            "--write-fence-allowed-path artifacts/runtime-smoke/ "
+            "--write-fence-disallowed-path .git/ "
+            "--write-fence-rollback-command 'git restore artifacts/runtime-smoke/' "
+            "--write-fence-approval-state not_required "
+            "--capability read_files=yes --capability write_files=yes --capability run_shell=yes "
+            "--capability request_approvals=no --capability network_access=no "
+            "--capability native_brain_commands=no --capability schema_artifacts=yes "
+            "--capability blocked_command_reporting=yes --capability preserve_user_changes=yes"
+        ),
+        command_exit_status=0,
+        smoke_result="pass",
+        transcript_path="artifacts/runtime-smoke/generic-cli-runtime-2026-05-15.log",
+        transcript_redaction_status="redacted",
+        selected_command="/brain-verify",
+        loaded_skills=["runtime-smoke"],
+        adapter_path="adapters/read-only-cli/README.md",
+        validation_commands=runtime_smoke.FULL_VALIDATION_GATE_COMMANDS,
+        write_fence_allowed_paths=["artifacts/runtime-smoke/"],
+        write_fence_disallowed_paths=[".git/"],
+        write_fence_rollback_command="git restore artifacts/runtime-smoke/",
+        write_fence_approval_state="not_required",
+        capability_matrix={
+            "read_files": "yes",
+            "write_files": "yes",
+            "run_shell": "yes",
+            "request_approvals": "no",
+            "network_access": "no",
+            "native_brain_commands": "no",
+            "schema_artifacts": "yes",
+            "blocked_command_reporting": "yes",
+            "preserve_user_changes": "yes",
+        },
+    )
+
+    errors = runtime_smoke.validate_report_against_schema(report, Path("schemas/runtime-smoke.schema.json"))
+
+    assert any("full_validation requires --output so the smoke JSON artifact has a durable path" in error for error in errors)
+
+
 def test_full_validation_runtime_smoke_requires_reviewed_transcript_redaction(tmp_path: Path):
     report = runtime_smoke.build_report(
         root=tmp_path,

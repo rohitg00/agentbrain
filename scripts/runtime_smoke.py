@@ -937,6 +937,8 @@ def validate_report_against_schema(
                     f"--write-fence-approval-state {approval_state}"
                 )
             output_paths = exact_command_flag_values(report.get("exact_command"), "--output")
+            if not output_paths or any(output_path == "-" for output_path in output_paths):
+                errors.append("full_validation requires --output so the smoke JSON artifact has a durable path")
             allowed_paths = write_fence.get("allowed_paths")
             disallowed_paths = write_fence.get("disallowed_paths")
             artifact_paths = [
