@@ -5,6 +5,8 @@ description: Use when repeated wins or failures should become durable memory, wi
 
 # learning-capture
 
+Lifecycle stage: LEARN
+
 ## Trigger
 
 Use after completing, killing, or repeating a workflow.

@@ -4,6 +4,8 @@ description: Use when project vocabulary is fuzzy, overloaded, disputed, or need
 ---
 # domain-language
 
+Lifecycle stage: INTAKE
+
 Resolve project vocabulary before it leaks into durable artifacts.
 
 ## Trigger

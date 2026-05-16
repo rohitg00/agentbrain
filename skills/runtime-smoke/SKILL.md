@@ -5,6 +5,8 @@ description: Use when checking Agent Brain inside a real agent runtime or adapte
 
 # runtime-smoke
 
+Lifecycle stage: VERIFY
+
 ## Trigger
 
 Use when commands, skills, adapters, harness prompts, runtime setup, or command routing changed and the claim depends on a real agent runtime rather than only fixture validation.

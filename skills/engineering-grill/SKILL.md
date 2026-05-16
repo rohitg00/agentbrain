@@ -5,6 +5,8 @@ description: Use when an engineering plan needs pressure-testing for architectur
 
 # engineering-grill
 
+Lifecycle stage: CHALLENGE
+
 ## Trigger
 
 Use before committing to implementation approach.

@@ -5,6 +5,8 @@ description: Use when a design needs pressure-testing for UX, information archit
 
 # design-grill
 
+Lifecycle stage: CHALLENGE
+
 ## Trigger
 
 Use before implementing user-facing flows.

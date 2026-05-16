@@ -5,6 +5,8 @@ description: Use when a product or feature idea needs pressure-testing against p
 
 # problem-grill
 
+Lifecycle stage: CHALLENGE
+
 ## Trigger
 
 Use before accepting that a product or feature should exist.

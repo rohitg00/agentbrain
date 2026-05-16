@@ -141,6 +141,19 @@ def test_skill_trigger_section_must_start_with_routing_phrase(tmp_path: Path) ->
     )
 
 
+def test_skill_must_declare_lifecycle_stage_after_heading(tmp_path: Path) -> None:
+    write_minimal_repo(tmp_path)
+    skill = tmp_path / "skills" / "sample" / "SKILL.md"
+    skill.write_text(
+        skill.read_text(encoding="utf-8").replace("Lifecycle stage: INTAKE\n", ""),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "skills/sample/SKILL.md must declare lifecycle stage after heading" in errors
+
+
 def test_handoff_schema_requires_artifact_paths_for_resume(tmp_path: Path) -> None:
     write_minimal_repo(tmp_path)
     schema_path = tmp_path / "schemas" / "handoff-report.schema.json"
@@ -1526,6 +1539,7 @@ def write_minimal_repo(root: Path) -> None:
             "description: Use when a sample request needs routing.",
             "---",
             "# sample",
+            "Lifecycle stage: INTAKE",
             "## Trigger",
             "Use for sample requests.",
             "## When not to use",
@@ -1558,6 +1572,7 @@ def write_minimal_repo(root: Path) -> None:
             "description: Use when deciding what project context should be remembered, retrieved, updated, or forgotten.",
             "---",
             "# context-memory",
+            "Lifecycle stage: LEARN",
             "## Trigger",
             "Use before writing durable context.",
             "## When not to use",
@@ -1589,6 +1604,7 @@ def write_minimal_repo(root: Path) -> None:
             "description: Use when project vocabulary is fuzzy, overloaded, or needed before naming artifacts.",
             "---",
             "# domain-language",
+            "Lifecycle stage: INTAKE",
             "## Trigger",
             "Use when terminology shapes planning, design, memory, or implementation.",
             "## When not to use",
@@ -1799,6 +1815,7 @@ def write_minimal_repo(root: Path) -> None:
             "description: Use when local validation and remote workflow status must be reconciled.",
             "---",
             "# ci-recovery",
+            "Lifecycle stage: VERIFY",
             "## Trigger",
             "Use after a failing or unchecked remote workflow.",
             "## When not to use",
@@ -1830,6 +1847,7 @@ def write_minimal_repo(root: Path) -> None:
             "description: Use when recent work needs a summary from local project activity.",
             "---",
             "# activity-recap",
+            "Lifecycle stage: LEARN",
             "## Trigger",
             "Use when a user asks what changed recently.",
             "## When not to use",
@@ -1861,6 +1879,7 @@ def write_minimal_repo(root: Path) -> None:
             "description: Use when agent output needs a safety and reliability check before handoff.",
             "---",
             "# agent-output-verifier",
+            "Lifecycle stage: REVIEW",
             "## Trigger",
             "Use before trusting an agent-produced artifact.",
             "## When not to use",
@@ -1909,6 +1928,7 @@ def write_minimal_repo(root: Path) -> None:
                 f"description: Use when collecting {purpose}.",
                 "---",
                 f"# {skill_name}",
+                "Lifecycle stage: VERIFY",
                 "## Trigger",
                 f"Use when the harness needs {purpose}.",
                 "## When not to use",
@@ -5189,6 +5209,7 @@ def test_skill_required_sections_must_have_body(tmp_path):
             "description: Use when a sample request needs routing.",
             "---",
             "# sample",
+            "Lifecycle stage: INTAKE",
             "## Trigger",
             "Use for sample requests.",
             "## When not to use",
@@ -5222,6 +5243,7 @@ def test_skill_required_sections_must_keep_canonical_order(tmp_path):
             "description: Use when a sample request needs routing.",
             "---",
             "# sample",
+            "Lifecycle stage: INTAKE",
             "## Trigger",
             "Use for sample requests.",
             "## Procedure",
@@ -5254,6 +5276,7 @@ def test_skill_required_sections_must_not_be_duplicated(tmp_path):
             "description: Use when a sample request needs routing.",
             "---",
             "# sample",
+            "Lifecycle stage: INTAKE",
             "## Trigger",
             "Use for sample requests.",
             "## Trigger",

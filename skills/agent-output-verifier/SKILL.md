@@ -6,6 +6,8 @@ version: 0.1.0
 
 # agent-output-verifier
 
+Lifecycle stage: REVIEW
+
 ## Trigger
 
 Use before trusting or handing off output produced by an autonomous or semi-autonomous agent, especially after long-running work, tool use, code generation, external calls, or multi-step planning.

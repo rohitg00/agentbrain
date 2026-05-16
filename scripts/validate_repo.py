@@ -1410,6 +1410,20 @@ def starts_with_skill_trigger_phrase(text: str) -> bool:
     return first_line.startswith(REQUIRED_SKILL_TRIGGER_PREFIXES)
 
 
+def skill_lifecycle_stage(text: str) -> str:
+    lines = text.splitlines()
+    for index, line in enumerate(lines):
+        if line.startswith("# "):
+            for candidate in lines[index + 1 :]:
+                stripped = candidate.strip()
+                if not stripped:
+                    continue
+                if stripped.startswith("Lifecycle stage: "):
+                    return stripped.removeprefix("Lifecycle stage: ").strip()
+                return ""
+    return ""
+
+
 def skill_output_artifact_template(output_artifact: str, root: Path) -> str:
     artifact_name = first_nonblank_line(output_artifact)
     if not artifact_name:
@@ -1938,6 +1952,13 @@ def validate(root: Path = ROOT) -> list[str]:
         expected_heading = f"# {expected_name}"
         if first_line != expected_heading:
             errors.append(f"{rel(skill, root)} heading must be {expected_heading}")
+        lifecycle_stage = skill_lifecycle_stage(text)
+        if not lifecycle_stage:
+            errors.append(f"{rel(skill, root)} must declare lifecycle stage after heading")
+        elif lifecycle_stage not in REQUIRED_STATE_MACHINE_VALUES:
+            errors.append(
+                f"{rel(skill, root)} lifecycle stage must be one of: {', '.join(REQUIRED_STATE_MACHINE_VALUES)}"
+            )
         if frontmatter.get("name") != expected_name:
             errors.append(f"{rel(skill, root)} frontmatter name must be {expected_name}")
         if not frontmatter.get("description"):

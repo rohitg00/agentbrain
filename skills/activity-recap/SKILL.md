@@ -6,6 +6,8 @@ version: 0.1.0
 
 # activity-recap
 
+Lifecycle stage: LEARN
+
 ## Trigger
 
 Use when the user asks what changed recently, what they worked on, what a team did, or needs a short standup/status recap.

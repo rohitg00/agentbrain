@@ -4,6 +4,8 @@ description: Use when local validation and remote workflow status must be reconc
 ---
 # ci-recovery
 
+Lifecycle stage: VERIFY
+
 ## Trigger
 
 Use after a push, pull request update, failed workflow notification, or any claim that remote CI disagrees with local validation.

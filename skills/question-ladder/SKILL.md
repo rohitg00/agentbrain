@@ -5,6 +5,8 @@ description: Use when uncertainty remains and the minimum useful sequence of que
 
 # question-ladder
 
+Lifecycle stage: INTAKE
+
 ## Trigger
 
 Use when missing answers block product, design, or engineering decisions.

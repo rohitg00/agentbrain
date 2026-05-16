@@ -5,6 +5,8 @@ description: Use when behavior needs concrete proof before review, merge, or shi
 
 # qa-evidence
 
+Lifecycle stage: VERIFY
+
 ## Trigger
 
 Use after build or before review/ship.

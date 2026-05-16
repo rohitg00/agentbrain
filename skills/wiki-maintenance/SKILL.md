@@ -5,6 +5,8 @@ description: Use when source-backed project knowledge needs to be created, refre
 
 # wiki-maintenance
 
+Lifecycle stage: LEARN
+
 ## Trigger
 
 Use when ingesting sources, resolving contradictions, or preserving synthesis.

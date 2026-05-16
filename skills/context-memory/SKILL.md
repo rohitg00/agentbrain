@@ -5,6 +5,8 @@ description: Use when deciding what project context should be remembered, retrie
 
 # context-memory
 
+Lifecycle stage: LEARN
+
 ## Trigger
 
 Use when an agent needs durable context, asks whether memory should be updated, resumes old work, ingests project knowledge, or finishes a loop that may produce reusable learning.

@@ -5,6 +5,8 @@ description: Use when sources need to be converted into a claim ledger with conf
 
 # evidence-research
 
+Lifecycle stage: RESEARCH
+
 ## Trigger
 
 Use when external claims, markets, users, or technical options need verification.

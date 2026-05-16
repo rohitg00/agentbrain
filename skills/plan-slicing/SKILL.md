@@ -5,6 +5,8 @@ description: Use when broad work needs to be broken into small verifiable slices
 
 # plan-slicing
 
+Lifecycle stage: PLAN
+
 ## Trigger
 
 Use after a brief/design is accepted and before build.

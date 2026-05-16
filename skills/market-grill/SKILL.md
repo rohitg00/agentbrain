@@ -5,6 +5,8 @@ description: Use when a product idea needs pressure-testing against alternatives
 
 # market-grill
 
+Lifecycle stage: CHALLENGE
+
 ## Trigger
 
 Use when a product direction depends on adoption or positioning.

@@ -5,6 +5,8 @@ description: Use when raw intent must be captured and routed to the right next s
 
 # intake
 
+Lifecycle stage: INTAKE
+
 ## Trigger
 
 Use when a request is vague, new, or missing context.

@@ -5,6 +5,8 @@ description: Use when a launch needs a go/no-go decision with rollback and monit
 
 # launch-gate
 
+Lifecycle stage: SHIP
+
 ## Trigger
 
 Use before public release, merge, publication, or operational handoff.
