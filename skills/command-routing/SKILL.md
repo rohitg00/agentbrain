@@ -46,7 +46,7 @@ Do not use when the active command, state, loaded skills, artifact path, and sto
 
 - Confirm the chosen command appears in both `commands/README.md` and its `commands/brain-*.md` file.
 - Confirm the loaded skills exist under `skills/` and match the command's **Skills to load** section.
-- Confirm the artifact template and schema named by the command exist when required.
+- Confirm the evidence includes the selected command, artifact template, and schema named by the command when required.
 - For repository changes, run `rm -rf scripts/__pycache__ tests/__pycache__`, `python -m pytest -q`, `python scripts/validate_repo.py`, `git diff --check`, and a targeted exact-name scrub before handoff.
 
 ## Output Artifact

@@ -49,6 +49,7 @@ Do not use when this trigger is absent; choose the command or skill that owns th
 
 - State the date range and filters used.
 - State which repositories were inspected.
+- Name the recap artifact target and the command, log, or file evidence used to produce it.
 - Cite commit hashes, counts, or changed-file summaries when useful.
 - If no activity is found, say so and list the checked scope.
 - Do not infer uncommitted work unless separately inspected and explicitly labeled.

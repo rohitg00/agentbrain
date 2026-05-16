@@ -218,6 +218,25 @@ def test_skill_must_declare_lifecycle_stage_after_heading(tmp_path: Path) -> Non
     assert "skills/sample/SKILL.md must declare lifecycle stage after heading" in errors
 
 
+def test_skill_verification_must_name_evidence_and_a_concrete_check_target(tmp_path: Path) -> None:
+    write_minimal_repo(tmp_path)
+    skill = tmp_path / "skills" / "sample" / "SKILL.md"
+    skill.write_text(
+        skill.read_text(encoding="utf-8").replace(
+            "Confirm evidence and the output artifact before handoff.",
+            "Confirm the result is acceptable before handoff.",
+        ),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert (
+        "skills/sample/SKILL.md verification must name evidence and at least one concrete check target: artifact, command, schema, or template"
+        in errors
+    )
+
+
 def test_skill_frontmatter_description_must_not_duplicate_another_skill_trigger(tmp_path: Path) -> None:
     write_minimal_repo(tmp_path)
     source = tmp_path / "skills" / "sample" / "SKILL.md"
@@ -1819,7 +1838,7 @@ def write_minimal_repo(root: Path) -> None:
             "## Anti-Rationalization",
             "Do not skip evidence because the task is small.",
             "## Verification",
-            "Confirm evidence.",
+            "Confirm evidence and the output artifact before handoff.",
             "## Output Artifact",
             "Sample Routing Summary",
             "Use `templates/sample-routing-summary.md` for structured result with status, evidence, blockers, and next action.",
@@ -1852,7 +1871,7 @@ def write_minimal_repo(root: Path) -> None:
             "## Anti-Rationalization",
             "Do not remember everything just in case.",
             "## Verification",
-            "Confirm target tier, evidence, freshness, privacy review, and next use.",
+            "Confirm target tier, evidence, memory decision artifact, source doc, command, freshness, privacy review, and next use.",
             "## Output Artifact",
             "Memory decision with evidence, blockers, next action, and write, update, reject, retrieve, or defer result.",
             "## Failure Modes",
@@ -2100,7 +2119,7 @@ def write_minimal_repo(root: Path) -> None:
             "## Anti-Rationalization",
             "Do not claim success from local tests while CI is failing or unchecked.",
             "## Verification",
-            "Confirm run id, conclusion, failed command, local reproduction, and final remote proof.",
+            "Confirm evidence, run id, conclusion, failed command, local reproduction command, CI recovery artifact, and final remote proof.",
             "## Output Artifact",
             "CI recovery handoff with local and remote evidence, blockers, and next action.",
             "## Failure Modes",
@@ -2132,7 +2151,7 @@ def write_minimal_repo(root: Path) -> None:
             "## Anti-Rationalization",
             "Do not summarize from memory when local evidence can be checked.",
             "## Verification",
-            "State the checked scope.",
+            "State the checked scope, recap artifact, command evidence, and checked files.",
             "## Output Artifact",
             "Evidence-backed recap with checked scope, unknowns, blockers, and next action.",
             "## Failure Modes",
@@ -2164,7 +2183,7 @@ def write_minimal_repo(root: Path) -> None:
             "## Anti-Rationalization",
             "Do not approve output because it sounds confident.",
             "## Verification",
-            "List each pass or blocker.",
+            "List each pass or blocker with evidence, output artifact, source command, and checked files.",
             "## Output Artifact",
             "Verifier decision with evidence, blockers, and next action.",
             "## Failure Modes",
@@ -2228,7 +2247,7 @@ def write_minimal_repo(root: Path) -> None:
                 "## Anti-Rationalization",
                 "Do not treat confident summaries as evidence.",
                 "## Verification",
-                "Confirm evidence source, scope, result, and unresolved gaps.",
+                "Confirm evidence source, artifact target, command or schema checked, scope, result, and unresolved gaps.",
                 "## Output Artifact",
                 "Evidence record with checked sources, result, blockers, and next action.",
                 "## Failure Modes",

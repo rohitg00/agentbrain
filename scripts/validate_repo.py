@@ -750,6 +750,7 @@ GENERIC_SKILL_WHEN_NOT_TO_USE = (
 )
 REQUIRED_SKILL_TRIGGER_PREFIXES = ("Use when", "Use after", "Use before", "Use for")
 REQUIRED_SKILL_EXAMPLE_TERMS = ["trigger:", "action:", "output artifact:", "verification:"]
+REQUIRED_SKILL_VERIFICATION_TARGET_TERMS = ["artifact", "command", "schema", "template"]
 REQUIRED_COMMAND_EXAMPLE_TERMS = [
     "user request",
     "selected command",
@@ -2057,6 +2058,14 @@ def validate(root: Path = ROOT) -> list[str]:
         if trigger_body and not starts_with_skill_trigger_phrase(trigger_body):
             errors.append(
                 f"{rel(skill, root)} trigger must start with a routing phrase such as Use when, Use after, Use before, or Use for"
+            )
+        verification_body = section_body(text, "## Verification").lower()
+        if verification_body and (
+            "evidence" not in verification_body
+            or not any(term in verification_body for term in REQUIRED_SKILL_VERIFICATION_TARGET_TERMS)
+        ):
+            errors.append(
+                f"{rel(skill, root)} verification must name evidence and at least one concrete check target: artifact, command, schema, or template"
             )
         output_artifact_text = section_body(text, "## Output Artifact")
         output_artifact = output_artifact_text.lower()

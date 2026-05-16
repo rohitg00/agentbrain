@@ -50,6 +50,7 @@ Do not use when the work only changes free-form explanatory copy and no output a
 
 - The producing command or skill names the artifact and cites the template or schema when one exists.
 - The template lists required schema fields and resume-ready fields.
+- Evidence names the checked command, template, schema, example artifact, or validator path.
 - The example artifact validates against the schema when JSON is used.
 - The relevant eval or validator fails when the contract drifts.
 - Fresh validation proof includes the exact command and result.

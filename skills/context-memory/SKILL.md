@@ -48,6 +48,7 @@ Do not use when this trigger is absent; choose the command or skill that owns th
 
 - The target tier matches the expected lifetime and use case.
 - The memory is evidence-backed or explicitly marked as an assumption.
+- The memory decision artifact names the checked doc, skill, command, or source evidence.
 - Temporary progress is not stored as durable knowledge.
 - Procedures become skills rather than profile notes.
 - Secrets and raw sensitive data are excluded.
