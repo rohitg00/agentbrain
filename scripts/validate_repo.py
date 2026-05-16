@@ -2225,6 +2225,11 @@ def validate(root: Path = ROOT) -> list[str]:
                     errors.append(
                         f"commands/README.md catalog entry for {command_name} must name routing field: {field}"
                     )
+            native_boundary_match = re.search(r"Native: (.*?)(?:;|$)", entry)
+            if native_boundary_match and f"`{command_name}`" not in native_boundary_match.group(1):
+                errors.append(
+                    f"commands/README.md catalog entry for {command_name} must reference its own native command boundary"
+                )
             command_text = command.read_text(errors="ignore")
             expected_state = command_lifecycle_state(command_text)
             if expected_state and f"State: {expected_state}" not in entry:

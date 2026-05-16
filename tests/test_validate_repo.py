@@ -238,6 +238,26 @@ def test_command_catalog_entry_must_name_native_command_boundary(tmp_path: Path)
     )
 
 
+def test_command_catalog_native_boundary_must_reference_current_command(tmp_path: Path) -> None:
+    write_minimal_repo(tmp_path)
+    commands_readme = tmp_path / "commands" / "README.md"
+    commands_readme.write_text(
+        commands_readme.read_text(encoding="utf-8").replace(
+            "Native: markdown spec unless runtime maps `/brain-sample` to a native command;",
+            "Native: markdown spec unless runtime maps `/brain-other` to a native command;",
+        ),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert any(
+        "commands/README.md catalog entry for /brain-sample must reference its own native command boundary"
+        in error
+        for error in errors
+    )
+
+
 def test_adapter_requires_output_contract(tmp_path: Path) -> None:
     write_minimal_repo(tmp_path)
     adapter = tmp_path / "adapters" / "sample-adapter" / "README.md"
