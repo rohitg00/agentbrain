@@ -265,9 +265,10 @@ def build_report(
     freshness = git_freshness_result(root)
     worktree_status = git_worktree_status(root)
     temp_dir_status = writable_temp_dir_status(root)
+    python_executable = redact_private_absolute_paths(sys.executable)
     evidence = [
         f"Runtime smoke captured for {runtime} {version} as {scope_label}.",
-        f"Python executable: {sys.executable}",
+        f"Python executable: {python_executable}",
         f"Writable temp-dir status: {temp_dir_status}",
         f"/brain-* command mode: {command_label}.",
         f"Selected command: {selected_command}",
@@ -299,7 +300,7 @@ def build_report(
     return {
         "runtime": runtime,
         "version": version,
-        "python_executable": sys.executable,
+        "python_executable": python_executable,
         "writable_temp_dir_status": temp_dir_status,
         "git_fetch_result": fetch_result,
         "git_freshness_result": freshness,
@@ -411,6 +412,13 @@ def contains_private_absolute_path(value: object) -> bool:
     return False
 
 
+def redact_private_absolute_paths(value: str) -> str:
+    redacted = value
+    for pattern in PRIVATE_ABSOLUTE_PATH_PATTERNS:
+        redacted = pattern.sub("<redacted-private-path>", redacted)
+    return redacted
+
+
 def version_is_concrete(value: object) -> bool:
     if not isinstance(value, str):
         return False
@@ -456,7 +464,15 @@ def validate_report_against_schema(
     for field in ["exact_command", "transcript_path", "blocked_commands", "validation_commands", "write_fence", "evidence"]:
         if contains_secret_like_value(report.get(field)):
             errors.append(f"runtime smoke artifact contains secret-like value in {field}; redact before output")
-    for field in ["exact_command", "transcript_path", "blocked_commands", "validation_commands", "write_fence"]:
+    for field in [
+        "python_executable",
+        "exact_command",
+        "transcript_path",
+        "blocked_commands",
+        "validation_commands",
+        "write_fence",
+        "evidence",
+    ]:
         if contains_private_absolute_path(report.get(field)):
             errors.append(
                 "runtime smoke artifact contains private absolute path in "

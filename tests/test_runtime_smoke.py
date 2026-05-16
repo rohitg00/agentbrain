@@ -60,6 +60,24 @@ def test_runtime_smoke_rejects_loaded_skill_flag_not_recorded_in_report():
     assert "exact_command loaded skill flag is not recorded in loaded_skills: command-routing" in errors
 
 
+def test_runtime_smoke_rejects_private_python_executable_paths_in_artifact():
+    report = json.loads(Path("examples/artifacts/runtime-smoke.example.json").read_text(encoding="utf-8"))
+    report["python_executable"] = "/Users/example/.venv/bin/python"
+    report["evidence"] = [
+        "Python executable: /Users/example/.venv/bin/python"
+        if line.startswith("Python executable: ")
+        else line
+        for line in report["evidence"]
+    ]
+
+    errors = runtime_smoke.validate_report_against_schema(
+        report, Path("schemas/runtime-smoke.schema.json"), root=Path.cwd()
+    )
+
+    assert "runtime smoke artifact contains private absolute path in python_executable; use a repo-relative path or redact before output" in errors
+    assert "runtime smoke artifact contains private absolute path in evidence; use a repo-relative path or redact before output" in errors
+
+
 def test_runtime_smoke_rejects_duplicate_loaded_skills_in_report():
     report = json.loads(Path("examples/artifacts/runtime-smoke.example.json").read_text(encoding="utf-8"))
     report["loaded_skills"] = ["intake", "command-routing", "intake"]
