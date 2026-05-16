@@ -64,6 +64,37 @@ def test_pass_runtime_smoke_rejects_unknown_runtime_version(tmp_path: Path):
     assert any("pass smoke_result requires a concrete runtime version" in error for error in errors)
 
 
+def test_pass_runtime_smoke_rejects_missing_durable_transcript(tmp_path: Path):
+    report = runtime_smoke.build_report(
+        root=tmp_path,
+        runtime="generic-cli-runtime",
+        version="1.2.3",
+        sandbox_write_mode="read_only",
+        brain_command_mode="markdown_specs",
+        run_scope="read_only_smoke",
+        blocked_commands=[],
+        exact_command=(
+            "python scripts/runtime_smoke.py --runtime generic-cli-runtime --version 1.2.3 "
+            "--run-scope read_only_smoke --selected-command /brain-verify "
+            "--loaded-skill runtime-smoke --adapter-path adapters/read-only-cli/README.md "
+            "--sandbox-write-mode read_only --brain-command-mode markdown_specs "
+            "--transcript-path not_captured_stdout_only --smoke-result pass "
+            "--command-exit-status 0 --transcript-redaction-status not_captured"
+        ),
+        smoke_result="pass",
+        selected_command="/brain-verify",
+        loaded_skills=["runtime-smoke"],
+        adapter_path="adapters/read-only-cli/README.md",
+        transcript_path="not_captured_stdout_only",
+        transcript_redaction_status="not_captured",
+    )
+
+    errors = runtime_smoke.validate_report_against_schema(report, Path("schemas/runtime-smoke.schema.json"))
+
+    assert "pass smoke_result requires a durable transcript_path" in errors
+    assert "pass smoke_result requires reviewed transcript redaction status: redacted or no_sensitive_content" in errors
+
+
 def test_build_report_evidence_names_writable_temp_dir_status(tmp_path: Path):
     report = runtime_smoke.build_report(
         root=tmp_path,

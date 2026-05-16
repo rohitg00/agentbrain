@@ -465,10 +465,15 @@ def validate_report_against_schema(
         ):
             errors.append(f"exact_command must record run scope flag: --run-scope {run_scope}")
         transcript_path = report.get("transcript_path")
+        if transcript_path == "not_captured_stdout_only":
+            errors.append("pass smoke_result requires a durable transcript_path")
         if isinstance(transcript_path, str) and not exact_command_has_flag_value(
             report.get("exact_command"), "--transcript-path", transcript_path
         ):
             errors.append(f"exact_command must record transcript path flag: --transcript-path {transcript_path}")
+        transcript_redaction_status = report.get("transcript_redaction_status")
+        if transcript_redaction_status not in {"redacted", "no_sensitive_content"}:
+            errors.append("pass smoke_result requires reviewed transcript redaction status: redacted or no_sensitive_content")
         smoke_result = report.get("smoke_result")
         if isinstance(smoke_result, str) and not exact_command_has_flag_value(
             report.get("exact_command"), "--smoke-result", smoke_result
