@@ -511,6 +511,8 @@ REQUIRED_ADAPTER_OUTPUT_CONTRACT_TERMS = [
     "selected command",
     "loaded skills",
     "capability matrix",
+    "capability evidence",
+    "brain command mode",
     "run scope",
     "artifact path",
     "transcript path",

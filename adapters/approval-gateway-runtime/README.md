@@ -56,7 +56,7 @@ For an approval-gated runtime smoke test, also record gateway/embedded fallback 
 
 ## Output Contract
 
-Runtime adapter output must report state, selected command, loaded skills, capability matrix, capability evidence, run scope, artifact path, transcript path, command exit status, template, schema, validation evidence, user change review, freshness, blockers, stop condition, and next action. If any field is unknown, say `unknown` with evidence instead of inferring capability.
+Runtime adapter output must report state, selected command, loaded skills, capability matrix, capability evidence, brain command mode, run scope, artifact path, transcript path, command exit status, template, schema, validation evidence, user change review, freshness, blockers, stop condition, and next action. If any field is unknown, say `unknown` with evidence instead of inferring capability.
 
 ## Failure Modes
 
