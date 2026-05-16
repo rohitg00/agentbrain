@@ -421,6 +421,11 @@ def validate_report_against_schema(
         errors.append("blocked smoke_result must list at least one blocked command")
     if report.get("smoke_result") == "pass" and blocked_count:
         errors.append("pass smoke_result cannot list blocked_commands; use blocked or fail when required commands could not run")
+    capability_matrix = report.get("capability_matrix")
+    if blocked_count and (
+        not isinstance(capability_matrix, dict) or capability_matrix.get("blocked_command_reporting") != "yes"
+    ):
+        errors.append("blocked_commands require capability_matrix.blocked_command_reporting=yes")
     if blocked_count and isinstance(blocked_commands, list):
         for blocked_command in blocked_commands:
             if isinstance(blocked_command, str) and blocked_command and not exact_command_has_flag_value(

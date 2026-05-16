@@ -77,6 +77,32 @@ def test_blocked_runtime_smoke_requires_exact_command_result_flags(tmp_path: Pat
     )
 
 
+def test_blocked_runtime_smoke_requires_blocked_command_reporting_capability(tmp_path: Path):
+    report = runtime_smoke.build_report(
+        root=tmp_path,
+        runtime="generic-cli-runtime",
+        version="1.2.3",
+        sandbox_write_mode="read_only",
+        brain_command_mode="markdown_specs",
+        run_scope="read_only_smoke",
+        blocked_commands=["python -m pytest -q blocked by read-only sandbox"],
+        command_exit_status=1,
+        smoke_result="blocked",
+        transcript_redaction_status="blocked",
+        exact_command=(
+            "python scripts/runtime_smoke.py --runtime generic-cli-runtime --version 1.2.3 "
+            "--run-scope read_only_smoke --sandbox-write-mode read_only "
+            "--brain-command-mode markdown_specs --smoke-result blocked "
+            "--command-exit-status 1 --transcript-redaction-status blocked "
+            "--blocked-command 'python -m pytest -q blocked by read-only sandbox'"
+        ),
+    )
+
+    errors = runtime_smoke.validate_report_against_schema(report, Path("schemas/runtime-smoke.schema.json"))
+
+    assert "blocked_commands require capability_matrix.blocked_command_reporting=yes" in errors
+
+
 def test_runtime_smoke_rejects_secret_like_values_before_artifact_output(tmp_path: Path):
     token = "gh" + "p_" + "A" * 24
     report = runtime_smoke.build_report(
@@ -2434,7 +2460,7 @@ def test_main_creates_parent_directories_for_runtime_smoke_output(monkeypatch, t
             "--capability",
             "schema_artifacts=unknown",
             "--capability",
-            "blocked_command_reporting=unknown",
+            "blocked_command_reporting=yes",
             "--output",
             str(output_path),
         ]
