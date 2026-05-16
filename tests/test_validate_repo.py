@@ -620,6 +620,24 @@ def test_adapters_directory_requires_catalog_for_every_adapter(tmp_path: Path) -
     )
 
 
+def test_adapters_catalog_requires_selection_guidance(tmp_path: Path) -> None:
+    write_minimal_repo(tmp_path)
+    adapters_readme = tmp_path / "adapters" / "README.md"
+    adapters_readme.write_text(
+        adapters_readme.read_text(encoding="utf-8").replace(
+            "## Adapter Selection\n\n"
+            "Choose adapters by required capabilities, runtime evidence, read-only fallback, full validation promotion criteria, and blocked capability notes.\n\n",
+            "",
+        ),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "adapters/README.md missing adapter catalog section: ## Adapter Selection" in errors
+    assert "adapters/README.md adapter selection must mention: required capabilities" in errors
+
+
 def test_adapter_requires_sample_routing_probe(tmp_path: Path) -> None:
     write_minimal_repo(tmp_path)
     adapter = tmp_path / "adapters" / "sample-adapter" / "README.md"
@@ -1495,6 +1513,8 @@ def write_minimal_repo(root: Path) -> None:
         "# Runtime Adapters\n\n"
         "## Adapter Catalog\n\n"
         "- `adapters/sample-adapter/README.md` — sample adapter for validator fixtures.\n\n"
+        "## Adapter Selection\n\n"
+        "Choose adapters by required capabilities, runtime evidence, read-only fallback, full validation promotion criteria, and blocked capability notes.\n\n"
         "## Adapter Contract\n\n"
         "Every adapter must define capability matrix, command routing boundary, real-runtime smoke evidence, blocked commands, and output contract.\n",
         encoding="utf-8",

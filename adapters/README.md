@@ -10,6 +10,18 @@ Runtime adapters explain how a capable agent runtime should load Agent Brain wit
 - `adapters/skill-runtime/README.md` — for runtimes that can load reusable skills as first-class workflow units.
 - `adapters/subagent-runtime/README.md` — for runtimes that can split work across scoped workers and join their outputs through a single reviewer.
 
+## Adapter Selection
+
+Choose the adapter by matching the request's required capabilities against runtime evidence, not by habit or runtime branding. If evidence is missing, prefer the read-only fallback and record unknown support instead of assuming shell, write, approval, network, native command, or artifact behavior.
+
+Use this selection pass before any real-runtime smoke:
+
+1. List the required capabilities for the task: read files, write files, run shell commands, request approvals, reach the network, expose native `/brain-*` commands, emit artifacts, and report blocked commands.
+2. Compare those needs with observed runtime evidence from the active adapter, runtime settings, command output, or a prior runtime smoke artifact.
+3. Pick the least-powerful adapter that can safely complete the next slice. Use `adapters/read-only-cli/README.md` when writes, installs, network, or approvals are unavailable.
+4. Promote from read-only smoke to full validation only when the full validation promotion criteria are met: write access, shell access, dependency install, transcript capture, redaction, and the full local gate are available.
+5. Put blocked capability notes in the handoff so the next agent does not mistake an untested or blocked capability for support.
+
 ## Adapter Contract
 
 Every adapter must define a capability matrix, command routing boundary, real-runtime smoke evidence, blocked commands, and output contract. Keep the boundary explicit: say whether `/brain-*` entries are native commands, markdown specs, mixed support, or unknown; do not invent native command support when the runtime only follows files.

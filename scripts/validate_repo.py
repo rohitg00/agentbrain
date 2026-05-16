@@ -656,6 +656,7 @@ REQUIRED_ADAPTER_FAILURE_MODE_TERMS = [
 ]
 REQUIRED_ADAPTER_README_SECTIONS = [
     "## Adapter Catalog",
+    "## Adapter Selection",
     "## Adapter Contract",
 ]
 REQUIRED_ADAPTER_README_CONTRACT_TERMS = [
@@ -664,6 +665,13 @@ REQUIRED_ADAPTER_README_CONTRACT_TERMS = [
     "real-runtime smoke evidence",
     "blocked commands",
     "output contract",
+]
+REQUIRED_ADAPTER_README_SELECTION_TERMS = [
+    "required capabilities",
+    "runtime evidence",
+    "read-only fallback",
+    "full validation promotion criteria",
+    "blocked capability notes",
 ]
 REQUIRED_CONTRIBUTING_VALIDATION_COMMANDS = [
     "pytest -q",
@@ -1830,6 +1838,10 @@ def validate(root: Path = ROOT) -> list[str]:
         for term in REQUIRED_ADAPTER_README_CONTRACT_TERMS:
             if term not in adapter_contract:
                 errors.append(f"adapters/README.md adapter contract must mention: {term}")
+        adapter_selection = section_body(adapters_readme_text, "## Adapter Selection").lower()
+        for term in REQUIRED_ADAPTER_README_SELECTION_TERMS:
+            if term not in adapter_selection:
+                errors.append(f"adapters/README.md adapter selection must mention: {term}")
 
     for adapter in adapter_files:
         adapter_path = rel(adapter, root)
