@@ -147,6 +147,38 @@ def test_blocked_runtime_smoke_requires_exact_command_result_flags(tmp_path: Pat
     )
 
 
+def test_read_only_runtime_smoke_requires_exact_command_validation_command_flags(tmp_path: Path):
+    report = runtime_smoke.build_report(
+        root=tmp_path,
+        runtime="generic-cli-runtime",
+        version="1.2.3",
+        sandbox_write_mode="read_only",
+        brain_command_mode="markdown_specs",
+        run_scope="read_only_smoke",
+        blocked_commands=["python -m pytest -q blocked by read-only sandbox"],
+        validation_commands=["python -m pytest -q blocked by read-only sandbox"],
+        command_exit_status=1,
+        smoke_result="blocked",
+        transcript_redaction_status="blocked",
+        capability_matrix={"blocked_command_reporting": "yes"},
+        exact_command=(
+            "python scripts/runtime_smoke.py --runtime generic-cli-runtime --version 1.2.3 "
+            "--run-scope read_only_smoke --sandbox-write-mode read_only "
+            "--brain-command-mode markdown_specs --smoke-result blocked "
+            "--command-exit-status 1 --transcript-redaction-status blocked "
+            "--blocked-command 'python -m pytest -q blocked by read-only sandbox' "
+            "--capability blocked_command_reporting=yes"
+        ),
+    )
+
+    errors = runtime_smoke.validate_report_against_schema(report, Path("schemas/runtime-smoke.schema.json"))
+
+    assert (
+        "exact_command must record validation command flag: "
+        "--validation-command python -m pytest -q blocked by read-only sandbox"
+    ) in errors
+
+
 def test_runtime_smoke_rejects_duplicate_exact_command_provenance_flags(tmp_path: Path):
     report = runtime_smoke.build_report(
         root=tmp_path,

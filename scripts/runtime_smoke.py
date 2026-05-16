@@ -217,7 +217,7 @@ def build_report(
     scope_label = run_scope.replace("read_only", "read-only").replace("_", " ")
     command_label = brain_command_mode.replace("_", " ")
     loaded_skills = ["runtime-smoke"] if loaded_skills is None else loaded_skills
-    validation_commands = validation_commands if validation_commands is not None else (blocked_commands or ["not_checked"])
+    validation_commands = validation_commands if validation_commands is not None else ["not_checked"]
     write_fence = {
         "allowed_paths": write_fence_allowed_paths or [],
         "disallowed_paths": write_fence_disallowed_paths or [],
@@ -481,6 +481,17 @@ def validate_report_against_schema(
                     "exact_command must record blocked command flag: "
                     f"--blocked-command {blocked_command}"
                 )
+    validation_commands = report.get("validation_commands")
+    recorded_validation_commands = validation_commands if isinstance(validation_commands, list) else []
+    for validation_command in recorded_validation_commands:
+        if not isinstance(validation_command, str) or validation_command == "not_checked":
+            continue
+        if not exact_command_has_flag_value(report.get("exact_command"), "--validation-command", validation_command):
+            errors.append(
+                "exact_command must record validation command flag: "
+                f"--validation-command {validation_command}"
+            )
+
     runtime = report.get("runtime")
     if isinstance(runtime, str) and not exact_command_has_flag_value(
         report.get("exact_command"), "--runtime", runtime
@@ -699,14 +710,6 @@ def validate_report_against_schema(
         for required_command in FULL_VALIDATION_GATE_COMMANDS:
             if required_command not in recorded_validation_commands:
                 errors.append(f"full_validation must record successful local gate command: {required_command}")
-        for validation_command in recorded_validation_commands:
-            if isinstance(validation_command, str) and not exact_command_has_flag_value(
-                report.get("exact_command"), "--validation-command", validation_command
-            ):
-                errors.append(
-                    "exact_command must record validation command flag: "
-                    f"--validation-command {validation_command}"
-                )
         write_fence = report.get("write_fence")
         if not isinstance(write_fence, dict):
             errors.append("full_validation requires write_fence with allowed_paths")
