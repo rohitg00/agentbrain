@@ -16,6 +16,37 @@ def test_checked_in_runtime_smoke_example_satisfies_runtime_validator():
     assert errors == []
 
 
+def test_runtime_smoke_schema_requires_full_validation_capabilities():
+    schema = json.loads(Path("schemas/runtime-smoke.schema.json").read_text(encoding="utf-8"))
+    report = json.loads(Path("examples/artifacts/runtime-smoke.example.json").read_text(encoding="utf-8"))
+    report.update(
+        {
+            "run_scope": "full_validation",
+            "smoke_result": "pass",
+            "sandbox_write_mode": "workspace_write",
+            "blocked_commands": [],
+            "validation_commands": [
+                "rm -rf scripts/__pycache__ tests/__pycache__",
+                "python -m pytest -q",
+                "python scripts/validate_repo.py",
+                "git diff --check",
+            ],
+        }
+    )
+    report["capability_matrix"].update(
+        {
+            "read_files": "yes",
+            "write_files": "yes",
+            "run_shell": "blocked",
+            "schema_artifacts": "yes",
+        }
+    )
+
+    errors = [error.message for error in Draft202012Validator(schema).iter_errors(report)]
+
+    assert any("'yes' was expected" in error for error in errors)
+
+
 def test_blocked_runtime_smoke_requires_exact_command_result_flags(tmp_path: Path):
     report = runtime_smoke.build_report(
         root=tmp_path,
