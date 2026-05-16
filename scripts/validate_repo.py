@@ -526,6 +526,7 @@ REQUIRED_ADAPTER_CAPABILITY_MATRIX_TERMS = [
     "unknown",
 ]
 REQUIRED_ADAPTER_CAPABILITY_STATUS_PHRASE = "yes, no, unknown, or blocked"
+REQUIRED_ADAPTER_CAPABILITY_EVIDENCE_SOURCE_PHRASE = "evidence source for each capability"
 REQUIRED_ADAPTER_VALIDATION_COMMANDS = [
     "python3 -m pip install -r requirements-dev.txt",
     "rm -rf scripts/__pycache__ tests/__pycache__",
@@ -2615,6 +2616,10 @@ def validate(root: Path = ROOT) -> list[str]:
             if REQUIRED_ADAPTER_CAPABILITY_STATUS_PHRASE not in capability_matrix_body:
                 errors.append(
                     f"{rel(markdown_file, root)} capability matrix must define status vocabulary: {REQUIRED_ADAPTER_CAPABILITY_STATUS_PHRASE}"
+                )
+            if REQUIRED_ADAPTER_CAPABILITY_EVIDENCE_SOURCE_PHRASE not in capability_matrix_body:
+                errors.append(
+                    f"{rel(markdown_file, root)} capability matrix must require evidence source for each capability"
                 )
             for run_command in REQUIRED_ADAPTER_VALIDATION_COMMANDS:
                 if run_command not in adapter_text:

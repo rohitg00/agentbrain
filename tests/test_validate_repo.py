@@ -282,7 +282,7 @@ def test_adapter_capability_matrix_requires_status_vocabulary(tmp_path: Path) ->
     adapter = tmp_path / "adapters" / "sample-adapter" / "README.md"
     adapter.write_text(
         adapter.read_text(encoding="utf-8").replace(
-            "Use yes, no, unknown, or blocked for each capability so later agents can compare runtime smoke runs without inferring support.\n\n",
+            "Use yes, no, unknown, or blocked for each capability so later agents can compare runtime smoke runs without inferring support.",
             "",
         ),
         encoding="utf-8",
@@ -292,6 +292,26 @@ def test_adapter_capability_matrix_requires_status_vocabulary(tmp_path: Path) ->
 
     assert any(
         "adapters/sample-adapter/README.md capability matrix must define status vocabulary: yes, no, unknown, or blocked"
+        in error
+        for error in errors
+    )
+
+
+def test_adapter_capability_matrix_requires_evidence_source_for_each_capability(tmp_path: Path) -> None:
+    write_minimal_repo(tmp_path)
+    adapter = tmp_path / "adapters" / "sample-adapter" / "README.md"
+    adapter.write_text(
+        adapter.read_text(encoding="utf-8").replace(
+            "Require an evidence source for each capability: observed command output, adapter docs, runtime settings, or `unknown` when unverified.\n\n",
+            "",
+        ),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert any(
+        "adapters/sample-adapter/README.md capability matrix must require evidence source for each capability"
         in error
         for error in errors
     )
@@ -1101,7 +1121,7 @@ def write_minimal_repo(root: Path) -> None:
         "## Install\n\n"
         "Use this adapter in a sample runtime. Run `git status --short` and `git log --oneline -5`, git fetch origin main, git rev-parse HEAD, git rev-parse origin/main, and confirm HEAD equals origin/main, run baseline validation before editing, and preserve user changes before adapter work.\n\n"
         "## Capability Matrix\n\n"
-        "Record whether the runtime can read files, write files, run shell commands, request approvals, reach the network, map /brain-* entries as native commands, emit artifacts, and report blocked commands. Mark unknown capabilities as unknown instead of assuming support. Use yes, no, unknown, or blocked for each capability so later agents can compare runtime smoke runs without inferring support.\n\n"
+        "Record whether the runtime can read files, write files, run shell commands, request approvals, reach the network, map /brain-* entries as native commands, emit artifacts, and report blocked commands. Mark unknown capabilities as unknown instead of assuming support. Use yes, no, unknown, or blocked for each capability so later agents can compare runtime smoke runs without inferring support. Require an evidence source for each capability: observed command output, adapter docs, runtime settings, or `unknown` when unverified.\n\n"
         "## Minimal instruction\n\n"
         "Use Agent Brain as the operating harness. Read AGENTBRAIN.md, route through commands/, load skills/, produce artifacts from templates/, and validate schemas/. Treat /brain-* entries as markdown specs unless this runtime maps them to native commands; do not invent unsupported command routes.\n\n"
         "## Validation\n\n"
