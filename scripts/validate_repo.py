@@ -607,6 +607,7 @@ REQUIRED_ADAPTER_RUNTIME_SMOKE_COMMAND_FLAGS = [
     "--transcript-redaction-status",
     "--validation-command",
     "--write-fence-approval-state",
+    "--output",
     "--capability",
 ]
 REQUIRED_ADAPTER_RUNTIME_SMOKE_CAPABILITIES = [
