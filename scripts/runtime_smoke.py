@@ -679,6 +679,7 @@ def validate_report_against_schema(
                 )
             output_paths = exact_command_flag_values(report.get("exact_command"), "--output")
             allowed_paths = write_fence.get("allowed_paths")
+            disallowed_paths = write_fence.get("disallowed_paths")
             for output_path in output_paths:
                 if output_path == "-":
                     continue
@@ -693,6 +694,13 @@ def validate_report_against_schema(
                 ):
                     errors.append(
                         "full_validation output path must be inside write_fence.allowed_paths: "
+                        f"{output_path}"
+                    )
+                if isinstance(disallowed_paths, list) and path_is_inside_declared_boundary(
+                    output_path_for_boundary, disallowed_paths
+                ):
+                    errors.append(
+                        "full_validation output path must not be inside write_fence.disallowed_paths: "
                         f"{output_path}"
                     )
     if root is not None:
