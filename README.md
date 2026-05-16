@@ -330,6 +330,7 @@ Do not reuse stale validation proof after code, docs, schemas, templates, comman
 - `activity-recap` — summarize recent project activity from local evidence.
 - `adapter-capability-probe` — prove adapter and runtime capabilities before trusting command routing, writes, shell access, or full-validation claims.
 - `agent-output-verifier` — block unsafe or unsupported agent output before trust or handoff.
+- `artifact-contract` — keep command outputs, templates, schemas, examples, handoff fields, and validators aligned.
 - `ci-recovery` — inspect, reproduce, fix, and re-check remote workflow failures.
 - `command-routing` — choose or verify `/brain-*` routes against the command catalog, command file, loaded skills, artifact contract, and stop condition.
 - `context-memory` — choose what to remember, retrieve, update, or deliberately forget.
