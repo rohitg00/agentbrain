@@ -91,6 +91,35 @@ def test_build_report_records_worktree_status_to_preserve_user_changes(tmp_path:
     )
 
 
+def test_build_report_records_runtime_capability_matrix_for_adapter_comparison(tmp_path: Path):
+    report = runtime_smoke.build_report(
+        root=tmp_path,
+        runtime="generic-cli-runtime",
+        version="1.2.3",
+        sandbox_write_mode="read_only",
+        brain_command_mode="markdown_specs",
+        run_scope="read_only_smoke",
+        blocked_commands=["python -m pytest -q"],
+        exact_command="python scripts/runtime_smoke.py --runtime generic-cli-runtime --version 1.2.3 --run-scope read_only_smoke",
+        capability_matrix={
+            "read_files": "yes",
+            "write_files": "blocked",
+            "run_shell": "blocked",
+            "request_approvals": "unknown",
+            "network_access": "unknown",
+            "native_brain_commands": "no",
+            "schema_artifacts": "yes",
+            "blocked_command_reporting": "yes",
+        },
+    )
+
+    schema = json.loads(Path("schemas/runtime-smoke.schema.json").read_text(encoding="utf-8"))
+    Draft202012Validator(schema).validate(report)
+
+    assert report["capability_matrix"]["native_brain_commands"] == "no"
+    assert "Capability matrix: " in "\n".join(report["evidence"])
+
+
 def test_build_report_emits_schema_valid_runtime_smoke_for_plain_checkout(tmp_path: Path):
     report = runtime_smoke.build_report(
         root=tmp_path,

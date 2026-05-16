@@ -24,6 +24,16 @@
   ],
   "run_scope": "read_only_smoke",
   "validation_commands": [],
+  "capability_matrix": {
+    "read_files": "yes",
+    "write_files": "blocked",
+    "run_shell": "blocked",
+    "request_approvals": "unknown",
+    "network_access": "unknown",
+    "native_brain_commands": "no",
+    "schema_artifacts": "yes",
+    "blocked_command_reporting": "yes"
+  },
   "write_fence": {
     "allowed_paths": [],
     "disallowed_paths": [],
@@ -43,6 +53,7 @@
     "Smoke result: blocked because local tests could not run in read-only smoke",
     "Transcript path: artifacts/runtime-smoke/cli-runtime-example.log",
     "Transcript redaction status: redacted",
+    "Capability matrix: read_files=yes, write_files=blocked, run_shell=blocked, request_approvals=unknown, network_access=unknown, native_brain_commands=no, schema_artifacts=yes, blocked_command_reporting=yes.",
     "Runtime identified /brain-* entries as markdown specs rather than native commands"
   ]
 }

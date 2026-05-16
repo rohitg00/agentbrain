@@ -1,6 +1,6 @@
 # Runtime Smoke
 
-Schema fields: `runtime`, `version`, `python_executable`, `writable_temp_dir_status`, `git_fetch_result`, `git_freshness_result`, `git_worktree_status`, `exact_command`, `command_exit_status`, `smoke_result`, `transcript_path`, `transcript_redaction_status`, `sandbox_write_mode`, `brain_command_mode`, `selected_command`, `loaded_skills`, `adapter_path`, `blocked_commands`, `run_scope`, `validation_commands`, `write_fence`, `evidence`.
+Schema fields: `runtime`, `version`, `python_executable`, `writable_temp_dir_status`, `git_fetch_result`, `git_freshness_result`, `git_worktree_status`, `exact_command`, `command_exit_status`, `smoke_result`, `transcript_path`, `transcript_redaction_status`, `sandbox_write_mode`, `brain_command_mode`, `selected_command`, `loaded_skills`, `adapter_path`, `blocked_commands`, `run_scope`, `validation_commands`, `capability_matrix`, `write_fence`, `evidence`.
 
 Use this artifact when checking Agent Brain in a real agent runtime rather than only repository fixtures. Record direct evidence so the next maintainer can tell whether the run was a read-only smoke or full validation. Prefer the helper so the JSON artifact is validated against `schemas/runtime-smoke.schema.json` before it is trusted:
 
@@ -20,6 +20,14 @@ python scripts/runtime_smoke.py \
   --transcript-path artifacts/runtime-smoke/generic-cli-runtime-2026-05-15.log \
   --transcript-redaction-status redacted \
   --blocked-command "python -m pytest -q blocked by read-only sandbox" \
+  --capability read_files=yes \
+  --capability write_files=blocked \
+  --capability run_shell=blocked \
+  --capability request_approvals=unknown \
+  --capability network_access=unknown \
+  --capability native_brain_commands=no \
+  --capability schema_artifacts=yes \
+  --capability blocked_command_reporting=yes \
   --output /tmp/runtime-smoke.json
 ```
 
@@ -60,6 +68,7 @@ The helper exits non-zero if the generated artifact does not satisfy the schema.
 - **Blocked commands:** Commands that could not run and why. Any artifact with blocked commands must use `smoke_result: blocked` or `smoke_result: fail`; never mark a run as `pass` while required commands are blocked. Use `blocked` for policy/sandbox/approval limits and `fail` for a command that returned a non-zero exit status.
 - **Run scope:** `read_only_smoke` or `full_validation`.
 - **Validation commands:** Successful local gate commands run during `full_validation`; include `rm -rf scripts/__pycache__ tests/__pycache__`, `python -m pytest -q`, `python scripts/validate_repo.py`, and `git diff --check`. Leave empty for read-only smoke.
+- **Capability matrix:** Machine-checkable runtime boundary with `read_files`, `write_files`, `run_shell`, `request_approvals`, `network_access`, `native_brain_commands`, `schema_artifacts`, and `blocked_command_reporting`. Values are `yes`, `no`, `unknown`, or `blocked`; prefer `unknown` over inferring support. This lets later smoke runs compare adapter behavior without relying on prose.
 - **Write fence:** Object that records `allowed_paths`, `disallowed_paths`, `user_owned_files`, and `rollback_command`. `full_validation` requires all four so a write-capable runtime proves the intended write boundary before it edits artifacts, avoids user-owned dirty files, and leaves a concrete rollback command.
 - **Evidence:** Logs, outputs, files inspected, command results, and blockers.
 

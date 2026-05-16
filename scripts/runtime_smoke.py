@@ -19,6 +19,17 @@ BRAIN_COMMAND_MODES = {"native_commands", "markdown_specs", "mixed", "unknown"}
 RUN_SCOPES = {"read_only_smoke", "full_validation"}
 SMOKE_RESULTS = {"pass", "blocked", "fail"}
 TRANSCRIPT_REDACTION_STATUSES = {"redacted", "no_sensitive_content", "not_captured", "blocked"}
+CAPABILITY_NAMES = [
+    "read_files",
+    "write_files",
+    "run_shell",
+    "request_approvals",
+    "network_access",
+    "native_brain_commands",
+    "schema_artifacts",
+    "blocked_command_reporting",
+]
+CAPABILITY_STATUSES = {"yes", "no", "unknown", "blocked"}
 SECRET_LIKE_PATTERNS = [
     re.compile(r"\bgh[pousr]_[A-Za-z0-9_]{20,}\b"),
     re.compile(r"-----BEGIN (?:RSA |OPENSSH |EC |DSA )?PRIVATE KEY-----"),
@@ -142,6 +153,7 @@ def build_report(
     write_fence_disallowed_paths: list[str] | None = None,
     write_fence_user_owned_files: list[str] | None = None,
     write_fence_rollback_command: str = "not_applicable",
+    capability_matrix: dict[str, str] | None = None,
 ) -> dict[str, object]:
     root = Path(root)
     if sandbox_write_mode not in SANDBOX_WRITE_MODES:
@@ -165,6 +177,14 @@ def build_report(
         "user_owned_files": write_fence_user_owned_files or [],
         "rollback_command": write_fence_rollback_command,
     }
+    recorded_capability_matrix = {name: "unknown" for name in CAPABILITY_NAMES}
+    if capability_matrix:
+        for name, status in capability_matrix.items():
+            if name not in recorded_capability_matrix:
+                raise ValueError(f"unsupported capability name: {name}")
+            if status not in CAPABILITY_STATUSES:
+                raise ValueError(f"unsupported capability status for {name}: {status}")
+            recorded_capability_matrix[name] = status
     fetch_result = git_fetch_result(root)
     freshness = git_freshness_result(root)
     worktree_status = git_worktree_status(root)
@@ -186,6 +206,9 @@ def build_report(
         f"Transcript redaction status: {transcript_redaction_status}",
         f"Blocked commands recorded: {', '.join(blocked_commands) if blocked_commands else 'none'}.",
         f"Validation commands: {', '.join(validation_commands) if validation_commands else 'none'}.",
+        "Capability matrix: "
+        + ", ".join(f"{name}={recorded_capability_matrix[name]}" for name in CAPABILITY_NAMES)
+        + ".",
         "Write fence: "
         f"allowed={', '.join(write_fence['allowed_paths']) if write_fence['allowed_paths'] else 'none'}; "
         f"disallowed={', '.join(write_fence['disallowed_paths']) if write_fence['disallowed_paths'] else 'none'}; "
@@ -214,6 +237,7 @@ def build_report(
         "blocked_commands": blocked_commands,
         "run_scope": run_scope,
         "validation_commands": validation_commands,
+        "capability_matrix": recorded_capability_matrix,
         "write_fence": write_fence,
         "evidence": evidence,
     }
@@ -258,6 +282,20 @@ def version_is_concrete(value: object) -> bool:
         return False
     normalized = value.strip().lower()
     return normalized not in {"", "unknown", "n/a", "na", "not_checked", "not checked", "unavailable"}
+
+
+def parse_capability_flags(values: list[str]) -> dict[str, str]:
+    capability_matrix: dict[str, str] = {}
+    for value in values:
+        if "=" not in value:
+            raise ValueError(f"capability must use name=status format: {value}")
+        name, status = value.split("=", 1)
+        if name not in CAPABILITY_NAMES:
+            raise ValueError(f"unsupported capability name: {name}")
+        if status not in CAPABILITY_STATUSES:
+            raise ValueError(f"unsupported capability status for {name}: {status}")
+        capability_matrix[name] = status
+    return capability_matrix
 
 
 def validate_report_against_schema(
@@ -543,6 +581,12 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
         help="Successful local gate command completed during full validation; repeat for each gate command",
     )
     parser.add_argument(
+        "--capability",
+        action="append",
+        default=[],
+        help="Runtime capability as name=status; names are read_files, write_files, run_shell, request_approvals, network_access, native_brain_commands, schema_artifacts, blocked_command_reporting; statuses are yes, no, unknown, blocked",
+    )
+    parser.add_argument(
         "--write-fence-allowed-path",
         action="append",
         default=[],
@@ -575,6 +619,12 @@ def main(argv: list[str] | None = None) -> int:
     args = parse_args(sys.argv[1:] if argv is None else argv)
     raw_argv = sys.argv[1:] if argv is None else argv
     exact_command = "python scripts/runtime_smoke.py " + " ".join(shlex.quote(arg) for arg in raw_argv)
+    try:
+        capability_matrix = parse_capability_flags(args.capability)
+    except ValueError as exc:
+        sys.stderr.write(f"runtime smoke argument error: {exc}\n")
+        return 2
+
     report = build_report(
         root=args.root,
         runtime=args.runtime,
@@ -596,6 +646,7 @@ def main(argv: list[str] | None = None) -> int:
         write_fence_disallowed_paths=args.write_fence_disallowed_path,
         write_fence_user_owned_files=args.write_fence_user_owned_file,
         write_fence_rollback_command=args.write_fence_rollback_command,
+        capability_matrix=capability_matrix,
     )
     schema_path = args.schema or (args.root / "schemas" / "runtime-smoke.schema.json")
     errors = validate_report_against_schema(report, schema_path, root=args.root)

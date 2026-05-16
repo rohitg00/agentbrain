@@ -24,6 +24,7 @@
     "blocked_commands",
     "run_scope",
     "validation_commands",
+    "capability_matrix",
     "write_fence",
     "evidence"
   ],
@@ -139,6 +140,46 @@
       "items": {
         "type": "string",
         "minLength": 1
+      }
+    },
+    "capability_matrix": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "read_files",
+        "write_files",
+        "run_shell",
+        "request_approvals",
+        "network_access",
+        "native_brain_commands",
+        "schema_artifacts",
+        "blocked_command_reporting"
+      ],
+      "properties": {
+        "read_files": {
+          "enum": ["yes", "no", "unknown", "blocked"]
+        },
+        "write_files": {
+          "enum": ["yes", "no", "unknown", "blocked"]
+        },
+        "run_shell": {
+          "enum": ["yes", "no", "unknown", "blocked"]
+        },
+        "request_approvals": {
+          "enum": ["yes", "no", "unknown", "blocked"]
+        },
+        "network_access": {
+          "enum": ["yes", "no", "unknown", "blocked"]
+        },
+        "native_brain_commands": {
+          "enum": ["yes", "no", "unknown", "blocked"]
+        },
+        "schema_artifacts": {
+          "enum": ["yes", "no", "unknown", "blocked"]
+        },
+        "blocked_command_reporting": {
+          "enum": ["yes", "no", "unknown", "blocked"]
+        }
       }
     },
     "write_fence": {
