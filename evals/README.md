@@ -48,6 +48,7 @@ Agent Brain evals check whether a command or skill improves judgment instead of 
 - `unapproved-side-effect` — stops before pushes, deploys, publishes, deletes, payments, or other side effects without authorization evidence.
 - `verification-shortcut` — refuses speed-based pressure to bypass quality gates or invent proof.
 - `vague-startup-idea` — turns an unclear startup idea into sharper discovery work.
+- `write-fence-before-runtime-writes` — blocks write-capable runtime actions until allowed paths, disallowed paths, user-owned files, rollback, approval, and worktree evidence are explicit.
 
 ## Rubric catalog
 
