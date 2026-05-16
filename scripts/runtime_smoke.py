@@ -508,7 +508,6 @@ def validate_report_against_schema(
             required_list_fields = [
                 ("allowed_paths", "--write-fence-allowed-path"),
                 ("disallowed_paths", "--write-fence-disallowed-path"),
-                ("user_owned_files", "--write-fence-user-owned-file"),
             ]
             for field_name, flag in required_list_fields:
                 values = write_fence.get(field_name)
@@ -520,6 +519,25 @@ def validate_report_against_schema(
                         report.get("exact_command"), flag, value
                     ):
                         errors.append(f"exact_command must record write fence flag: {flag} {value}")
+            user_owned_files = write_fence.get("user_owned_files")
+            git_worktree_status_value = report.get("git_worktree_status")
+            if isinstance(git_worktree_status_value, str) and git_worktree_status_value.startswith("dirty:") and not (
+                isinstance(user_owned_files, list)
+                and any(isinstance(value, str) and value for value in user_owned_files)
+            ):
+                errors.append(
+                    "full_validation with dirty worktree must name preserved user-owned files in "
+                    "write_fence.user_owned_files"
+                )
+            if isinstance(user_owned_files, list):
+                for value in user_owned_files:
+                    if isinstance(value, str) and value and not exact_command_has_flag_value(
+                        report.get("exact_command"), "--write-fence-user-owned-file", value
+                    ):
+                        errors.append(
+                            "exact_command must record write fence flag: "
+                            f"--write-fence-user-owned-file {value}"
+                        )
             rollback_command = write_fence.get("rollback_command")
             if not (isinstance(rollback_command, str) and rollback_command.strip() and rollback_command != "not_applicable"):
                 errors.append("full_validation requires write_fence with rollback_command")
