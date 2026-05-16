@@ -382,6 +382,12 @@ def validate_report_against_schema(
     for field in ["exact_command", "transcript_path", "blocked_commands", "validation_commands", "write_fence", "evidence"]:
         if contains_secret_like_value(report.get(field)):
             errors.append(f"runtime smoke artifact contains secret-like value in {field}; redact before output")
+    for field in ["exact_command", "transcript_path", "blocked_commands", "validation_commands", "write_fence"]:
+        if contains_private_absolute_path(report.get(field)):
+            errors.append(
+                "runtime smoke artifact contains private absolute path in "
+                f"{field}; use a repo-relative path or redact before output"
+            )
 
     transcript_path = report.get("transcript_path")
     if root is not None and isinstance(transcript_path, str) and not transcript_path_is_external_reference(transcript_path):

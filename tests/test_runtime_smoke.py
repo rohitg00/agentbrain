@@ -110,6 +110,40 @@ def test_runtime_smoke_rejects_private_absolute_paths_in_local_transcript(tmp_pa
     assert "runtime smoke transcript contains private absolute path; redact transcript before trusting artifact" in errors
 
 
+def test_runtime_smoke_rejects_private_absolute_paths_in_artifact_fields(tmp_path: Path):
+    private_transcript_path = "/Users/example/work/project/artifacts/runtime-smoke/run.log"
+    report = runtime_smoke.build_report(
+        root=tmp_path,
+        runtime="generic-cli-runtime",
+        version="1.2.3",
+        sandbox_write_mode="read_only",
+        brain_command_mode="markdown_specs",
+        run_scope="read_only_smoke",
+        blocked_commands=[],
+        exact_command=(
+            "python scripts/runtime_smoke.py --runtime generic-cli-runtime --version 1.2.3 "
+            "--run-scope read_only_smoke --selected-command /brain-verify "
+            "--loaded-skill runtime-smoke --adapter-path adapters/read-only-cli/README.md "
+            "--sandbox-write-mode read_only --brain-command-mode markdown_specs "
+            f"--transcript-path {private_transcript_path} "
+            "--smoke-result pass --command-exit-status 0 --transcript-redaction-status redacted"
+        ),
+        smoke_result="pass",
+        selected_command="/brain-verify",
+        loaded_skills=["runtime-smoke"],
+        adapter_path="adapters/read-only-cli/README.md",
+        transcript_path=private_transcript_path,
+        transcript_redaction_status="redacted",
+    )
+
+    errors = runtime_smoke.validate_report_against_schema(
+        report, Path("schemas/runtime-smoke.schema.json"), root=tmp_path
+    )
+
+    assert "runtime smoke artifact contains private absolute path in exact_command; use a repo-relative path or redact before output" in errors
+    assert "runtime smoke artifact contains private absolute path in transcript_path; use a repo-relative path or redact before output" in errors
+
+
 def test_pass_runtime_smoke_rejects_unknown_runtime_version(tmp_path: Path):
     report = runtime_smoke.build_report(
         root=tmp_path,
