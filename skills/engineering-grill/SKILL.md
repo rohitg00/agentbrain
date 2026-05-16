@@ -49,7 +49,7 @@ Do not use when this trigger is absent; choose the command or skill that owns th
 
 Engineering Grill Report
 
-The artifact should be concise, auditable, and include evidence, blockers, and next action so another agent can resume.
+Use `templates/grill-report.md` for a concise, auditable artifact with evidence, blockers, and next action so another agent can resume.
 
 ## Failure Modes
 

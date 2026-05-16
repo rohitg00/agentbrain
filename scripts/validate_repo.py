@@ -1397,6 +1397,10 @@ def skill_output_artifact_template(output_artifact: str, root: Path) -> str:
     artifact_name = first_nonblank_line(output_artifact)
     if not artifact_name:
         return ""
+    if artifact_name.lower().endswith("grill report"):
+        shared_template_path = root / "templates" / "grill-report.md"
+        if shared_template_path.exists():
+            return rel(shared_template_path, root)
     artifact_slug = slug_from_title(artifact_name)
     template_path = root / "templates" / f"{artifact_slug}.md"
     return rel(template_path, root) if template_path.exists() else ""
@@ -1958,11 +1962,16 @@ def validate(root: Path = ROOT) -> list[str]:
                 if required_term not in text_lower:
                     errors.append(message)
         example = normalized_section_body(text, "## Example")
+        example_raw = section_body(text, "## Example")
         if example:
             example_lower = example.lower()
             for required_term in REQUIRED_SKILL_EXAMPLE_TERMS:
                 if required_term not in example_lower:
                     errors.append(f"{rel(skill, root)} example must mention: {required_term}")
+            if matching_template and f"`{matching_template}`" not in example_raw:
+                errors.append(
+                    f"{rel(skill, root)} example must cite matching output template: {matching_template}"
+                )
             if example in seen_skill_examples:
                 errors.append(
                     f"{rel(skill, root)} example duplicates {seen_skill_examples[example]}"

@@ -49,7 +49,7 @@ Do not use when this trigger is absent; choose the command or skill that owns th
 
 Design Grill Report
 
-The artifact should be concise, auditable, and include evidence, blockers, and next action so another agent can resume.
+Use `templates/grill-report.md` for a concise, auditable artifact with evidence, blockers, and next action so another agent can resume.
 
 ## Failure Modes
 
@@ -61,7 +61,7 @@ The artifact should be concise, auditable, and include evidence, blockers, and n
 
 ## Example
 
-Trigger: workflow or interface design has unclear states, users, or failure paths. Action: pressure-test UX, information architecture, accessibility, edge states, and safer non-agent alternatives. Output artifact: `templates/design-brief.md` with blockers and next action. Verification: cite flows reviewed, rejected assumptions, accessibility checks, and remaining risks.
+Trigger: workflow or interface design has unclear states, users, or failure paths. Action: pressure-test UX, information architecture, accessibility, edge states, and safer non-agent alternatives. Output artifact: `templates/grill-report.md` with blockers and next action. Verification: cite flows reviewed, rejected assumptions, accessibility checks, and remaining risks.
 
 Input: "Build an assistant that handles customer refunds."
 

@@ -53,6 +53,54 @@ def test_skill_output_artifact_must_cite_matching_template(tmp_path: Path) -> No
     )
 
 
+def test_skill_example_must_cite_matching_output_template(tmp_path: Path) -> None:
+    write_minimal_repo(tmp_path)
+    skill = tmp_path / "skills" / "sample" / "SKILL.md"
+    skill.write_text(
+        skill.read_text(encoding="utf-8").replace(
+            "Output artifact: `templates/sample-routing-summary.md`.",
+            "Output artifact: sample routing summary.",
+        ),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert any(
+        "skills/sample/SKILL.md example must cite matching output template: templates/sample-routing-summary.md"
+        in error
+        for error in errors
+    )
+
+
+def test_grill_skill_output_artifact_uses_shared_grill_template(tmp_path: Path) -> None:
+    write_minimal_repo(tmp_path)
+    (tmp_path / "templates" / "grill-report.md").write_text(
+        "# Grill Report\n\nReusable grill artifact.\n",
+        encoding="utf-8",
+    )
+    skill = tmp_path / "skills" / "sample" / "SKILL.md"
+    skill.write_text(
+        skill.read_text(encoding="utf-8")
+        .replace("Sample Routing Summary", "Design Grill Report")
+        .replace("templates/sample-routing-summary.md", "templates/design-brief.md"),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert any(
+        "skills/sample/SKILL.md output artifact must cite matching template: templates/grill-report.md"
+        in error
+        for error in errors
+    )
+    assert any(
+        "skills/sample/SKILL.md example must cite matching output template: templates/grill-report.md"
+        in error
+        for error in errors
+    )
+
+
 def test_skill_when_not_to_use_must_not_be_generic_boundary_copy(tmp_path: Path) -> None:
     write_minimal_repo(tmp_path)
     skill = tmp_path / "skills" / "sample" / "SKILL.md"
