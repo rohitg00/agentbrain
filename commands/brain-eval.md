@@ -30,11 +30,12 @@ If required inputs are missing, ask at most three blocking questions or state ex
 
 ## Workflow
 
-1. Define the command, skill, artifact, or behavior being tested.
-2. Select eval cases, rubric dimensions, and expected failure signals.
-3. Use `agent-output-verifier` and `qa-evidence` to tie judgments to proof.
-4. Produce an Eval Report with case outcomes, regressions, and recommended fixes.
-5. Stop if the eval lacks a clear expected behavior or cannot reproduce the failure.
+1. Inspect `git status --short` and preserve user changes before modifying files, running write-capable tools, or trusting generated artifacts.
+2. Define the command, skill, artifact, or behavior being tested.
+3. Select eval cases, rubric dimensions, and expected failure signals.
+4. Use `agent-output-verifier` and `qa-evidence` to tie judgments to proof.
+5. Produce an Eval Report with case outcomes, regressions, and recommended fixes.
+6. Stop if the eval lacks a clear expected behavior or cannot reproduce the failure.
 
 ## Output
 

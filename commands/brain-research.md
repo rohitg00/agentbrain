@@ -27,11 +27,12 @@ If required inputs are missing, ask at most three blocking questions or state ex
 
 ## Workflow
 
-1. Convert the question into explicit claims to verify.
-2. Gather source-backed evidence and separate facts from assumptions.
-3. Use `evidence-research`; add `wiki-maintenance` only for durable project knowledge.
-4. Produce a Research Claim Ledger with citations, confidence, contradictions, and gaps.
-5. Stop if sources are stale, unavailable, or insufficient for the requested confidence.
+1. Inspect `git status --short` and preserve user changes before modifying files, running write-capable tools, or trusting generated artifacts.
+2. Convert the question into explicit claims to verify.
+3. Gather source-backed evidence and separate facts from assumptions.
+4. Use `evidence-research`; add `wiki-maintenance` only for durable project knowledge.
+5. Produce a Research Claim Ledger with citations, confidence, contradictions, and gaps.
+6. Stop if sources are stale, unavailable, or insufficient for the requested confidence.
 
 ## Output
 

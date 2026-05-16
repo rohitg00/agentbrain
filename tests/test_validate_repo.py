@@ -81,6 +81,26 @@ def test_handoff_schema_requires_artifact_paths_for_resume(tmp_path: Path) -> No
     )
 
 
+def test_command_workflow_must_preserve_user_changes_before_action(tmp_path: Path) -> None:
+    write_minimal_repo(tmp_path)
+    command = tmp_path / "commands" / "brain-sample.md"
+    command.write_text(
+        command.read_text(encoding="utf-8").replace(
+            "Inspect `git status --short` and preserve user changes before modifying files, running write-capable tools, or trusting generated artifacts.",
+            "Skip worktree review in this sample workflow.",
+        ),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert any(
+        "commands/brain-sample.md workflow must preserve user changes before action: git status --short"
+        in error
+        for error in errors
+    )
+
+
 def test_command_examples_must_name_every_loaded_skill(tmp_path: Path) -> None:
     write_minimal_repo(tmp_path)
     command = tmp_path / "commands" / "brain-sample.md"
@@ -1461,6 +1481,7 @@ def write_minimal_repo(root: Path) -> None:
             "Load `qa-evidence` when proof must support review or shipping.",
             "Load `runtime-smoke` when proof depends on a real agent runtime or adapter.",
             "## Workflow",
+            "Inspect `git status --short` and preserve user changes before modifying files, running write-capable tools, or trusting generated artifacts.",
             "Inspect inputs and decide the next action.",
             "## Output",
             "Required artifact: **Sample Routing Summary** using `templates/sample-routing-summary.md`. A concrete next action with decision, evidence, fresh validation proof, assumptions, risks, open questions, and next recommended state.",
@@ -1493,6 +1514,7 @@ def write_minimal_repo(root: Path) -> None:
             "Load `evidence-research` when eval evidence depends on source-backed claims.",
             "Load `runtime-smoke` when eval evidence depends on a real agent runtime, adapter, sandbox, or command boundary.",
             "## Workflow",
+            "Inspect `git status --short` and preserve user changes before modifying files, running write-capable tools, or trusting generated artifacts.",
             "Select cases, collect proof, compare behavior to expected outcomes.",
             "## Output",
             "Required artifact: **Eval Report** using `templates/eval-report.md` and `schemas/eval-report.schema.json`. A concrete eval decision with evidence, fresh validation proof, assumptions, risks, open questions, and next recommended state.",
@@ -2549,6 +2571,7 @@ def test_command_stop_conditions_must_include_noninteractive_fallback_when_the_c
             "## Skills to load",
             "Load `sample` for sample routing.",
             "## Workflow",
+            "Inspect `git status --short` and preserve user changes before modifying files, running write-capable tools, or trusting generated artifacts.",
             "Inspect inputs and decide the next action.",
             "## Output",
             "A concrete next action with decision, evidence, fresh validation proof, assumptions, risks, open questions, and next recommended state.",
@@ -3920,6 +3943,7 @@ def test_command_quality_bars_must_not_be_reused_boilerplate(tmp_path):
             "Load `qa-evidence` when proof must support review or shipping.",
             "Load `runtime-smoke` when proof depends on a real agent runtime or adapter.",
             "## Workflow",
+            "Inspect `git status --short` and preserve user changes before modifying files, running write-capable tools, or trusting generated artifacts.",
             "Inspect inputs and decide the next action.",
             "## Output",
             "A concrete next action with decision, evidence, fresh validation proof, assumptions, risks, open questions, and next recommended state.",
@@ -5514,6 +5538,7 @@ def test_command_filenames_must_be_lowercase_kebab_case(tmp_path):
             "## Input contract",
             "Raw request.",
             "## Workflow",
+            "Inspect `git status --short` and preserve user changes before modifying files, running write-capable tools, or trusting generated artifacts.",
             "Inspect inputs and decide the next action.",
             "## Output",
             "A concrete next action with decision, evidence, fresh validation proof, assumptions, risks, open questions, and next recommended state.",
@@ -5546,6 +5571,7 @@ def test_command_filenames_must_use_brain_prefix(tmp_path):
             "## Input contract",
             "Raw request.",
             "## Workflow",
+            "Inspect `git status --short` and preserve user changes before modifying files, running write-capable tools, or trusting generated artifacts.",
             "Inspect inputs and decide the next action.",
             "## Output",
             "A concrete next action with decision, evidence, fresh validation proof, assumptions, risks, open questions, and next recommended state.",
@@ -5578,6 +5604,7 @@ def test_commands_must_name_skills_to_load(tmp_path):
             "## Input contract",
             "Raw request.",
             "## Workflow",
+            "Inspect `git status --short` and preserve user changes before modifying files, running write-capable tools, or trusting generated artifacts.",
             "Inspect inputs and decide the next action.",
             "## Output",
             "A concrete next action with decision, evidence, fresh validation proof, assumptions, risks, open questions, and next recommended state.",

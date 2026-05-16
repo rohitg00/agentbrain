@@ -27,13 +27,14 @@ If required inputs are missing, ask at most three blocking questions or state ex
 
 ## Workflow
 
-1. Confirm the active slice is approved, narrow, and has acceptance checks.
-2. For behavior changes, write or identify the failing test before implementation; for docs, schema, command, or harness changes, create validator-first proof before editing the protected artifact.
-3. Implement only that slice; do not opportunistically expand scope.
-4. Do not refactor while red: wait until the targeted test or validator passes, then make cleanup changes in the smallest safe step.
-5. Keep notes on changed files, commands run, assumptions, and risks.
-6. Produce changed artifacts plus implementation notes and route to verification.
-7. Stop if tests, approvals, secrets, or production access are required but unavailable.
+1. Inspect `git status --short` and preserve user changes before modifying files, running write-capable tools, or trusting generated artifacts.
+2. Confirm the active slice is approved, narrow, and has acceptance checks.
+3. For behavior changes, write or identify the failing test before implementation; for docs, schema, command, or harness changes, create validator-first proof before editing the protected artifact.
+4. Implement only that slice; do not opportunistically expand scope.
+5. Do not refactor while red: wait until the targeted test or validator passes, then make cleanup changes in the smallest safe step.
+6. Keep notes on changed files, commands run, assumptions, and risks.
+7. Produce changed artifacts plus implementation notes and route to verification.
+8. Stop if tests, approvals, secrets, or production access are required but unavailable.
 
 ## Output
 

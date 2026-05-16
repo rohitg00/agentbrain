@@ -704,6 +704,10 @@ REQUIRED_COMMAND_INPUT_CONTRACT_TERMS = [
     "approval state",
 ]
 REQUIRED_COMMAND_QUALITY_BAR_TERMS = ["fresh validation proof"]
+REQUIRED_COMMAND_WORKFLOW_USER_CHANGE_TERMS = [
+    "git status --short",
+    "preserve user changes",
+]
 REQUIRED_SKILL_OUTPUT_ARTIFACT_RESUME_FIELDS = ["evidence", "blockers", "next action"]
 GENERIC_SKILL_WHEN_NOT_TO_USE = (
     "do not use this skill when a simpler checklist, script, or existing command handles the work safely."
@@ -2044,6 +2048,11 @@ def validate(root: Path = ROOT) -> list[str]:
                 errors.append(f"{rel(command, root)} output must mention: {required_term}")
         workflow = normalized_section_body(text, "## Workflow")
         if workflow:
+            for required_term in REQUIRED_COMMAND_WORKFLOW_USER_CHANGE_TERMS:
+                if required_term not in workflow:
+                    errors.append(
+                        f"{rel(command, root)} workflow must preserve user changes before action: {required_term}"
+                    )
             if workflow in seen_workflows:
                 errors.append(
                     f"{rel(command, root)} workflow duplicates {seen_workflows[workflow]}"

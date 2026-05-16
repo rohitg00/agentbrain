@@ -29,11 +29,12 @@ If required inputs are missing, ask at most three blocking questions or state ex
 
 ## Workflow
 
-1. List every important claim the artifact makes.
-2. Collect proof through tests, logs, traces, screenshots, citations, diffs, or human approval.
-3. Use `qa-evidence`; add `runtime-smoke` when a real agent runtime, adapter, sandbox mode, or `/brain-*` command boundary is part of the claim; add `ci-recovery` for remote workflow failures or stale CI claims; add `agent-output-verifier` for agent-produced claims.
-4. Produce QA Evidence with pass/fail status, commands, outputs, and unchecked areas.
-5. Stop if proof is missing or the artifact cannot be verified safely.
+1. Inspect `git status --short` and preserve user changes before modifying files, running write-capable tools, or trusting generated artifacts.
+2. List every important claim the artifact makes.
+3. Collect proof through tests, logs, traces, screenshots, citations, diffs, or human approval.
+4. Use `qa-evidence`; add `runtime-smoke` when a real agent runtime, adapter, sandbox mode, or `/brain-*` command boundary is part of the claim; add `ci-recovery` for remote workflow failures or stale CI claims; add `agent-output-verifier` for agent-produced claims.
+5. Produce QA Evidence with pass/fail status, commands, outputs, and unchecked areas.
+6. Stop if proof is missing or the artifact cannot be verified safely.
 
 ## Output
 

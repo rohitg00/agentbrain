@@ -27,11 +27,12 @@ If required inputs are missing, ask at most three blocking questions or state ex
 
 ## Workflow
 
-1. Confirm verification and review evidence are current.
-2. Use `launch-gate` to check rollout, rollback, monitoring, support, and ownership.
-3. Use `qa-evidence` if release proof is incomplete.
-4. Produce a Launch Checklist with go/no-go decision, risks, rollback, and follow-up.
-5. Stop if rollback, approval, or monitoring is missing for a risky change.
+1. Inspect `git status --short` and preserve user changes before modifying files, running write-capable tools, or trusting generated artifacts.
+2. Confirm verification and review evidence are current.
+3. Use `launch-gate` to check rollout, rollback, monitoring, support, and ownership.
+4. Use `qa-evidence` if release proof is incomplete.
+5. Produce a Launch Checklist with go/no-go decision, risks, rollback, and follow-up.
+6. Stop if rollback, approval, or monitoring is missing for a risky change.
 
 ## Output
 

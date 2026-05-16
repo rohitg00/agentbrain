@@ -27,11 +27,12 @@ If required inputs are missing, ask at most three blocking questions or state ex
 
 ## Workflow
 
-1. Start from an approved brief/design and list all constraints.
-2. Use `plan-slicing` to split work into the smallest independently verifiable slices.
-3. Attach acceptance checks, rollback notes, and dependencies to each slice.
-4. Produce an Implementation Plan that a builder can execute without guessing.
-5. Stop if the work is too broad, untestable, or missing a first reversible slice.
+1. Inspect `git status --short` and preserve user changes before modifying files, running write-capable tools, or trusting generated artifacts.
+2. Start from an approved brief/design and list all constraints.
+3. Use `plan-slicing` to split work into the smallest independently verifiable slices.
+4. Attach acceptance checks, rollback notes, and dependencies to each slice.
+5. Produce an Implementation Plan that a builder can execute without guessing.
+6. Stop if the work is too broad, untestable, or missing a first reversible slice.
 
 ## Output
 

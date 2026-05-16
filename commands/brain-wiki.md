@@ -28,11 +28,12 @@ If required inputs are missing, ask at most three blocking questions or state ex
 
 ## Workflow
 
-1. Check the source material, target knowledge area, owner, and staleness risk.
-2. Use `wiki-maintenance`; add `activity-recap` for recent local repo evidence and `evidence-research` for external claims or freshness.
-3. Update project knowledge with citations, decisions, and open questions.
-4. Produce a Wiki Update summarizing changed pages, evidence, and follow-up.
-5. Stop if sources are missing, conflicting, or too weak for a durable knowledge update.
+1. Inspect `git status --short` and preserve user changes before modifying files, running write-capable tools, or trusting generated artifacts.
+2. Check the source material, target knowledge area, owner, and staleness risk.
+3. Use `wiki-maintenance`; add `activity-recap` for recent local repo evidence and `evidence-research` for external claims or freshness.
+4. Update project knowledge with citations, decisions, and open questions.
+5. Produce a Wiki Update summarizing changed pages, evidence, and follow-up.
+6. Stop if sources are missing, conflicting, or too weak for a durable knowledge update.
 
 ## Output
 

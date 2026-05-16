@@ -29,11 +29,12 @@ If required inputs are missing, ask at most three blocking questions or state ex
 
 ## Workflow
 
-1. Identify which assumptions are product, market, design, engineering, safety, or launch risks.
-2. Load the relevant grill skills and challenge the strongest weak points first.
-3. Write rebuttals, failure modes, counterexamples, and kill criteria.
-4. Produce a Grill Report with must-fix blockers and the safest next state.
-5. Stop if the idea should be killed, narrowed, or rerouted before planning.
+1. Inspect `git status --short` and preserve user changes before modifying files, running write-capable tools, or trusting generated artifacts.
+2. Identify which assumptions are product, market, design, engineering, safety, or launch risks.
+3. Load the relevant grill skills and challenge the strongest weak points first.
+4. Write rebuttals, failure modes, counterexamples, and kill criteria.
+5. Produce a Grill Report with must-fix blockers and the safest next state.
+6. Stop if the idea should be killed, narrowed, or rerouted before planning.
 
 ## Output
 
