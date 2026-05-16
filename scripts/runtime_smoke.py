@@ -536,6 +536,12 @@ def validate_report_against_schema(
         transcript_path = report.get("transcript_path")
         if transcript_path == "not_captured_stdout_only":
             errors.append("pass smoke_result requires a durable transcript_path")
+        elif root is not None and isinstance(transcript_path, str) and not transcript_path_is_external_reference(transcript_path):
+            transcript_file = Path(root) / transcript_path
+            if not transcript_file.is_file():
+                errors.append(f"pass runtime smoke transcript file is missing: {transcript_path}")
+            elif transcript_file.stat().st_size == 0:
+                errors.append(f"pass runtime smoke transcript file is empty: {transcript_path}")
         if isinstance(transcript_path, str) and not exact_command_has_flag_value(
             report.get("exact_command"), "--transcript-path", transcript_path
         ):
