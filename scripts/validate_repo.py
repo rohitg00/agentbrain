@@ -560,6 +560,12 @@ REQUIRED_ADAPTER_COMMAND_BOUNDARY_TERMS = [
     "native commands",
     "do not invent",
 ]
+REQUIRED_ADAPTER_NONINTERACTIVE_FALLBACK_TERMS = [
+    "noninteractive",
+    "do not ask questions",
+    "documented assumptions",
+    "blocker",
+]
 REQUIRED_ADAPTER_RUNTIME_SMOKE_ARTIFACT_TERMS = [
     "templates/runtime-smoke.md",
     "schemas/runtime-smoke.schema.json",
@@ -2644,6 +2650,11 @@ def validate(root: Path = ROOT) -> list[str]:
                 if required_term not in minimal_instruction_body_lower:
                     errors.append(
                         f"{rel(markdown_file, root)} minimal instruction must document command boundary: {required_term}"
+                    )
+            for required_term in REQUIRED_ADAPTER_NONINTERACTIVE_FALLBACK_TERMS:
+                if required_term not in minimal_instruction_body_lower:
+                    errors.append(
+                        f"{rel(markdown_file, root)} minimal instruction must document noninteractive fallback: {required_term}"
                     )
             adapter_validation_body = section_body(adapter_text, "## Validation")
             for artifact_term in REQUIRED_ADAPTER_RUNTIME_SMOKE_ARTIFACT_TERMS:
