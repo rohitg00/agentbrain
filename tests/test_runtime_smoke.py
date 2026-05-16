@@ -54,6 +54,24 @@ def test_pass_runtime_smoke_rejects_unknown_runtime_version(tmp_path: Path):
     assert any("pass smoke_result requires a concrete runtime version" in error for error in errors)
 
 
+def test_build_report_evidence_names_writable_temp_dir_status(tmp_path: Path):
+    report = runtime_smoke.build_report(
+        root=tmp_path,
+        runtime="generic-cli-runtime",
+        version="1.2.3",
+        sandbox_write_mode="read_only",
+        brain_command_mode="markdown_specs",
+        run_scope="read_only_smoke",
+        blocked_commands=["python -m pytest -q"],
+        exact_command="python scripts/runtime_smoke.py --runtime generic-cli-runtime --version 1.2.3 --run-scope read_only_smoke",
+    )
+
+    assert any(
+        line.startswith("Writable temp-dir status: ") and report["writable_temp_dir_status"] in line
+        for line in report["evidence"]
+    )
+
+
 def test_build_report_emits_schema_valid_runtime_smoke_for_plain_checkout(tmp_path: Path):
     report = runtime_smoke.build_report(
         root=tmp_path,

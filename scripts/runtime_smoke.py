@@ -157,9 +157,11 @@ def build_report(
     }
     fetch_result = git_fetch_result(root)
     freshness = git_freshness_result(root)
+    temp_dir_status = writable_temp_dir_status(root)
     evidence = [
         f"Runtime smoke captured for {runtime} {version} as {scope_label}.",
         f"Python executable: {sys.executable}",
+        f"Writable temp-dir status: {temp_dir_status}",
         f"/brain-* command mode: {command_label}.",
         f"Selected command: {selected_command}",
         f"Loaded skills: {', '.join(loaded_skills) if loaded_skills else 'none'}",
@@ -183,7 +185,7 @@ def build_report(
         "runtime": runtime,
         "version": version,
         "python_executable": sys.executable,
-        "writable_temp_dir_status": writable_temp_dir_status(root),
+        "writable_temp_dir_status": temp_dir_status,
         "git_fetch_result": fetch_result,
         "git_freshness_result": freshness,
         "exact_command": exact_command,

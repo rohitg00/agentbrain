@@ -35,6 +35,7 @@
     "Loaded skills: intake, agent-output-verifier",
     "Adapter path: adapters/read-only-cli/README.md",
     "Git fetch result: fetched: git fetch origin main succeeded",
+    "Writable temp-dir status: writable",
     "Git freshness result: fresh: HEAD equals origin/main at example-commit",
     "Command exit status: 0",
     "Smoke result: blocked because local tests could not run in read-only smoke",
