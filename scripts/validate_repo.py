@@ -80,6 +80,7 @@ REQUIRED_STATE_MACHINE_DOC_STATES = [
 ]
 REQUIRED_SKILLS = [
     "skills/activity-recap/SKILL.md",
+    "skills/adapter-capability-probe/SKILL.md",
     "skills/agent-output-verifier/SKILL.md",
     "skills/context-memory/SKILL.md",
     "skills/domain-language/SKILL.md",
