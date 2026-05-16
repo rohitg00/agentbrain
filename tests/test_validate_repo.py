@@ -1163,7 +1163,7 @@ def write_minimal_repo(root: Path) -> None:
                 "title": "Runtime Smoke",
                 "type": "object",
                 "additionalProperties": False,
-                "required": ["runtime", "version", "python_executable", "writable_temp_dir_status", "git_fetch_result", "git_freshness_result", "exact_command", "command_exit_status", "smoke_result", "transcript_path", "transcript_redaction_status", "sandbox_write_mode", "brain_command_mode", "selected_command", "loaded_skills", "adapter_path", "blocked_commands", "run_scope", "validation_commands", "evidence"],
+                "required": ["runtime", "version", "python_executable", "writable_temp_dir_status", "git_fetch_result", "git_freshness_result", "git_worktree_status", "exact_command", "command_exit_status", "smoke_result", "transcript_path", "transcript_redaction_status", "sandbox_write_mode", "brain_command_mode", "selected_command", "loaded_skills", "adapter_path", "blocked_commands", "run_scope", "validation_commands", "evidence"],
                 "properties": {
                     "runtime": {"type": "string"},
                     "version": {"type": "string"},
@@ -1171,6 +1171,7 @@ def write_minimal_repo(root: Path) -> None:
                     "writable_temp_dir_status": {"enum": ["writable", "blocked", "not_checked"]},
                     "git_fetch_result": {"type": "string"},
                     "git_freshness_result": {"type": "string"},
+                    "git_worktree_status": {"type": "string"},
                     "exact_command": {"type": "string"},
                     "command_exit_status": {"type": "integer", "minimum": 0},
                     "smoke_result": {"enum": ["pass", "blocked", "fail"]},
@@ -1252,6 +1253,7 @@ def write_minimal_repo(root: Path) -> None:
                 "writable_temp_dir_status": "writable",
                 "git_fetch_result": "fetched: git fetch origin main succeeded",
                 "git_freshness_result": "fresh: HEAD equals origin/main at abc123",
+                "git_worktree_status": "clean",
                 "exact_command": "agent-runtime --sandbox read-only",
                 "command_exit_status": 0,
                 "smoke_result": "pass",
@@ -1292,7 +1294,7 @@ def write_minimal_repo(root: Path) -> None:
         encoding="utf-8",
     )
     (templates_dir / "runtime-smoke.md").write_text(
-        "# Runtime Smoke\n\nSchema fields: `runtime`, `version`, `python_executable`, `writable_temp_dir_status`, `git_fetch_result`, `git_freshness_result`, `exact_command`, `command_exit_status`, `smoke_result`, `transcript_path`, `transcript_redaction_status`, `sandbox_write_mode`, `brain_command_mode`, `selected_command`, `loaded_skills`, `adapter_path`, `blocked_commands`, `run_scope`, `validation_commands`, `evidence`. A pass artifact requires loaded skills declared by selected command. Exact command guidance must record runtime label, runtime version, adapter path, sandbox write mode, brain command mode, and run scope. Runtime evidence must record transcript redaction status.\n",
+        "# Runtime Smoke\n\nSchema fields: `runtime`, `version`, `python_executable`, `writable_temp_dir_status`, `git_fetch_result`, `git_freshness_result`, `git_worktree_status`, `exact_command`, `command_exit_status`, `smoke_result`, `transcript_path`, `transcript_redaction_status`, `sandbox_write_mode`, `brain_command_mode`, `selected_command`, `loaded_skills`, `adapter_path`, `blocked_commands`, `run_scope`, `validation_commands`, `evidence`. A pass artifact requires loaded skills declared by selected command. Exact command guidance must record runtime label, runtime version, adapter path, sandbox write mode, brain command mode, and run scope. Runtime evidence must record transcript redaction status.\n",
         encoding="utf-8",
     )
     (templates_dir / "sample-routing-summary.md").write_text(

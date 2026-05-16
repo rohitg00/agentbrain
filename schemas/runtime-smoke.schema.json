@@ -10,6 +10,7 @@
     "writable_temp_dir_status",
     "git_fetch_result",
     "git_freshness_result",
+    "git_worktree_status",
     "exact_command",
     "command_exit_status",
     "smoke_result",
@@ -53,6 +54,11 @@
     "git_freshness_result": {
       "type": "string",
       "minLength": 1
+    },
+    "git_worktree_status": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(clean|dirty: [0-9]+ path\\(s\\) changed|unavailable: .+)$"
     },
     "exact_command": {
       "type": "string",

@@ -81,6 +81,16 @@ def git_fetch_result(root: Path) -> str:
     return f"fetched: git fetch origin main succeeded{suffix}"
 
 
+def git_worktree_status(root: Path) -> str:
+    status_ok, status_output = _run_git(root, "status", "--short")
+    if not status_ok:
+        return f"unavailable: {status_output}"
+    if not status_output:
+        return "clean"
+    changed_paths = [line.strip() for line in status_output.splitlines() if line.strip()]
+    return f"dirty: {len(changed_paths)} path(s) changed"
+
+
 def writable_temp_dir_status(root: Path) -> str:
     try:
         with tempfile.NamedTemporaryFile(prefix="agentbrain-smoke-", dir=root, delete=True) as handle:
@@ -157,6 +167,7 @@ def build_report(
     }
     fetch_result = git_fetch_result(root)
     freshness = git_freshness_result(root)
+    worktree_status = git_worktree_status(root)
     temp_dir_status = writable_temp_dir_status(root)
     evidence = [
         f"Runtime smoke captured for {runtime} {version} as {scope_label}.",
@@ -168,6 +179,7 @@ def build_report(
         f"Adapter path: {adapter_path}",
         f"Git fetch result: {fetch_result}",
         f"Git freshness result: {freshness}",
+        f"Git worktree status: {worktree_status}",
         f"Command exit status: {command_exit_status}",
         f"Smoke result: {smoke_result}",
         f"Transcript path: {transcript_path}",
@@ -188,6 +200,7 @@ def build_report(
         "writable_temp_dir_status": temp_dir_status,
         "git_fetch_result": fetch_result,
         "git_freshness_result": freshness,
+        "git_worktree_status": worktree_status,
         "exact_command": exact_command,
         "command_exit_status": command_exit_status,
         "smoke_result": smoke_result,
