@@ -285,6 +285,36 @@ def validate_report_against_schema(
         report.get("exact_command"), "--version", version
     ):
         errors.append(f"exact_command must record version flag: --version {version}")
+    selected_command = report.get("selected_command")
+    if isinstance(selected_command, str) and selected_command.startswith("/brain-") and not exact_command_has_flag_value(
+        report.get("exact_command"), "--selected-command", selected_command
+    ):
+        errors.append(f"exact_command must record selected command flag: --selected-command {selected_command}")
+    loaded_skills = report.get("loaded_skills")
+    if isinstance(loaded_skills, list):
+        for skill in loaded_skills:
+            if isinstance(skill, str) and skill and not exact_command_has_flag_value(
+                report.get("exact_command"), "--loaded-skill", skill
+            ):
+                errors.append(f"exact_command must record loaded skill flag: --loaded-skill {skill}")
+    adapter_path = report.get("adapter_path")
+    if isinstance(adapter_path, str) and adapter_path != "unknown" and not exact_command_has_flag_value(
+        report.get("exact_command"), "--adapter-path", adapter_path
+    ):
+        errors.append(f"exact_command must record adapter path flag: --adapter-path {adapter_path}")
+    sandbox_write_mode = report.get("sandbox_write_mode")
+    if isinstance(sandbox_write_mode, str) and not exact_command_has_flag_value(
+        report.get("exact_command"), "--sandbox-write-mode", sandbox_write_mode
+    ):
+        errors.append(f"exact_command must record sandbox write mode flag: --sandbox-write-mode {sandbox_write_mode}")
+    brain_command_mode = report.get("brain_command_mode")
+    if isinstance(brain_command_mode, str) and not exact_command_has_flag_value(
+        report.get("exact_command"), "--brain-command-mode", brain_command_mode
+    ):
+        errors.append(f"exact_command must record brain command mode flag: --brain-command-mode {brain_command_mode}")
+    run_scope = report.get("run_scope")
+    if isinstance(run_scope, str) and not exact_command_has_flag_value(report.get("exact_command"), "--run-scope", run_scope):
+        errors.append(f"exact_command must record run scope flag: --run-scope {run_scope}")
     if report.get("smoke_result") == "pass" and report.get("command_exit_status") != 0:
         errors.append("pass smoke_result requires command_exit_status 0")
     if report.get("smoke_result") == "fail" and report.get("command_exit_status") == 0:

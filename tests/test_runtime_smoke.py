@@ -392,6 +392,36 @@ def test_blocked_runtime_smoke_requires_exact_command_runtime_identity_flags(tmp
     assert any("exact_command must record version flag: --version 1.2.3" in error for error in errors)
 
 
+def test_blocked_runtime_smoke_requires_exact_command_route_and_boundary_flags(tmp_path: Path):
+    report = runtime_smoke.build_report(
+        root=tmp_path,
+        runtime="generic-cli-runtime",
+        version="1.2.3",
+        sandbox_write_mode="read_only",
+        brain_command_mode="markdown_specs",
+        run_scope="read_only_smoke",
+        blocked_commands=["python -m pytest -q blocked by read-only sandbox"],
+        exact_command=(
+            "python scripts/runtime_smoke.py --runtime generic-cli-runtime --version 1.2.3 "
+            "--blocked-command 'python -m pytest -q blocked by read-only sandbox'"
+        ),
+        command_exit_status=0,
+        smoke_result="blocked",
+        selected_command="/brain-verify",
+        loaded_skills=["runtime-smoke"],
+        adapter_path="adapters/read-only-cli/README.md",
+    )
+
+    errors = runtime_smoke.validate_report_against_schema(report, Path("schemas/runtime-smoke.schema.json"))
+
+    assert any("exact_command must record selected command flag: --selected-command /brain-verify" in error for error in errors)
+    assert any("exact_command must record loaded skill flag: --loaded-skill runtime-smoke" in error for error in errors)
+    assert any("exact_command must record adapter path flag: --adapter-path adapters/read-only-cli/README.md" in error for error in errors)
+    assert any("exact_command must record sandbox write mode flag: --sandbox-write-mode read_only" in error for error in errors)
+    assert any("exact_command must record brain command mode flag: --brain-command-mode markdown_specs" in error for error in errors)
+    assert any("exact_command must record run scope flag: --run-scope read_only_smoke" in error for error in errors)
+
+
 def test_runtime_smoke_schema_rejects_duplicate_loaded_skills():
     report = runtime_smoke.build_report(
         root=Path.cwd(),
