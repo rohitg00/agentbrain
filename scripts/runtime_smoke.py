@@ -470,6 +470,27 @@ def validate_report_against_schema(
     run_scope = report.get("run_scope")
     if isinstance(run_scope, str) and not exact_command_has_flag_value(report.get("exact_command"), "--run-scope", run_scope):
         errors.append(f"exact_command must record run scope flag: --run-scope {run_scope}")
+    smoke_result = report.get("smoke_result")
+    if isinstance(smoke_result, str) and not exact_command_has_flag_value(
+        report.get("exact_command"), "--smoke-result", smoke_result
+    ):
+        errors.append(f"exact_command must record smoke result flag: --smoke-result {smoke_result}")
+    command_exit_status = report.get("command_exit_status")
+    if isinstance(command_exit_status, int) and not exact_command_has_flag_value(
+        report.get("exact_command"), "--command-exit-status", str(command_exit_status)
+    ):
+        errors.append(
+            "exact_command must record command exit status flag: "
+            f"--command-exit-status {command_exit_status}"
+        )
+    transcript_redaction_status = report.get("transcript_redaction_status")
+    if isinstance(transcript_redaction_status, str) and not exact_command_has_flag_value(
+        report.get("exact_command"), "--transcript-redaction-status", transcript_redaction_status
+    ):
+        errors.append(
+            "exact_command must record transcript redaction status flag: "
+            f"--transcript-redaction-status {transcript_redaction_status}"
+        )
     capability_matrix = report.get("capability_matrix")
     if isinstance(capability_matrix, dict):
         native_brain_command_status = capability_matrix.get("native_brain_commands")

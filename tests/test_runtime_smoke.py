@@ -16,6 +16,36 @@ def test_checked_in_runtime_smoke_example_satisfies_runtime_validator():
     assert errors == []
 
 
+def test_blocked_runtime_smoke_requires_exact_command_result_flags(tmp_path: Path):
+    report = runtime_smoke.build_report(
+        root=tmp_path,
+        runtime="generic-cli-runtime",
+        version="1.2.3",
+        sandbox_write_mode="read_only",
+        brain_command_mode="markdown_specs",
+        run_scope="read_only_smoke",
+        blocked_commands=["python -m pytest -q blocked by read-only sandbox"],
+        command_exit_status=1,
+        smoke_result="blocked",
+        transcript_redaction_status="blocked",
+        exact_command=(
+            "python scripts/runtime_smoke.py --runtime generic-cli-runtime --version 1.2.3 "
+            "--run-scope read_only_smoke --sandbox-write-mode read_only "
+            "--brain-command-mode markdown_specs "
+            "--blocked-command 'python -m pytest -q blocked by read-only sandbox'"
+        ),
+    )
+
+    errors = runtime_smoke.validate_report_against_schema(report, Path("schemas/runtime-smoke.schema.json"))
+
+    assert "exact_command must record smoke result flag: --smoke-result blocked" in errors
+    assert "exact_command must record command exit status flag: --command-exit-status 1" in errors
+    assert (
+        "exact_command must record transcript redaction status flag: --transcript-redaction-status blocked"
+        in errors
+    )
+
+
 def test_runtime_smoke_rejects_secret_like_values_before_artifact_output(tmp_path: Path):
     token = "gh" + "p_" + "A" * 24
     report = runtime_smoke.build_report(
