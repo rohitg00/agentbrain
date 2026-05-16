@@ -1,25 +1,82 @@
 # Agent Brain
 
-Agent Brain is an evidence-first operating system for AI agents.
+<p align="center">
+  <a href="https://github.com/rohitg00/agentbrain/actions/workflows/quality.yml"><img src="https://github.com/rohitg00/agentbrain/actions/workflows/quality.yml/badge.svg" alt="Quality"></a>
+  <a href="https://github.com/rohitg00/agentbrain/blob/main/LICENSE"><img src="https://img.shields.io/github/license/rohitg00/agentbrain" alt="License"></a>
+  <a href="https://github.com/rohitg00/agentbrain/stargazers"><img src="https://img.shields.io/github/stars/rohitg00/agentbrain?style=social" alt="GitHub stars"></a>
+  <img src="https://img.shields.io/badge/Python-3.11-3776AB?logo=python&logoColor=white" alt="Python 3.11">
+  <img src="https://img.shields.io/badge/runtime-agent--agnostic-111827" alt="Agent agnostic">
+</p>
 
-It is meant to be dropped into a coding-agent workspace as a portable brain: commands, skills, schemas, templates, review gates, and evals that tell the agent how to think, when to stop, what to verify, and how to turn repeated work into maintainable skills.
+**A portable operating harness for coding agents.**
 
-The core question is not "how do we build this?"
+Agent Brain is a drop-in brain for agent workspaces: commands, skills, schemas,
+templates, review gates, evals, adapters, and handoff contracts that force
+evidence before code and verification before trust.
 
-The core question is:
+It is not a decorative prompt pack, an IDE plugin, or another agent framework.
+Bring the coding agent you already use. Agent Brain supplies the operating
+discipline around the model.
+
+Use it when you want an agent to stop guessing, pick the right lifecycle state,
+produce the right artifact, and prove the work before it claims progress.
+
+Works with agent runtimes that can read files and follow repository-local
+instructions: terminal coding agents, IDE agents, subagent runners,
+approval-gated runtimes, and custom CLI or hosted agents.
+
+Most agent failures are not syntax errors. They are judgment errors:
+
+- building the wrong thing,
+- trusting stale context,
+- skipping tests,
+- accepting vague requirements,
+- shipping without rollback,
+- turning one messy run into permanent memory.
+
+Agent Brain keeps the first question sharp:
 
 > Should this exist, should it be an agent, and what evidence would prove or kill it?
 
+It gives agents three non-negotiable habits:
+
+- **Plan before build.** Route vague requests through intake, research, challenge,
+  brief, design, and plan before implementation.
+- **Verify before trust.** Treat tests, logs, diffs, screenshots, citations, and
+  approvals as proof; treat confident summaries as claims.
+- **Learn only from evidence.** Turn repeated successful workflows into small,
+  neutral skills without copying external branding or temporary task chatter.
+
 ## Quickstart
 
-Use this repo as a harness, not as inspiration-only reading. Match CI by
-running the local gate with Python 3.11.
+### Try it in any coding agent
+
+Paste this into your agent:
+
+```text
+Use Agent Brain as your operating harness.
+
+Clone https://github.com/rohitg00/agentbrain, read AGENTBRAIN.md, PRINCIPLES.md, ANTI_RATIONALIZATION.md, and docs/state-machine.md, then choose the command in commands/ that matches my request.
+
+Do not build before evidence, plan, and verification are clear. Produce the required artifact from templates/ and schemas/. Stop if approval, secrets, loop limits, rollback, or validation evidence are missing.
+```
+
+Then give the agent a real request, for example:
+
+```text
+I want to build an agent that handles customer refunds. Use Agent Brain before planning implementation.
+```
+
+A good run should not jump to code. It should route through `/brain-start`, challenge whether an agent is appropriate, name the missing evidence, and produce a small artifact before any build work.
+
+### Run the local quality gate
+
+Agent Brain is documentation-first, but it is still tested. Match CI with Python 3.11.
 
 ```bash
 git clone https://github.com/rohitg00/agentbrain.git
 cd agentbrain
 python3 --version  # expect Python 3.11.x
-# If python3 is not Python 3.11, use python3.11 explicitly or stop and report the runtime blocker.
 python3 -m venv .venv
 source .venv/bin/activate
 python3 -m pip install -r requirements-dev.txt
@@ -32,19 +89,9 @@ git rev-parse HEAD
 git rev-parse origin/main
 ```
 
-Confirm HEAD equals origin/main before using the checkout as a harness. Run
-baseline validation before editing so new failures are not blamed on old
-repository drift.
+Confirm `HEAD equals origin/main` before using a checkout as a trustworthy harness. Run baseline validation before editing so new failures are not blamed on old repository drift.
 
-Before committing public changes, also run a targeted exact-name scrub for
-user-shared source names, internal tool names, and source-specific branding. The
-scrub requires at least one exact source name, and that name must be non-blank.
-It is case-insensitive, so spelling or casing drift cannot bypass the public copy
-gate. The scrub covers docs, commands, skills, templates, evals, adapters,
-schemas, and example artifacts because schema descriptions and JSON examples are
-also public harness copy. Whitespace-only placeholders are rejected instead of
-silently passing. Keep only neutral operator-pattern language unless the change
-is explicitly in an approved comparison or benchmark section.
+Maintainers only: if you are editing Agent Brain's public docs after studying a named repo, vendor, internal tool, or user-shared source, run the targeted exact-name scrub for that source name. It is case-insensitive and requires at least one exact source name. This is not part of normal user setup; it is only a leak check so inspiration does not become accidental branding.
 
 ```bash
 python scripts/scrub_public_copy.py <exact-source-name> [more-exact-names...]
@@ -58,59 +105,94 @@ Validation passed
 no whitespace diff errors
 ```
 
-If those commands do not pass, do not hand the repo to an autonomous agent yet. Fix validation first so the harness is trustworthy.
+If those commands do not pass, fix validation before handing the repo to an autonomous agent.
 
-## What Agent Brain Gives an Agent
+## What Agent Brain gives an agent
 
-Agent Brain gives agents a complete operating layer:
+Agent Brain gives a capable model a way to operate like a careful teammate instead of a blank prompt box.
 
-- a constitution for constructive disagreement,
-- anti-rationalization rules that prevent shortcut-taking,
-- a state machine for product and engineering work,
-- slash-command specs for repeated workflows,
-- portable skills with triggers, steps, verification, and examples,
-- artifact schemas for briefs, plans, reviews, QA evidence, and learning capture,
-- templates that keep output consistent,
-- eval cases that catch common agent failure modes,
-- review gates for trust, security, rollback, and launch readiness,
-- adapters for different runtimes without locking the core to one tool.
+- **A constitution:** constructive disagreement, stop conditions, approval gates.
+- **A lifecycle:** intake, research, challenge, decide, design, plan, build, verify, review, ship, learn.
+- **Slash-command specs:** repeatable workflows such as `/brain-plan`, `/brain-review`, and `/brain-learn`.
+- **Portable skills:** small procedures with triggers, inputs, steps, verification, examples, and failure modes.
+- **Artifact contracts:** schemas and templates for briefs, plans, reviews, QA evidence, runtime smoke reports, and handoffs.
+- **Evals:** cases that catch common agent failures before they become habits.
+- **Adapters:** guidance for runtimes that load markdown, skills, subagents, or approval-gated tools differently.
 
-The repo is intentionally documentation-first. The docs are the product because the product is a reusable decision and execution harness.
+The repo is intentionally portable. It is not a hosted runtime, IDE plugin, or model wrapper. It is the operating discipline layer you put on top of the agent you already use.
 
-## Philosophy Learned From Recent Builder Signals
+## When to use it
 
-Recent research across high-signal engineering, founder, and model-building communities points to three operating principles that Agent Brain now encodes:
+Use Agent Brain when the cost of a wrong agent action is higher than the cost of a few minutes of structure.
 
-1. **Fundamentals beat vibes.** A coding agent is only useful when the codebase, specs, tests, and feedback loops are strong enough for change to be safe.
-2. **Ambition needs orchestration.** Parallel agents and long-running goals can multiply output, but only if each worker has scope, evidence, stop conditions, and review.
-3. **Trust requires verification.** Confident summaries are not proof. Tests, logs, traces, diffs, screenshots, citations, and explicit approvals are the proof.
+Good fits:
 
-Agent Brain converts those principles into concrete controls: spec-before-build, small slices, source-backed claims, output verification, rollback checks, and learning capture.
+- planning a feature before implementation,
+- reviewing agent-written code,
+- turning a vague product idea into a real scope decision,
+- checking whether automation should exist at all,
+- collecting fresh proof before a handoff,
+- converting repeated success or failure into a maintained skill,
+- running agents in parallel without trusting their summaries blindly.
+
+Bad fits:
+
+- one-off toy prompts,
+- simple deterministic scripts,
+- tasks where a checklist or human approval queue is safer,
+- work that needs a production runtime, queue, dashboard, or hosted memory backend by itself.
+
+## See it work
+
+```text
+User: Build an agent for customer refunds.
+
+Agent Brain route:
+/brain-start
+  -> classify as high-risk automation
+/brain-should-this-exist
+  -> compare agent vs form vs checklist vs human approval queue
+/brain-grill
+  -> ask who approves refunds, what policy applies, and what abuse cases matter
+/brain-brief
+  -> write the smallest product scope with facts, assumptions, open questions, and kill criteria
+/brain-plan
+  -> only if the decision survives challenge
+```
+
+The useful answer might be: do not build an autonomous refund agent yet. Start with a policy-backed approval workflow and a read-only assistant. That is the point.
+
+## The workflow
+
+```text
+raw request
+  -> intake
+  -> should this exist?
+  -> research
+  -> grill
+  -> brief
+  -> design
+  -> plan
+  -> build
+  -> verify
+  -> review
+  -> ship
+  -> learn
+```
+
+The loop can stop early. Stopping early is success when evidence shows the idea is unsafe, overbuilt, or not worth building.
 
 ## Run as an Agent Harness
 
-For the full operating contract, see `docs/agent-harness.md`.
+For the full operating contract, read `docs/agent-harness.md`.
 
-Paste or attach the repo to a capable coding agent and give it this instruction:
-
-```text
-Use this repository as your operating harness.
-
-Start with AGENTBRAIN.md, PRINCIPLES.md, ANTI_RATIONALIZATION.md, and docs/state-machine.md.
-Then choose the command under commands/ that matches the user request.
-Load only the skills needed for the current state.
-Produce the required artifact using templates/ and schemas/.
-Run the validation commands before claiming completion.
-If evidence is missing, stop and report the blocker instead of inventing progress.
-```
-
-A good agent run should follow this loop:
+A capable agent should follow this sequence:
 
 ```text
 intake -> choose state -> load command -> load skill -> produce artifact -> verify -> review -> ship or learn
 ```
 
-For coding work, the harness should feel like this:
+For coding work, the normal path is:
 
 ```text
 request
@@ -119,6 +201,7 @@ request
 -> /brain-research when claims need sources
 -> /brain-grill when assumptions are soft
 -> /brain-brief when product scope is needed
+-> /brain-design when flows and states matter
 -> /brain-plan when implementation is ready
 -> /brain-build only after evidence and plan exist
 -> /brain-verify for tests and proof
@@ -135,69 +218,66 @@ Use this when you want another agent to apply Agent Brain precisely:
 You are working inside the Agent Brain repository.
 
 Rules:
-1. Do not build before choosing the correct Agent Brain state.
-2. Do not answer from confidence when evidence can be checked.
-3. Do not skip tests, validators, or review gates for speed.
-4. Do not preserve external source branding when distilling ideas into skills.
-5. Stop instead of recommending an agent when a script, form, checklist, or human process is safer.
-6. Every artifact must name facts, assumptions, open questions, evidence, artifact paths, risks, and the next state.
-7. Stop when evidence, approval, secrets handling, or loop limits are missing.
-8. Before final output, run: rm -rf scripts/__pycache__ tests/__pycache__ && python -m pytest -q && python scripts/validate_repo.py && git diff --check, then run a targeted exact-name scrub for source-specific names before public copy or commits.
-
-Start by reading AGENTBRAIN.md, PRINCIPLES.md, ANTI_RATIONALIZATION.md, and docs/state-machine.md, inspect git status --short and git log --oneline -5, preserve user changes before editing, then proceed through the matching command in commands/, load the required skills/, and use templates/ plus schemas/ for structured artifacts.
-Run baseline validation before editing so failures are not blamed on the new slice.
-If running noninteractively as a scheduled run, do not ask questions; use the safest documented default or stop with a blocker when the ambiguity changes the action.
+1. Start by reading AGENTBRAIN.md, PRINCIPLES.md, ANTI_RATIONALIZATION.md, and docs/state-machine.md.
+2. Inspect git status --short and git log --oneline -5.
+3. Run baseline validation before editing when the task changes repository files.
+4. Preserve user changes. Never overwrite unrelated local work.
+5. Choose the earliest safe lifecycle state, then load the matching command from commands/ and the required skills/.
+6. Produce the required artifact using templates/ and schemas/.
+7. Do not build before evidence, scope, and verification are clear.
+8. Stop when approval, secrets handling, loop limits, rollback, or evidence are missing.
+9. Before final output, run: rm -rf scripts/__pycache__ tests/__pycache__ && python -m pytest -q && python scripts/validate_repo.py && git diff --check.
+10. If maintaining public repo copy from external references, run the targeted exact-name scrub for the named sources.
+11. If running as a noninteractive scheduled run, do not ask questions. Use the safest documented default only when ambiguity does not change scope, safety, side effects, or approval.
 ```
 
 ## Repository Map
 
 ```text
-AGENTBRAIN.md                  # Constitution and operating loop
-PRINCIPLES.md                  # Behavioral principles
-ANTI_RATIONALIZATION.md        # Shortcut rebuttals
-CONTRIBUTING.md                # Contribution and validation workflow
-requirements-dev.txt           # Local validation dependencies
+AGENTBRAIN.md                  # constitution and operating loop
+PRINCIPLES.md                  # behavioral principles
+ANTI_RATIONALIZATION.md        # shortcut rebuttals
+CONTRIBUTING.md                # contribution and validation workflow
+requirements-dev.txt           # local validation dependencies
 .github/workflows/             # CI quality gate
-commands/                      # Slash command specs
-skills/                        # Portable agent skills
-schemas/                       # Machine-checkable artifact schemas
-examples/artifacts/            # Valid JSON examples for each published schema
-docs/                          # Architecture, state, memory, research, gates
-templates/                     # Artifact templates
-evals/                         # Cases and rubrics
-adapters/                      # Runtime-specific integration notes
-scripts/                       # Repository validation and runtime smoke artifact capture
+commands/                      # slash command specs
+skills/                        # portable agent skills
+schemas/                       # machine-checkable artifact schemas
+examples/artifacts/            # valid JSON examples for schemas
+docs/                          # architecture, state, memory, research, gates
+templates/                     # artifact templates
+evals/                         # cases and rubrics
+adapters/                      # runtime-specific integration notes
+scripts/                       # validation, scrub, and runtime smoke tooling
 ```
 
 ## Documentation Guide
 
-Use this guide to choose the supporting doc before loading commands or skills:
+Start here:
 
-- `docs/agent-harness.md` — fresh-checkout setup, operating loop, copyable harness prompt, stop conditions, and troubleshooting.
-- `docs/architecture.md` — repository architecture, package boundaries, artifacts, and validation responsibilities.
-- `docs/autonomous-goals.md` — how to scope long-running goals with measurable end states and loop limits.
-- `docs/shared-language.md` — glossary discipline for project terms, aliases, and naming conflicts.
-- `docs/decision-records.md` — when and how to record durable trade-offs without turning chat into history.
-- `docs/devex-engineering.md` — setup, validation, command routing, and recovery guidance for maintainable agent workflows.
-- `docs/ci-recovery.md` — inspect, reproduce, fix, and re-check remote workflow failures.
-- `docs/claims-we-reject.md` — claims and shortcuts the harness refuses without evidence.
-- `docs/ecosystem-review.md` — neutral ecosystem review criteria for evaluating external patterns.
-- `docs/grilling-protocol.md` — staged challenge process for weak assumptions and missing context.
-- `docs/implementation-plan.md` — current implementation guidance for moving from plan to verified slices.
-- `docs/implementation-roadmap.md` — staged roadmap for future harness hardening.
-- `docs/memory-model.md` — what belongs in durable project memory versus temporary task state.
-- `docs/non-agent-alternatives.md` — when to prefer scripts, checklists, forms, queues, or human review over an agent.
-- `docs/question-ladder.md` — progressive questioning patterns that narrow ambiguity without overwhelming the user.
-- `docs/research-synthesis.md` — source-grounded synthesis into operating principles and reusable guidance.
-- `docs/research-watchlist.md` — source classes to monitor while preserving neutral public copy.
-- `docs/review-gates.md` — product, design, engineering, security, QA, launch, and verifier gates.
-- `docs/skill-distillation.md` — converting external workflows into small neutral skills without copying branding.
-- `docs/skill-system.md` — skill anatomy, lifecycle fit, catalog rules, and maintenance expectations.
+- `docs/agent-harness.md` — setup, operating loop, stop conditions, and troubleshooting.
 - `docs/state-machine.md` — valid states, transitions, required artifacts, and stop conditions.
+- `docs/architecture.md` — repository architecture and validation responsibilities.
+- `docs/review-gates.md` — product, design, engineering, security, QA, launch, and verifier gates.
+- `docs/non-agent-alternatives.md` — when a script, checklist, form, queue, or human review is better.
+- `docs/skill-system.md` — skill anatomy, lifecycle fit, catalog rules, and maintenance.
+- `docs/skill-distillation.md` — turn external workflows into neutral skills without copying branding.
+- `docs/memory-model.md` — what belongs in durable memory versus temporary task state.
+- `docs/ci-recovery.md` — inspect, reproduce, fix, and re-check remote workflow failures.
+- `docs/devex-engineering.md` — setup, validation, command routing, and recovery guidance.
+- `docs/autonomous-goals.md` — scope long-running goals with measurable end states and loop limits.
+- `docs/shared-language.md` — keep project terms, aliases, and naming conflicts explicit.
+- `docs/decision-records.md` — record durable trade-offs without turning chat into history.
+- `docs/claims-we-reject.md` — claims and shortcuts the harness refuses without evidence.
+- `docs/ecosystem-review.md` — neutral criteria for evaluating external patterns.
+- `docs/grilling-protocol.md` — staged challenge process for weak assumptions.
+- `docs/implementation-plan.md` — guidance for moving from plan to verified slices.
+- `docs/implementation-roadmap.md` — checkpoint ledger for harness hardening.
+- `docs/question-ladder.md` — ask staged questions without overwhelming the user.
+- `docs/research-synthesis.md` — turn sources into operating principles.
+- `docs/research-watchlist.md` — source classes to monitor while preserving neutral public copy.
 
 ## Core State Machine
-
-Agent Brain uses states so the agent cannot jump straight from vague intent to code.
 
 ```text
 INTAKE
@@ -213,7 +293,7 @@ INTAKE
 -> LEARN
 ```
 
-Each state should answer:
+Each state answers:
 
 - What artifact is required?
 - What evidence is needed?
@@ -223,17 +303,17 @@ Each state should answer:
 
 ## Command Selection Guide
 
-Use this guide before reading individual command files. Pick the earliest state that matches the request, then load the command spec and only the skills it names. The selected command must also name the output artifact; when it does not, use the closest template or command output contract and record the gap as a validator-backed improvement.
+Use this guide before reading individual command files. Pick the earliest safe lifecycle state that matches the request, especially when proof gaps or trust gaps appear. The selected command must name an output artifact, template, or command output contract.
 
 | Request shape | Start with | Use when |
 | --- | --- | --- |
 | Raw, ambiguous, or missing context | `/brain-start` | The agent needs to classify the request and choose the next safe state. |
 | Product idea or proposed automation | `/brain-should-this-exist` | The agent must test whether an agent, script, checklist, or human process is appropriate. |
-| Claims, market signals, APIs, or current facts | `/brain-research` | The work needs source-backed evidence before a brief, plan, or decision. |
+| Claims, market signals, APIs, or current facts | `/brain-research` | Work needs source-backed evidence before a brief, plan, or decision. |
 | Weak assumptions or fuzzy requirements | `/brain-grill` | The agent needs to challenge user, market, design, engineering, or risk assumptions. |
 | Product scope or user story | `/brain-brief` | The agent needs a concise product artifact with facts, assumptions, questions, risks, and acceptance criteria. |
 | Interface, workflow, or edge-case design | `/brain-design` | The agent needs to define states, flows, failure paths, and UX constraints. |
-| Implementation-ready work | `/brain-plan` | The agent needs small vertical slices with test and verification commands. |
+| Implementation-ready work | `/brain-plan` | The agent needs small vertical slices with tests and verification commands. |
 | Code or artifact creation | `/brain-build` | A plan exists and the next slice can be built with test-first or validator-first proof. |
 | Proof collection | `/brain-verify` | The agent needs tests, logs, traces, screenshots, citations, or diff evidence. |
 | Trust decision before handoff | `/brain-review` | The agent needs a focused review for correctness, safety, maintainability, and evidence gaps. |
@@ -242,13 +322,11 @@ Use this guide before reading individual command files. Pick the earliest state 
 | Project knowledge maintenance | `/brain-wiki` | The agent should update source-backed repo knowledge without preserving temporary task chatter. |
 | Harness quality check | `/brain-eval` | The agent should test a command, skill, or output against eval cases and rubrics. |
 
-Do not skip forward because the user asked for speed. If a request matches multiple rows, choose the earliest unsafe gap first, usually research, challenge, brief, or plan before build.
-
-If no command fits, do not invent a new route silently. Stop with the closest existing state, the missing contract, and the next validator-backed improvement so the harness grows deliberately instead of accumulating undocumented one-off behavior.
+If no command fits, do not invent a new route silently. Stop with the closest existing state, the missing contract, and the next validator-backed improvement.
 
 ## Artifact Routing Guide
 
-Use this guide when a command says to produce an artifact. Start with the command output, then choose the closest template and validate against the matching schema when one exists. For JSON-shaped artifacts, inspect `examples/artifacts/<schema-name>.example.json` before inventing field names; the validator keeps every example aligned with its schema.
+Use the command output first, then the closest template. Validate against the matching schema when one exists.
 
 | Work product | Use this file | Schema / contract |
 | --- | --- | --- |
@@ -273,40 +351,38 @@ Use this guide when a command says to produce an artifact. Start with the comman
 | Decision or killed path | `docs/state-machine.md` archive state | `schemas/decision-log.schema.json` |
 | Unknowns and assumptions | `docs/grilling-protocol.md` | `schemas/assumption-ledger.schema.json` |
 
-If no template fits, do not invent a new format silently. State the closest existing artifact, explain the gap, and add a validator-backed template/schema improvement as a separate hardening slice.
+If no template fits, stop and record the gap instead of inventing a private format.
 
 ## Handoff Contract
 
-Every agent handoff should be useful without private chat context. End each run, review, or blocked stop with the smallest artifact that names:
+Every handoff should be useful without private chat context. End each run, review, or blocked stop with:
 
-- **State:** current Agent Brain state and command used.
-- **Decision:** `continue`, `blocked`, `needs-review`, `ready-to-ship`, or `killed`.
-- **Evidence checked:** files, commands, logs, sources, screenshots, traces, or diffs actually inspected.
-- **Fresh validation proof:** command, exit status, and relevant output from the current run when tests, validators, CI, or quality gates are part of the claim.
-- **Artifact paths:** templates, schemas, logs, reports, or changed files the next agent must inspect before continuing.
-- **Facts:** verified statements only.
-- **Assumptions:** unverified beliefs that influenced the next action.
-- **Open questions:** missing information that changes scope, safety, or priority.
-- **Risks:** security, privacy, product, rollback, reliability, or maintenance concerns.
-- **Next action:** the smallest safe step, including the command, skill, template, or validator to use next.
+- state,
+- decision,
+- evidence checked,
+- fresh validation proof,
+- artifact paths,
+- facts,
+- assumptions,
+- open questions,
+- risks,
+- next action.
 
-Do not summarize intent as if it were evidence. If the handoff cannot name proof, mark it `blocked` and route to `/brain-verify`, `/brain-review`, or `/brain-research` before continuing.
-
-When resuming from a previous handoff, treat the handoff as stale until the current files, blockers, risks, and validation commands confirm it. Resume only the named next action; do not replay broad discovery, skip recorded blockers, or widen scope just because an earlier note sounded complete.
+When resuming from a previous handoff, treat it as stale until current files, blockers, risks, and validation commands confirm it. Resume only the named next action.
 
 ## Evidence Freshness Rules
 
-Fresh proof must be specific enough for the next agent to rerun or audit it. For every validation, CI, scrub, source check, or review claim, record:
+Fresh proof must include:
 
-- the exact **command** or source lookup,
-- the **result** and exit status or decision,
-- the **date or commit** the proof applies to,
-- the **artifact checked**, such as a file, schema, template, command, skill, eval, workflow, log, or source,
-- the **source provenance** for claims that came from docs, release notes, issues, benchmarks, traces, or external references,
-- the **recheck trigger** that would make the proof stale, such as changed files, dependency updates, CI drift, source updates, or missing approval,
-- the **expiry** or freshness window when evidence depends on current external state.
+- command,
+- result,
+- date or commit,
+- artifact checked,
+- source provenance,
+- recheck trigger,
+- expiry when evidence depends on external state.
 
-Do not reuse stale validation proof after code, docs, schemas, templates, commands, skills, evals, CI, or dependencies change. If any recheck trigger fires or expiry passes, rerun the narrow check and then the full quality gate before handoff.
+Stale validation proof cannot be reused after code, docs, schemas, templates, commands, skills, evals, CI, or dependencies change. Rerun the narrow check and then the full quality gate.
 
 ## Core Commands
 
@@ -332,7 +408,7 @@ Do not reuse stale validation proof after code, docs, schemas, templates, comman
 - `agent-output-verifier` — block unsafe or unsupported agent output before trust or handoff.
 - `artifact-contract` — keep command outputs, templates, schemas, examples, handoff fields, and validators aligned.
 - `ci-recovery` — inspect, reproduce, fix, and re-check remote workflow failures.
-- `command-routing` — choose or verify `/brain-*` routes against the command catalog, command file, loaded skills, artifact contract, and stop condition.
+- `command-routing` — choose or verify `/brain-*` routes against command files, loaded skills, artifacts, and stop conditions.
 - `context-memory` — choose what to remember, retrieve, update, or deliberately forget.
 - `domain-language` — resolve project vocabulary, aliases, and glossary-vs-decision routing.
 - `design-grill` — challenge interface, states, and edge cases before build work.
@@ -351,37 +427,35 @@ Do not reuse stale validation proof after code, docs, schemas, templates, comman
 
 ## Adapter Guide
 
-Use adapters when the runtime cannot load Agent Brain directly. Each adapter must keep the same setup, evidence, stop-condition, and validation contracts as the core harness.
+Use adapters when a runtime cannot load Agent Brain directly:
 
-- `adapters/read-only-cli/README.md` — run CLI agent-runtime smoke checks while preserving sandbox, Python, and markdown-command constraints.
-- `adapters/subagent-runtime/README.md` — run subagent-capable runtimes with file-backed command routing, join reviews, and terminal-friendly handoffs.
-- `adapters/approval-gateway-runtime/README.md` — run approval-gated gateway smoke checks with explicit approval, skill-loading, and fallback evidence.
-- `adapters/skill-runtime/README.md` — wire Agent Brain into a tool-enabled skill runtime while preserving portable command and skill contracts.
-- `adapters/plain-markdown/README.md` — run Agent Brain in agents that can only read markdown files and need manual command/skill routing.
+- `adapters/read-only-cli/README.md` — CLI runtime smoke checks with sandbox, Python, and markdown-command constraints.
+- `adapters/subagent-runtime/README.md` — subagent-capable runtimes with file-backed command routing and join reviews.
+- `adapters/approval-gateway-runtime/README.md` — approval-gated gateway smoke checks with explicit approval and fallback evidence.
+- `adapters/skill-runtime/README.md` — tool-enabled skill runtimes while preserving portable command and skill contracts.
+- `adapters/plain-markdown/README.md` — agents that only read markdown files and need manual command/skill routing.
 
 ## Edge Cases and Stop Conditions
-
-Agent Brain is strict because most agent failures are not syntax errors. They are process errors.
 
 Stop instead of proceeding when:
 
 - the user is undefined,
 - the problem is generic or not worth solving,
-- the request is better handled by a script, checklist, form, or human approval queue,
+- a script, checklist, form, or human approval queue is safer,
 - success metrics are missing,
 - source claims are not backed by inspectable evidence,
 - the agent is about to build before a spec or plan exists,
 - implementation slices are too large to verify independently,
 - tests are skipped because the change feels small,
 - a tool call, file write, public post, deploy, payment, side effect, or destructive action lacks explicit approval evidence,
-- the output claims tests passed but does not include test logs,
+- output claims tests passed without logs,
 - a background loop, retry worker, scheduled run, or unattended maintenance job has no stop condition,
 - a noninteractive run would need user clarification before a scoped or destructive decision,
 - secret-like values or private data appear in output,
 - rollback is undefined for a shipped change,
 - learning capture would preserve temporary task state instead of durable workflow knowledge.
 
-When stopped, the agent should output:
+Blocked output should be short:
 
 ```text
 Status: blocked
@@ -391,74 +465,9 @@ Missing evidence: <what would unblock>
 Safe next action: <smallest next step>
 ```
 
-## Detailed Workflow Examples
-
-### Example: Raw Startup Idea
-
-```text
-User: Build an agent for customer refunds.
-```
-
-Correct path:
-
-1. `/brain-start` classifies it as high-risk automation.
-2. `/brain-should-this-exist` checks whether an agent is appropriate.
-3. `problem-grill` asks who the user is, what policy governs refunds, and what approval is required.
-4. Non-agent alternatives are considered: form, queue, policy checklist, human approval.
-5. Security and trust gates require human-in-loop approval.
-6. Only then can a product brief or implementation plan exist.
-
-Wrong path:
-
-```text
-Jump directly to building an autonomous refund agent.
-```
-
-### Example: Agent-Written Code Handoff
-
-```text
-Agent: I fixed the bug, tests pass, and deployed it.
-```
-
-Correct path:
-
-1. Load `agent-output-verifier`.
-2. Require the test command and logs.
-3. Inspect the diff and changed files.
-4. Check whether deploy was in scope.
-5. Check for secrets and private data.
-6. Check background jobs and retry loops for stop conditions.
-7. Return `pass`, `pass-with-warnings`, or `blocked`.
-
-Wrong path:
-
-```text
-Trust the summary because it sounds complete.
-```
-
-### Example: External Workflow Source
-
-```text
-User: Learn from this repo/tool/thread.
-```
-
-Correct path:
-
-1. Extract the operator job, not the brand.
-2. Identify trigger, inputs, steps, output, evidence, and failure modes.
-3. Create or update a neutral skill, doc, eval, or validator.
-4. Add tests if the behavior should not regress.
-5. Keep public copy neutral unless the work is explicitly a comparison or benchmark.
-
-Wrong path:
-
-```text
-Copy the source name, positioning, or commands into public docs.
-```
-
 ## Quality Gates
 
-Before a change is trusted, run the matching gates from `docs/review-gates.md`:
+Before trusting a change, run the matching gates from `docs/review-gates.md`:
 
 - Product Gate: user, problem, scope, success metric, kill criteria.
 - Design Gate: flows, states, copy, accessibility, edge cases.
@@ -471,7 +480,7 @@ Before a change is trusted, run the matching gates from `docs/review-gates.md`:
 
 ## Validation
 
-Run the local quality gate before committing changes:
+Run this before committing changes:
 
 ```bash
 python3 -m pip install -r requirements-dev.txt
@@ -479,11 +488,11 @@ rm -rf scripts/__pycache__ tests/__pycache__
 python -m pytest -q
 python scripts/validate_repo.py
 git diff --check
+# Maintainer-only leak check after using named external references:
 python scripts/scrub_public_copy.py <exact-source-name> [more-exact-names...]
 ```
 
-When testing a real agent runtime or adapter, capture a schema-valid smoke
-artifact instead of relying on a prose summary:
+When testing a real runtime or adapter, capture a schema-valid smoke artifact:
 
 ```bash
 python scripts/runtime_smoke.py \
@@ -504,85 +513,40 @@ python scripts/runtime_smoke.py \
   --output runtime-smoke.local.json
 ```
 
-The artifact must be checked against `schemas/runtime-smoke.schema.json` before
-adapter behavior is trusted. Use neutral runtime labels, record transcript redaction status, and record blocked
-commands honestly; do not call read-only smoke a full validation run.
-
-Also run a targeted exact-name scrub before committing public copy changes:
-
-```bash
-python - <<'PY'
-from scripts.validate_repo import validate
-errors = [error for error in validate() if "banned public-copy term" in error]
-print("\n".join(errors) or "Exact-name scrub passed")
-raise SystemExit(bool(errors))
-PY
-```
-
-The same checks run in GitHub Actions on every push and pull request.
+Do not call read-only smoke a full validation run.
 
 ## Troubleshooting
 
 ### `git status --short` shows a dirty working tree
 
-Do not overwrite local work just to make the harness look clean. Preserve user changes first:
+Do not overwrite local work to make the harness look clean. Preserve user changes first:
 
-1. Inspect `git status --short` and `git diff` to separate user work from your intended slice.
-2. Stage and commit only the files that belong to the current change, or stop with a handoff if unrelated changes are present.
-3. Never run cleanup, reset, checkout, or format commands that could erase unowned edits without explicit approval.
-4. Report the dirty working tree as a blocker when you cannot prove which changes are yours.
+1. Inspect `git status --short` and `git diff`.
+2. Separate user work from your intended slice.
+3. Stage and commit only files that belong to the current change.
+4. Stop with a handoff if unrelated changes are present.
 
 ### Validation says a command is missing from README
 
-Add the command to the Core Commands list with backticks, for example:
-
-```text
-- `/brain-start` — short action-oriented description.
-```
+Add the command to the Core Commands list with backticks.
 
 ### Validation says a skill is missing from README
 
-Add the skill to the Core Skills list with backticks, for example:
-
-```text
-- `example-skill` — short trigger-oriented description.
-```
+Add the skill to the Core Skills list with backticks.
 
 ### A skill fails validation
 
-Check that `skills/<name>/SKILL.md` has:
-
-- frontmatter delimited by `---`,
-- `name:` matching the folder name,
-- `description:` starting with `Use when`,
-- exactly one H1 matching `# <name>`,
-- required sections in canonical order,
-- non-empty section bodies.
+Check that `skills/<name>/SKILL.md` has frontmatter, matching `name:`, a matching H1, and required sections in canonical order.
 
 ### An eval fails validation
 
-Check that `evals/cases/<slug>.md` has:
-
-- one H1 matching `# Eval Case: <Title From Slug>`,
-- `## User request`,
-- `## Expected behavior`,
-- `## Failure if`,
-- a catalog entry in `evals/README.md`.
+Check that `evals/cases/<slug>.md` has the required H1, `## User request`, `## Expected behavior`, `## Failure if`, and a catalog entry in `evals/README.md`.
 
 ### Public copy validation fails
 
-The repo blocks internal, vendor, and competitor-style naming in public copy. Convert names into neutral pattern classes such as:
+Convert internal, vendor, and source-specific naming into neutral pattern classes such as agent runtime, coding agent, skill library, harness, verifier, guardrail, review gate, or evaluation case.
 
-- agent runtime,
-- coding agent,
-- skill library,
-- harness,
-- verifier,
-- guardrail,
-- review gate,
-- evaluation case.
-
-If validation reports secret-like values, do not mask the validator warning by renaming the value. Remove the value from the repo, rotate it in the system where it was created, and replace public examples with redacted placeholders such as `<token-redacted>` or `<access-key-redacted>`.
+If validation reports secret-like values, remove the value, rotate it in the system where it was created, and replace public examples with redacted placeholders.
 
 ### Tests pass locally but CI fails
 
@@ -590,27 +554,28 @@ Run the exact CI sequence locally:
 
 ```bash
 python3 -m pip install -r requirements-dev.txt
+rm -rf scripts/__pycache__ tests/__pycache__
 python -m pytest -q
 python scripts/validate_repo.py
 git diff --check
 ```
 
-Then inspect `.github/workflows/quality.yml` for Python 3.11 drift plus missing install, test, validation, timeout, or read-only permission settings.
-
-Keep the cleanup step in this replay. A CI mismatch can be caused by tracked or generated Python cache files, so the exact local replay includes `rm -rf scripts/__pycache__ tests/__pycache__` before `python -m pytest -q`, `python scripts/validate_repo.py`, and `git diff --check`.
+Then inspect `.github/workflows/quality.yml` for Python 3.11 drift, missing install, test, validation, timeout, or read-only permission settings.
 
 ### Dependency bootstrap fails
 
-If validation fails with `ModuleNotFoundError` or a missing package before repository checks run, fix the setup path rather than editing around the missing dependency:
+If validation fails with `ModuleNotFoundError`, fix the virtual environment instead of editing around the missing dependency:
 
-1. Create or refresh a local Python 3.11 virtual environment if the workspace does not already have one.
-2. Re-run `python3 -m pip install -r requirements-dev.txt` from the repository root.
-3. Re-run `python -m pytest -q` before changing docs, skills, schemas, or validators.
-4. If install still fails, report the package manager output as the blocker and do not claim the harness is validated.
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+python3 -m pip install -r requirements-dev.txt
+python -m pytest -q
+```
 
 ### Generated cache validation fails
 
-If validation reports a generated Python cache file, remove the local artifact instead of cataloging or committing it:
+If validation reports a generated Python cache file, remove the local artifact:
 
 ```bash
 rm -rf scripts/__pycache__ tests/__pycache__ .pytest_cache
@@ -619,31 +584,22 @@ python scripts/validate_repo.py
 git diff --check
 ```
 
-If the file remains after cleanup, inspect whether it was accidentally tracked and remove it from version control in the same small hardening slice.
-
 ### Artifact contract validation fails
 
-If validation reports a schema/template mismatch, treat it as a broken harness contract, not a wording nit:
-
-1. Inspect the schema required fields and optional properties.
-2. Update the matching template with exact field tokens so future agents know what to produce.
-3. Update README artifact routing if the template or schema path changed.
-4. Re-run tests, repository validation, whitespace checks, and the targeted exact-name scrub before committing.
-
-Do not relax schemas just to make an existing template pass. The schema, template, and routing guide should describe the same artifact.
+If validation reports a schema/template mismatch, inspect the schema, update the matching template, update README artifact routing if needed, and rerun the full gate.
 
 ## Weakest Failure Mode Audit
 
-Before choosing the next hardening slice, inspect the repo for the least protected way a future agent could fail. Check each area quickly and pick the first gap with no eval, validator, or explicit doc coverage:
+Before choosing the next hardening slice, inspect the least protected way a future agent could fail:
 
-1. **Commands:** does every command have a distinct workflow, stop conditions, quality bar, and correct skills-to-load list?
-2. **Skills:** do triggers, inputs, procedure, anti-rationalization, verification, output artifact, and failure modes guide a real operator job?
-3. **Schemas and templates:** do artifacts have closed schemas, required fields, and matching template field references?
-4. **Evals:** is the newest repeated failure represented as a case with expected evidence and failure criteria?
-5. **CI and install:** can a fresh checkout run the same quality gate locally and in CI without hidden dependencies?
-6. **Public copy:** are external sources distilled into neutral pattern language with no source-specific naming leakage?
-7. **Handoff:** can another agent resume from state, evidence checked, facts, assumptions, risks, blockers, fresh validation proof, and next action?
-8. **README/docs:** can a capable coding agent self-setup, choose the right command, handle edge cases, troubleshoot failures, and maintain the harness without private context?
+1. Commands: distinct workflow, stop conditions, quality bar, and skills-to-load list.
+2. Skills: triggers, inputs, procedure, anti-rationalization, verification, output artifact, and failure modes.
+3. Schemas and templates: closed schemas, required fields, and matching template field references.
+4. Evals: newest repeated failure represented as a case.
+5. CI and install: fresh checkout can run the same local and CI gate.
+6. Public copy: external sources distilled into neutral pattern language.
+7. Handoff: state, evidence checked, facts, assumptions, risks, blockers, fresh validation proof, and next action.
+8. README/docs: a capable coding agent can self-setup, choose the right command, troubleshoot, and maintain the harness without private context.
 
 Prefer the smallest slice that adds or tightens a validator/eval first, then updates the corresponding doc, skill, command, schema, or template.
 
@@ -662,31 +618,20 @@ Before a harness release or direct-to-main hardening push, verify:
 
 ## Maintainer Loop
 
-Use this loop for continuous improvement:
-
 ```text
 1. Find the weakest uncovered failure mode.
 2. Add or update an eval or validator first.
 3. Improve the smallest doc, skill, template, or schema that closes the gap.
-4. Run the full local gate: rm -rf scripts/__pycache__ tests/__pycache__ && python -m pytest -q && python scripts/validate_repo.py && git diff --check.
-5. Run a targeted exact-name scrub for user-shared/source names before public copy or commits.
+4. Run: rm -rf scripts/__pycache__ tests/__pycache__ && python -m pytest -q && python scripts/validate_repo.py && git diff --check.
+5. If the change used named external references, run the targeted exact-name scrub for those source names before publishing public copy.
 6. Commit a small coherent chunk.
-7. `git push` the verified chunk.
-8. Run `git fetch origin main` and confirm HEAD equals origin/main.
+7. git push the verified chunk.
+8. Run git fetch origin main and confirm HEAD equals origin/main.
 9. Repeat.
 ```
 
-High-priority hardening targets:
-
-- README detail and harness usability,
-- command edge cases,
-- skill trigger clarity,
-- eval coverage for common failures,
-- schema/template alignment,
-- CI and local validation parity,
-- public-copy neutrality,
-- install and handoff instructions that another agent can follow without guessing.
+High-priority hardening targets: README detail and harness usability, command edge cases, skill trigger clarity, eval coverage, schema/template alignment, CI parity, public-copy neutrality, and install instructions that another agent can follow without guessing.
 
 ## Status
 
-v0.2.0 rewrite baseline is under continuous hardening. The repo is documentation-first, with portable commands, skills, schemas, eval cases, adapters, and validation checks ready for iterative improvement.
+Agent Brain is a v0.2 portable harness: documentation-first, tested, runtime-agnostic, and ready for iterative hardening. The next big unlock is a true installer and more real runtime smoke artifacts.
