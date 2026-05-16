@@ -2158,6 +2158,11 @@ def validate(root: Path = ROOT) -> list[str]:
                     errors.append(f"{rel(command, root)} section must appear exactly once: {section}")
                 if not section_has_body(text, section):
                     errors.append(f"{rel(command, root)} section has no body: {section}")
+        when_to_use = section_body(text, "## When to use")
+        if when_to_use and not starts_with_skill_trigger_phrase(when_to_use):
+            errors.append(
+                f"{rel(command, root)} when-to-use must start with a routing phrase such as Use when, Use after, Use before, or Use for"
+            )
         if not sections_are_in_order(text, REQUIRED_COMMAND_SECTIONS):
             errors.append(f"{rel(command, root)} sections must appear in canonical order")
         if command_lifecycle_state(text) not in VALID_COMMAND_LIFECYCLE_STATES:

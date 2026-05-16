@@ -983,6 +983,25 @@ def test_command_specs_require_when_not_to_use_section(tmp_path: Path) -> None:
     assert "commands/brain-sample.md missing ## When not to use" in errors
 
 
+def test_command_when_to_use_must_start_with_routing_phrase(tmp_path: Path) -> None:
+    write_minimal_repo(tmp_path)
+    command = tmp_path / "commands" / "brain-sample.md"
+    command.write_text(
+        command.read_text(encoding="utf-8").replace(
+            "Use for sample requests.",
+            "Sample requests that need routing.",
+        ),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert (
+        "commands/brain-sample.md when-to-use must start with a routing phrase such as Use when, Use after, Use before, or Use for"
+        in errors
+    )
+
+
 def test_command_catalog_requires_use_when_routing_signal(tmp_path: Path) -> None:
     write_minimal_repo(tmp_path)
     commands_readme = tmp_path / "commands" / "README.md"
