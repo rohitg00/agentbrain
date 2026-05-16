@@ -1956,6 +1956,7 @@ def validate(root: Path = ROOT) -> list[str]:
             if source not in research_text:
                 errors.append(f"docs/research-watchlist.md missing tracked source: {source}")
 
+    seen_skill_descriptions: dict[str, str] = {}
     seen_skill_examples: dict[str, str] = {}
     for skill in sorted((root / "skills").glob("*/SKILL.md")):
         text = skill.read_text(errors="ignore")
@@ -1985,6 +1986,15 @@ def validate(root: Path = ROOT) -> list[str]:
             errors.append(f"{rel(skill, root)} frontmatter description is required")
         elif not frontmatter["description"].startswith("Use when"):
             errors.append(f"{rel(skill, root)} frontmatter description must start with 'Use when'")
+        else:
+            normalized_description = normalize_use_when(frontmatter["description"])
+            if normalized_description in seen_skill_descriptions:
+                errors.append(
+                    f"{rel(skill, root)} frontmatter description duplicates "
+                    f"{seen_skill_descriptions[normalized_description]}"
+                )
+            else:
+                seen_skill_descriptions[normalized_description] = rel(skill, root)
         skill_lines = text.splitlines()
         for section in REQUIRED_SKILL_SECTIONS:
             section_count = skill_lines.count(section)

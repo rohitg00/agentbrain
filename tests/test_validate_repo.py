@@ -154,6 +154,27 @@ def test_skill_must_declare_lifecycle_stage_after_heading(tmp_path: Path) -> Non
     assert "skills/sample/SKILL.md must declare lifecycle stage after heading" in errors
 
 
+def test_skill_frontmatter_description_must_not_duplicate_another_skill_trigger(tmp_path: Path) -> None:
+    write_minimal_repo(tmp_path)
+    source = tmp_path / "skills" / "sample" / "SKILL.md"
+    duplicate = tmp_path / "skills" / "sample-copy" / "SKILL.md"
+    duplicate.parent.mkdir(parents=True)
+    duplicate.write_text(
+        source.read_text(encoding="utf-8")
+        .replace("name: sample", "name: sample-copy")
+        .replace("# sample", "# sample-copy"),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert any(
+        "skills/sample-copy/SKILL.md frontmatter description duplicates skills/sample/SKILL.md"
+        in error
+        for error in errors
+    )
+
+
 def test_skill_schema_requires_anti_rationalization_for_shortcut_resistance(tmp_path: Path) -> None:
     write_minimal_repo(tmp_path)
     schema_path = tmp_path / "schemas" / "skill.schema.json"
