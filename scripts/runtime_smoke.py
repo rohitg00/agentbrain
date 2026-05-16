@@ -282,13 +282,22 @@ def transcript_path_is_external_reference(transcript_path: str) -> bool:
     return re.match(r"^[a-z][a-z0-9+.-]*://", transcript_path, flags=re.IGNORECASE) is not None
 
 
-def exact_command_has_flag_value(exact_command: object, flag: str, value: str) -> bool:
+def exact_command_tokens(exact_command: object) -> list[str]:
     if not isinstance(exact_command, str):
-        return False
+        return []
     try:
-        tokens = shlex.split(exact_command)
+        return shlex.split(exact_command)
     except ValueError:
-        tokens = exact_command.split()
+        return exact_command.split()
+
+
+def exact_command_invokes_runtime_smoke(exact_command: object) -> bool:
+    tokens = exact_command_tokens(exact_command)
+    return any(Path(token).as_posix().lstrip("./") == "scripts/runtime_smoke.py" for token in tokens)
+
+
+def exact_command_has_flag_value(exact_command: object, flag: str, value: str) -> bool:
+    tokens = exact_command_tokens(exact_command)
 
     for index, token in enumerate(tokens):
         if token == flag and index + 1 < len(tokens) and tokens[index + 1] == value:
@@ -388,6 +397,8 @@ def validate_report_against_schema(
                 "runtime smoke artifact contains private absolute path in "
                 f"{field}; use a repo-relative path or redact before output"
             )
+    if not exact_command_invokes_runtime_smoke(report.get("exact_command")):
+        errors.append("exact_command must invoke scripts/runtime_smoke.py")
 
     transcript_path = report.get("transcript_path")
     if root is not None and isinstance(transcript_path, str) and not transcript_path_is_external_reference(transcript_path):

@@ -47,6 +47,32 @@ def test_runtime_smoke_schema_requires_full_validation_capabilities():
     assert any("'yes' was expected" in error for error in errors)
 
 
+def test_runtime_smoke_rejects_exact_command_that_does_not_invoke_smoke_script(tmp_path: Path):
+    report = runtime_smoke.build_report(
+        root=tmp_path,
+        runtime="generic-cli-runtime",
+        version="1.2.3",
+        sandbox_write_mode="read_only",
+        brain_command_mode="markdown_specs",
+        run_scope="read_only_smoke",
+        blocked_commands=["python -m pytest -q blocked by read-only sandbox"],
+        command_exit_status=1,
+        smoke_result="blocked",
+        transcript_redaction_status="blocked",
+        exact_command=(
+            "python scripts/other_probe.py --runtime generic-cli-runtime --version 1.2.3 "
+            "--run-scope read_only_smoke --sandbox-write-mode read_only "
+            "--brain-command-mode markdown_specs --smoke-result blocked "
+            "--command-exit-status 1 --transcript-redaction-status blocked "
+            "--blocked-command 'python -m pytest -q blocked by read-only sandbox'"
+        ),
+    )
+
+    errors = runtime_smoke.validate_report_against_schema(report, Path("schemas/runtime-smoke.schema.json"))
+
+    assert "exact_command must invoke scripts/runtime_smoke.py" in errors
+
+
 def test_blocked_runtime_smoke_requires_exact_command_result_flags(tmp_path: Path):
     report = runtime_smoke.build_report(
         root=tmp_path,
