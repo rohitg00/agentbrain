@@ -794,6 +794,72 @@ def test_build_report_records_worktree_status_to_preserve_user_changes(tmp_path:
     )
 
 
+def test_full_validation_rejects_blocked_validation_command_as_successful_gate(monkeypatch, tmp_path: Path):
+    monkeypatch.setattr(runtime_smoke, "git_freshness_result", lambda _root: "fresh: HEAD equals origin/main at abc123")
+    monkeypatch.setattr(runtime_smoke, "git_fetch_result", lambda _root: "fetched: git fetch origin main succeeded")
+    transcript = tmp_path / "artifacts" / "runtime-smoke" / "generic-cli-runtime-2026-05-15.log"
+    transcript.parent.mkdir(parents=True)
+    transcript.write_text("redacted runtime transcript\n", encoding="utf-8")
+    blocked_validation_command = "python -m pytest -q blocked by read-only sandbox"
+    validation_commands = [*runtime_smoke.FULL_VALIDATION_GATE_COMMANDS, blocked_validation_command]
+    command = (
+        "python scripts/runtime_smoke.py --runtime generic-cli-runtime --version 1.2.3 "
+        "--run-scope full_validation --selected-command /brain-verify "
+        "--loaded-skill runtime-smoke --adapter-path adapters/read-only-cli/README.md "
+        "--sandbox-write-mode workspace_write --brain-command-mode markdown_specs "
+        "--transcript-path artifacts/runtime-smoke/generic-cli-runtime-2026-05-15.log "
+        "--smoke-result pass --command-exit-status 0 --transcript-redaction-status redacted "
+        "--write-fence-allowed-path artifacts/runtime-smoke/ --write-fence-disallowed-path .git/ "
+        "--write-fence-rollback-command 'git restore artifacts/runtime-smoke/' "
+        "--write-fence-approval-state not_required "
+        "--capability read_files=yes --capability write_files=yes --capability run_shell=yes "
+        "--capability request_approvals=no --capability network_access=no "
+        "--capability native_brain_commands=no --capability schema_artifacts=yes "
+        "--capability blocked_command_reporting=yes "
+    ) + " ".join(f"--validation-command '{validation_command}'" for validation_command in validation_commands)
+    report = runtime_smoke.build_report(
+        root=tmp_path,
+        runtime="generic-cli-runtime",
+        version="1.2.3",
+        sandbox_write_mode="workspace_write",
+        brain_command_mode="markdown_specs",
+        run_scope="full_validation",
+        blocked_commands=[],
+        exact_command=command,
+        smoke_result="pass",
+        selected_command="/brain-verify",
+        loaded_skills=["runtime-smoke"],
+        adapter_path="adapters/read-only-cli/README.md",
+        transcript_path="artifacts/runtime-smoke/generic-cli-runtime-2026-05-15.log",
+        transcript_redaction_status="redacted",
+        validation_commands=validation_commands,
+        write_fence_allowed_paths=["artifacts/runtime-smoke/"],
+        write_fence_disallowed_paths=[".git/"],
+        write_fence_rollback_command="git restore artifacts/runtime-smoke/",
+        write_fence_approval_state="not_required",
+        capability_matrix={
+            "read_files": "yes",
+            "write_files": "yes",
+            "run_shell": "yes",
+            "request_approvals": "no",
+            "network_access": "no",
+            "native_brain_commands": "no",
+            "schema_artifacts": "yes",
+            "blocked_command_reporting": "yes",
+        },
+        capability_evidence={capability: f"{capability}-transcript-line" for capability in runtime_smoke.CAPABILITY_NAMES},
+    )
+
+    errors = runtime_smoke.validate_report_against_schema(
+        report, Path("schemas/runtime-smoke.schema.json"), root=tmp_path
+    )
+
+    assert (
+        "full_validation validation command must be a successful gate, not blocked/skipped/failed: "
+        "python -m pytest -q blocked by read-only sandbox"
+    ) in errors
+
+
 def test_full_validation_requires_clean_worktree_or_named_user_owned_files(monkeypatch, tmp_path: Path):
     monkeypatch.setattr(runtime_smoke, "git_freshness_result", lambda _root: "fresh: HEAD equals origin/main at abc123")
     monkeypatch.setattr(runtime_smoke, "git_fetch_result", lambda _root: "fetched: git fetch origin main succeeded")

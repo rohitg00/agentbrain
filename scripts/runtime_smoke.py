@@ -79,6 +79,17 @@ FULL_VALIDATION_GATE_COMMANDS = [
     "python scripts/validate_repo.py",
     "git diff --check",
 ]
+UNSUCCESSFUL_VALIDATION_COMMAND_TERMS = (
+    "blocked",
+    "skipped",
+    "failed",
+    "failure",
+    "error",
+    "not run",
+    "not_run",
+    "unavailable",
+    "denied",
+)
 SINGLETON_PROVENANCE_FLAGS = [
     "--runtime",
     "--version",
@@ -828,6 +839,15 @@ def validate_report_against_schema(
     validation_commands = report.get("validation_commands")
     recorded_validation_commands = validation_commands if isinstance(validation_commands, list) else []
     if report.get("run_scope") == "full_validation":
+        for validation_command in recorded_validation_commands:
+            if not isinstance(validation_command, str):
+                continue
+            normalized_validation_command = validation_command.lower()
+            if any(term in normalized_validation_command for term in UNSUCCESSFUL_VALIDATION_COMMAND_TERMS):
+                errors.append(
+                    "full_validation validation command must be a successful gate, not blocked/skipped/failed: "
+                    f"{validation_command}"
+                )
         for required_command in FULL_VALIDATION_GATE_COMMANDS:
             if required_command not in recorded_validation_commands:
                 errors.append(f"full_validation must record successful local gate command: {required_command}")
