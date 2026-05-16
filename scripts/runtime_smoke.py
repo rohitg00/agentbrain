@@ -406,6 +406,8 @@ def validate_report_against_schema(
         brain_command_mode = report.get("brain_command_mode")
         if brain_command_mode == "native_commands" and native_brain_command_status != "yes":
             errors.append("native_commands mode requires native_brain_commands capability yes")
+        if brain_command_mode == "mixed" and native_brain_command_status != "yes":
+            errors.append("mixed command mode requires native_brain_commands capability yes")
         if brain_command_mode == "markdown_specs" and native_brain_command_status == "yes":
             errors.append("markdown_specs mode cannot claim native_brain_commands capability yes")
         for capability_name in CAPABILITY_NAMES:

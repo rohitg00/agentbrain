@@ -284,6 +284,35 @@ def test_runtime_smoke_requires_exact_command_capability_flags_for_claimed_capab
     assert any("exact_command must record capability flag: --capability native_brain_commands=no" in error for error in errors)
 
 
+def test_runtime_smoke_rejects_mixed_command_mode_without_native_capability(tmp_path: Path):
+    report = runtime_smoke.build_report(
+        root=tmp_path,
+        runtime="generic-cli-runtime",
+        version="1.2.3",
+        sandbox_write_mode="read_only",
+        brain_command_mode="mixed",
+        run_scope="read_only_smoke",
+        blocked_commands=["python -m pytest -q blocked by read-only sandbox"],
+        exact_command=(
+            "python scripts/runtime_smoke.py --runtime generic-cli-runtime --version 1.2.3 "
+            "--run-scope read_only_smoke --selected-command /brain-verify "
+            "--loaded-skill runtime-smoke --adapter-path adapters/read-only-cli/README.md "
+            "--sandbox-write-mode read_only --brain-command-mode mixed "
+            "--blocked-command 'python -m pytest -q blocked by read-only sandbox' "
+            "--capability native_brain_commands=no"
+        ),
+        smoke_result="blocked",
+        selected_command="/brain-verify",
+        loaded_skills=["runtime-smoke"],
+        adapter_path="adapters/read-only-cli/README.md",
+        capability_matrix={"native_brain_commands": "no"},
+    )
+
+    errors = runtime_smoke.validate_report_against_schema(report, Path("schemas/runtime-smoke.schema.json"))
+
+    assert "mixed command mode requires native_brain_commands capability yes" in errors
+
+
 def test_build_report_emits_schema_valid_runtime_smoke_for_plain_checkout(tmp_path: Path):
     report = runtime_smoke.build_report(
         root=tmp_path,
