@@ -121,6 +121,26 @@ def test_skill_when_not_to_use_must_not_be_generic_boundary_copy(tmp_path: Path)
     )
 
 
+def test_skill_trigger_section_must_start_with_routing_phrase(tmp_path: Path) -> None:
+    write_minimal_repo(tmp_path)
+    skill = tmp_path / "skills" / "sample" / "SKILL.md"
+    skill.write_text(
+        skill.read_text(encoding="utf-8").replace(
+            "Use for sample requests.",
+            "This skill routes sample work.",
+        ),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert any(
+        "skills/sample/SKILL.md trigger must start with a routing phrase such as Use when, Use after, Use before, or Use for"
+        in error
+        for error in errors
+    )
+
+
 def test_handoff_schema_requires_artifact_paths_for_resume(tmp_path: Path) -> None:
     write_minimal_repo(tmp_path)
     schema_path = tmp_path / "schemas" / "handoff-report.schema.json"

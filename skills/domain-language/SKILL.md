@@ -8,7 +8,7 @@ Resolve project vocabulary before it leaks into durable artifacts.
 
 ## Trigger
 
-Use this skill when a request, plan, review, or artifact depends on a term that is ambiguous, overloaded, newly introduced, or likely to become durable project language.
+Use when a request, plan, review, or artifact depends on a term that is ambiguous, overloaded, newly introduced, or likely to become durable project language.
 
 Common triggers:
 

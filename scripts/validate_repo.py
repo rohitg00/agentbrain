@@ -728,6 +728,7 @@ REQUIRED_SKILL_OUTPUT_ARTIFACT_RESUME_FIELDS = ["evidence", "blockers", "next ac
 GENERIC_SKILL_WHEN_NOT_TO_USE = (
     "do not use this skill when a simpler checklist, script, or existing command handles the work safely."
 )
+REQUIRED_SKILL_TRIGGER_PREFIXES = ("Use when", "Use after", "Use before", "Use for")
 REQUIRED_SKILL_EXAMPLE_TERMS = ["trigger:", "action:", "output artifact:", "verification:"]
 REQUIRED_COMMAND_EXAMPLE_TERMS = [
     "user request",
@@ -1404,6 +1405,11 @@ def first_nonblank_line(text: str) -> str:
     return ""
 
 
+def starts_with_skill_trigger_phrase(text: str) -> bool:
+    first_line = first_nonblank_line(text)
+    return first_line.startswith(REQUIRED_SKILL_TRIGGER_PREFIXES)
+
+
 def skill_output_artifact_template(output_artifact: str, root: Path) -> str:
     artifact_name = first_nonblank_line(output_artifact)
     if not artifact_name:
@@ -1954,6 +1960,11 @@ def validate(root: Path = ROOT) -> list[str]:
         if when_not_to_use == GENERIC_SKILL_WHEN_NOT_TO_USE:
             errors.append(
                 f"{rel(skill, root)} when-not-to-use must be skill-specific, not generic boundary copy"
+            )
+        trigger_body = section_body(text, "## Trigger")
+        if trigger_body and not starts_with_skill_trigger_phrase(trigger_body):
+            errors.append(
+                f"{rel(skill, root)} trigger must start with a routing phrase such as Use when, Use after, Use before, or Use for"
             )
         output_artifact_text = section_body(text, "## Output Artifact")
         output_artifact = output_artifact_text.lower()
