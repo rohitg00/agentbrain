@@ -25,6 +25,7 @@ PUBLIC_COPY_GLOBS = [
     "schemas/*.json",
     "examples/artifacts/*.json",
     "evals/**/*.md",
+    "adapters/README.md",
     "adapters/*/README.md",
 ]
 ALLOWED_README_SECTIONS = {"comparisons", "comparison", "benchmarks", "benchmark"}

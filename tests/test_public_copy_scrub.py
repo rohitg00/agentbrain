@@ -84,6 +84,20 @@ def test_scrub_rejects_exact_source_name_in_schema_and_example_artifacts(tmp_pat
     assert "examples/artifacts/sample.example.json:1" in result.stdout
 
 
+def test_scrub_rejects_exact_source_name_in_adapter_catalog(tmp_path: Path) -> None:
+    banned = "".join(["Source", "Brand"])
+    (tmp_path / "adapters").mkdir()
+    (tmp_path / "adapters" / "README.md").write_text(
+        f"# Adapter Catalog\n\nDo not route public adapter copy through {banned}.\n",
+        encoding="utf-8",
+    )
+
+    result = run_scrub(tmp_path, banned)
+
+    assert result.returncode == 1
+    assert "adapters/README.md:3" in result.stdout
+
+
 def test_scrub_requires_at_least_one_exact_name(tmp_path: Path) -> None:
     (tmp_path / "README.md").write_text(
         "# Harness\n\nNeutral public copy.\n",
