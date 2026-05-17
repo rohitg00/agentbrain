@@ -156,3 +156,35 @@ def test_akbp_search_fixture_template_uses_supported_placeholders() -> None:
     allowed = set(base.keys()) | {"output_mode", "output_dir"}
     unknown = placeholders - allowed
     assert not unknown, f"akbp-search fixture references unknown placeholders: {sorted(unknown)}"
+
+
+def test_committed_akbp_e2e_report_validates_and_passes() -> None:
+    report_path = ROOT / "examples" / "harness-effect" / "harness-effect-report.akbp-search.json"
+    report = json.loads(report_path.read_text(encoding="utf-8"))
+
+    schema = json.loads(SCHEMA_PATH.read_text(encoding="utf-8"))
+    errors = sorted(Draft202012Validator(schema).iter_errors(report), key=lambda e: e.path)
+    assert errors == [], [error.message for error in errors]
+
+    assert report["verdict"] == "pass"
+    assert report["parity"]["ids_equal"] is True
+    assert report["parity"]["citations_equal"] is True
+    modes = {entry["mode"] for entry in report["modes"]}
+    assert modes == {"inline", "file"}
+    assert report["byte_budget"]["file_minus_inline_bytes"] < 0, "file envelope should be smaller than inline envelope"
+
+
+def test_e2e_template_substitution_yields_runnable_template_only() -> None:
+    template_path = ROOT / "examples" / "harness-effect" / "fixture.template.json"
+    raw = template_path.read_text(encoding="utf-8")
+    fixture = json.loads(raw)
+
+    assert "{{python}}" in raw
+    assert "{{akbp_cli}}" in raw
+    assert "{{kb_path}}" in raw
+
+    parity = fixture["parity"]
+    for field in ("inline_retrieved_fields", "inline_citation_fields", "file_item_evidence_fields", "file_item_citation_fields"):
+        assert parity.get(field), f"template parity missing {field}"
+    names = [mode["name"] for mode in fixture["modes"]]
+    assert names == ["inline", "file"], names

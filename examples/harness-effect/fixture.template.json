@@ -1,0 +1,23 @@
+{
+  "id": "akbp-search-presentation-real",
+  "description": "Render this template into a working fixture by substituting {{python}}, {{akbp_cli}}, and {{kb_path}} with absolute paths. The harness_effect.py script substitutes {output_dir} itself based on --output-dir.",
+  "tool": {
+    "command_template": "{{python}} {{akbp_cli}} --path {{kb_path}} search {query_quoted} --limit {limit} --output-mode {output_mode}{file_dir_arg}",
+    "base_params": {
+      "query_quoted": "'rollback owner'",
+      "limit": "5",
+      "file_dir_arg": ""
+    }
+  },
+  "modes": [
+    {"name": "inline", "params": {"output_mode": "inline"}},
+    {"name": "file",   "params": {"output_mode": "file", "file_dir_arg": " --output-dir {output_dir}"}}
+  ],
+  "parity": {
+    "inline_retrieved_fields": ["results[].id"],
+    "inline_citation_fields": ["results[].id"],
+    "file_artifact_field": "artifact.path",
+    "file_item_evidence_fields": ["id"],
+    "file_item_citation_fields": ["id"]
+  }
+}

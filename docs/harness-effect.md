@@ -98,6 +98,14 @@ points at the AKBP reference CLI; substitute any tool that exposes an
 model-agnostic so harness changes are measurable without first wiring up
 an LLM.
 
+A runnable end-to-end example against the real AKBP CLI lives at
+`examples/harness-effect/`. It ships the rendered template, the recipe to
+build a throw-away knowledge base, and a committed parity report
+(`examples/harness-effect/harness-effect-report.akbp-search.json`) showing
+the AKBP `output_mode: file` mode preserves retrieved-id and citation
+parity with `output_mode: inline` while reducing envelope bytes by roughly
+30 percent on a two-result query.
+
 Failing parity is a harness regression: a new presentation mode is not
 allowed to silently drop citations or items, regardless of how much
 prompt budget it saves.
