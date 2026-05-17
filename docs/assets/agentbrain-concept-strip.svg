@@ -1,6 +1,6 @@
 <svg width="1200" height="340" viewBox="0 0 1200 340" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
   <title id="title">Agent Brain concept strip</title>
-  <desc id="desc">Monochrome comic strip showing a messy request becoming commands, skills, artifacts, evidence, and a review-ready handoff.</desc>
+  <desc id="desc">Static monochrome comic strip showing a messy request becoming commands, skills, artifacts, evidence, and a review-ready handoff.</desc>
   <style>
     .paper { fill: #fff; }
     .ink { stroke: #111; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; }
@@ -13,12 +13,6 @@
     .small { font: 700 13px ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; fill: #111; }
     .caption { font: 700 15px ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #111; }
     .dash { stroke-dasharray: 7 9; }
-    .spark { animation: pop 2.4s ease-in-out infinite; transform-origin: center; }
-    .arrow { animation: pulse 2.2s ease-in-out infinite; }
-    .stroke-draw { stroke-dasharray: 160; stroke-dashoffset: 160; animation: draw 3.6s ease-in-out infinite; }
-    @keyframes draw { 0%, 18% { stroke-dashoffset: 160; } 52%, 100% { stroke-dashoffset: 0; } }
-    @keyframes pulse { 0%, 35% { opacity: .25; } 55%, 100% { opacity: 1; } }
-    @keyframes pop { 0%, 65%, 100% { transform: scale(1); } 78% { transform: scale(1.15); } }
   </style>
 
   <rect class="paper" width="1200" height="340"/>
@@ -45,13 +39,13 @@
     <rect x="56" y="148" width="48" height="52" rx="14" class="thin" fill="#fff"/>
     <path d="M112 140L166 122" class="thin"/>
     <path d="M166 122L196 150" class="thin"/>
-    <path d="M187 139L207 128" class="ink stroke-draw"/>
+    <path d="M187 139L207 128" class="ink"/>
     <rect x="145" y="64" width="132" height="36" rx="5" class="thin" fill="#fff"/>
     <text x="162" y="88" class="small">/brain-start</text>
     <rect x="151" y="164" width="124" height="36" rx="5" class="thin" fill="#fff"/>
     <text x="171" y="188" class="small">skills/</text>
-    <path d="M226 112L260 112" class="ink arrow"/>
-    <path d="M250 102L264 112L250 122" class="ink arrow"/>
+    <path d="M226 112L260 112" class="ink"/>
+    <path d="M250 102L264 112L250 122" class="ink"/>
     <text x="44" y="220" class="caption">The route picks the state.</text>
   </g>
 
@@ -59,18 +53,18 @@
     <rect x="0" y="0" width="315" height="236" class="thin"/>
     <text x="24" y="36" class="title">3. VERIFIED HANDOFF</text>
     <rect x="58" y="68" width="124" height="150" class="thin" fill="#fff"/>
-    <path d="M78 102L91 115L114 87" class="ink spark"/>
+    <path d="M78 102L91 115L114 87" class="ink"/>
     <path d="M78 137H158" class="thin"/>
     <path d="M78 164H158" class="thin"/>
     <path d="M78 190H142" class="thin"/>
     <rect x="196" y="88" width="82" height="110" rx="10" class="thin" fill="#fff"/>
     <circle cx="237" cy="138" r="24" class="thin" fill="#fff"/>
-    <path d="M226 138L235 147L250 126" class="ink spark"/>
+    <path d="M226 138L235 147L250 126" class="ink"/>
     <text x="80" y="220" class="caption">Review starts from proof.</text>
   </g>
 
-  <path d="M374 164H424" class="ink arrow"/>
-  <path d="M414 154L428 164L414 174" class="ink arrow"/>
-  <path d="M774 164H824" class="ink arrow"/>
-  <path d="M814 154L828 164L814 174" class="ink arrow"/>
+  <path d="M374 164H424" class="ink"/>
+  <path d="M414 154L428 164L414 174" class="ink"/>
+  <path d="M774 164H824" class="ink"/>
+  <path d="M814 154L828 164L814 174" class="ink"/>
 </svg>

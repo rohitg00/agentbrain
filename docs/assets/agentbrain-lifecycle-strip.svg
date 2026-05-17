@@ -1,6 +1,6 @@
 <svg width="1200" height="260" viewBox="0 0 1200 260" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
   <title id="title">Agent Brain lifecycle strip</title>
-  <desc id="desc">Animated monochrome lifecycle strip showing a request moving from intake through research, challenge, plan, build, verify, review, ship, and learn.</desc>
+  <desc id="desc">Static monochrome lifecycle strip showing a request moving from intake through research, challenge, plan, build, verify, review, ship, and learn.</desc>
   <style>
     .paper { fill: #fff; }
     .ink { stroke: #111; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; }
@@ -10,12 +10,6 @@
     .label { font: 800 14px ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; fill: #111; }
     .title { font: 800 24px ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; letter-spacing: .04em; fill: #111; }
     .small { font: 700 13px ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #111; }
-    .pulse-a { animation: pulse 4.5s ease-in-out infinite; }
-    .pulse-b { animation: pulse 4.5s ease-in-out infinite .45s; }
-    .pulse-c { animation: pulse 4.5s ease-in-out infinite .9s; }
-    .pulse-d { animation: pulse 4.5s ease-in-out infinite 1.35s; }
-    .pulse-e { animation: pulse 4.5s ease-in-out infinite 1.8s; }
-    @keyframes pulse { 0%, 52%, 100% { opacity: .28; } 15%, 35% { opacity: 1; } }
   </style>
 
   <rect class="paper" width="1200" height="260"/>
@@ -26,38 +20,38 @@
   <g transform="translate(30 124)">
     <rect x="0" y="0" width="105" height="54" rx="8" class="thin wash"/>
     <text x="21" y="33" class="label">INTAKE</text>
-    <path d="M116 27H146" class="ink pulse-a"/>
-    <path d="M136 17L150 27L136 37" class="ink pulse-a"/>
+    <path d="M116 27H146" class="ink"/>
+    <path d="M136 17L150 27L136 37" class="ink"/>
 
     <rect x="160" y="0" width="110" height="54" rx="8" class="thin"/>
     <text x="177" y="33" class="label">RESEARCH</text>
-    <path d="M281 27H311" class="ink pulse-b"/>
-    <path d="M301 17L315 27L301 37" class="ink pulse-b"/>
+    <path d="M281 27H311" class="ink"/>
+    <path d="M301 17L315 27L301 37" class="ink"/>
 
     <rect x="325" y="0" width="118" height="54" rx="8" class="thin wash"/>
     <text x="342" y="33" class="label">CHALLENGE</text>
-    <path d="M454 27H484" class="ink pulse-c"/>
-    <path d="M474 17L488 27L474 37" class="ink pulse-c"/>
+    <path d="M454 27H484" class="ink"/>
+    <path d="M474 17L488 27L474 37" class="ink"/>
 
     <rect x="498" y="0" width="85" height="54" rx="8" class="thin"/>
     <text x="518" y="33" class="label">PLAN</text>
-    <path d="M594 27H624" class="ink pulse-d"/>
-    <path d="M614 17L628 27L614 37" class="ink pulse-d"/>
+    <path d="M594 27H624" class="ink"/>
+    <path d="M614 17L628 27L614 37" class="ink"/>
 
     <rect x="638" y="0" width="85" height="54" rx="8" class="thin wash"/>
     <text x="657" y="33" class="label">BUILD</text>
-    <path d="M734 27H764" class="ink pulse-e"/>
-    <path d="M754 17L768 27L754 37" class="ink pulse-e"/>
+    <path d="M734 27H764" class="ink"/>
+    <path d="M754 17L768 27L754 37" class="ink"/>
 
     <rect x="778" y="0" width="91" height="54" rx="8" class="thin"/>
     <text x="795" y="33" class="label">VERIFY</text>
-    <path d="M880 27H910" class="ink pulse-a"/>
-    <path d="M900 17L914 27L900 37" class="ink pulse-a"/>
+    <path d="M880 27H910" class="ink"/>
+    <path d="M900 17L914 27L900 37" class="ink"/>
 
     <rect x="924" y="0" width="86" height="54" rx="8" class="thin wash"/>
     <text x="941" y="33" class="label">REVIEW</text>
-    <path d="M1021 27H1051" class="ink pulse-b"/>
-    <path d="M1041 17L1055 27L1041 37" class="ink pulse-b"/>
+    <path d="M1021 27H1051" class="ink"/>
+    <path d="M1041 17L1055 27L1041 37" class="ink"/>
 
     <rect x="1065" y="0" width="86" height="54" rx="8" class="thin"/>
     <text x="1086" y="33" class="label">LEARN</text>

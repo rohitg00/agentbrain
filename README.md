@@ -134,7 +134,7 @@ Agent Brain gives a capable model a way to operate like a careful teammate inste
 The repo is intentionally portable. It is not a hosted runtime, IDE plugin, or model wrapper. It is the operating discipline layer you put on top of the agent you already use.
 
 <p align="center">
-  <img src="docs/assets/agentbrain-concept-strip.svg" alt="Animated monochrome comic strip showing a vague request routed into commands, skills, artifacts, evidence, and handoff" width="100%">
+  <img src="docs/assets/agentbrain-concept-strip.svg" alt="Monochrome comic strip showing a vague request routed into commands, skills, artifacts, evidence, and handoff" width="100%">
 </p>
 
 ## When to use it
@@ -199,7 +199,7 @@ raw request
 The loop can stop early. Stopping early is success when evidence shows the idea is unsafe, overbuilt, or not worth building.
 
 <p align="center">
-  <img src="docs/assets/agentbrain-lifecycle-strip.svg" alt="Animated monochrome lifecycle strip showing Agent Brain states moving from intake to learn" width="100%">
+  <img src="docs/assets/agentbrain-lifecycle-strip.svg" alt="Monochrome lifecycle strip showing Agent Brain states moving from intake to learn" width="100%">
 </p>
 
 ## Run as an Agent Harness
@@ -494,7 +494,7 @@ Safe next action: <smallest next step>
 Before trusting a change, run the matching gates from `docs/review-gates.md`:
 
 <p align="center">
-  <img src="docs/assets/agentbrain-gates-strip.svg" alt="Animated monochrome proof gates for approval, evidence, rollback, and review" width="100%">
+  <img src="docs/assets/agentbrain-gates-strip.svg" alt="Monochrome proof gates for approval, evidence, rollback, and review" width="100%">
 </p>
 
 - Product Gate: user, problem, scope, success metric, kill criteria.
