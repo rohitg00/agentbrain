@@ -448,6 +448,7 @@ Use the command output first, then the closest template. Validate against the ma
 | Changed artifact and build notes | `templates/changed-artifact-plus-implementation-notes.md` | `schemas/changed-artifact-plus-implementation-notes.schema.json` |
 | QA or verification proof | `templates/qa-evidence.md` | `schemas/qa-evidence.schema.json` |
 | Real-runtime smoke evidence | `templates/runtime-smoke.md` | `schemas/runtime-smoke.schema.json` |
+| Harness-effect parity report for a tool wired into the harness | `evals/harness-effect/fixtures/` plus `scripts/harness_effect.py` | `schemas/harness-effect-report.schema.json` |
 | Trust review before handoff | `templates/review-report.md` | `schemas/review-report.schema.json` |
 | Launch or merge readiness | `templates/launch-checklist.md` | Command output contract |
 | Durable learning capture | `templates/learning-capture.md` | Command output contract |
@@ -628,6 +629,24 @@ python scripts/runtime_smoke.py \
 ```
 
 Do not call read-only smoke a full validation run.
+
+When wiring a new search or recall tool into the harness, capture a parity
+report so tool-output presentation is measured, not asserted. See
+`docs/harness-effect.md` for the operating rules:
+
+```bash
+python scripts/harness_effect.py \
+  evals/harness-effect/fixtures/akbp-search.json \
+  --output-dir /tmp/harness-effect/out \
+  --out runtime/harness-effect-report.json \
+  --fail-on-mismatch
+```
+
+The script invokes the tool once per declared presentation mode (`inline` and
+`file`), diffs retrieved evidence ids and citations, and writes a
+`schemas/harness-effect-report.schema.json`-valid JSON report. Treat a
+non-pass verdict as a harness regression: file mode is not allowed to silently
+drop citations or items.
 
 ## Troubleshooting
 

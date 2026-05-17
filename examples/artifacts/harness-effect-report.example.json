@@ -1,0 +1,43 @@
+{
+  "report_version": "1.0",
+  "generated_at": "2026-05-17T12:00:00Z",
+  "fixture_id": "fake-tool-presentation-example",
+  "modes": [
+    {
+      "mode": "inline",
+      "command": "python3 tests/fixtures/harness_effect/fake_tool.py --output-mode inline",
+      "envelope_bytes": 420,
+      "envelope_sha256": "22e2f83787eef29ddf0eeaf06cf87e54114fe23c2f7386d22353183e84aa9b4b",
+      "item_count": 2
+    },
+    {
+      "mode": "file",
+      "command": "python3 tests/fixtures/harness_effect/fake_tool.py --output-mode file --output-dir /tmp/harness-effect/out",
+      "envelope_bytes": 306,
+      "envelope_sha256": "7fe6bc98fc700608b0c06c9f971a6a3a4a87d3213d3800baafd2a1c0eb378986",
+      "item_count": 2
+    }
+  ],
+  "parity": {
+    "reference_mode": "inline",
+    "ids_equal": true,
+    "citations_equal": true,
+    "differences": [
+      {
+        "compared_mode": "file",
+        "ids_equal": true,
+        "citations_equal": true,
+        "missing_in_other_ids": [],
+        "extra_in_other_ids": [],
+        "missing_in_other_citations": [],
+        "extra_in_other_citations": []
+      }
+    ]
+  },
+  "byte_budget": {
+    "inline_envelope_bytes": 420,
+    "file_envelope_bytes": 306,
+    "file_minus_inline_bytes": -114
+  },
+  "verdict": "pass"
+}
