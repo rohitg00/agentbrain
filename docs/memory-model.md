@@ -101,6 +101,21 @@ Agent Brain treats context as an engineered input:
 
 A context pack is good when another agent can continue the task without rereading the whole chat.
 
+## Context boundary records
+
+Long agent runs need a boundary between selected context and omitted context. Without that boundary, the next agent either reloads too much or trusts a summary with no audit trail.
+
+Every substantial handoff should record:
+
+- included context: files, artifacts, source notes, prior handoffs, or decisions kept in scope,
+- excluded context: plausible files or branches intentionally skipped, with the reason when omission could affect scope,
+- read files: exact paths inspected during the current run,
+- modified files: exact paths changed during the current run,
+- compaction: the summary used for older conversation or branch context, or `none needed` for small runs,
+- freshness: what change would make the boundary stale.
+
+This keeps progressive disclosure honest: the agent can load the smallest relevant context while still showing what it chose not to load.
+
 ## Memory write rules
 
 - Prefer stable facts over logs.

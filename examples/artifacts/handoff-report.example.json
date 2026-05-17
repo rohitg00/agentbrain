@@ -8,6 +8,25 @@
   "fresh_validation_proof": "Current run passed pytest and repository validation at the checked commit.",
   "coordination_review": "Single-writer change; no parallel worker outputs were accepted.",
   "user_change_review": "git status --short was checked before edits; none observed.",
+  "context_boundary": {
+    "included_context": [
+      "templates/handoff-report.md",
+      "schemas/handoff-report.schema.json"
+    ],
+    "excluded_context": [
+      "Unrelated command docs were not loaded because the change only touched handoff artifact structure."
+    ],
+    "read_files": [
+      "templates/handoff-report.md",
+      "schemas/handoff-report.schema.json"
+    ],
+    "modified_files": [
+      "templates/handoff-report.md",
+      "schemas/handoff-report.schema.json"
+    ],
+    "compaction": "none needed; the run was small enough to preserve exact file evidence.",
+    "freshness": "Recheck if the handoff template, schema, or validator changes."
+  },
   "artifact_paths": [
     "templates/handoff-report.md",
     "schemas/handoff-report.schema.json"

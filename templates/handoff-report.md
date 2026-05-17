@@ -1,6 +1,6 @@
 # Handoff Report
 
-Schema fields: `state`, `decision`, `evidence_checked`, `fresh_validation_proof`, `coordination_review`, `user_change_review`, `artifact_paths`, `facts`, `assumptions`, `open_questions`, `risks`, `stop_conditions`, `next_action`.
+Schema fields: `state`, `decision`, `evidence_checked`, `fresh_validation_proof`, `coordination_review`, `user_change_review`, `context_boundary`, `artifact_paths`, `facts`, `assumptions`, `open_questions`, `risks`, `stop_conditions`, `next_action`.
 
 Use this when ending a run, handing work to another operator, or stopping on a blocker. Keep it evidence-first: if a statement was not checked, put it under assumptions or open questions instead of facts.
 
@@ -35,6 +35,17 @@ State whether this was a single-agent run or a parallel-worker join. For paralle
 ## User Change Review
 
 Record the current-run `git status --short` result and how pre-existing user changes were preserved. Use `none observed` only when the working tree was checked and no user changes were present.
+
+## Context Boundary
+
+Name the context intentionally kept for the next agent and the plausible context intentionally left out. Include read files, modified files, any compaction or branch summary used, and the freshness trigger. Use `none needed` only when the run was small enough to preserve exact evidence without summarizing.
+
+- Included context:
+- Excluded context:
+- Read files:
+- Modified files:
+- Compaction:
+- Freshness:
 
 ## Artifact Paths
 

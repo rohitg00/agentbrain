@@ -31,6 +31,7 @@ Agent Brain skills are small, composable, runtime-neutral operating procedures. 
 - [`problem-grill`](problem-grill/SKILL.md) — Use when a product or feature idea needs pressure-testing against problem, user, pain, success, and timing.
 - [`qa-evidence`](qa-evidence/SKILL.md) — Use when behavior needs concrete proof before review, merge, or shipment.
 - [`question-ladder`](question-ladder/SKILL.md) — Use when uncertainty remains and the minimum useful sequence of questions should be asked.
+- [`runtime-lifecycle`](runtime-lifecycle/SKILL.md) — Use when verification depends on agent runtime phases, queued input, tool-call lifecycle, save points, retry, abort, compaction, or branch behavior.
 - [`runtime-smoke`](runtime-smoke/SKILL.md) — Use when checking Agent Brain inside a real agent runtime or adapter before trusting harness usability.
 - [`wiki-maintenance`](wiki-maintenance/SKILL.md) — Use when source-backed project knowledge needs to be created, refreshed, or corrected.
 
