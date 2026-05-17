@@ -88,15 +88,15 @@
         <sub>OpenClaw</sub>
       </a>
     </td>
-    <td align="center" width="96">
-      <img src="docs/assets/agent-runtimes/hermes.svg" alt="Hermes" height="34"><br>
+    <td align="center" width="150">
+      <img src="docs/assets/agent-runtimes/hermes.svg" alt="Hermes-Agent" height="28"><br>
       <sub>Hermes</sub>
     </td>
   </tr>
 </table>
 
 <p align="center">
-  <sub>SVGL-hosted marks update in place where available; Hermes uses a repo-local mark.</sub>
+  <sub>SVGL-hosted marks update in place where available; Hermes uses the repo-local Hermes-Agent logo.</sub>
 </p>
 
 <p align="center">
