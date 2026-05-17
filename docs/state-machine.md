@@ -223,3 +223,7 @@ Use the earliest command that matches the current unsafe gap. These mappings kee
 ## Gate rule
 
 A state cannot advance when its required artifact is missing unless the agent records an explicit assumption and risk.
+
+## Harness-effect gate
+
+When `build` or `verify` exposes a new tool that returns retrieved evidence to the model, the gate also requires a recorded tool-output presentation mode (inline payload versus file artifact) and a parity check across modes covering retrieved ids, citations, and lifecycle metadata. See `docs/harness-effect.md` and the `tool-output-presentation` eval case.

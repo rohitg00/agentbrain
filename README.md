@@ -256,6 +256,7 @@ scripts/                       # validation, scrub, and runtime smoke tooling
 Start here:
 
 - `docs/agent-harness.md` — setup, operating loop, stop conditions, and troubleshooting.
+- `docs/harness-effect.md` — why the harness layer changes agent behavior, operating rules for new tools, and parity checks across tool-output presentation modes.
 - `docs/state-machine.md` — valid states, transitions, required artifacts, and stop conditions.
 - `docs/architecture.md` — repository architecture and validation responsibilities.
 - `docs/review-gates.md` — product, design, engineering, security, QA, launch, and verifier gates.

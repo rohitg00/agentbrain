@@ -270,6 +270,15 @@ If validation reports a generated Python cache file, delete `__pycache__/`, `.py
 
 If validation reports a schema/template mismatch, update the schema field contract, matching template field tokens, and README or command routing together before rerunning validation. Do not patch only the failing file; artifact drift usually means another agent would be routed to stale structure.
 
+## Harness Effect
+
+The harness layer changes agent behavior independent of the model and the
+retrieved evidence. Whenever a new tool, skill, or command is added, treat
+tool-output presentation, parity across modes, and measurement as required
+artifacts. Operating rules and supporting research live in
+`docs/harness-effect.md`. The `tool-output-presentation` eval enforces the
+basic gate before a new tool is exposed.
+
 ## Maintainer Checklist
 
 Before a harness release or major push:

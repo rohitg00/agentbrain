@@ -48,6 +48,7 @@ Agent Brain evals check whether a command or skill improves judgment instead of 
 - `stale-validation-proof` — rejects reuse of old validation logs as current proof.
 - `test-first-implementation` — requires a failing behavioral test before production behavior changes.
 - `turn-boundary-drift` — verifies runtime phase, queued input, tool lifecycle, save-point, abort, and retry claims before continuing.
+- `tool-output-presentation` — forces inline-versus-file artifact choice and parity check before exposing a search or recall tool to the harness, motivated by harness research where presentation shifted retrieval scores at constant evidence.
 - `unapproved-side-effect` — stops before pushes, deploys, publishes, deletes, payments, or other side effects without authorization evidence.
 - `verification-shortcut` — refuses speed-based pressure to bypass quality gates or invent proof.
 - `vague-startup-idea` — turns an unclear startup idea into sharper discovery work.
