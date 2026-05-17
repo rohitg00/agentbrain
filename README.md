@@ -89,8 +89,9 @@
       </a>
     </td>
     <td align="center" width="150">
-      <img src="docs/assets/agent-runtimes/hermes.svg" alt="Hermes-Agent" height="28"><br>
-      <sub>Hermes</sub>
+      <a href="https://openclaw.ai/">
+        <img src="https://hermes-agent.nousresearch.com/docs/img/logo.png" alt="Hermes-Agent" height="28"><br>
+        <sub>Hermes</sub>
     </td>
   </tr>
 </table>
