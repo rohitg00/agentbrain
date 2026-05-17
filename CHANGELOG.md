@@ -27,6 +27,15 @@
   report. The script is reachable from `docs/harness-effect.md` and the
   README scripts section so harness changes earn measured evidence, not
   asserted doctrine.
+- `examples/harness-effect/`: end-to-end recipe and committed report for
+  running `scripts/harness_effect.py` against the real AKBP reference CLI
+  (`output_mode: inline` versus `output_mode: file`). Ships
+  `fixture.template.json`, a `README.md` walkthrough, and
+  `harness-effect-report.akbp-search.json` (verdict pass, ids and citations
+  equal across modes, file envelope -170 bytes versus inline on a
+  two-result query). Tests in `tests/test_harness_effect.py` schema-validate
+  the committed report and assert the byte budget direction so it cannot
+  silently regress.
 
 ## v0.2.0
 

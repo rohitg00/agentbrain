@@ -1,0 +1,43 @@
+{
+  "report_version": "1.0",
+  "generated_at": "2026-05-17T13:07:21Z",
+  "fixture_id": "akbp-search-presentation-real",
+  "modes": [
+    {
+      "mode": "inline",
+      "command": "{python} {akbp_cli} --path {kb_path} search 'rollback owner' --limit 5 --output-mode inline",
+      "envelope_bytes": 557,
+      "envelope_sha256": "c8b4c3eaf7dcc1941576f97f187118ee56a844fba07a6314d228a8546cf270cb",
+      "item_count": 2
+    },
+    {
+      "mode": "file",
+      "command": "{python} {akbp_cli} --path {kb_path} search 'rollback owner' --limit 5 --output-mode file --output-dir {output_dir}",
+      "envelope_bytes": 387,
+      "envelope_sha256": "adcb2ceea1665df620fa2726f745c1f84dc2f8b1a50aead56b23fe200e902b82",
+      "item_count": 2
+    }
+  ],
+  "parity": {
+    "reference_mode": "inline",
+    "ids_equal": true,
+    "citations_equal": true,
+    "differences": [
+      {
+        "compared_mode": "file",
+        "ids_equal": true,
+        "citations_equal": true,
+        "missing_in_other_ids": [],
+        "extra_in_other_ids": [],
+        "missing_in_other_citations": [],
+        "extra_in_other_citations": []
+      }
+    ]
+  },
+  "byte_budget": {
+    "inline_envelope_bytes": 557,
+    "file_envelope_bytes": 387,
+    "file_minus_inline_bytes": -170
+  },
+  "verdict": "pass"
+}
