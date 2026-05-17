@@ -103,44 +103,6 @@
   <code>raw request</code> -&gt; <code>state</code> -&gt; <code>command</code> -&gt; <code>skill</code> -&gt; <code>artifact</code> -&gt; <code>evidence</code> -&gt; <code>handoff</code>
 </p>
 
-Agent Brain is a portable harness you add to a repository. It does not run your
-agent. It gives any file-reading coding agent a state machine, command specs,
-skills, schemas, evals, and handoff contracts so work moves through evidence,
-artifacts, verification, review, and learning instead of chat momentum.
-
-It is not a decorative prompt pack, an IDE plugin, or another agent framework.
-Bring the coding agent you already use. Agent Brain supplies the operating
-discipline around the model.
-
-Use it when you want an agent to stop guessing, pick the right lifecycle state,
-produce the right artifact, and prove the work before it claims progress.
-
-Works with agent runtimes that can read files and follow repository-local
-instructions: terminal coding agents, IDE agents, subagent runners,
-approval-gated runtimes, and custom CLI or hosted agents.
-
-Most agent failures are not syntax errors. They are judgment errors:
-
-- building the wrong thing,
-- trusting stale context,
-- skipping tests,
-- accepting vague requirements,
-- shipping without rollback,
-- turning one messy run into permanent memory.
-
-Agent Brain keeps the first question sharp:
-
-> Should this exist, should it be an agent, and what evidence would prove or kill it?
-
-It gives agents three non-negotiable habits:
-
-- **Plan before build.** Route vague requests through intake, research, challenge,
-  brief, design, and plan before implementation.
-- **Verify before trust.** Treat tests, logs, diffs, screenshots, citations, and
-  approvals as proof; treat confident summaries as claims.
-- **Learn only from evidence.** Turn repeated successful workflows into small,
-  neutral skills without copying external branding or temporary task chatter.
-
 ## Quickstart
 
 ### Try it in any coding agent
@@ -200,6 +162,44 @@ no whitespace diff errors
 ```
 
 If those commands do not pass, fix validation before handing the repo to an autonomous agent.
+
+Agent Brain is a portable harness you add to a repository. It does not run your
+agent. It gives any file-reading coding agent a state machine, command specs,
+skills, schemas, evals, and handoff contracts so work moves through evidence,
+artifacts, verification, review, and learning instead of chat momentum.
+
+It is not a decorative prompt pack, an IDE plugin, or another agent framework.
+Bring the coding agent you already use. Agent Brain supplies the operating
+discipline around the model.
+
+Use it when you want an agent to stop guessing, pick the right lifecycle state,
+produce the right artifact, and prove the work before it claims progress.
+
+Works with agent runtimes that can read files and follow repository-local
+instructions: terminal coding agents, IDE agents, subagent runners,
+approval-gated runtimes, and custom CLI or hosted agents.
+
+Most agent failures are not syntax errors. They are judgment errors:
+
+- building the wrong thing,
+- trusting stale context,
+- skipping tests,
+- accepting vague requirements,
+- shipping without rollback,
+- turning one messy run into permanent memory.
+
+Agent Brain keeps the first question sharp:
+
+> Should this exist, should it be an agent, and what evidence would prove or kill it?
+
+It gives agents three non-negotiable habits:
+
+- **Plan before build.** Route vague requests through intake, research, challenge,
+  brief, design, and plan before implementation.
+- **Verify before trust.** Treat tests, logs, diffs, screenshots, citations, and
+  approvals as proof; treat confident summaries as claims.
+- **Learn only from evidence.** Turn repeated successful workflows into small,
+  neutral skills without copying external branding or temporary task chatter.
 
 ## What Agent Brain gives an agent
 
