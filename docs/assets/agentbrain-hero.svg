@@ -1,0 +1,147 @@
+<svg width="1200" height="560" viewBox="0 0 1200 560" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Agent Brain architecture banner</title>
+  <desc id="desc">Dark architecture diagram showing a coding agent routed through Agent Brain commands, skills, schemas, templates, evals, and verification evidence.</desc>
+  <defs>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M40 0H0V40" stroke="#1e293b" stroke-width="1" opacity=".55"/>
+    </pattern>
+    <marker id="arrow-cyan" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M2 2L10 6L2 10Z" fill="#22d3ee"/>
+    </marker>
+    <marker id="arrow-emerald" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M2 2L10 6L2 10Z" fill="#34d399"/>
+    </marker>
+    <marker id="arrow-amber" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M2 2L10 6L2 10Z" fill="#fbbf24"/>
+    </marker>
+  </defs>
+  <style>
+    .bg { fill: #020617; }
+    .panel { fill: #0f172a; stroke: #334155; stroke-width: 1.5; }
+    .panel-soft { fill: #111c31; stroke: #334155; stroke-width: 1.25; }
+    .box { fill: #0b1220; stroke: #475569; stroke-width: 1.4; }
+    .box-cyan { fill: #083344; stroke: #22d3ee; stroke-width: 1.5; }
+    .box-emerald { fill: #052e2b; stroke: #34d399; stroke-width: 1.5; }
+    .box-violet { fill: #21133f; stroke: #a78bfa; stroke-width: 1.5; }
+    .box-amber { fill: #422006; stroke: #fbbf24; stroke-width: 1.5; }
+    .box-rose { fill: #3b101f; stroke: #fb7185; stroke-width: 1.5; }
+    .ink { fill: #f8fafc; }
+    .muted { fill: #94a3b8; }
+    .dim { fill: #64748b; }
+    .cyan { fill: #22d3ee; }
+    .emerald { fill: #34d399; }
+    .amber { fill: #fbbf24; }
+    .rose { fill: #fb7185; }
+    .label { font: 700 44px ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    .section { font: 750 13px ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; letter-spacing: .08em; }
+    .body { font: 600 17px ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    .small { font: 600 13px ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    .mono { font: 700 15px ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; }
+    .tiny { font: 700 12px ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; letter-spacing: .05em; }
+    .flow-cyan { stroke: #22d3ee; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrow-cyan); }
+    .flow-emerald { stroke: #34d399; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrow-emerald); }
+    .flow-amber { stroke: #fbbf24; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrow-amber); }
+    .dash { stroke-dasharray: 7 9; }
+  </style>
+
+  <rect class="bg" width="1200" height="560" rx="18"/>
+  <rect width="1200" height="560" fill="url(#grid)" opacity=".7"/>
+  <rect x="24" y="24" width="1152" height="512" rx="14" fill="#07111f" stroke="#1e293b" stroke-width="1.5"/>
+
+  <g transform="translate(64 54)">
+    <text x="0" y="0" class="section cyan">REPO-LOCAL OPERATING HARNESS</text>
+    <text x="0" y="50" class="label ink">Agent Brain</text>
+    <text x="0" y="82" class="body muted">Commands, skills, schemas, templates, evals, and proof gates.</text>
+  </g>
+
+  <g opacity=".95">
+    <path d="M318 328H392" class="flow-cyan"/>
+    <path d="M808 328H882" class="flow-emerald"/>
+    <path d="M604 450C604 474 690 486 780 486H882" class="flow-amber dash"/>
+  </g>
+
+  <g transform="translate(64 178)">
+    <rect x="0" y="0" width="254" height="300" rx="10" class="panel"/>
+    <text x="24" y="38" class="section cyan">AGENT RUNTIME</text>
+    <text x="24" y="70" class="body ink">Agent reads repo</text>
+    <text x="24" y="96" class="small muted">then uses local commands as</text>
+    <text x="24" y="116" class="small muted">work contract.</text>
+
+    <g transform="translate(24 162)">
+      <rect x="0" y="0" width="206" height="42" rx="7" class="box-cyan"/>
+      <circle cx="23" cy="21" r="6" class="cyan"/>
+      <text x="44" y="27" class="mono ink">read context</text>
+    </g>
+    <g transform="translate(24 220)">
+      <rect x="0" y="0" width="206" height="42" rx="7" class="box"/>
+      <circle cx="23" cy="21" r="6" class="dim"/>
+      <text x="44" y="27" class="mono ink">use tools</text>
+    </g>
+  </g>
+
+  <g transform="translate(392 178)">
+    <rect x="0" y="0" width="416" height="300" rx="10" class="panel"/>
+    <rect x="22" y="24" width="372" height="72" rx="8" class="panel-soft"/>
+    <text x="44" y="50" class="section emerald">AGENT BRAIN</text>
+    <text x="44" y="74" class="small muted">Repo-local state, artifacts, checks,</text>
+    <text x="44" y="92" class="small muted">and handoff rules.</text>
+
+    <g transform="translate(34 120)">
+      <rect x="0" y="0" width="164" height="58" rx="8" class="box-cyan"/>
+      <text x="20" y="26" class="tiny cyan">COMMANDS</text>
+      <text x="20" y="46" class="mono ink">/brain-start</text>
+    </g>
+    <g transform="translate(218 120)">
+      <rect x="0" y="0" width="164" height="58" rx="8" class="box-emerald"/>
+      <text x="20" y="26" class="tiny emerald">SKILLS</text>
+      <text x="20" y="46" class="mono ink">local playbooks</text>
+    </g>
+    <g transform="translate(34 194)">
+      <rect x="0" y="0" width="164" height="58" rx="8" class="box-violet"/>
+      <text x="20" y="26" class="tiny" fill="#a78bfa">SCHEMAS</text>
+      <text x="20" y="46" class="mono ink">valid artifacts</text>
+    </g>
+    <g transform="translate(218 194)">
+      <rect x="0" y="0" width="164" height="58" rx="8" class="box-amber"/>
+      <text x="20" y="26" class="tiny amber">TEMPLATES</text>
+      <text x="20" y="46" class="mono ink">review shape</text>
+    </g>
+    <g transform="translate(126 252)">
+      <rect x="0" y="0" width="164" height="38" rx="8" class="box-rose"/>
+      <text x="20" y="25" class="mono ink">/brain-verify</text>
+    </g>
+  </g>
+
+  <g transform="translate(882 178)">
+    <rect x="0" y="0" width="254" height="300" rx="10" class="panel"/>
+    <text x="24" y="38" class="section emerald">VERIFIED WORK</text>
+    <text x="24" y="70" class="body ink">Work leaves with proof</text>
+    <text x="24" y="96" class="small muted">so review starts from proof,</text>
+    <text x="24" y="116" class="small muted">not chat momentum.</text>
+
+    <g transform="translate(24 156)">
+      <rect x="0" y="0" width="206" height="38" rx="7" class="box-emerald"/>
+      <text x="20" y="25" class="mono ink">artifact</text>
+    </g>
+    <g transform="translate(24 204)">
+      <rect x="0" y="0" width="206" height="38" rx="7" class="box-amber"/>
+      <text x="20" y="25" class="mono ink">evidence</text>
+    </g>
+    <g transform="translate(24 252)">
+      <rect x="0" y="0" width="206" height="38" rx="7" class="box"/>
+      <text x="20" y="25" class="mono ink">handoff</text>
+    </g>
+  </g>
+
+  <g transform="translate(64 502)">
+    <rect x="0" y="0" width="1072" height="30" rx="7" fill="#0b1220" stroke="#1e293b" stroke-width="1"/>
+    <text x="22" y="20" class="tiny dim">raw request</text>
+    <text x="162" y="20" class="tiny cyan">state</text>
+    <text x="278" y="20" class="tiny emerald">command</text>
+    <text x="424" y="20" class="tiny" fill="#a78bfa">skill</text>
+    <text x="552" y="20" class="tiny amber">artifact</text>
+    <text x="704" y="20" class="tiny rose">evidence</text>
+    <text x="866" y="20" class="tiny muted">handoff</text>
+    <path d="M112 15H142M212 15H252M356 15H400M486 15H528M638 15H680M798 15H842" stroke="#475569" stroke-width="1.5" stroke-linecap="round"/>
+  </g>
+</svg>

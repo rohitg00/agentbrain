@@ -1,6 +1,15 @@
 # Agent Brain
 
 <p align="center">
+  <img src="docs/assets/agentbrain-comic-banner.png" alt="Monochrome Agent Brain comic banner showing a vague request becoming a verified handoff" width="100%">
+</p>
+
+<p align="center">
+  <strong>Repo-local operating rules for coding agents.</strong><br>
+  Commands, skills, schemas, templates, evals, and proof gates that make agent work inspectable.
+</p>
+
+<p align="center">
   <a href="https://github.com/rohitg00/agentbrain/actions/workflows/quality.yml"><img src="https://github.com/rohitg00/agentbrain/actions/workflows/quality.yml/badge.svg" alt="Quality"></a>
   <a href="https://github.com/rohitg00/agentbrain/blob/main/LICENSE"><img src="https://img.shields.io/github/license/rohitg00/agentbrain" alt="License"></a>
   <a href="https://github.com/rohitg00/agentbrain/stargazers"><img src="https://img.shields.io/github/stars/rohitg00/agentbrain?style=social" alt="GitHub stars"></a>
@@ -8,11 +17,14 @@
   <img src="https://img.shields.io/badge/runtime-agent--agnostic-111827" alt="Agent agnostic">
 </p>
 
-**A portable operating harness for coding agents.**
+<p align="center">
+  <code>raw request</code> -&gt; <code>state</code> -&gt; <code>command</code> -&gt; <code>skill</code> -&gt; <code>artifact</code> -&gt; <code>evidence</code> -&gt; <code>handoff</code>
+</p>
 
-Agent Brain is a drop-in brain for agent workspaces: commands, skills, schemas,
-templates, review gates, evals, adapters, and handoff contracts that force
-evidence before code and verification before trust.
+Agent Brain is a portable harness you add to a repository. It does not run your
+agent. It gives any file-reading coding agent a state machine, command specs,
+skills, schemas, evals, and handoff contracts so work moves through evidence,
+artifacts, verification, review, and learning instead of chat momentum.
 
 It is not a decorative prompt pack, an IDE plugin, or another agent framework.
 Bring the coding agent you already use. Agent Brain supplies the operating
@@ -121,6 +133,10 @@ Agent Brain gives a capable model a way to operate like a careful teammate inste
 
 The repo is intentionally portable. It is not a hosted runtime, IDE plugin, or model wrapper. It is the operating discipline layer you put on top of the agent you already use.
 
+<p align="center">
+  <img src="docs/assets/agentbrain-concept-strip.png" alt="Monochrome comic strip showing a vague request routed into commands, skills, artifacts, evidence, and handoff" width="100%">
+</p>
+
 ## When to use it
 
 Use Agent Brain when the cost of a wrong agent action is higher than the cost of a few minutes of structure.
@@ -181,6 +197,10 @@ raw request
 ```
 
 The loop can stop early. Stopping early is success when evidence shows the idea is unsafe, overbuilt, or not worth building.
+
+<p align="center">
+  <img src="docs/assets/agentbrain-lifecycle-strip.png" alt="Monochrome lifecycle strip showing Agent Brain states moving from intake to learn" width="100%">
+</p>
 
 ## Run as an Agent Harness
 
@@ -472,6 +492,10 @@ Safe next action: <smallest next step>
 ## Quality Gates
 
 Before trusting a change, run the matching gates from `docs/review-gates.md`:
+
+<p align="center">
+  <img src="docs/assets/agentbrain-gates-strip.png" alt="Monochrome proof gates for approval, evidence, rollback, and review" width="100%">
+</p>
 
 - Product Gate: user, problem, scope, success metric, kill criteria.
 - Design Gate: flows, states, copy, accessibility, edge cases.
