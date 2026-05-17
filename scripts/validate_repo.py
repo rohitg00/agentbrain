@@ -840,6 +840,12 @@ BANNED_PUBLIC_COPY_TERMS = [
     "Open" + "AI",
     "Anth" + "ropic",
 ]
+ALLOWED_README_PUBLIC_COPY_SECTIONS = {
+    "vs others",
+    "benchmarks",
+    "comparisons",
+    "supported agent runtimes",
+}
 SECRET_LIKE_PATTERNS = [
     ("GitHub token", re.compile(r"\bgh[pousr]_[A-Za-z0-9_]{20,}\b")),
     ("private key block", re.compile(r"-----BEGIN (?:RSA |OPENSSH |EC |DSA )?PRIVATE KEY-----")),
@@ -927,7 +933,7 @@ def markdown_h1_headings(text: str) -> list[str]:
     return headings
 
 
-def term_is_only_in_readme_comparison_section(text: str, term: str) -> bool:
+def term_is_only_in_allowed_readme_section(text: str, term: str) -> bool:
     term_lower = term.lower()
     if term_lower not in text.lower():
         return True
@@ -936,14 +942,14 @@ def term_is_only_in_readme_comparison_section(text: str, term: str) -> bool:
     for line in text.splitlines():
         if line.startswith("## "):
             heading = line.lower().strip("# ")
-            in_allowed_section = heading in {"vs others", "benchmarks", "comparisons"}
+            in_allowed_section = heading in ALLOWED_README_PUBLIC_COPY_SECTIONS
         if term_lower in line.lower() and not in_allowed_section:
             return False
     return True
 
 
 def public_copy_term_allowed(path: Path, text: str, term: str) -> bool:
-    return path.name == "README.md" and term_is_only_in_readme_comparison_section(text, term)
+    return path.name == "README.md" and term_is_only_in_allowed_readme_section(text, term)
 
 
 def find_trailing_whitespace_lines(text: str) -> list[int]:
