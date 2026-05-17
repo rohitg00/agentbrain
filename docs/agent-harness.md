@@ -114,6 +114,7 @@ Artifact: <brief, plan, QA evidence, review, launch decision, learning note>
 Evidence checked: <commands, files, sources, logs, screenshots, traces>
 Fresh validation proof: <command, exit status, and relevant output from the current run>
 Coordination review: <single-agent note or parallel-worker join review with worker scopes, accepted outputs, rejected outputs, conflict check, and resolution>
+Context boundary: <included context, excluded context, read files, modified files, compaction or branch summary, and freshness trigger>
 Artifact paths: <templates, schemas, logs, reports, or changed files the next agent must inspect>
 Facts: <verified statements>
 Assumptions: <explicit assumptions>
@@ -124,6 +125,7 @@ Next action: <smallest safe next step>
 ```
 
 A handoff without evidence is incomplete. A handoff that hides uncertainty is unsafe.
+A handoff without a context boundary forces the next agent to either reload everything or trust hidden state; both are failures.
 
 ## Evidence Freshness
 

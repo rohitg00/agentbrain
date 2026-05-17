@@ -28,6 +28,7 @@ If required inputs are missing, ask at most three blocking questions or state ex
 - `artifact-contract` from `skills/artifact-contract/SKILL.md` when verification depends on template, schema, example, command output, or handoff field alignment.
 - `ci-recovery` from `skills/ci-recovery/SKILL.md` when remote workflow status must be reconciled with local validation.
 - `agent-output-verifier` from `skills/agent-output-verifier/SKILL.md` when the proof is attached to agent-produced output.
+- `runtime-lifecycle` from `skills/runtime-lifecycle/SKILL.md` when verification depends on turn phases, queued input, tool preflight/result order, save points, retry, abort, compaction, branch, or session persistence.
 
 ## Workflow
 
@@ -35,7 +36,7 @@ If required inputs are missing, ask at most three blocking questions or state ex
 2. Treat `/brain-verify` as a markdown command spec unless the active runtime proves native command support.
 3. List every important claim the artifact makes.
 4. Collect proof through tests, logs, traces, screenshots, citations, diffs, or human approval.
-5. Use `qa-evidence`; add `runtime-smoke` when a real agent runtime, adapter, sandbox mode, or `/brain-*` command boundary is part of the claim; add `adapter-capability-probe` when runtime smoke depends on concrete capability evidence; add `artifact-contract` when templates, schemas, examples, command outputs, or handoff fields must stay aligned; add `ci-recovery` for remote workflow failures or stale CI claims; add `agent-output-verifier` for agent-produced claims.
+5. Use `qa-evidence`; add `runtime-smoke` when a real agent runtime, adapter, sandbox mode, or `/brain-*` command boundary is part of the claim; add `runtime-lifecycle` when turn phases, queued input, tool lifecycle, save points, retry, abort, compaction, branch, or session persistence affect trust; add `adapter-capability-probe` when runtime smoke depends on concrete capability evidence; add `artifact-contract` when templates, schemas, examples, command outputs, or handoff fields must stay aligned; add `ci-recovery` for remote workflow failures or stale CI claims; add `agent-output-verifier` for agent-produced claims.
 6. Produce QA Evidence with pass/fail status, commands, outputs, and unchecked areas.
 7. Stop if proof is missing or the artifact cannot be verified safely.
 
@@ -72,4 +73,4 @@ A good `/brain-verify` run checks the actual artifact against tests, logs, diffs
 
 ## Example
 
-User request: verify an artifact or recent build. Selected command: `/brain-verify`. Command file: `commands/brain-verify.md`. Loaded skills: `qa-evidence`, `runtime-smoke`, `adapter-capability-probe`, `artifact-contract`, `ci-recovery`, and `agent-output-verifier` as needed. Skill files: `skills/qa-evidence/SKILL.md`, `skills/runtime-smoke/SKILL.md`, `skills/adapter-capability-probe/SKILL.md`, `skills/artifact-contract/SKILL.md`, `skills/ci-recovery/SKILL.md`, and `skills/agent-output-verifier/SKILL.md`. Artifact: write `templates/qa-evidence.md`. Artifact schema: `schemas/qa-evidence.schema.json`. Verification: run the requested quality gate, capture exact command output and artifact paths, classify failures, record fresh validation proof, and route fixes through `/brain-build` or `/brain-review`. Stop condition: stop if proof is stale, missing, unverifiable, or prose-only. Next state: REVIEW.
+User request: verify an artifact or recent build. Selected command: `/brain-verify`. Command file: `commands/brain-verify.md`. Loaded skills: `qa-evidence`, `runtime-smoke`, `runtime-lifecycle`, `adapter-capability-probe`, `artifact-contract`, `ci-recovery`, and `agent-output-verifier` as needed. Skill files: `skills/qa-evidence/SKILL.md`, `skills/runtime-smoke/SKILL.md`, `skills/runtime-lifecycle/SKILL.md`, `skills/adapter-capability-probe/SKILL.md`, `skills/artifact-contract/SKILL.md`, `skills/ci-recovery/SKILL.md`, and `skills/agent-output-verifier/SKILL.md`. Artifact: write `templates/qa-evidence.md`. Artifact schema: `schemas/qa-evidence.schema.json`. Verification: run the requested quality gate, capture exact command output, runtime lifecycle evidence, and artifact paths, classify failures, record fresh validation proof, and route fixes through `/brain-build` or `/brain-review`. Stop condition: stop if proof is stale, missing, unverifiable, or prose-only. Next state: REVIEW.

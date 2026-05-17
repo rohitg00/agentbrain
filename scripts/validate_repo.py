@@ -60,6 +60,7 @@ REQUIRED_DOCS = [
     "docs/decision-records.md",
     "docs/ci-recovery.md",
     "docs/skill-distillation.md",
+    "docs/runtime-lifecycle.md",
     "docs/state-machine.md",
 ]
 REQUIRED_STATE_MACHINE_DOC_STATES = [
@@ -87,6 +88,7 @@ REQUIRED_SKILLS = [
     "skills/context-memory/SKILL.md",
     "skills/domain-language/SKILL.md",
     "skills/ci-recovery/SKILL.md",
+    "skills/runtime-lifecycle/SKILL.md",
     "skills/runtime-smoke/SKILL.md",
 ]
 REQUIRED_EVAL_CASES = [
@@ -123,6 +125,7 @@ REQUIRED_EVAL_CASES = [
     "evals/cases/real-runtime-smoke-test.md",
     "evals/cases/native-command-assumption.md",
     "evals/cases/write-fence-before-runtime-writes.md",
+    "evals/cases/turn-boundary-drift.md",
 ]
 REQUIRED_EVAL_DOCS = ["evals/README.md"]
 REQUIRED_REAL_RUNTIME_SMOKE_EVIDENCE_FIELDS = [
@@ -336,6 +339,7 @@ REQUIRED_COMMAND_ROUTING_TIE_BREAKER_TERMS = [
     "no command fits",
 ]
 REQUIRED_HANDOFF_SCHEMA_RESUME_FIELDS = [
+    "context_boundary",
     "artifact_paths",
     "facts",
     "assumptions",

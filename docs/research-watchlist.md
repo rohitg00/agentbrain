@@ -70,6 +70,33 @@ What changed the repo:
 - Added validator coverage so the autonomous-goal doc remains required.
 - Added validator coverage so the research watchlist keeps tracking the current skill-library references instead of drifting back to generic source lists.
 
+## 2026-05-17 context boundary and handoff pass
+
+### User-supplied source
+
+- Multi-package agent harness repository. Treated as operator-pattern input, not public positioning or source-branded copy.
+
+What changed the repo:
+
+- Reinforced that long-running agent work needs explicit context selection before model calls, not broad transcript replay.
+- Added `context_boundary` to the handoff schema, template, and example artifact so handoffs name included context, excluded context, read files, modified files, compaction status, and freshness.
+- Expanded `docs/memory-model.md` with context boundary records for resumes and long runs.
+- Updated `skills/context-memory/SKILL.md` so memory and handoff work records omitted context and compaction status.
+- Tightened `evals/cases/context-budget.md` so context-budget failures include missing read/modified file tracking and missing handoff boundary.
+
+## 2026-05-17 runtime lifecycle pass
+
+### User-supplied source
+
+- Multi-package agent harness repository. Treated as operator-pattern input, not public positioning or source-branded copy.
+
+What changed the repo:
+
+- Added `docs/runtime-lifecycle.md` so runtime claims are checked against phases, turn snapshots, queued input, tool preflight/result ordering, save points, retry, abort, compaction, and branch behavior.
+- Added `skills/runtime-lifecycle/SKILL.md` and routed `/brain-verify` to it when runtime phase or persistence boundaries affect trust.
+- Added `evals/cases/turn-boundary-drift.md` so queued input, active-turn mutation, abort cleanup, and stale proof failures are testable.
+- Updated catalogs so future agents can discover the lifecycle doc, skill, and eval without loading unrelated context.
+
 ## Repeat loop
 
 When hardening the repo, repeat this loop:

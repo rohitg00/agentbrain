@@ -267,6 +267,7 @@ Start here:
 - `docs/devex-engineering.md` — setup, validation, command routing, and recovery guidance.
 - `docs/autonomous-goals.md` — scope long-running goals with measurable end states and loop limits.
 - `docs/shared-language.md` — keep project terms, aliases, and naming conflicts explicit.
+- `docs/runtime-lifecycle.md` — phase, queue, tool lifecycle, save-point, retry, abort, and compaction discipline.
 - `docs/decision-records.md` — record durable trade-offs without turning chat into history.
 - `docs/claims-we-reject.md` — claims and shortcuts the harness refuses without evidence.
 - `docs/ecosystem-review.md` — neutral criteria for evaluating external patterns.
@@ -361,6 +362,7 @@ Every handoff should be useful without private chat context. End each run, revie
 - decision,
 - evidence checked,
 - fresh validation proof,
+- context boundary,
 - artifact paths,
 - facts,
 - assumptions,
@@ -368,7 +370,7 @@ Every handoff should be useful without private chat context. End each run, revie
 - risks,
 - next action.
 
-When resuming from a previous handoff, treat it as stale until current files, blockers, risks, and validation commands confirm it. Resume only the named next action.
+When resuming from a previous handoff, treat it as stale until current files, blockers, risks, context boundary, and validation commands confirm it. Resume only the named next action.
 
 ## Evidence Freshness Rules
 
@@ -421,6 +423,7 @@ Stale validation proof cannot be reused after code, docs, schemas, templates, co
 - `plan-slicing` — split work into small verifiable implementation slices.
 - `problem-grill` — test whether the problem is real, specific, and worth solving.
 - `qa-evidence` — collect verification proof for review and shipping decisions.
+- `runtime-lifecycle` — verify turn phases, queues, tool lifecycle, save points, retry, abort, compaction, and branch claims.
 - `runtime-smoke` — check Agent Brain in a real agent runtime or adapter without overstating read-only smoke as full validation.
 - `question-ladder` — ask staged questions that narrow ambiguity without overloading the user.
 - `wiki-maintenance` — maintain project knowledge from checked sources.
@@ -598,7 +601,7 @@ Before choosing the next hardening slice, inspect the least protected way a futu
 4. Evals: newest repeated failure represented as a case.
 5. CI and install: fresh checkout can run the same local and CI gate.
 6. Public copy: external sources distilled into neutral pattern language.
-7. Handoff: state, evidence checked, facts, assumptions, risks, blockers, fresh validation proof, and next action.
+7. Handoff: state, evidence checked, context boundary, facts, assumptions, risks, blockers, fresh validation proof, and next action.
 8. README/docs: a capable coding agent can self-setup, choose the right command, troubleshoot, and maintain the harness without private context.
 
 Prefer the smallest slice that adds or tightens a validator/eval first, then updates the corresponding doc, skill, command, schema, or template.
