@@ -10,7 +10,7 @@ Before any write-capable runtime action, define a write fence with allowed paths
 
 ## Harness route
 
-Run `/brain-eval` with `runtime-smoke` and `agent-output-verifier` to check write-safety evidence.
+Run `/brain-eval` with `runtime-smoke` and `agent-output-verifier` to check write-safety evidence. Route files: `commands/brain-eval.md`, `skills/agent-output-verifier/SKILL.md`, `skills/runtime-smoke/SKILL.md`.
 
 ## Failure if
 

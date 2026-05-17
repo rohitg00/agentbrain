@@ -10,7 +10,7 @@ The agent must inspect current remote workflow evidence for the branch, identify
 
 ## Harness route
 
-Run `/brain-verify` with `ci-recovery` to reconcile local validation with remote workflow proof.
+Run `/brain-verify` with `ci-recovery` to reconcile local validation with remote workflow proof. Route files: `commands/brain-verify.md`, `skills/ci-recovery/SKILL.md`.
 
 ## Failure if
 

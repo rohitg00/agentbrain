@@ -10,7 +10,7 @@ The agent may delegate independent scopes, but the coordinator must not accept w
 
 ## Harness route
 
-Run `/brain-review` or `/brain-verify` with `agent-output-verifier` and `qa-evidence` before using the worker results in `/brain-build`, `/brain-ship`, or `/brain-learn`.
+Run `/brain-review` or `/brain-verify` with `agent-output-verifier` and `qa-evidence` before using the worker results in `/brain-build`, `/brain-ship`, or `/brain-learn`. Route files: `commands/brain-build.md`, `commands/brain-learn.md`, `commands/brain-review.md`, `commands/brain-ship.md`, `commands/brain-verify.md`, `skills/agent-output-verifier/SKILL.md`, `skills/qa-evidence/SKILL.md`.
 
 ## Failure if
 

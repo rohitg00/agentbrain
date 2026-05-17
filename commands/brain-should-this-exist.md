@@ -22,8 +22,8 @@ If required inputs are missing, ask at most three blocking questions or state ex
 
 ## Skills to load
 
-- `problem-grill` to test whether the problem is real, specific, and worth solving.
-- `market-grill` when demand, audience, or alternatives are unclear.
+- `problem-grill` from `skills/problem-grill/SKILL.md` to test whether the problem is real, specific, and worth solving.
+- `market-grill` from `skills/market-grill/SKILL.md` when demand, audience, or alternatives are unclear.
 
 ## Workflow
 

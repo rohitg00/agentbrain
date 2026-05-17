@@ -22,8 +22,8 @@ If required inputs are missing, ask at most three blocking questions or state ex
 
 ## Skills to load
 
-- `problem-grill` when the user, problem, or acceptance criteria are weak.
-- `evidence-research` when brief claims need inspectable sources.
+- `problem-grill` from `skills/problem-grill/SKILL.md` when the user, problem, or acceptance criteria are weak.
+- `evidence-research` from `skills/evidence-research/SKILL.md` when brief claims need inspectable sources.
 
 ## Workflow
 

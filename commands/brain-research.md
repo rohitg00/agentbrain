@@ -22,8 +22,8 @@ If required inputs are missing, ask at most three blocking questions or state ex
 
 ## Skills to load
 
-- `evidence-research` to turn claims into source-backed evidence.
-- `wiki-maintenance` when the research should update durable project knowledge.
+- `evidence-research` from `skills/evidence-research/SKILL.md` to turn claims into source-backed evidence.
+- `wiki-maintenance` from `skills/wiki-maintenance/SKILL.md` when the research should update durable project knowledge.
 
 ## Workflow
 

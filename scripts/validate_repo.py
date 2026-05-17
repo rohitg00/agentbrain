@@ -60,6 +60,7 @@ REQUIRED_DOCS = [
     "docs/decision-records.md",
     "docs/ci-recovery.md",
     "docs/skill-distillation.md",
+    "docs/runtime-lifecycle.md",
     "docs/state-machine.md",
 ]
 REQUIRED_STATE_MACHINE_DOC_STATES = [
@@ -87,6 +88,7 @@ REQUIRED_SKILLS = [
     "skills/context-memory/SKILL.md",
     "skills/domain-language/SKILL.md",
     "skills/ci-recovery/SKILL.md",
+    "skills/runtime-lifecycle/SKILL.md",
     "skills/runtime-smoke/SKILL.md",
 ]
 REQUIRED_EVAL_CASES = [
@@ -104,6 +106,7 @@ REQUIRED_EVAL_CASES = [
     "evals/cases/verification-shortcut.md",
     "evals/cases/skill-boundary-creep.md",
     "evals/cases/source-branded-skill-name.md",
+    "evals/cases/skill-trigger-drift.md",
     "evals/cases/no-user-defined.md",
     "evals/cases/review-gate-skip.md",
     "evals/cases/plan-slicing.md",
@@ -122,6 +125,7 @@ REQUIRED_EVAL_CASES = [
     "evals/cases/real-runtime-smoke-test.md",
     "evals/cases/native-command-assumption.md",
     "evals/cases/write-fence-before-runtime-writes.md",
+    "evals/cases/turn-boundary-drift.md",
 ]
 REQUIRED_EVAL_DOCS = ["evals/README.md"]
 REQUIRED_REAL_RUNTIME_SMOKE_EVIDENCE_FIELDS = [
@@ -142,6 +146,8 @@ REQUIRED_REAL_RUNTIME_SMOKE_EVIDENCE_FIELDS = [
     "loaded skills",
     "adapter path",
     "blocked commands",
+    "capability matrix",
+    "capability evidence",
 ]
 REQUIRED_REAL_RUNTIME_SMOKE_READ_ONLY_TERMS = ["read-only", "full validation"]
 REQUIRED_RUNTIME_SMOKE_TEMPLATE_ROUTING_TERM = "loaded skills declared by selected command"
@@ -333,6 +339,7 @@ REQUIRED_COMMAND_ROUTING_TIE_BREAKER_TERMS = [
     "no command fits",
 ]
 REQUIRED_HANDOFF_SCHEMA_RESUME_FIELDS = [
+    "context_boundary",
     "artifact_paths",
     "facts",
     "assumptions",
@@ -508,6 +515,8 @@ REQUIRED_ADAPTER_OUTPUT_CONTRACT_TERMS = [
     "selected command",
     "loaded skills",
     "capability matrix",
+    "capability evidence",
+    "brain command mode",
     "run scope",
     "artifact path",
     "transcript path",
@@ -607,7 +616,9 @@ REQUIRED_ADAPTER_RUNTIME_SMOKE_COMMAND_FLAGS = [
     "--transcript-redaction-status",
     "--validation-command",
     "--write-fence-approval-state",
+    "--output",
     "--capability",
+    "--capability-evidence",
 ]
 REQUIRED_ADAPTER_RUNTIME_SMOKE_CAPABILITIES = [
     "read_files",
@@ -618,6 +629,7 @@ REQUIRED_ADAPTER_RUNTIME_SMOKE_CAPABILITIES = [
     "native_brain_commands",
     "schema_artifacts",
     "blocked_command_reporting",
+    "preserve_user_changes",
 ]
 REQUIRED_ADAPTER_SAMPLE_ROUTING_PROBE_TERMS = [
     "sample request",
@@ -652,6 +664,7 @@ REQUIRED_ADAPTER_FAILURE_MODE_TERMS = [
 ]
 REQUIRED_ADAPTER_README_SECTIONS = [
     "## Adapter Catalog",
+    "## Adapter Selection",
     "## Adapter Contract",
 ]
 REQUIRED_ADAPTER_README_CONTRACT_TERMS = [
@@ -660,6 +673,13 @@ REQUIRED_ADAPTER_README_CONTRACT_TERMS = [
     "real-runtime smoke evidence",
     "blocked commands",
     "output contract",
+]
+REQUIRED_ADAPTER_README_SELECTION_TERMS = [
+    "required capabilities",
+    "runtime evidence",
+    "read-only fallback",
+    "full validation promotion criteria",
+    "blocked capability notes",
 ]
 REQUIRED_CONTRIBUTING_VALIDATION_COMMANDS = [
     "pytest -q",
@@ -749,6 +769,7 @@ GENERIC_SKILL_WHEN_NOT_TO_USE = (
 )
 REQUIRED_SKILL_TRIGGER_PREFIXES = ("Use when", "Use after", "Use before", "Use for")
 REQUIRED_SKILL_EXAMPLE_TERMS = ["trigger:", "action:", "output artifact:", "verification:"]
+REQUIRED_SKILL_VERIFICATION_TARGET_TERMS = ["artifact", "command", "schema", "template"]
 REQUIRED_COMMAND_EXAMPLE_TERMS = [
     "user request",
     "selected command",
@@ -1397,6 +1418,15 @@ def command_skills_to_load(text: str) -> list[str]:
     return sorted(set(re.findall(r"`([a-z0-9]+(?:-[a-z0-9]+)*)`", body)))
 
 
+def command_skill_entry_cites_file(text: str, skill_name: str) -> bool:
+    body = section_body(text, "## Skills to load")
+    expected_file = f"skills/{skill_name}/SKILL.md"
+    for line in body.splitlines():
+        if f"`{skill_name}`" in line:
+            return f"`{expected_file}`" in line
+    return False
+
+
 def command_example_loaded_skills(example: str) -> list[str]:
     loaded_skill_blocks = re.findall(
         r"loaded skills?:\s*([^.]*)",
@@ -1816,6 +1846,10 @@ def validate(root: Path = ROOT) -> list[str]:
         for term in REQUIRED_ADAPTER_README_CONTRACT_TERMS:
             if term not in adapter_contract:
                 errors.append(f"adapters/README.md adapter contract must mention: {term}")
+        adapter_selection = section_body(adapters_readme_text, "## Adapter Selection").lower()
+        for term in REQUIRED_ADAPTER_README_SELECTION_TERMS:
+            if term not in adapter_selection:
+                errors.append(f"adapters/README.md adapter selection must mention: {term}")
 
     for adapter in adapter_files:
         adapter_path = rel(adapter, root)
@@ -2057,6 +2091,14 @@ def validate(root: Path = ROOT) -> list[str]:
             errors.append(
                 f"{rel(skill, root)} trigger must start with a routing phrase such as Use when, Use after, Use before, or Use for"
             )
+        verification_body = section_body(text, "## Verification").lower()
+        if verification_body and (
+            "evidence" not in verification_body
+            or not any(term in verification_body for term in REQUIRED_SKILL_VERIFICATION_TARGET_TERMS)
+        ):
+            errors.append(
+                f"{rel(skill, root)} verification must name evidence and at least one concrete check target: artifact, command, schema, or template"
+            )
         output_artifact_text = section_body(text, "## Output Artifact")
         output_artifact = output_artifact_text.lower()
         matching_template = skill_output_artifact_template(output_artifact_text, root)
@@ -2122,6 +2164,11 @@ def validate(root: Path = ROOT) -> list[str]:
                     errors.append(f"{rel(command, root)} section must appear exactly once: {section}")
                 if not section_has_body(text, section):
                     errors.append(f"{rel(command, root)} section has no body: {section}")
+        when_to_use = section_body(text, "## When to use")
+        if when_to_use and not starts_with_skill_trigger_phrase(when_to_use):
+            errors.append(
+                f"{rel(command, root)} when-to-use must start with a routing phrase such as Use when, Use after, Use before, or Use for"
+            )
         if not sections_are_in_order(text, REQUIRED_COMMAND_SECTIONS):
             errors.append(f"{rel(command, root)} sections must appear in canonical order")
         if command_lifecycle_state(text) not in VALID_COMMAND_LIFECYCLE_STATES:
@@ -2273,6 +2320,11 @@ def validate(root: Path = ROOT) -> list[str]:
         if not skill_names:
             errors.append(f"{rel(command, root)} skills-to-load section must name at least one skill")
         for skill_name in skill_names:
+            expected_skill_path = f"skills/{skill_name}/SKILL.md"
+            if not command_skill_entry_cites_file(text, skill_name):
+                errors.append(
+                    f"{rel(command, root)} skills-to-load entry must cite skill file for {skill_name}: {expected_skill_path}"
+                )
             skill_file = root / "skills" / skill_name / "SKILL.md"
             if not skill_file.exists():
                 errors.append(
@@ -2340,7 +2392,7 @@ def validate(root: Path = ROOT) -> list[str]:
                 errors.append(f"commands/README.md catalog missing command link: {command_name}")
                 continue
             entry = command_catalog_entries.get(command_name, "")
-            for field in ["State:", "Use when:", "Skills:", "Artifact:", "Native:", "Stop:"]:
+            for field in ["State:", "Use when:", "Skills:", "Artifact:", "Schema:", "Native:", "Stop:"]:
                 if field not in entry:
                     errors.append(
                         f"commands/README.md catalog entry for {command_name} must name routing field: {field}"
@@ -2672,13 +2724,21 @@ def validate(root: Path = ROOT) -> list[str]:
                 errors.append(f"{rel(case, root)} harness route must name at least one /brain- command")
             for command_name in sorted(route_command_refs):
                 command_file = command_name.removeprefix("/")
-                if not (root / "commands" / f"{command_file}.md").exists():
+                command_path = f"commands/{command_file}.md"
+                if not (root / command_path).exists():
                     errors.append(f"{rel(case, root)} harness route references missing command: {command_name}")
+                elif f"`{command_path}`" not in harness_route:
+                    errors.append(
+                        f"{rel(case, root)} harness route must cite selected command file: {command_path}"
+                    )
             route_skill_refs = set(re.findall(r"`([a-z0-9]+(?:-[a-z0-9]+)*)`", harness_route))
             existing_route_skill_refs = []
             for skill_name in sorted(route_skill_refs):
-                if (root / "skills" / skill_name / "SKILL.md").exists():
+                skill_path = f"skills/{skill_name}/SKILL.md"
+                if (root / skill_path).exists():
                     existing_route_skill_refs.append(skill_name)
+                    if f"`{skill_path}`" not in harness_route:
+                        errors.append(f"{rel(case, root)} harness route must cite skill file: {skill_path}")
                 else:
                     errors.append(f"{rel(case, root)} harness route references missing skill: {skill_name}")
             if not existing_route_skill_refs:

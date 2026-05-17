@@ -22,9 +22,9 @@ If required inputs are missing, ask at most three blocking questions or state ex
 
 ## Skills to load
 
-- `learning-capture` to convert repeated outcomes into durable knowledge.
-- `context-memory` to decide whether the lesson belongs in memory, a skill, a doc, a template, an eval, or nowhere.
-- `wiki-maintenance` when the update belongs in source-backed project context.
+- `learning-capture` from `skills/learning-capture/SKILL.md` to convert repeated outcomes into durable knowledge.
+- `context-memory` from `skills/context-memory/SKILL.md` to decide whether the lesson belongs in memory, a skill, a doc, a template, an eval, or nowhere.
+- `wiki-maintenance` from `skills/wiki-maintenance/SKILL.md` when the update belongs in source-backed project context.
 
 ## Workflow
 

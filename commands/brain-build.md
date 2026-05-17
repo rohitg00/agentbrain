@@ -22,8 +22,8 @@ If required inputs are missing, ask at most three blocking questions or state ex
 
 ## Skills to load
 
-- `plan-slicing` to keep the active slice narrow and independently verifiable.
-- `qa-evidence` when the slice changes behavior and needs test-first proof.
+- `plan-slicing` from `skills/plan-slicing/SKILL.md` to keep the active slice narrow and independently verifiable.
+- `qa-evidence` from `skills/qa-evidence/SKILL.md` when the slice changes behavior and needs test-first proof.
 
 ## Workflow
 

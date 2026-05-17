@@ -22,10 +22,10 @@ If required inputs are missing, ask at most three blocking questions or state ex
 
 ## Skills to load
 
-- `problem-grill` for problem and user assumptions.
-- `market-grill` for demand, alternatives, and positioning assumptions.
-- `design-grill` for interface, state, and edge-case assumptions.
-- `engineering-grill` for feasibility, failure-mode, and implementation assumptions.
+- `problem-grill` from `skills/problem-grill/SKILL.md` for problem and user assumptions.
+- `market-grill` from `skills/market-grill/SKILL.md` for demand, alternatives, and positioning assumptions.
+- `design-grill` from `skills/design-grill/SKILL.md` for interface, state, and edge-case assumptions.
+- `engineering-grill` from `skills/engineering-grill/SKILL.md` for feasibility, failure-mode, and implementation assumptions.
 
 ## Workflow
 

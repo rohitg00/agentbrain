@@ -22,8 +22,8 @@ If required inputs are missing, ask at most three blocking questions or state ex
 
 ## Skills to load
 
-- `design-grill` to challenge flows, states, edge cases, and failure paths.
-- `engineering-grill` when the design depends on technical feasibility or reliability.
+- `design-grill` from `skills/design-grill/SKILL.md` to challenge flows, states, edge cases, and failure paths.
+- `engineering-grill` from `skills/engineering-grill/SKILL.md` when the design depends on technical feasibility or reliability.
 
 ## Workflow
 

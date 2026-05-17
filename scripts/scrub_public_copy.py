@@ -27,6 +27,10 @@ PUBLIC_COPY_GLOBS = [
     "evals/**/*.md",
     "adapters/README.md",
     "adapters/*/README.md",
+    "scripts/*.py",
+    "tests/*.py",
+    ".github/workflows/*.yml",
+    ".github/workflows/*.yaml",
 ]
 ALLOWED_README_SECTIONS = {"comparisons", "comparison", "benchmarks", "benchmark"}
 

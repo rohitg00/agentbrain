@@ -1,5 +1,22 @@
 # Changelog
 
+## Unreleased
+
+### Added
+
+- `docs/harness-effect.md`: response to recent agent-harness research showing
+  that tool-output presentation shifts retrieval scores even with identical
+  evidence (Sen et al., *Is Grep All You Need? How Agent Harnesses Reshape
+  Agentic Search*, arXiv:2605.15184). Documents operating rules for new
+  tools, parity checks across presentation modes, and the measurement
+  requirement for harness changes.
+- `evals/cases/tool-output-presentation.md`: forces a declared presentation
+  mode (inline payload versus file artifact), a parity check across modes,
+  and fail-closed conditions before a search or recall tool is exposed.
+- Cross-links from `docs/agent-harness.md` (new Harness Effect section) and
+  `docs/state-machine.md` (new harness-effect gate after the build/verify
+  states) into the new doc and eval case.
+
 ## v0.2.0
 
 Research-backed rewrite of Agent Brain into an evidence-first operating system for agents.

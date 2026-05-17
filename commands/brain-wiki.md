@@ -22,9 +22,9 @@ If required inputs are missing, ask at most three blocking questions or state ex
 
 ## Skills to load
 
-- `wiki-maintenance` to update project knowledge from checked sources.
-- `activity-recap` when local repository history or recent changes must be summarized before updating knowledge.
-- `evidence-research` when the update depends on external claims or freshness.
+- `wiki-maintenance` from `skills/wiki-maintenance/SKILL.md` to update project knowledge from checked sources.
+- `activity-recap` from `skills/activity-recap/SKILL.md` when local repository history or recent changes must be summarized before updating knowledge.
+- `evidence-research` from `skills/evidence-research/SKILL.md` when the update depends on external claims or freshness.
 
 ## Workflow
 

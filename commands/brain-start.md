@@ -22,10 +22,10 @@ If required inputs are missing, ask at most three blocking questions or state ex
 
 ## Skills to load
 
-- `intake` for routing raw intent into the earliest safe state.
-- `command-routing` when the selected `/brain-*` route must be chosen or verified against the command catalog.
-- `question-ladder` when the request needs staged clarification without overloading the user.
-- `domain-language` when overloaded project terms affect routing, artifact naming, or the next state.
+- `intake` from `skills/intake/SKILL.md` for routing raw intent into the earliest safe state.
+- `command-routing` from `skills/command-routing/SKILL.md` when the selected `/brain-*` route must be chosen or verified against the command catalog.
+- `question-ladder` from `skills/question-ladder/SKILL.md` when the request needs staged clarification without overloading the user.
+- `domain-language` from `skills/domain-language/SKILL.md` when overloaded project terms affect routing, artifact naming, or the next state.
 
 ## Workflow
 

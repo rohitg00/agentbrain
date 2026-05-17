@@ -56,6 +56,7 @@ The portable core therefore favors:
 - explicit state and artifacts instead of hidden conversation state,
 - launch / pause / resume points for long-running work,
 - bounded `/goal`-style loops with explicit success evidence,
+- explicit runtime lifecycle boundaries for turn snapshots, queued input, tool preflight, save points, retry, abort, and compaction,
 - human contact and approval as first-class workflow actions,
 - small focused skills or agents instead of one broad generalist,
 - compact error summaries that can be fed back into the next attempt,

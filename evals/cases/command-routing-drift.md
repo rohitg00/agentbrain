@@ -10,7 +10,7 @@ The agent must not guess a route from memory or load a broad skill bundle. It sh
 
 ## Harness route
 
-Start with `/brain-start` and `intake` to classify the request. Move to `/brain-plan` with `engineering-grill` and `plan-slicing` only after the selected command, artifact, and stop condition match the command catalog. Use `/brain-verify` with `agent-output-verifier` and `qa-evidence` when proof collection is the current state.
+Start with `/brain-start` and `intake` to classify the request. Move to `/brain-plan` with `engineering-grill` and `plan-slicing` only after the selected command, artifact, and stop condition match the command catalog. Use `/brain-verify` with `agent-output-verifier` and `qa-evidence` when proof collection is the current state. Route files: `commands/brain-plan.md`, `commands/brain-start.md`, `commands/brain-verify.md`, `skills/agent-output-verifier/SKILL.md`, `skills/engineering-grill/SKILL.md`, `skills/intake/SKILL.md`, `skills/plan-slicing/SKILL.md`, `skills/qa-evidence/SKILL.md`.
 
 ## Failure if
 

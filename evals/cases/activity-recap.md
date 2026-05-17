@@ -16,7 +16,7 @@
 
 ## Harness route
 
-Run `/brain-eval` against the command and skills named by the case, then score the output with `agent-output-verifier` for checked evidence, stop conditions, and handoff completeness.
+Run `/brain-eval` against the command and skills named by the case, then score the output with `agent-output-verifier` for checked evidence, stop conditions, and handoff completeness. Route files: `commands/brain-eval.md`, `skills/agent-output-verifier/SKILL.md`.
 
 ## Failure if
 

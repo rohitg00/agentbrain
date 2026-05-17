@@ -1,9 +1,20 @@
 import json
 from pathlib import Path
 
+import pytest
 from jsonschema import Draft202012Validator
 
 from scripts import runtime_smoke
+
+
+def test_runtime_smoke_help_lists_every_capability(capsys):
+    with pytest.raises(SystemExit) as exit_info:
+        runtime_smoke.parse_args(["--help"])
+
+    assert exit_info.value.code == 0
+    help_text = capsys.readouterr().out
+    for capability_name in runtime_smoke.CAPABILITY_NAMES:
+        assert capability_name in help_text
 
 
 def test_checked_in_runtime_smoke_example_satisfies_runtime_validator():
@@ -14,6 +25,19 @@ def test_checked_in_runtime_smoke_example_satisfies_runtime_validator():
     )
 
     assert errors == []
+
+
+def test_checked_in_real_runtime_smoke_artifacts_satisfy_runtime_validator():
+    artifact_paths = sorted(Path("artifacts/runtime-smoke").glob("*.json"))
+
+    assert artifact_paths, "expected at least one checked-in real runtime smoke artifact"
+    for artifact_path in artifact_paths:
+        report = json.loads(artifact_path.read_text(encoding="utf-8"))
+        errors = runtime_smoke.validate_report_against_schema(
+            report, Path("schemas/runtime-smoke.schema.json"), root=Path.cwd()
+        )
+
+        assert errors == [], artifact_path
 
 
 def test_runtime_smoke_rejects_selected_command_that_is_not_in_checkout():
@@ -46,6 +70,95 @@ def test_runtime_smoke_rejects_duplicate_loaded_skill_flags_in_exact_command():
     assert "exact_command must not duplicate loaded skill flag: intake" in errors
 
 
+def test_runtime_smoke_rejects_loaded_skill_flag_not_recorded_in_report():
+    report = json.loads(Path("examples/artifacts/runtime-smoke.example.json").read_text(encoding="utf-8"))
+    report["exact_command"] = report["exact_command"].replace(
+        "--loaded-skill intake",
+        "--loaded-skill intake --loaded-skill command-routing",
+    )
+
+    errors = runtime_smoke.validate_report_against_schema(
+        report, Path("schemas/runtime-smoke.schema.json"), root=Path.cwd()
+    )
+
+    assert "exact_command loaded skill flag is not recorded in loaded_skills: command-routing" in errors
+
+
+def test_runtime_smoke_rejects_private_python_executable_paths_in_artifact():
+    report = json.loads(Path("examples/artifacts/runtime-smoke.example.json").read_text(encoding="utf-8"))
+    report["python_executable"] = "/Users/example/.venv/bin/python"
+    report["evidence"] = [
+        "Python executable: /Users/example/.venv/bin/python"
+        if line.startswith("Python executable: ")
+        else line
+        for line in report["evidence"]
+    ]
+
+    errors = runtime_smoke.validate_report_against_schema(
+        report, Path("schemas/runtime-smoke.schema.json"), root=Path.cwd()
+    )
+
+    assert "runtime smoke artifact contains private absolute path in python_executable; use a repo-relative path or redact before output" in errors
+    assert "runtime smoke artifact contains private absolute path in evidence; use a repo-relative path or redact before output" in errors
+
+
+def test_runtime_smoke_rejects_private_paths_in_capability_evidence():
+    report = json.loads(Path("examples/artifacts/runtime-smoke.example.json").read_text(encoding="utf-8"))
+    report["capability_evidence"]["read_files"] = "/Users/example/runtime/capability.log"
+    report["exact_command"] = report["exact_command"].replace(
+        "--capability-evidence read_files=adapter-docs-and-file-read",
+        "--capability-evidence read_files=/Users/example/runtime/capability.log",
+    )
+    report["evidence"] = [
+        line.replace(
+            "read_files=adapter-docs-and-file-read",
+            "read_files=/Users/example/runtime/capability.log",
+        )
+        if line.startswith("Capability evidence: ")
+        else line
+        for line in report["evidence"]
+    ]
+
+    errors = runtime_smoke.validate_report_against_schema(
+        report, Path("schemas/runtime-smoke.schema.json"), root=Path.cwd()
+    )
+
+    assert "runtime smoke artifact contains private absolute path in capability_evidence; use a repo-relative path or redact before output" in errors
+
+
+def test_runtime_smoke_rejects_secret_like_values_in_capability_evidence():
+    report = json.loads(Path("examples/artifacts/runtime-smoke.example.json").read_text(encoding="utf-8"))
+    secret_source = "api" + "_token=" + "abcdefghijklmnopqrstuvwxyz123456"
+    report["capability_evidence"]["network_access"] = secret_source
+    report["exact_command"] = report["exact_command"].replace(
+        "--capability-evidence network_access=not-checked-read-only-smoke",
+        f"--capability-evidence network_access={secret_source}",
+    )
+    report["evidence"] = [
+        line.replace("network_access=not-checked-read-only-smoke", f"network_access={secret_source}")
+        if line.startswith("Capability evidence: ")
+        else line
+        for line in report["evidence"]
+    ]
+
+    errors = runtime_smoke.validate_report_against_schema(
+        report, Path("schemas/runtime-smoke.schema.json"), root=Path.cwd()
+    )
+
+    assert "runtime smoke artifact contains secret-like value in capability_evidence; redact before output" in errors
+
+
+def test_runtime_smoke_rejects_duplicate_loaded_skills_in_report():
+    report = json.loads(Path("examples/artifacts/runtime-smoke.example.json").read_text(encoding="utf-8"))
+    report["loaded_skills"] = ["intake", "command-routing", "intake"]
+
+    errors = runtime_smoke.validate_report_against_schema(
+        report, Path("schemas/runtime-smoke.schema.json"), root=Path.cwd()
+    )
+
+    assert "loaded_skills must not duplicate skill: intake" in errors
+
+
 def test_runtime_smoke_rejects_duplicate_capability_names_in_exact_command():
     report = json.loads(Path("examples/artifacts/runtime-smoke.example.json").read_text(encoding="utf-8"))
     report["exact_command"] = report["exact_command"].replace(
@@ -58,6 +171,154 @@ def test_runtime_smoke_rejects_duplicate_capability_names_in_exact_command():
     )
 
     assert "exact_command must not duplicate capability name: read_files" in errors
+
+
+def test_runtime_smoke_rejects_unsupported_capability_names_in_exact_command():
+    report = json.loads(Path("examples/artifacts/runtime-smoke.example.json").read_text(encoding="utf-8"))
+    report["exact_command"] = (
+        report["exact_command"]
+        + " --capability teleport_files=yes"
+        + " --capability-evidence teleport_files=imaginary-adapter-docs"
+    )
+
+    errors = runtime_smoke.validate_report_against_schema(
+        report, Path("schemas/runtime-smoke.schema.json"), root=Path.cwd()
+    )
+
+    assert "exact_command contains unsupported capability flag name: teleport_files" in errors
+    assert "exact_command contains unsupported capability evidence flag name: teleport_files" in errors
+
+
+def test_runtime_smoke_rejects_missing_capability_evidence_sources():
+    report = json.loads(Path("examples/artifacts/runtime-smoke.example.json").read_text(encoding="utf-8"))
+    report.pop("capability_evidence", None)
+
+    errors = runtime_smoke.validate_report_against_schema(
+        report, Path("schemas/runtime-smoke.schema.json"), root=Path.cwd()
+    )
+
+    assert "'capability_evidence' is a required property" in errors
+
+
+def test_runtime_smoke_requires_preserve_user_changes_capability():
+    report = json.loads(Path("examples/artifacts/runtime-smoke.example.json").read_text(encoding="utf-8"))
+    report["capability_matrix"].pop("preserve_user_changes", None)
+    report["capability_evidence"].pop("preserve_user_changes", None)
+
+    errors = runtime_smoke.validate_report_against_schema(
+        report, Path("schemas/runtime-smoke.schema.json"), root=Path.cwd()
+    )
+
+    assert "'preserve_user_changes' is a required property" in errors
+
+
+def test_pass_runtime_smoke_rejects_unknown_capability_evidence():
+    report = json.loads(Path("examples/artifacts/runtime-smoke.example.json").read_text(encoding="utf-8"))
+    report["smoke_result"] = "pass"
+    report["blocked_commands"] = []
+    report["capability_matrix"]["request_approvals"] = "no"
+    report["capability_matrix"]["network_access"] = "no"
+    report["capability_evidence"]["network_access"] = "unknown"
+    report["exact_command"] = (
+        report["exact_command"]
+        .replace("--smoke-result blocked", "--smoke-result pass")
+        .replace("--blocked-command 'python -m pytest -q was blocked by read-only sandbox' ", "")
+        .replace("--capability request_approvals=unknown", "--capability request_approvals=no")
+        .replace("--capability network_access=unknown", "--capability network_access=no")
+        .replace(
+            "--capability-evidence network_access=not-checked-read-only-smoke",
+            "--capability-evidence network_access=unknown",
+        )
+    )
+    report["evidence"] = [
+        line.replace("Smoke result: blocked", "Smoke result: pass")
+        .replace("Blocked commands recorded: python -m pytest -q was blocked by read-only sandbox.", "Blocked commands recorded: none.")
+        .replace("request_approvals=unknown", "request_approvals=no")
+        .replace("network_access=unknown", "network_access=no")
+        .replace("network_access=not-checked-read-only-smoke", "network_access=unknown")
+        for line in report["evidence"]
+    ]
+
+    errors = runtime_smoke.validate_report_against_schema(
+        report, Path("schemas/runtime-smoke.schema.json")
+    )
+
+    assert "pass smoke_result requires concrete capability evidence: network_access cannot be unknown" in errors
+
+
+def test_runtime_smoke_rejects_duplicate_blocked_commands_in_report_and_exact_command():
+    report = json.loads(Path("examples/artifacts/runtime-smoke.example.json").read_text(encoding="utf-8"))
+    blocked_command = "python -m pytest -q blocked by read-only sandbox"
+    report["run_scope"] = "read_only_smoke"
+    report["smoke_result"] = "blocked"
+    report["command_exit_status"] = 1
+    report["transcript_redaction_status"] = "blocked"
+    report["blocked_commands"] = [blocked_command, blocked_command]
+    report["capability_matrix"]["blocked_command_reporting"] = "yes"
+    report["exact_command"] = (
+        "python scripts/runtime_smoke.py --runtime generic-cli-runtime --version 1.2.3 "
+        "--run-scope read_only_smoke --sandbox-write-mode read_only "
+        "--brain-command-mode markdown_specs --selected-command /brain-start "
+        "--loaded-skill intake --loaded-skill command-routing "
+        "--smoke-result blocked --command-exit-status 1 "
+        "--transcript-path artifacts/runtime-smoke/generic-cli-runtime.log "
+        "--transcript-redaction-status blocked "
+        "--adapter-path adapters/read-only-cli/README.md "
+        "--blocked-command 'python -m pytest -q blocked by read-only sandbox' "
+        "--blocked-command 'python -m pytest -q blocked by read-only sandbox' "
+        + " ".join(
+            f"--capability {name}={status}"
+            for name, status in report["capability_matrix"].items()
+        )
+    )
+
+    errors = runtime_smoke.validate_report_against_schema(
+        report, Path("schemas/runtime-smoke.schema.json"), root=Path.cwd()
+    )
+
+    assert f"blocked_commands must not duplicate command: {blocked_command}" in errors
+    assert f"exact_command must not duplicate blocked command flag: {blocked_command}" in errors
+
+
+def test_runtime_smoke_rejects_duplicate_validation_commands_in_report_and_exact_command():
+    report = json.loads(Path("examples/artifacts/runtime-smoke.example.json").read_text(encoding="utf-8"))
+    validation_command = "python -m pytest -q was blocked by read-only sandbox"
+    report["validation_commands"] = [validation_command, validation_command]
+    report["exact_command"] = report["exact_command"] + f" --validation-command '{validation_command}'"
+
+    errors = runtime_smoke.validate_report_against_schema(
+        report, Path("schemas/runtime-smoke.schema.json"), root=Path.cwd()
+    )
+
+    assert f"validation_commands must not duplicate command: {validation_command}" in errors
+    assert f"exact_command must not duplicate validation command flag: {validation_command}" in errors
+
+
+def test_runtime_smoke_rejects_duplicate_write_fence_values_in_report_and_exact_command():
+    report = json.loads(Path("examples/artifacts/runtime-smoke.example.json").read_text(encoding="utf-8"))
+    report["write_fence"]["allowed_paths"] = ["artifacts/runtime-smoke/", "artifacts/runtime-smoke/"]
+    report["write_fence"]["disallowed_paths"] = [".git/", ".git/"]
+    report["write_fence"]["user_owned_files"] = ["README.md", "README.md"]
+    report["exact_command"] = (
+        report["exact_command"]
+        + " --write-fence-allowed-path artifacts/runtime-smoke/"
+        + " --write-fence-allowed-path artifacts/runtime-smoke/"
+        + " --write-fence-disallowed-path .git/"
+        + " --write-fence-disallowed-path .git/"
+        + " --write-fence-user-owned-file README.md"
+        + " --write-fence-user-owned-file README.md"
+    )
+
+    errors = runtime_smoke.validate_report_against_schema(
+        report, Path("schemas/runtime-smoke.schema.json"), root=Path.cwd()
+    )
+
+    assert "write_fence.allowed_paths must not duplicate path: artifacts/runtime-smoke/" in errors
+    assert "write_fence.disallowed_paths must not duplicate path: .git/" in errors
+    assert "write_fence.user_owned_files must not duplicate path: README.md" in errors
+    assert "exact_command must not duplicate write fence flag: --write-fence-allowed-path artifacts/runtime-smoke/" in errors
+    assert "exact_command must not duplicate write fence flag: --write-fence-disallowed-path .git/" in errors
+    assert "exact_command must not duplicate write fence flag: --write-fence-user-owned-file README.md" in errors
 
 
 def test_runtime_smoke_schema_requires_full_validation_capabilities():
@@ -647,6 +908,72 @@ def test_build_report_records_worktree_status_to_preserve_user_changes(tmp_path:
         line.startswith("Git worktree status: ") and report["git_worktree_status"] in line
         for line in report["evidence"]
     )
+
+
+def test_full_validation_rejects_blocked_validation_command_as_successful_gate(monkeypatch, tmp_path: Path):
+    monkeypatch.setattr(runtime_smoke, "git_freshness_result", lambda _root: "fresh: HEAD equals origin/main at abc123")
+    monkeypatch.setattr(runtime_smoke, "git_fetch_result", lambda _root: "fetched: git fetch origin main succeeded")
+    transcript = tmp_path / "artifacts" / "runtime-smoke" / "generic-cli-runtime-2026-05-15.log"
+    transcript.parent.mkdir(parents=True)
+    transcript.write_text("redacted runtime transcript\n", encoding="utf-8")
+    blocked_validation_command = "python -m pytest -q blocked by read-only sandbox"
+    validation_commands = [*runtime_smoke.FULL_VALIDATION_GATE_COMMANDS, blocked_validation_command]
+    command = (
+        "python scripts/runtime_smoke.py --runtime generic-cli-runtime --version 1.2.3 "
+        "--run-scope full_validation --selected-command /brain-verify "
+        "--loaded-skill runtime-smoke --adapter-path adapters/read-only-cli/README.md "
+        "--sandbox-write-mode workspace_write --brain-command-mode markdown_specs "
+        "--transcript-path artifacts/runtime-smoke/generic-cli-runtime-2026-05-15.log "
+        "--smoke-result pass --command-exit-status 0 --transcript-redaction-status redacted "
+        "--write-fence-allowed-path artifacts/runtime-smoke/ --write-fence-disallowed-path .git/ "
+        "--write-fence-rollback-command 'git restore artifacts/runtime-smoke/' "
+        "--write-fence-approval-state not_required "
+        "--capability read_files=yes --capability write_files=yes --capability run_shell=yes "
+        "--capability request_approvals=no --capability network_access=no "
+        "--capability native_brain_commands=no --capability schema_artifacts=yes "
+        "--capability blocked_command_reporting=yes "
+    ) + " ".join(f"--validation-command '{validation_command}'" for validation_command in validation_commands)
+    report = runtime_smoke.build_report(
+        root=tmp_path,
+        runtime="generic-cli-runtime",
+        version="1.2.3",
+        sandbox_write_mode="workspace_write",
+        brain_command_mode="markdown_specs",
+        run_scope="full_validation",
+        blocked_commands=[],
+        exact_command=command,
+        smoke_result="pass",
+        selected_command="/brain-verify",
+        loaded_skills=["runtime-smoke"],
+        adapter_path="adapters/read-only-cli/README.md",
+        transcript_path="artifacts/runtime-smoke/generic-cli-runtime-2026-05-15.log",
+        transcript_redaction_status="redacted",
+        validation_commands=validation_commands,
+        write_fence_allowed_paths=["artifacts/runtime-smoke/"],
+        write_fence_disallowed_paths=[".git/"],
+        write_fence_rollback_command="git restore artifacts/runtime-smoke/",
+        write_fence_approval_state="not_required",
+        capability_matrix={
+            "read_files": "yes",
+            "write_files": "yes",
+            "run_shell": "yes",
+            "request_approvals": "no",
+            "network_access": "no",
+            "native_brain_commands": "no",
+            "schema_artifacts": "yes",
+            "blocked_command_reporting": "yes",
+        },
+        capability_evidence={capability: f"{capability}-transcript-line" for capability in runtime_smoke.CAPABILITY_NAMES},
+    )
+
+    errors = runtime_smoke.validate_report_against_schema(
+        report, Path("schemas/runtime-smoke.schema.json"), root=tmp_path
+    )
+
+    assert (
+        "full_validation validation command must be a successful gate, not blocked/skipped/failed: "
+        "python -m pytest -q blocked by read-only sandbox"
+    ) in errors
 
 
 def test_full_validation_requires_clean_worktree_or_named_user_owned_files(monkeypatch, tmp_path: Path):
@@ -1717,6 +2044,44 @@ def test_pass_runtime_smoke_requires_transcript_path_in_exact_command(tmp_path: 
     )
 
 
+def test_blocked_runtime_smoke_requires_transcript_path_in_exact_command(tmp_path: Path):
+    report = runtime_smoke.build_report(
+        root=tmp_path,
+        runtime="generic-cli-runtime",
+        version="1.2.3",
+        sandbox_write_mode="read_only",
+        brain_command_mode="markdown_specs",
+        run_scope="read_only_smoke",
+        blocked_commands=["python -m pytest -q blocked by read-only sandbox"],
+        exact_command=(
+            "python scripts/runtime_smoke.py --runtime generic-cli-runtime --version 1.2.3 "
+            "--run-scope read_only_smoke --selected-command /brain-verify "
+            "--loaded-skill runtime-smoke --adapter-path adapters/read-only-cli/README.md "
+            "--sandbox-write-mode read_only --brain-command-mode markdown_specs "
+            "--smoke-result blocked --command-exit-status 1 "
+            "--transcript-redaction-status blocked "
+            "--blocked-command 'python -m pytest -q blocked by read-only sandbox' "
+            "--capability blocked_command_reporting=yes"
+        ),
+        command_exit_status=1,
+        smoke_result="blocked",
+        transcript_path="artifacts/runtime-smoke/generic-cli-runtime-2026-05-15.log",
+        transcript_redaction_status="blocked",
+        selected_command="/brain-verify",
+        loaded_skills=["runtime-smoke"],
+        adapter_path="adapters/read-only-cli/README.md",
+        capability_matrix={"blocked_command_reporting": "yes"},
+    )
+
+    errors = runtime_smoke.validate_report_against_schema(report, Path("schemas/runtime-smoke.schema.json"))
+
+    assert any(
+        "exact_command must record transcript path flag: --transcript-path artifacts/runtime-smoke/generic-cli-runtime-2026-05-15.log"
+        in error
+        for error in errors
+    )
+
+
 def test_pass_runtime_smoke_requires_result_and_redaction_flags_in_exact_command(tmp_path: Path):
     report = runtime_smoke.build_report(
         root=tmp_path,
@@ -2380,6 +2745,65 @@ def test_full_validation_runtime_smoke_requires_durable_transcript_path(tmp_path
     assert any("full_validation requires a durable transcript_path" in error for error in errors)
 
 
+def test_full_validation_runtime_smoke_requires_durable_output_artifact_path(tmp_path: Path):
+    report = runtime_smoke.build_report(
+        root=tmp_path,
+        runtime="generic-cli-runtime",
+        version="1.2.3",
+        sandbox_write_mode="workspace_write",
+        brain_command_mode="markdown_specs",
+        run_scope="full_validation",
+        blocked_commands=[],
+        exact_command=(
+            "python scripts/runtime_smoke.py --runtime generic-cli-runtime --version 1.2.3 "
+            "--run-scope full_validation --sandbox-write-mode workspace_write "
+            "--brain-command-mode markdown_specs --selected-command /brain-verify "
+            "--loaded-skill runtime-smoke --adapter-path adapters/read-only-cli/README.md "
+            "--transcript-path artifacts/runtime-smoke/generic-cli-runtime-2026-05-15.log "
+            "--transcript-redaction-status redacted --smoke-result pass --command-exit-status 0 "
+            "--validation-command 'rm -rf scripts/__pycache__ tests/__pycache__' "
+            "--validation-command 'python -m pytest -q' "
+            "--validation-command 'python scripts/validate_repo.py' "
+            "--validation-command 'git diff --check' "
+            "--write-fence-allowed-path artifacts/runtime-smoke/ "
+            "--write-fence-disallowed-path .git/ "
+            "--write-fence-rollback-command 'git restore artifacts/runtime-smoke/' "
+            "--write-fence-approval-state not_required "
+            "--capability read_files=yes --capability write_files=yes --capability run_shell=yes "
+            "--capability request_approvals=no --capability network_access=no "
+            "--capability native_brain_commands=no --capability schema_artifacts=yes "
+            "--capability blocked_command_reporting=yes --capability preserve_user_changes=yes"
+        ),
+        command_exit_status=0,
+        smoke_result="pass",
+        transcript_path="artifacts/runtime-smoke/generic-cli-runtime-2026-05-15.log",
+        transcript_redaction_status="redacted",
+        selected_command="/brain-verify",
+        loaded_skills=["runtime-smoke"],
+        adapter_path="adapters/read-only-cli/README.md",
+        validation_commands=runtime_smoke.FULL_VALIDATION_GATE_COMMANDS,
+        write_fence_allowed_paths=["artifacts/runtime-smoke/"],
+        write_fence_disallowed_paths=[".git/"],
+        write_fence_rollback_command="git restore artifacts/runtime-smoke/",
+        write_fence_approval_state="not_required",
+        capability_matrix={
+            "read_files": "yes",
+            "write_files": "yes",
+            "run_shell": "yes",
+            "request_approvals": "no",
+            "network_access": "no",
+            "native_brain_commands": "no",
+            "schema_artifacts": "yes",
+            "blocked_command_reporting": "yes",
+            "preserve_user_changes": "yes",
+        },
+    )
+
+    errors = runtime_smoke.validate_report_against_schema(report, Path("schemas/runtime-smoke.schema.json"))
+
+    assert any("full_validation requires --output so the smoke JSON artifact has a durable path" in error for error in errors)
+
+
 def test_full_validation_runtime_smoke_requires_reviewed_transcript_redaction(tmp_path: Path):
     report = runtime_smoke.build_report(
         root=tmp_path,
@@ -2633,6 +3057,26 @@ def test_main_creates_parent_directories_for_runtime_smoke_output(monkeypatch, t
             "schema_artifacts=unknown",
             "--capability",
             "blocked_command_reporting=yes",
+            "--capability",
+            "preserve_user_changes=unknown",
+            "--capability-evidence",
+            "read_files=unknown",
+            "--capability-evidence",
+            "write_files=unknown",
+            "--capability-evidence",
+            "run_shell=unknown",
+            "--capability-evidence",
+            "request_approvals=unknown",
+            "--capability-evidence",
+            "network_access=unknown",
+            "--capability-evidence",
+            "native_brain_commands=unknown",
+            "--capability-evidence",
+            "schema_artifacts=unknown",
+            "--capability-evidence",
+            "blocked_command_reporting=blocked-command-transcript-line",
+            "--capability-evidence",
+            "preserve_user_changes=unknown",
             "--output",
             str(output_path),
         ]
@@ -2729,6 +3173,26 @@ def test_main_quotes_exact_command_values_for_full_validation_flags(monkeypatch,
             "native_brain_commands=no",
             "--capability",
             "blocked_command_reporting=yes",
+            "--capability",
+            "preserve_user_changes=yes",
+            "--capability-evidence",
+            "read_files=transcript-read-repo-root",
+            "--capability-evidence",
+            "write_files=temp-write-output",
+            "--capability-evidence",
+            "run_shell=validation-command-output",
+            "--capability-evidence",
+            "request_approvals=runtime-settings-no-approval-api",
+            "--capability-evidence",
+            "network_access=not-needed-for-validation",
+            "--capability-evidence",
+            "native_brain_commands=adapter-markdown-spec-routing",
+            "--capability-evidence",
+            "schema_artifacts=validated-json-output",
+            "--capability-evidence",
+            "blocked_command_reporting=no-blockers-in-full-validation",
+            "--capability-evidence",
+            "preserve_user_changes=write-fence-reviewed-before-output",
             "--output",
             str(output_path),
         ]
@@ -2739,6 +3203,88 @@ def test_main_quotes_exact_command_values_for_full_validation_flags(monkeypatch,
     assert (
         "--validation-command 'python -m pytest -q'" in report["exact_command"]
         or '--validation-command "python -m pytest -q"' in report["exact_command"]
+    )
+
+
+def test_full_validation_transcript_path_must_stay_inside_write_fence():
+    report = json.loads(Path("examples/artifacts/runtime-smoke.example.json").read_text(encoding="utf-8"))
+    report.update(
+        {
+            "sandbox_write_mode": "workspace_write",
+            "run_scope": "full_validation",
+            "smoke_result": "pass",
+            "blocked_commands": [],
+            "validation_commands": runtime_smoke.FULL_VALIDATION_GATE_COMMANDS,
+            "transcript_path": "logs/runtime-smoke/full-validation.log",
+            "transcript_redaction_status": "redacted",
+            "write_fence": {
+                "allowed_paths": ["artifacts/runtime-smoke/"],
+                "disallowed_paths": [".git/"],
+                "user_owned_files": [],
+                "rollback_command": "git restore artifacts/runtime-smoke/",
+                "approval_state": "not_required",
+            },
+        }
+    )
+    report["capability_matrix"].update(
+        {
+            "read_files": "yes",
+            "write_files": "yes",
+            "run_shell": "yes",
+            "request_approvals": "no",
+            "network_access": "no",
+            "native_brain_commands": "no",
+            "schema_artifacts": "yes",
+            "blocked_command_reporting": "yes",
+        }
+    )
+    report["capability_evidence"] = {
+        name: f"transcript-proof-{name}" for name in runtime_smoke.CAPABILITY_NAMES
+    }
+    report["exact_command"] = (
+        "python scripts/runtime_smoke.py --runtime generic-cli-runtime --version 1.2.3 "
+        "--sandbox-write-mode workspace_write --brain-command-mode markdown_specs "
+        "--selected-command /brain-start --loaded-skill intake "
+        "--adapter-path adapters/read-only-cli/README.md --run-scope full_validation "
+        "--command-exit-status 0 --smoke-result pass "
+        "--transcript-path logs/runtime-smoke/full-validation.log "
+        "--transcript-redaction-status redacted --output artifacts/runtime-smoke/run.json "
+        "--write-fence-allowed-path artifacts/runtime-smoke/ --write-fence-disallowed-path .git/ "
+        "--write-fence-rollback-command 'git restore artifacts/runtime-smoke/' "
+        "--write-fence-approval-state not_required "
+        + " ".join(
+            f"--validation-command '{command}'" for command in runtime_smoke.FULL_VALIDATION_GATE_COMMANDS
+        )
+        + " "
+        + " ".join(
+            f"--capability {name}={status}" for name, status in report["capability_matrix"].items()
+        )
+        + " "
+        + " ".join(
+            f"--capability-evidence {name}={source}"
+            for name, source in report["capability_evidence"].items()
+        )
+    )
+    report["evidence"] = [
+        line.replace("read-only smoke", "full validation")
+        .replace("read_only", "workspace_write")
+        .replace("Smoke result: blocked", "Smoke result: pass")
+        .replace("Transcript path: artifacts/runtime-smoke/cli-runtime-example.log", "Transcript path: logs/runtime-smoke/full-validation.log")
+        .replace("Blocked commands recorded: python -m pytest -q was blocked by read-only sandbox.", "Blocked commands recorded: none.")
+        .replace(
+            "Validation commands: python -m pytest -q was blocked by read-only sandbox.",
+            "Validation commands: " + ", ".join(runtime_smoke.FULL_VALIDATION_GATE_COMMANDS) + ".",
+        )
+        .replace("Write fence: allowed=none; disallowed=none; user-owned=none; rollback=not_applicable.", "Write fence: allowed=artifacts/runtime-smoke/; disallowed=.git/; user-owned=none; rollback=git restore artifacts/runtime-smoke/.")
+        .replace("Write fence approval state: unknown", "Write fence approval state: not_required")
+        for line in report["evidence"]
+    ]
+
+    errors = runtime_smoke.validate_report_against_schema(report, Path("schemas/runtime-smoke.schema.json"))
+
+    assert (
+        "full_validation transcript path must be inside write_fence.allowed_paths: logs/runtime-smoke/full-validation.log"
+        in errors
     )
 
 

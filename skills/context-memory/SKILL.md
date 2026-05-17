@@ -34,7 +34,8 @@ Do not use when this trigger is absent; choose the command or skill that owns th
 3. Reject noisy logs, stale status, raw personal data, secrets, and one-off task progress.
 4. Attach evidence or mark the memory as an assumption.
 5. Write the update in neutral, declarative language with a scope and freshness note.
-6. Add or update an eval, validator, or review gate when the memory rule should not regress.
+6. For resumes, handoffs, and long runs, write a context boundary: included context, excluded context, read files, modified files, compaction, and freshness.
+7. Add or update an eval, validator, or review gate when the memory rule should not regress.
 
 ## Anti-Rationalization
 
@@ -48,6 +49,8 @@ Do not use when this trigger is absent; choose the command or skill that owns th
 
 - The target tier matches the expected lifetime and use case.
 - The memory is evidence-backed or explicitly marked as an assumption.
+- The memory decision artifact names the checked doc, skill, command, or source evidence.
+- Handoffs and long-run memory updates include a context boundary with read files, modified files, omitted context, compaction status, and freshness.
 - Temporary progress is not stored as durable knowledge.
 - Procedures become skills rather than profile notes.
 - Secrets and raw sensitive data are excluded.

@@ -1,0 +1,6 @@
+Runtime smoke transcript for scheduled agent runtime, 2026-05-17.
+Selected command file inspected: commands/brain-start.md.
+Loaded skill files inspected: skills/intake/SKILL.md, skills/command-routing/SKILL.md, skills/question-ladder/SKILL.md, skills/domain-language/SKILL.md.
+Adapter file inspected: adapters/read-only-cli/README.md.
+Validation focus: checked-in smoke artifact routing and schema verification.
+Transcript review: no secrets, private paths, or sensitive user data included.
