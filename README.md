@@ -17,6 +17,88 @@
   <img src="https://img.shields.io/badge/runtime-agent--agnostic-111827" alt="Agent agnostic">
 </p>
 
+## Supported Agent Runtimes
+
+<p align="center">
+  <strong>Works with the coding agent you already use.</strong>
+</p>
+
+<table align="center">
+  <tr>
+    <td align="center" width="96">
+      <a href="https://claude.ai/code">
+        <img src="https://svgl.app/library/claude-ai-icon.svg" alt="Claude Code" height="34"><br>
+        <sub>Claude Code</sub>
+      </a>
+    </td>
+    <td align="center" width="96">
+      <a href="https://openai.com/codex/">
+        <picture>
+          <source media="(prefers-color-scheme: dark)" srcset="https://svgl.app/library/codex_dark.svg">
+          <img src="https://svgl.app/library/codex_light.svg" alt="Codex" height="34">
+        </picture><br>
+        <sub>Codex</sub>
+      </a>
+    </td>
+    <td align="center" width="96">
+      <a href="https://github.com/google-gemini/gemini-cli">
+        <img src="https://svgl.app/library/gemini.svg" alt="Gemini CLI" height="34"><br>
+        <sub>Gemini CLI</sub>
+      </a>
+    </td>
+    <td align="center" width="96">
+      <a href="https://www.cursor.com">
+        <picture>
+          <source media="(prefers-color-scheme: dark)" srcset="https://svgl.app/library/cursor_dark.svg">
+          <img src="https://svgl.app/library/cursor_light.svg" alt="Cursor" height="34">
+        </picture><br>
+        <sub>Cursor</sub>
+      </a>
+    </td>
+    <td align="center" width="96">
+      <a href="https://github.com/features/copilot">
+        <picture>
+          <source media="(prefers-color-scheme: dark)" srcset="https://svgl.app/library/copilot_dark.svg">
+          <img src="https://svgl.app/library/copilot.svg" alt="GitHub Copilot" height="34">
+        </picture><br>
+        <sub>Copilot</sub>
+      </a>
+    </td>
+    <td align="center" width="96">
+      <a href="https://windsurf.com/editor">
+        <picture>
+          <source media="(prefers-color-scheme: dark)" srcset="https://svgl.app/library/windsurf-dark.svg">
+          <img src="https://svgl.app/library/windsurf-light.svg" alt="Windsurf" height="34">
+        </picture><br>
+        <sub>Windsurf</sub>
+      </a>
+    </td>
+    <td align="center" width="96">
+      <a href="https://opencode.ai/">
+        <picture>
+          <source media="(prefers-color-scheme: dark)" srcset="https://svgl.app/library/opencode-dark.svg">
+          <img src="https://svgl.app/library/opencode.svg" alt="OpenCode" height="34">
+        </picture><br>
+        <sub>OpenCode</sub>
+      </a>
+    </td>
+    <td align="center" width="96">
+      <a href="https://openclaw.ai/">
+        <img src="https://svgl.app/library/openclaw.svg" alt="OpenClaw" height="34"><br>
+        <sub>OpenClaw</sub>
+      </a>
+    </td>
+    <td align="center" width="96">
+      <img src="docs/assets/agent-runtimes/hermes.svg" alt="Hermes" height="34"><br>
+      <sub>Hermes</sub>
+    </td>
+  </tr>
+</table>
+
+<p align="center">
+  <sub>SVGL-hosted marks update in place where available; Hermes uses a repo-local mark.</sub>
+</p>
+
 <p align="center">
   <code>raw request</code> -&gt; <code>state</code> -&gt; <code>command</code> -&gt; <code>skill</code> -&gt; <code>artifact</code> -&gt; <code>evidence</code> -&gt; <code>handoff</code>
 </p>
@@ -159,6 +241,10 @@ Bad fits:
 - work that needs a production runtime, queue, dashboard, or hosted memory backend by itself.
 
 ## See it work
+
+<p align="center">
+  <img src="docs/assets/agentbrain-loop.gif" alt="Animated Agent Brain preview cycling through routing, lifecycle, and proof gates" width="100%">
+</p>
 
 ```text
 User: Build an agent for customer refunds.

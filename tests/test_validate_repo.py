@@ -6178,6 +6178,20 @@ def test_readme_vs_others_section_can_name_specific_runtimes(tmp_path):
     assert validate_repo.validate(tmp_path) == []
 
 
+def test_readme_supported_agent_runtimes_section_can_name_specific_runtimes(tmp_path):
+    write_minimal_repo(tmp_path)
+    vendor_name = "Clau" + "de"
+    runtime_name = "Co" + "dex"
+    readme = tmp_path / "README.md"
+    readme.write_text(
+        readme.read_text(encoding="utf-8")
+        + f"\n## Supported Agent Runtimes\n\n{vendor_name} and {runtime_name} can load the harness.\n",
+        encoding="utf-8",
+    )
+
+    assert validate_repo.validate(tmp_path) == []
+
+
 def test_readme_vendor_names_outside_vs_others_are_reported(tmp_path):
     write_minimal_repo(tmp_path)
     vendor_name = "Clau" + "de"
