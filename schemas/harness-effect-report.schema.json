@@ -1,0 +1,153 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Harness Effect Report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "report_version",
+    "generated_at",
+    "fixture_id",
+    "modes",
+    "parity",
+    "verdict"
+  ],
+  "properties": {
+    "report_version": {
+      "type": "string",
+      "const": "1.0"
+    },
+    "generated_at": {
+      "type": "string",
+      "minLength": 1
+    },
+    "fixture_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "modes": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "mode",
+          "command",
+          "envelope_bytes",
+          "envelope_sha256",
+          "item_count"
+        ],
+        "properties": {
+          "mode": {
+            "type": "string",
+            "enum": ["inline", "file"]
+          },
+          "command": {
+            "type": "string",
+            "minLength": 1
+          },
+          "envelope_bytes": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "envelope_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "item_count": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      }
+    },
+    "parity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "reference_mode",
+        "ids_equal",
+        "citations_equal",
+        "differences"
+      ],
+      "properties": {
+        "reference_mode": {
+          "type": "string",
+          "minLength": 1
+        },
+        "ids_equal": {
+          "type": "boolean"
+        },
+        "citations_equal": {
+          "type": "boolean"
+        },
+        "differences": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "compared_mode",
+              "ids_equal",
+              "citations_equal",
+              "missing_in_other_ids",
+              "extra_in_other_ids",
+              "missing_in_other_citations",
+              "extra_in_other_citations"
+            ],
+            "properties": {
+              "compared_mode": {
+                "type": "string",
+                "minLength": 1
+              },
+              "ids_equal": {
+                "type": "boolean"
+              },
+              "citations_equal": {
+                "type": "boolean"
+              },
+              "missing_in_other_ids": {
+                "type": "array"
+              },
+              "extra_in_other_ids": {
+                "type": "array"
+              },
+              "missing_in_other_citations": {
+                "type": "array"
+              },
+              "extra_in_other_citations": {
+                "type": "array"
+              }
+            }
+          }
+        }
+      }
+    },
+    "byte_budget": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "required": [
+        "inline_envelope_bytes",
+        "file_envelope_bytes",
+        "file_minus_inline_bytes"
+      ],
+      "properties": {
+        "inline_envelope_bytes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "file_envelope_bytes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "file_minus_inline_bytes": {
+          "type": "integer"
+        }
+      }
+    },
+    "verdict": {
+      "type": "string",
+      "enum": ["pass", "fail"]
+    }
+  }
+}

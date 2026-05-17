@@ -16,6 +16,17 @@
 - Cross-links from `docs/agent-harness.md` (new Harness Effect section) and
   `docs/state-machine.md` (new harness-effect gate after the build/verify
   states) into the new doc and eval case.
+- `scripts/harness_effect.py`: deterministic, model-agnostic parity script
+  that invokes a tool once per declared presentation mode (`inline`,
+  `file`), diffs retrieved evidence ids and citations across modes, and
+  emits a JSON report (envelope bytes, SHA-256 envelope hashes, byte
+  budget delta, parity verdict). `schemas/harness-effect-report.schema.json`
+  documents the output. `evals/harness-effect/fixtures/akbp-search.json`
+  ships an example wiring against the AKBP reference CLI.
+  `examples/artifacts/harness-effect-report.example.json` shows a passing
+  report. The script is reachable from `docs/harness-effect.md` and the
+  README scripts section so harness changes earn measured evidence, not
+  asserted doctrine.
 
 ## v0.2.0
 

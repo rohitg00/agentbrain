@@ -79,6 +79,29 @@ For interop with knowledge-base protocols that expose inline-versus-file
 presentation as a first-class tool parameter, see the AKBP companion
 position note: `docs/HARNESS_AND_PRESENTATION.md` in the AKBP repository.
 
+## Measurement scaffold
+
+`scripts/harness_effect.py` runs the same tool twice over the same input
+set, once per declared presentation mode, and writes a
+`schemas/harness-effect-report.schema.json`-valid JSON report covering:
+
+- the rendered command and SHA-256 envelope hash for each mode,
+- envelope byte sizes (so the file-mode byte budget is concrete, not
+  hand-waved),
+- a parity diff over retrieved evidence ids and citation ids,
+- a binary verdict that the harness can attach to a plan, review, or
+  handoff artifact.
+
+Fixtures live under `evals/harness-effect/fixtures/`. The shipped example
+points at the AKBP reference CLI; substitute any tool that exposes an
+`output_mode` parameter and JSON output. The script is intentionally
+model-agnostic so harness changes are measurable without first wiring up
+an LLM.
+
+Failing parity is a harness regression: a new presentation mode is not
+allowed to silently drop citations or items, regardless of how much
+prompt budget it saves.
+
 ## Open work
 
 - A measured harness-on / harness-off comparison on a small task slice, so
