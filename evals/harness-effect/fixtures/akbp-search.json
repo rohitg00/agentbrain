@@ -1,0 +1,36 @@
+{
+  "id": "akbp-search-presentation-001",
+  "description": "Calls the AKBP reference tool server search endpoint twice over the same indexed knowledge base, once with output_mode inline and once with output_mode file, then diffs retrieved claim ids and citations across modes. Requires AKBP to be installed and a knowledge base path supplied through the {kb_path} placeholder.",
+  "tool": {
+    "command_template": "python3 {akbp_cli} --path {kb_path} search {query} --limit {limit} --output-mode {output_mode}{file_dir_arg}",
+    "base_params": {
+      "akbp_cli": "<path to cli/akbp.py>",
+      "kb_path": "<path to AKBP knowledge base>",
+      "query": "rollback owner",
+      "limit": "10",
+      "file_dir_arg": ""
+    }
+  },
+  "modes": [
+    {
+      "name": "inline",
+      "params": {
+        "output_mode": "inline"
+      }
+    },
+    {
+      "name": "file",
+      "params": {
+        "output_mode": "file",
+        "file_dir_arg": " --output-dir {output_dir}"
+      }
+    }
+  ],
+  "parity": {
+    "inline_retrieved_fields": ["results[].id"],
+    "inline_citation_fields": ["results[].evidence[]"],
+    "file_artifact_field": "artifact.path",
+    "file_item_evidence_fields": ["id"],
+    "file_item_citation_fields": ["evidence[]"]
+  }
+}
