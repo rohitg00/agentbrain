@@ -1,7 +1,7 @@
 # Agent Brain
 
 <p align="center">
-  <img src="docs/assets/agentbrain-hero.svg" alt="Agent Brain repo-local operating harness banner" width="100%">
+  <img src="docs/assets/agentbrain-comic-banner.png" alt="Monochrome Agent Brain comic banner showing a vague request becoming a verified handoff" width="100%">
 </p>
 
 <p align="center">
@@ -133,6 +133,10 @@ Agent Brain gives a capable model a way to operate like a careful teammate inste
 
 The repo is intentionally portable. It is not a hosted runtime, IDE plugin, or model wrapper. It is the operating discipline layer you put on top of the agent you already use.
 
+<p align="center">
+  <img src="docs/assets/agentbrain-concept-strip.svg" alt="Animated monochrome comic strip showing a vague request routed into commands, skills, artifacts, evidence, and handoff" width="100%">
+</p>
+
 ## When to use it
 
 Use Agent Brain when the cost of a wrong agent action is higher than the cost of a few minutes of structure.
@@ -193,6 +197,10 @@ raw request
 ```
 
 The loop can stop early. Stopping early is success when evidence shows the idea is unsafe, overbuilt, or not worth building.
+
+<p align="center">
+  <img src="docs/assets/agentbrain-lifecycle-strip.svg" alt="Animated monochrome lifecycle strip showing Agent Brain states moving from intake to learn" width="100%">
+</p>
 
 ## Run as an Agent Harness
 
@@ -484,6 +492,10 @@ Safe next action: <smallest next step>
 ## Quality Gates
 
 Before trusting a change, run the matching gates from `docs/review-gates.md`:
+
+<p align="center">
+  <img src="docs/assets/agentbrain-gates-strip.svg" alt="Animated monochrome proof gates for approval, evidence, rollback, and review" width="100%">
+</p>
 
 - Product Gate: user, problem, scope, success metric, kill criteria.
 - Design Gate: flows, states, copy, accessibility, edge cases.

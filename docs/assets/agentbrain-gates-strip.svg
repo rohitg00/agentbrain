@@ -1,0 +1,66 @@
+<svg width="1200" height="300" viewBox="0 0 1200 300" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Agent Brain proof gates strip</title>
+  <desc id="desc">Animated monochrome proof-gate strip showing approval, evidence, rollback, and review gates before handoff.</desc>
+  <style>
+    .paper { fill: #fff; }
+    .ink { stroke: #111; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; }
+    .thin { stroke: #111; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+    .black { fill: #111; }
+    .white { fill: #fff; }
+    .wash { fill: #f4f4f4; }
+    .title { font: 800 25px ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; letter-spacing: .04em; fill: #111; }
+    .label { font: 800 16px ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; fill: #111; }
+    .small { font: 700 13px ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #111; }
+    .check { animation: check 3s ease-in-out infinite; transform-origin: center; }
+    .check-b { animation: check 3s ease-in-out infinite .55s; transform-origin: center; }
+    .check-c { animation: check 3s ease-in-out infinite 1.1s; transform-origin: center; }
+    .gate { animation: gate 3.8s ease-in-out infinite; }
+    @keyframes check { 0%, 50%, 100% { opacity: .25; transform: scale(1); } 24%, 38% { opacity: 1; transform: scale(1.08); } }
+    @keyframes gate { 0%, 40%, 100% { stroke-dasharray: 0 1; } 55%, 75% { stroke-dasharray: 12 8; } }
+  </style>
+
+  <rect class="paper" width="1200" height="300"/>
+  <rect x="18" y="18" width="1164" height="264" class="thin"/>
+  <text x="48" y="62" class="title">PROOF GATES BEFORE TRUST</text>
+  <text x="48" y="90" class="small">The harness blocks confident summaries until the missing evidence is explicit.</text>
+
+  <g transform="translate(80 120)">
+    <rect x="0" y="0" width="188" height="92" rx="9" class="thin wash"/>
+    <path d="M28 35L45 52L72 22" class="ink check"/>
+    <text x="86" y="38" class="label">APPROVAL</text>
+    <text x="86" y="62" class="small">side effects</text>
+  </g>
+
+  <g transform="translate(336 120)">
+    <rect x="0" y="0" width="188" height="92" rx="9" class="thin"/>
+    <circle cx="50" cy="44" r="25" class="thin"/>
+    <path d="M40 44L48 52L63 33" class="ink check-b"/>
+    <text x="86" y="38" class="label">EVIDENCE</text>
+    <text x="86" y="62" class="small">test logs</text>
+  </g>
+
+  <g transform="translate(592 120)">
+    <rect x="0" y="0" width="188" height="92" rx="9" class="thin wash"/>
+    <path d="M28 58C28 36 43 25 60 25C76 25 86 38 86 57" class="thin"/>
+    <path d="M68 48L78 58L88 46" class="ink check-c"/>
+    <text x="86" y="38" class="label">ROLLBACK</text>
+    <text x="86" y="62" class="small">exit path</text>
+  </g>
+
+  <g transform="translate(848 120)">
+    <rect x="0" y="0" width="188" height="92" rx="9" class="thin"/>
+    <rect x="27" y="23" width="42" height="52" class="thin" fill="#fff"/>
+    <path d="M36 41H61M36 56H58" class="thin"/>
+    <path d="M76 49L90 63L101 37" class="ink check"/>
+    <text x="108" y="38" class="label">REVIEW</text>
+    <text x="108" y="62" class="small">trust call</text>
+  </g>
+
+  <path d="M278 166H326M534 166H582M790 166H838M1046 166H1110" class="ink gate"/>
+  <path d="M316 154L332 166L316 178M572 154L588 166L572 178M828 154L844 166L828 178M1100 154L1116 166L1100 178" class="ink gate"/>
+
+  <g transform="translate(1070 72)">
+    <rect x="0" y="0" width="72" height="44" rx="6" class="thin" fill="#fff"/>
+    <text x="14" y="28" class="label">STOP</text>
+  </g>
+</svg>
