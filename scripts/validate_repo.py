@@ -11,13 +11,17 @@ ROOT = Path(__file__).resolve().parents[1]
 
 REQUIRED_ROOT = [
     "README.md",
+    "AGENTS.md",
     "AGENTBRAIN.md",
+    "INSTALL_FOR_AGENTS.md",
     "PRINCIPLES.md",
     "ANTI_RATIONALIZATION.md",
     "CONTRIBUTING.md",
 ]
 REQUIRED_FILES = [
     "requirements-dev.txt",
+    "commands/registry.json",
+    "scripts/doctor.py",
     "scripts/scrub_public_copy.py",
     "scripts/runtime_smoke.py",
     "adapters/README.md",
@@ -37,6 +41,11 @@ REQUIRED_ARTIFACT_FILES = [
     "schemas/changed-artifact-plus-implementation-notes.schema.json",
     "schemas/runtime-smoke.schema.json",
     "templates/runtime-smoke.md",
+    "schemas/scorecard.schema.json",
+    "templates/scorecard.md",
+    "schemas/doctor-report.schema.json",
+    "templates/doctor-report.md",
+    "schemas/command-registry.schema.json",
 ]
 REQUIRED_STATE_MACHINE_VALUES = [
     "INTAKE",
@@ -54,13 +63,17 @@ REQUIRED_STATE_MACHINE_VALUES = [
 REQUIRED_GITIGNORE_PATTERNS = ["__pycache__/", "*.py[cod]", ".pytest_cache/", ".venv/"]
 REQUIRED_DOCS = [
     "docs/agent-harness.md",
+    "docs/audience-playbooks.md",
     "docs/autonomous-goals.md",
     "docs/devex-engineering.md",
     "docs/shared-language.md",
     "docs/decision-records.md",
+    "docs/drift-tracking.md",
     "docs/ci-recovery.md",
     "docs/skill-distillation.md",
     "docs/runtime-lifecycle.md",
+    "docs/operation-contract.md",
+    "docs/replayable-evidence.md",
     "docs/state-machine.md",
 ]
 REQUIRED_STATE_MACHINE_DOC_STATES = [
@@ -194,12 +207,8 @@ REQUIRED_README_QUICKSTART_COMMANDS = [
     "python -m pytest -q",
     "python scripts/validate_repo.py",
     "git diff --check",
-    "python scripts/scrub_public_copy.py",
 ]
 REQUIRED_README_QUICKSTART_TERMS = {
-    "targeted exact-name scrub": "README.md Quickstart must include targeted exact-name scrub",
-    "case-insensitive": "README.md Quickstart must document that targeted exact-name scrub is case-insensitive",
-    "at least one exact source name": "README.md Quickstart must document that targeted exact-name scrub requires at least one exact source name",
     "Python 3.11": "README.md Quickstart must document CI Python version: Python 3.11",
     "baseline validation before editing": "README.md Quickstart must require baseline validation before editing",
 }
@@ -257,7 +266,6 @@ REQUIRED_README_MINIMAL_HARNESS_PROMPT_TERMS = [
     "python -m pytest -q",
     "python scripts/validate_repo.py",
     "git diff --check",
-    "targeted exact-name scrub",
     "stop",
     "approval",
     "secrets",
@@ -392,6 +400,132 @@ REQUIRED_CONSTITUTION_PUBLIC_COPY_TERMS = [
     "neutral operator pattern",
     "public copy neutral",
     "targeted exact-name scrub",
+]
+REQUIRED_AGENTS_ENTRYPOINT_TERMS = [
+    "read order",
+    "AGENTBRAIN.md",
+    "PRINCIPLES.md",
+    "ANTI_RATIONALIZATION.md",
+    "docs/state-machine.md",
+    "commands/README.md",
+    "git status --short",
+    "baseline validation",
+    "Preserve user changes",
+    "markdown specs",
+    "native command",
+    "fresh validation proof",
+    "templates/",
+    "schemas/",
+    "stop with a blocker",
+]
+REQUIRED_INSTALL_FOR_AGENTS_TERMS = [
+    "fresh checkout",
+    "git fetch origin main",
+    "git rev-parse HEAD",
+    "git rev-parse origin/main",
+    "HEAD equals origin/main",
+    "python3 -m venv .venv",
+    "source .venv/bin/activate",
+    "pip install -r requirements-dev.txt",
+    "python -m pytest -q",
+    "python scripts/validate_repo.py",
+    "git diff --check",
+    "select a command",
+    "capture artifacts",
+    "runtime smoke",
+    "scorecard",
+]
+REQUIRED_SCORECARD_SCHEMA_FIELDS = [
+    "schema_version",
+    "scorecard_id",
+    "subject",
+    "evaluated_at",
+    "repo_commit",
+    "run_tier",
+    "adapter",
+    "command",
+    "cases",
+    "metrics",
+    "evidence_artifacts",
+    "validation_commands",
+    "verdict",
+    "risks",
+    "next_actions",
+]
+REQUIRED_SCORECARD_RUN_TIERS = ["smoke", "iteration", "release"]
+REQUIRED_DOCTOR_REPORT_FIELDS = [
+    "schema_version",
+    "checked_at",
+    "repo_root",
+    "python",
+    "git",
+    "required_entrypoints",
+    "public_copy",
+    "validator",
+    "readiness",
+    "warnings",
+    "blockers",
+    "next_actions",
+]
+REQUIRED_COMMAND_REGISTRY_FIELDS = ["schema_version", "commands"]
+REQUIRED_OPERATION_CONTRACT_TERMS = [
+    "read-only",
+    "workspace-write",
+    "approval-gated",
+    "external side effect",
+    "destructive",
+    "write fence",
+    "allowed paths",
+    "disallowed paths",
+    "rollback command",
+    "explicit approval",
+    "preserving user changes",
+]
+REQUIRED_REPLAYABLE_EVIDENCE_TERMS = [
+    "repo commit",
+    "command or tool invocation",
+    "operation mode",
+    "input artifact",
+    "output artifact",
+    "transcript",
+    "environment",
+    "validation commands",
+    "schema",
+    "scorecard",
+    "recheck trigger",
+    "replay blocked",
+    "event hooks",
+    "session-start",
+    "prompt-submit",
+    "pre-tool",
+    "post-tool",
+]
+REQUIRED_DRIFT_TRACKING_TERMS = [
+    "deterministic extraction",
+    "structured diff",
+    "human-readable synthesis",
+    "intermediate artifacts",
+    "old version",
+    "new version",
+    "breaking changes",
+    "validation commands",
+    "update summary",
+]
+REQUIRED_AUDIENCE_PLAYBOOK_TERMS = [
+    "first-time adopter",
+    "coding agent",
+    "maintainer",
+    "runtime or adapter builder",
+    "workflow author",
+    "team or distribution owner",
+    "security or trust reviewer",
+    "session operator",
+    "scripts/doctor.py",
+    "commands/registry.json",
+    "operation-contract.md",
+    "runtime-smoke",
+    "drift-tracking.md",
+    "handoff-report",
 ]
 REQUIRED_AGENT_HARNESS_SECTIONS = [
     "## Install",
@@ -1673,6 +1807,24 @@ def validate(root: Path = ROOT) -> list[str]:
             for field in REQUIRED_HANDOFF_SCHEMA_BLOCKED_RESUME_FIELDS:
                 if field not in required_fields:
                     errors.append(f"schemas/handoff-report.schema.json must require {field} for blocked resume")
+        if path.name == "scorecard.schema.json":
+            for field in REQUIRED_SCORECARD_SCHEMA_FIELDS:
+                if field not in required_fields:
+                    errors.append(f"schemas/scorecard.schema.json must require scorecard field: {field}")
+            run_tier_schema = properties.get("run_tier", {})
+            run_tier_values = run_tier_schema.get("enum", []) if isinstance(run_tier_schema, dict) else []
+            if set(run_tier_values) != set(REQUIRED_SCORECARD_RUN_TIERS):
+                errors.append(
+                    "schemas/scorecard.schema.json run_tier must enumerate smoke, iteration, and release"
+                )
+        if path.name == "doctor-report.schema.json":
+            for field in REQUIRED_DOCTOR_REPORT_FIELDS:
+                if field not in required_fields:
+                    errors.append(f"schemas/doctor-report.schema.json must require doctor field: {field}")
+        if path.name == "command-registry.schema.json":
+            for field in REQUIRED_COMMAND_REGISTRY_FIELDS:
+                if field not in required_fields:
+                    errors.append(f"schemas/command-registry.schema.json must require registry field: {field}")
         for field in required_fields:
             if field not in properties:
                 errors.append(f"{rel(path, root)} required field lacks property definition: {field}")
@@ -1776,6 +1928,26 @@ def validate(root: Path = ROOT) -> list[str]:
         if not (root / required_path).exists():
             errors.append(f"missing {required_path}")
 
+    agents_entrypoint = root / "AGENTS.md"
+    if agents_entrypoint.exists():
+        agents_text = agents_entrypoint.read_text(errors="ignore")
+        agents_text_lower = agents_text.lower()
+        for required_term in REQUIRED_AGENTS_ENTRYPOINT_TERMS:
+            if required_term.lower() not in agents_text_lower:
+                errors.append(f"AGENTS.md must document agent entrypoint term: {required_term}")
+        if "scrub_public_copy.py" in agents_text:
+            errors.append("AGENTS.md must not expose maintainer-only public-copy command")
+
+    install_for_agents = root / "INSTALL_FOR_AGENTS.md"
+    if install_for_agents.exists():
+        install_text = install_for_agents.read_text(errors="ignore")
+        install_text_lower = install_text.lower()
+        for required_term in REQUIRED_INSTALL_FOR_AGENTS_TERMS:
+            if required_term.lower() not in install_text_lower:
+                errors.append(f"INSTALL_FOR_AGENTS.md must document install term: {required_term}")
+        if "scrub_public_copy.py" in install_text:
+            errors.append("INSTALL_FOR_AGENTS.md must not expose maintainer-only public-copy command")
+
     skill_template = root / "templates" / "skill-template.md"
     if skill_template.exists():
         skill_template_text = skill_template.read_text(errors="ignore")
@@ -1833,6 +2005,73 @@ def validate(root: Path = ROOT) -> list[str]:
         for command in sorted((root / "commands").glob("*.md"))
         if command.name != "README.md"
     ]
+    command_registry = root / "commands" / "registry.json"
+    if command_registry.exists():
+        try:
+            registry = json.loads(
+                command_registry.read_text(encoding="utf-8"),
+                object_pairs_hook=reject_duplicate_json_keys,
+            )
+            registry_schema_path = root / "schemas" / "command-registry.schema.json"
+            if registry_schema_path.exists():
+                registry_schema = json.loads(
+                    registry_schema_path.read_text(encoding="utf-8"),
+                    object_pairs_hook=reject_duplicate_json_keys,
+                )
+                registry_validator_cls = validators.validator_for(registry_schema)
+                registry_validator_cls.check_schema(registry_schema)
+                registry_errors = sorted(
+                    registry_validator_cls(registry_schema).iter_errors(registry),
+                    key=lambda error: list(error.path),
+                )
+                for registry_error in registry_errors:
+                    errors.append(f"commands/registry.json must validate against schemas/command-registry.schema.json: {registry_error.message}")
+            registry_commands = registry.get("commands", [])
+            registry_by_name: dict[str, dict[str, object]] = {}
+            duplicate_registry_names: set[str] = set()
+            if isinstance(registry_commands, list):
+                for entry in registry_commands:
+                    if not isinstance(entry, dict):
+                        continue
+                    name = entry.get("name")
+                    if not isinstance(name, str):
+                        continue
+                    if name in registry_by_name:
+                        duplicate_registry_names.add(name)
+                    registry_by_name[name] = entry
+            for name in sorted(duplicate_registry_names):
+                errors.append(f"commands/registry.json must not duplicate command: {name}")
+            for command in command_files:
+                command_name = f"/{command.stem}"
+                command_text = command.read_text(errors="ignore")
+                entry = registry_by_name.get(command_name)
+                if not entry:
+                    errors.append(f"commands/registry.json missing command: {command_name}")
+                    continue
+                expected_file = rel(command, root)
+                if entry.get("file") != expected_file:
+                    errors.append(f"commands/registry.json entry for {command_name} must point to {expected_file}")
+                expected_state = command_lifecycle_state(command_text)
+                if expected_state and entry.get("lifecycle_state") != expected_state:
+                    errors.append(f"commands/registry.json entry for {command_name} must match command lifecycle state: {expected_state}")
+                expected_skills = command_skills_to_load(command_text)
+                if entry.get("skills") != expected_skills:
+                    errors.append(f"commands/registry.json entry for {command_name} must match command skills")
+                expected_artifact = command_required_artifact_template(command_text)
+                if expected_artifact and entry.get("required_artifact") != expected_artifact:
+                    errors.append(f"commands/registry.json entry for {command_name} must match command artifact: {expected_artifact}")
+                expected_schema = matching_artifact_schema(expected_artifact, root) if expected_artifact else ""
+                registry_schema_ref = entry.get("schema")
+                if expected_schema and registry_schema_ref != expected_schema:
+                    errors.append(f"commands/registry.json entry for {command_name} must match artifact schema: {expected_schema}")
+                if not expected_schema and registry_schema_ref is not None:
+                    errors.append(f"commands/registry.json entry for {command_name} must use null schema when no matching schema exists")
+            for command_name, entry in registry_by_name.items():
+                command_file = root / str(entry.get("file", ""))
+                if not command_file.exists():
+                    errors.append(f"commands/registry.json entry points to missing command file: {command_name}")
+        except Exception as exc:
+            errors.append(f"invalid command registry commands/registry.json: {exc}")
     adapter_files = sorted((root / "adapters").glob("*/README.md"))
     adapters_readme = root / "adapters" / "README.md"
     if adapters_readme.exists():
@@ -1877,6 +2116,34 @@ def validate(root: Path = ROOT) -> list[str]:
     for required_path in REQUIRED_DOCS:
         if not (root / required_path).exists():
             errors.append(f"missing {required_path}")
+
+    operation_contract = root / "docs" / "operation-contract.md"
+    if operation_contract.exists():
+        operation_contract_text = operation_contract.read_text(errors="ignore").lower()
+        for term in REQUIRED_OPERATION_CONTRACT_TERMS:
+            if term.lower() not in operation_contract_text:
+                errors.append(f"docs/operation-contract.md must document operation contract term: {term}")
+
+    replayable_evidence = root / "docs" / "replayable-evidence.md"
+    if replayable_evidence.exists():
+        replayable_evidence_text = replayable_evidence.read_text(errors="ignore").lower()
+        for term in REQUIRED_REPLAYABLE_EVIDENCE_TERMS:
+            if term.lower() not in replayable_evidence_text:
+                errors.append(f"docs/replayable-evidence.md must document replayable evidence term: {term}")
+
+    drift_tracking = root / "docs" / "drift-tracking.md"
+    if drift_tracking.exists():
+        drift_tracking_text = drift_tracking.read_text(errors="ignore").lower()
+        for term in REQUIRED_DRIFT_TRACKING_TERMS:
+            if term.lower() not in drift_tracking_text:
+                errors.append(f"docs/drift-tracking.md must document drift tracking term: {term}")
+
+    audience_playbooks = root / "docs" / "audience-playbooks.md"
+    if audience_playbooks.exists():
+        audience_playbooks_text = audience_playbooks.read_text(errors="ignore").lower()
+        for term in REQUIRED_AUDIENCE_PLAYBOOK_TERMS:
+            if term.lower() not in audience_playbooks_text:
+                errors.append(f"docs/audience-playbooks.md must document audience playbook term: {term}")
 
     state_machine = root / "docs" / "state-machine.md"
     if state_machine.exists():
@@ -2465,10 +2732,6 @@ def validate(root: Path = ROOT) -> list[str]:
             if run_command not in readme_text:
                 errors.append(f"README.md validation section must document: {run_command}")
         readme_validation_body = section_body(readme_text, "## Validation")
-        if "python scripts/scrub_public_copy.py" not in readme_validation_body:
-            errors.append(
-                "README.md validation section must document exact scrub script command: python scripts/scrub_public_copy.py"
-            )
         readme_quickstart = section_body(readme_text, "## Quickstart")
         readme_quickstart_lower = readme_quickstart.lower()
         for run_command in REQUIRED_README_QUICKSTART_COMMANDS:

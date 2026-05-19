@@ -89,9 +89,10 @@
       </a>
     </td>
     <td align="center" width="150">
-      <a href="https://openclaw.ai/">
-        <img src="https://hermes-agent.nousresearch.com/docs/img/logo.png" alt="Hermes-Agent" height="28"><br>
+      <a href="https://hermes-agent.nousresearch.com/">
+        <img src="docs/assets/agent-runtimes/hermes.svg" alt="Hermes-Agent" height="28"><br>
         <sub>Hermes</sub>
+      </a>
     </td>
   </tr>
 </table>
@@ -186,12 +187,6 @@ git rev-parse origin/main
 
 Confirm `HEAD equals origin/main` before using a checkout as a trustworthy harness. Run baseline validation before editing so new failures are not blamed on old repository drift.
 
-Maintainers only: if you are editing Agent Brain's public docs after studying a named repo, vendor, internal tool, or user-shared source, run the targeted exact-name scrub for that source name. It is case-insensitive and requires at least one exact source name. This is not part of normal user setup; it is only a leak check so inspiration does not become accidental branding.
-
-```bash
-python scripts/scrub_public_copy.py <exact-source-name> [more-exact-names...]
-```
-
 Expected result:
 
 ```text
@@ -210,7 +205,7 @@ Agent Brain gives a capable model a way to operate like a careful teammate inste
 - **A lifecycle:** intake, research, challenge, decide, design, plan, build, verify, review, ship, learn.
 - **Slash-command specs:** repeatable workflows such as `/brain-plan`, `/brain-review`, and `/brain-learn`.
 - **Portable skills:** small procedures with triggers, inputs, steps, verification, examples, and failure modes.
-- **Artifact contracts:** schemas and templates for briefs, plans, reviews, QA evidence, runtime smoke reports, and handoffs.
+- **Artifact contracts:** schemas and templates for briefs, plans, reviews, QA evidence, doctor reports, runtime smoke reports, scorecards, and handoffs.
 - **Evals:** cases that catch common agent failures before they become habits.
 - **Adapters:** guidance for runtimes that load markdown, skills, subagents, or approval-gated tools differently.
 
@@ -334,14 +329,15 @@ Rules:
 7. Do not build before evidence, scope, and verification are clear.
 8. Stop when approval, secrets handling, loop limits, rollback, or evidence are missing.
 9. Before final output, run: rm -rf scripts/__pycache__ tests/__pycache__ && python -m pytest -q && python scripts/validate_repo.py && git diff --check.
-10. If maintaining public repo copy from external references, run the targeted exact-name scrub for the named sources.
-11. If running as a noninteractive scheduled run, do not ask questions. Use the safest documented default only when ambiguity does not change scope, safety, side effects, or approval.
+10. If running as a noninteractive scheduled run, do not ask questions. Use the safest documented default only when ambiguity does not change scope, safety, side effects, or approval.
 ```
 
 ## Repository Map
 
 ```text
+AGENTS.md                     # first-stop agent entrypoint
 AGENTBRAIN.md                  # constitution and operating loop
+INSTALL_FOR_AGENTS.md          # fresh-checkout setup path for agents
 PRINCIPLES.md                  # behavioral principles
 ANTI_RATIONALIZATION.md        # shortcut rebuttals
 CONTRIBUTING.md                # contribution and validation workflow
@@ -355,7 +351,7 @@ docs/                          # architecture, state, memory, research, gates
 templates/                     # artifact templates
 evals/                         # cases and rubrics
 adapters/                      # runtime-specific integration notes
-scripts/                       # validation, scrub, and runtime smoke tooling
+scripts/                       # validation, doctor, scrub, and runtime smoke tooling
 ```
 
 ## Documentation Guide
@@ -363,7 +359,11 @@ scripts/                       # validation, scrub, and runtime smoke tooling
 Start here:
 
 - `docs/agent-harness.md` — setup, operating loop, stop conditions, and troubleshooting.
+- `docs/audience-playbooks.md` — entrypoints and proof gates for adopters, agents, maintainers, runtime builders, workflow authors, teams, reviewers, and session operators.
+- `docs/drift-tracking.md` — deterministic extraction, structured diffs, and release-note synthesis for changing contracts.
 - `docs/harness-effect.md` — why the harness layer changes agent behavior, operating rules for new tools, and parity checks across tool-output presentation modes.
+- `docs/operation-contract.md` — read-only, write, approval-gated, side-effect, and destructive operation modes.
+- `docs/replayable-evidence.md` — exact evidence chain needed to replay evals, runtime smoke, scorecards, and handoffs.
 - `docs/state-machine.md` — valid states, transitions, required artifacts, and stop conditions.
 - `docs/architecture.md` — repository architecture and validation responsibilities.
 - `docs/review-gates.md` — product, design, engineering, security, QA, launch, and verifier gates.
@@ -439,6 +439,8 @@ Use the command output first, then the closest template. Validate against the ma
 
 | Work product | Use this file | Schema / contract |
 | --- | --- | --- |
+| Command route registry | `commands/registry.json` | `schemas/command-registry.schema.json` |
+| Checkout readiness report | `templates/doctor-report.md` | `schemas/doctor-report.schema.json` |
 | Intake routing | `templates/intake-summary.md` | Command output contract |
 | Should-this-exist decision | `templates/non-agent-alternative-review.md` | Command output contract |
 | Source-backed research | `templates/research-claim-ledger.md` | Command output contract |
@@ -449,6 +451,7 @@ Use the command output first, then the closest template. Validate against the ma
 | Changed artifact and build notes | `templates/changed-artifact-plus-implementation-notes.md` | `schemas/changed-artifact-plus-implementation-notes.schema.json` |
 | QA or verification proof | `templates/qa-evidence.md` | `schemas/qa-evidence.schema.json` |
 | Real-runtime smoke evidence | `templates/runtime-smoke.md` | `schemas/runtime-smoke.schema.json` |
+| Comparable eval, adapter, or release result | `templates/scorecard.md` | `schemas/scorecard.schema.json` |
 | Harness-effect parity report for a tool wired into the harness | `evals/harness-effect/fixtures/` plus `scripts/harness_effect.py` | `schemas/harness-effect-report.schema.json` |
 | Trust review before handoff | `templates/review-report.md` | `schemas/review-report.schema.json` |
 | Launch or merge readiness | `templates/launch-checklist.md` | Command output contract |
@@ -601,12 +604,15 @@ Run this before committing changes:
 ```bash
 python3 -m pip install -r requirements-dev.txt
 rm -rf scripts/__pycache__ tests/__pycache__
+python scripts/doctor.py --no-fail
 python -m pytest -q
 python scripts/validate_repo.py
 git diff --check
-# Maintainer-only leak check after using named external references:
-python scripts/scrub_public_copy.py <exact-source-name> [more-exact-names...]
 ```
+
+Maintainer-only public-copy leak checks are separate from the user validation path.
+
+`scripts/doctor.py` is the quick readiness check for agents. It reports Python, git freshness, required entrypoints, public setup exposure, validator status, blockers, warnings, and next actions as a `schemas/doctor-report.schema.json` artifact.
 
 When testing a real runtime or adapter, capture a schema-valid smoke artifact:
 
@@ -764,7 +770,7 @@ Before a harness release or direct-to-main hardening push, verify:
 9. Repeat.
 ```
 
-High-priority hardening targets: README detail and harness usability, command edge cases, skill trigger clarity, eval coverage, schema/template alignment, CI parity, public-copy neutrality, and install instructions that another agent can follow without guessing.
+High-priority hardening targets: README detail and harness usability, command edge cases, skill trigger clarity, eval coverage, command registry drift, doctor/readiness proof, replayable evidence, schema/template alignment, CI parity, public-copy neutrality, and install instructions that another agent can follow without guessing.
 
 ## Status
 
