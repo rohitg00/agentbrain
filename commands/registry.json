@@ -1,0 +1,215 @@
+{
+  "schema_version": "1",
+  "commands": [
+    {
+      "name": "/brain-brief",
+      "file": "commands/brain-brief.md",
+      "lifecycle_state": "DESIGN",
+      "use_when": "after intake, research, and grill have enough signal",
+      "skills": [
+        "evidence-research",
+        "problem-grill"
+      ],
+      "required_artifact": "templates/product-brief.md",
+      "schema": "schemas/product-brief.schema.json",
+      "native_support": "markdown spec unless runtime maps /brain-brief to a native command",
+      "stop_condition": "target user, decision owner, or success metric for the brief is unnamed"
+    },
+    {
+      "name": "/brain-build",
+      "file": "commands/brain-build.md",
+      "lifecycle_state": "BUILD",
+      "use_when": "an implementation plan has a selected task and validation method",
+      "skills": [
+        "plan-slicing",
+        "qa-evidence"
+      ],
+      "required_artifact": "templates/changed-artifact-plus-implementation-notes.md",
+      "schema": "schemas/changed-artifact-plus-implementation-notes.schema.json",
+      "native_support": "markdown spec unless runtime maps /brain-build to a native command",
+      "stop_condition": "implementation slice is not approved or lacks acceptance checks"
+    },
+    {
+      "name": "/brain-design",
+      "file": "commands/brain-design.md",
+      "lifecycle_state": "DESIGN",
+      "use_when": "a product brief needs ux or interaction design before planning",
+      "skills": [
+        "design-grill",
+        "engineering-grill"
+      ],
+      "required_artifact": "templates/design-brief.md",
+      "schema": null,
+      "native_support": "markdown spec unless runtime maps /brain-design to a native command",
+      "stop_condition": "user, scenario, constraints, or non-goals are missing"
+    },
+    {
+      "name": "/brain-eval",
+      "file": "commands/brain-eval.md",
+      "lifecycle_state": "VERIFY",
+      "use_when": "changing Agent Brain behavior or checking quality",
+      "skills": [
+        "agent-output-verifier",
+        "ci-recovery",
+        "evidence-research",
+        "qa-evidence",
+        "runtime-smoke"
+      ],
+      "required_artifact": "templates/eval-report.md",
+      "schema": "schemas/eval-report.schema.json",
+      "native_support": "markdown spec unless runtime maps /brain-eval to a native command",
+      "stop_condition": "eval target, rubric, fixture, or expected behavior is undefined"
+    },
+    {
+      "name": "/brain-grill",
+      "file": "commands/brain-grill.md",
+      "lifecycle_state": "CHALLENGE",
+      "use_when": "the idea, brief, design, or plan has unresolved assumptions",
+      "skills": [
+        "design-grill",
+        "engineering-grill",
+        "market-grill",
+        "problem-grill"
+      ],
+      "required_artifact": "templates/grill-report.md",
+      "schema": null,
+      "native_support": "markdown spec unless runtime maps /brain-grill to a native command",
+      "stop_condition": "code/docs cannot answer a blocking question and the user is unavailable"
+    },
+    {
+      "name": "/brain-learn",
+      "file": "commands/brain-learn.md",
+      "lifecycle_state": "LEARN",
+      "use_when": "after repeated success/failure, a tricky fix, or a shipped workflow",
+      "skills": [
+        "context-memory",
+        "learning-capture",
+        "wiki-maintenance"
+      ],
+      "required_artifact": "templates/learning-capture.md",
+      "schema": null,
+      "native_support": "markdown spec unless runtime maps /brain-learn to a native command",
+      "stop_condition": "lesson is temporary task state rather than durable project behavior"
+    },
+    {
+      "name": "/brain-plan",
+      "file": "commands/brain-plan.md",
+      "lifecycle_state": "PLAN",
+      "use_when": "the brief/design is strong enough to implement",
+      "skills": [
+        "engineering-grill",
+        "plan-slicing"
+      ],
+      "required_artifact": "templates/implementation-plan.md",
+      "schema": "schemas/implementation-plan.schema.json",
+      "native_support": "markdown spec unless runtime maps /brain-plan to a native command",
+      "stop_condition": "objectives, constraints, owner, or acceptance criteria are not defined"
+    },
+    {
+      "name": "/brain-research",
+      "file": "commands/brain-research.md",
+      "lifecycle_state": "RESEARCH",
+      "use_when": "the decision depends on external evidence or unfamiliar domain context",
+      "skills": [
+        "evidence-research",
+        "wiki-maintenance"
+      ],
+      "required_artifact": "templates/research-claim-ledger.md",
+      "schema": null,
+      "native_support": "markdown spec unless runtime maps /brain-research to a native command",
+      "stop_condition": "claim cannot be grounded in primary or authoritative evidence"
+    },
+    {
+      "name": "/brain-review",
+      "file": "commands/brain-review.md",
+      "lifecycle_state": "REVIEW",
+      "use_when": "after verification or before public/shipping decisions",
+      "skills": [
+        "agent-output-verifier",
+        "engineering-grill"
+      ],
+      "required_artifact": "templates/review-report.md",
+      "schema": "schemas/review-report.schema.json",
+      "native_support": "markdown spec unless runtime maps /brain-review to a native command",
+      "stop_condition": "diff, artifact, or intended behavior is unavailable"
+    },
+    {
+      "name": "/brain-ship",
+      "file": "commands/brain-ship.md",
+      "lifecycle_state": "SHIP",
+      "use_when": "a reviewed artifact is ready for release or publication",
+      "skills": [
+        "launch-gate",
+        "qa-evidence"
+      ],
+      "required_artifact": "templates/launch-checklist.md",
+      "schema": null,
+      "native_support": "markdown spec unless runtime maps /brain-ship to a native command",
+      "stop_condition": "validation, review, rollback, monitoring, or ownership evidence is missing"
+    },
+    {
+      "name": "/brain-should-this-exist",
+      "file": "commands/brain-should-this-exist.md",
+      "lifecycle_state": "DECIDE",
+      "use_when": "before planning any new product, feature, workflow, or automation",
+      "skills": [
+        "market-grill",
+        "problem-grill"
+      ],
+      "required_artifact": "templates/non-agent-alternative-review.md",
+      "schema": null,
+      "native_support": "markdown spec unless runtime maps /brain-should-this-exist to a native command",
+      "stop_condition": "target user, repeated job, or non-agent baseline is not concrete"
+    },
+    {
+      "name": "/brain-start",
+      "file": "commands/brain-start.md",
+      "lifecycle_state": "INTAKE",
+      "use_when": "a user starts from a vague request, idea, task, or product ambition",
+      "skills": [
+        "command-routing",
+        "domain-language",
+        "intake",
+        "question-ladder"
+      ],
+      "required_artifact": "templates/intake-summary.md",
+      "schema": null,
+      "native_support": "markdown spec unless runtime maps /brain-start to a native command",
+      "stop_condition": "request lacks enough context to choose an initial state or command"
+    },
+    {
+      "name": "/brain-verify",
+      "file": "commands/brain-verify.md",
+      "lifecycle_state": "VERIFY",
+      "use_when": "after build or when evaluating an existing artifact",
+      "skills": [
+        "adapter-capability-probe",
+        "agent-output-verifier",
+        "artifact-contract",
+        "ci-recovery",
+        "qa-evidence",
+        "runtime-lifecycle",
+        "runtime-smoke"
+      ],
+      "required_artifact": "templates/qa-evidence.md",
+      "schema": "schemas/qa-evidence.schema.json",
+      "native_support": "markdown spec unless runtime maps /brain-verify to a native command",
+      "stop_condition": "artifact under test, expected behavior, or verification command is missing"
+    },
+    {
+      "name": "/brain-wiki",
+      "file": "commands/brain-wiki.md",
+      "lifecycle_state": "LEARN",
+      "use_when": "ingesting sources or updating durable project knowledge",
+      "skills": [
+        "activity-recap",
+        "evidence-research",
+        "wiki-maintenance"
+      ],
+      "required_artifact": "templates/wiki-update.md",
+      "schema": null,
+      "native_support": "markdown spec unless runtime maps /brain-wiki to a native command",
+      "stop_condition": "proposed wiki fact lacks a stable source, owner, or freshness date"
+    }
+  ]
+}

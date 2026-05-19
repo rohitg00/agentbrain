@@ -205,7 +205,7 @@ Agent Brain gives a capable model a way to operate like a careful teammate inste
 - **A lifecycle:** intake, research, challenge, decide, design, plan, build, verify, review, ship, learn.
 - **Slash-command specs:** repeatable workflows such as `/brain-plan`, `/brain-review`, and `/brain-learn`.
 - **Portable skills:** small procedures with triggers, inputs, steps, verification, examples, and failure modes.
-- **Artifact contracts:** schemas and templates for briefs, plans, reviews, QA evidence, runtime smoke reports, and handoffs.
+- **Artifact contracts:** schemas and templates for briefs, plans, reviews, QA evidence, doctor reports, runtime smoke reports, scorecards, and handoffs.
 - **Evals:** cases that catch common agent failures before they become habits.
 - **Adapters:** guidance for runtimes that load markdown, skills, subagents, or approval-gated tools differently.
 
@@ -351,7 +351,7 @@ docs/                          # architecture, state, memory, research, gates
 templates/                     # artifact templates
 evals/                         # cases and rubrics
 adapters/                      # runtime-specific integration notes
-scripts/                       # validation, scrub, and runtime smoke tooling
+scripts/                       # validation, doctor, scrub, and runtime smoke tooling
 ```
 
 ## Documentation Guide
@@ -360,6 +360,8 @@ Start here:
 
 - `docs/agent-harness.md` — setup, operating loop, stop conditions, and troubleshooting.
 - `docs/harness-effect.md` — why the harness layer changes agent behavior, operating rules for new tools, and parity checks across tool-output presentation modes.
+- `docs/operation-contract.md` — read-only, write, approval-gated, side-effect, and destructive operation modes.
+- `docs/replayable-evidence.md` — exact evidence chain needed to replay evals, runtime smoke, scorecards, and handoffs.
 - `docs/state-machine.md` — valid states, transitions, required artifacts, and stop conditions.
 - `docs/architecture.md` — repository architecture and validation responsibilities.
 - `docs/review-gates.md` — product, design, engineering, security, QA, launch, and verifier gates.
@@ -435,6 +437,8 @@ Use the command output first, then the closest template. Validate against the ma
 
 | Work product | Use this file | Schema / contract |
 | --- | --- | --- |
+| Command route registry | `commands/registry.json` | `schemas/command-registry.schema.json` |
+| Checkout readiness report | `templates/doctor-report.md` | `schemas/doctor-report.schema.json` |
 | Intake routing | `templates/intake-summary.md` | Command output contract |
 | Should-this-exist decision | `templates/non-agent-alternative-review.md` | Command output contract |
 | Source-backed research | `templates/research-claim-ledger.md` | Command output contract |
@@ -598,12 +602,15 @@ Run this before committing changes:
 ```bash
 python3 -m pip install -r requirements-dev.txt
 rm -rf scripts/__pycache__ tests/__pycache__
+python scripts/doctor.py --no-fail
 python -m pytest -q
 python scripts/validate_repo.py
 git diff --check
 ```
 
 Maintainer-only public-copy leak checks are separate from the user validation path.
+
+`scripts/doctor.py` is the quick readiness check for agents. It reports Python, git freshness, required entrypoints, public setup exposure, validator status, blockers, warnings, and next actions as a `schemas/doctor-report.schema.json` artifact.
 
 When testing a real runtime or adapter, capture a schema-valid smoke artifact:
 
@@ -761,7 +768,7 @@ Before a harness release or direct-to-main hardening push, verify:
 9. Repeat.
 ```
 
-High-priority hardening targets: README detail and harness usability, command edge cases, skill trigger clarity, eval coverage, schema/template alignment, CI parity, public-copy neutrality, and install instructions that another agent can follow without guessing.
+High-priority hardening targets: README detail and harness usability, command edge cases, skill trigger clarity, eval coverage, command registry drift, doctor/readiness proof, replayable evidence, schema/template alignment, CI parity, public-copy neutrality, and install instructions that another agent can follow without guessing.
 
 ## Status
 

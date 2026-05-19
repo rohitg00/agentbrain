@@ -1,0 +1,21 @@
+{
+  "schema_version": "1",
+  "commands": [
+    {
+      "name": "/brain-start",
+      "file": "commands/brain-start.md",
+      "lifecycle_state": "INTAKE",
+      "use_when": "a user starts from a vague request, idea, task, or product ambition",
+      "skills": [
+        "command-routing",
+        "domain-language",
+        "intake",
+        "question-ladder"
+      ],
+      "required_artifact": "templates/intake-summary.md",
+      "schema": null,
+      "native_support": "markdown spec unless runtime maps /brain-start to a native command",
+      "stop_condition": "request lacks enough context to choose an initial state or command"
+    }
+  ]
+}

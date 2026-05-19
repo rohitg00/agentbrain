@@ -1648,15 +1648,27 @@ def write_minimal_repo(root: Path) -> None:
         )
         .replace(
             "- `docs/state-machine.md` — executable harness states and command mapping.",
-            "- `docs/runtime-lifecycle.md` — runtime phase, queue, tool, save-point, and abort discipline.\n- `docs/state-machine.md` — executable harness states and command mapping.",
+            "- `docs/operation-contract.md` — operation modes, write fences, approvals, rollback, and side-effect boundaries.\n- `docs/replayable-evidence.md` — replayable command, artifact, transcript, validation, and scorecard evidence.\n- `docs/runtime-lifecycle.md` — runtime phase, queue, tool, save-point, and abort discipline.\n- `docs/state-machine.md` — executable harness states and command mapping.",
         )
         .replace(
             "requirements-dev.txt           # local validation dependencies",
             "AGENTS.md                     # first-stop agent entrypoint\nAGENTBRAIN.md                  # constitution and operating loop\nINSTALL_FOR_AGENTS.md          # fresh-checkout setup path for agents\nrequirements-dev.txt           # local validation dependencies",
         )
         .replace(
+            "- `schemas/artifact.schema.json` — sample artifact schema.",
+            "- `schemas/artifact.schema.json` — sample artifact schema.\n- `schemas/command-registry.schema.json` — sample command registry schema.",
+        )
+        .replace(
+            "- `schemas/eval-report.schema.json` — sample eval report schema.",
+            "- `schemas/doctor-report.schema.json` — sample doctor report schema.\n- `schemas/eval-report.schema.json` — sample eval report schema.",
+        )
+        .replace(
             "- `schemas/runtime-smoke.schema.json` — sample runtime smoke schema.",
             "- `schemas/runtime-smoke.schema.json` — sample runtime smoke schema.\n- `schemas/scorecard.schema.json` — sample scorecard schema.",
+        )
+        .replace(
+            "- `templates/eval-report.md` — sample eval report template.",
+            "- `templates/doctor-report.md` — sample doctor report template.\n- `templates/eval-report.md` — sample eval report template.",
         )
         .replace(
             "- `templates/runtime-smoke.md` — sample runtime smoke template.",
@@ -1669,6 +1681,7 @@ def write_minimal_repo(root: Path) -> None:
     scripts_dir.mkdir()
     (scripts_dir / "scrub_public_copy.py").write_text("#!/usr/bin/env python3\n", encoding="utf-8")
     (scripts_dir / "runtime_smoke.py").write_text("#!/usr/bin/env python3\n", encoding="utf-8")
+    (scripts_dir / "doctor.py").write_text("#!/usr/bin/env python3\n", encoding="utf-8")
     (root / ".gitignore").write_text(
         "__pycache__/\n*.py[cod]\n.pytest_cache/\n.venv/\n",
         encoding="utf-8",
@@ -1727,6 +1740,51 @@ def write_minimal_repo(root: Path) -> None:
                 "title": "Artifact",
                 "type": "object",
                 "additionalProperties": False,
+            }
+        ),
+        encoding="utf-8",
+    )
+    (schema_dir / "command-registry.schema.json").write_text(
+        json.dumps(
+            {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "title": "Command Registry",
+                "type": "object",
+                "additionalProperties": False,
+                "required": ["schema_version", "commands"],
+                "properties": {
+                    "schema_version": {"type": "string"},
+                    "commands": {
+                        "type": "array",
+                        "minItems": 1,
+                        "items": {
+                            "type": "object",
+                            "additionalProperties": False,
+                            "required": [
+                                "name",
+                                "file",
+                                "lifecycle_state",
+                                "use_when",
+                                "skills",
+                                "required_artifact",
+                                "schema",
+                                "native_support",
+                                "stop_condition",
+                            ],
+                            "properties": {
+                                "name": {"type": "string"},
+                                "file": {"type": "string"},
+                                "lifecycle_state": {"type": "string"},
+                                "use_when": {"type": "string"},
+                                "skills": {"type": "array", "items": {"type": "string"}},
+                                "required_artifact": {"type": "string"},
+                                "schema": {"type": ["string", "null"]},
+                                "native_support": {"type": "string"},
+                                "stop_condition": {"type": "string"},
+                            },
+                        },
+                    },
+                },
             }
         ),
         encoding="utf-8",
@@ -1880,6 +1938,96 @@ def write_minimal_repo(root: Path) -> None:
         ),
         encoding="utf-8",
     )
+    (schema_dir / "doctor-report.schema.json").write_text(
+        json.dumps(
+            {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "title": "Doctor Report",
+                "type": "object",
+                "additionalProperties": False,
+                "required": [
+                    "schema_version",
+                    "checked_at",
+                    "repo_root",
+                    "python",
+                    "git",
+                    "required_entrypoints",
+                    "public_copy",
+                    "validator",
+                    "readiness",
+                    "warnings",
+                    "blockers",
+                    "next_actions",
+                ],
+                "properties": {
+                    "schema_version": {"type": "string"},
+                    "checked_at": {"type": "string"},
+                    "repo_root": {"type": "string"},
+                    "python": {
+                        "type": "object",
+                        "additionalProperties": False,
+                        "required": ["executable", "version", "supported"],
+                        "properties": {
+                            "executable": {"type": "string"},
+                            "version": {"type": "string"},
+                            "supported": {"type": "boolean"},
+                        },
+                    },
+                    "git": {
+                        "type": "object",
+                        "additionalProperties": False,
+                        "required": ["worktree_status", "head", "origin_main", "freshness"],
+                        "properties": {
+                            "worktree_status": {"type": "string"},
+                            "head": {"type": "string"},
+                            "origin_main": {"type": "string"},
+                            "freshness": {"enum": ["fresh", "stale", "unknown"]},
+                        },
+                    },
+                    "required_entrypoints": {
+                        "type": "array",
+                        "minItems": 1,
+                        "items": {
+                            "type": "object",
+                            "additionalProperties": False,
+                            "required": ["path", "status"],
+                            "properties": {
+                                "path": {"type": "string"},
+                                "status": {"enum": ["present", "missing"]},
+                            },
+                        },
+                    },
+                    "public_copy": {
+                        "type": "object",
+                        "additionalProperties": False,
+                        "required": [
+                            "readme_exposes_local_scrub_command",
+                            "root_agent_docs_expose_local_scrub_command",
+                        ],
+                        "properties": {
+                            "readme_exposes_local_scrub_command": {"type": "boolean"},
+                            "root_agent_docs_expose_local_scrub_command": {"type": "boolean"},
+                        },
+                    },
+                    "validator": {
+                        "type": "object",
+                        "additionalProperties": False,
+                        "required": ["status", "error_count", "errors"],
+                        "properties": {
+                            "status": {"enum": ["pass", "fail"]},
+                            "error_count": {"type": "integer", "minimum": 0},
+                            "errors": {"type": "array", "items": {"type": "string"}},
+                        },
+                    },
+                    "readiness": {"enum": ["pass", "warn", "blocked"]},
+                    "warnings": {"type": "array", "items": {"type": "string"}},
+                    "blockers": {"type": "array", "items": {"type": "string"}},
+                    "next_actions": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
     (schema_dir / "runtime-smoke.schema.json").write_text(
         json.dumps(
             {
@@ -2012,6 +2160,28 @@ def write_minimal_repo(root: Path) -> None:
     examples_dir = root / "examples" / "artifacts"
     examples_dir.mkdir(parents=True)
     (examples_dir / "artifact.example.json").write_text("{}\n", encoding="utf-8")
+    (examples_dir / "command-registry.example.json").write_text(
+        json.dumps(
+            {
+                "schema_version": "1",
+                "commands": [
+                    {
+                        "name": "/brain-sample",
+                        "file": "commands/brain-sample.md",
+                        "lifecycle_state": "INTAKE",
+                        "use_when": "sample requests",
+                        "skills": ["sample"],
+                        "required_artifact": "templates/sample-routing-summary.md",
+                        "schema": None,
+                        "native_support": "markdown spec unless runtime maps /brain-sample to a native command",
+                        "stop_condition": "request is unsafe",
+                    }
+                ],
+            }
+        )
+        + "\n",
+        encoding="utf-8",
+    )
     (examples_dir / "changed-artifact-plus-implementation-notes.example.json").write_text(
         json.dumps(
             {
@@ -2081,6 +2251,34 @@ def write_minimal_repo(root: Path) -> None:
                 "decision": "pass",
                 "evidence_checked": ["eval case inspected"],
                 "next_action": "record the verified result",
+            }
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    (examples_dir / "doctor-report.example.json").write_text(
+        json.dumps(
+            {
+                "schema_version": "1",
+                "checked_at": "2026-05-19T00:00:00+00:00",
+                "repo_root": ".",
+                "python": {"executable": ".venv/bin/python", "version": "3.11.9", "supported": True},
+                "git": {
+                    "worktree_status": "clean",
+                    "head": "abc123",
+                    "origin_main": "abc123",
+                    "freshness": "fresh",
+                },
+                "required_entrypoints": [{"path": "AGENTS.md", "status": "present"}],
+                "public_copy": {
+                    "readme_exposes_local_scrub_command": False,
+                    "root_agent_docs_expose_local_scrub_command": False,
+                },
+                "validator": {"status": "pass", "error_count": 0, "errors": []},
+                "readiness": "pass",
+                "warnings": [],
+                "blockers": [],
+                "next_actions": ["select a command from commands/registry.json and proceed"],
             }
         )
         + "\n",
@@ -2158,6 +2356,10 @@ def write_minimal_repo(root: Path) -> None:
     )
     (templates_dir / "eval-report.md").write_text(
         "# Eval Report\n\nSchema fields: `target`, `cases`, `decision`, `evidence_checked`, `risks`, `open_questions`, `next_action`.\n",
+        encoding="utf-8",
+    )
+    (templates_dir / "doctor-report.md").write_text(
+        "# Doctor Report\n\nSchema fields: `schema_version`, `checked_at`, `repo_root`, `python`, `git`, `required_entrypoints`, `public_copy`, `validator`, `readiness`, `warnings`, `blockers`, `next_actions`.\n",
         encoding="utf-8",
     )
     (templates_dir / "qa-evidence.md").write_text(
@@ -2391,6 +2593,58 @@ def write_minimal_repo(root: Path) -> None:
         ]),
         encoding="utf-8",
     )
+    (command_dir / "registry.json").write_text(
+        json.dumps(
+            {
+                "schema_version": "1",
+                "commands": [
+                    {
+                        "name": "/brain-sample",
+                        "file": "commands/brain-sample.md",
+                        "lifecycle_state": "INTAKE",
+                        "use_when": "sample requests",
+                        "skills": [
+                            "activity-recap",
+                            "agent-output-verifier",
+                            "ci-recovery",
+                            "command-routing",
+                            "context-memory",
+                            "domain-language",
+                            "evidence-research",
+                            "qa-evidence",
+                            "runtime-smoke",
+                            "sample",
+                        ],
+                        "required_artifact": "templates/sample-routing-summary.md",
+                        "schema": None,
+                        "native_support": "markdown spec unless runtime maps /brain-sample to a native command",
+                        "stop_condition": "request is unsafe or missing evidence",
+                    },
+                    {
+                        "name": "/brain-verify",
+                        "file": "commands/brain-verify.md",
+                        "lifecycle_state": "VERIFY",
+                        "use_when": "eval cases need evidence-backed scoring",
+                        "skills": [
+                            "adapter-capability-probe",
+                            "agent-output-verifier",
+                            "artifact-contract",
+                            "ci-recovery",
+                            "evidence-research",
+                            "qa-evidence",
+                            "runtime-lifecycle",
+                            "runtime-smoke",
+                        ],
+                        "required_artifact": "templates/eval-report.md",
+                        "schema": "schemas/eval-report.schema.json",
+                        "native_support": "markdown spec unless runtime maps /brain-verify to a native command",
+                        "stop_condition": "required proof is unavailable",
+                    },
+                ],
+            }
+        ),
+        encoding="utf-8",
+    )
     docs_dir = root / "docs"
     docs_dir.mkdir()
     (docs_dir / "shared-language.md").write_text(
@@ -2488,6 +2742,17 @@ def write_minimal_repo(root: Path) -> None:
     (docs_dir / "runtime-lifecycle.md").write_text(
         "# Runtime Lifecycle\n\n"
         "Runtime claims must name phase, queued input, tool preflight, result ordering, save point, retry, abort, compaction, and branch evidence before trust.\n",
+        encoding="utf-8",
+    )
+    (docs_dir / "operation-contract.md").write_text(
+        "# Operation Contract\n\n"
+        "Modes: read-only, workspace-write, approval-gated, external side effect, and destructive.\n"
+        "Before writes, define a write fence with allowed paths, disallowed paths, rollback command, explicit approval, and preserving user changes.\n",
+        encoding="utf-8",
+    )
+    (docs_dir / "replayable-evidence.md").write_text(
+        "# Replayable Evidence\n\n"
+        "Capture repo commit, command or tool invocation, operation mode, input artifact, output artifact, transcript, environment, validation commands, schema, scorecard, recheck trigger, and replay blocked status.\n",
         encoding="utf-8",
     )
 
@@ -2933,6 +3198,31 @@ def test_agent_entrypoint_must_document_command_boundary(tmp_path):
 
     assert "AGENTS.md must document agent entrypoint term: markdown specs" in errors
     assert "AGENTS.md must document agent entrypoint term: native command" in errors
+
+
+def test_command_registry_is_required_and_must_cover_commands(tmp_path):
+    write_minimal_repo(tmp_path)
+    registry_path = tmp_path / "commands" / "registry.json"
+    registry = json.loads(registry_path.read_text(encoding="utf-8"))
+    registry["commands"] = [
+        entry for entry in registry["commands"] if entry["name"] != "/brain-verify"
+    ]
+    registry_path.write_text(json.dumps(registry), encoding="utf-8")
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "commands/registry.json missing command: /brain-verify" in errors
+
+
+def test_operation_and_replay_docs_are_required(tmp_path):
+    write_minimal_repo(tmp_path)
+    (tmp_path / "docs" / "operation-contract.md").unlink()
+    (tmp_path / "docs" / "replayable-evidence.md").unlink()
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "missing docs/operation-contract.md" in errors
+    assert "missing docs/replayable-evidence.md" in errors
 
 
 def test_build_output_artifact_requires_schema_contract(tmp_path):
@@ -6181,6 +6471,17 @@ def test_scorecard_artifacts_are_required(tmp_path):
 
     assert "missing schemas/scorecard.schema.json" in errors
     assert "missing templates/scorecard.md" in errors
+
+
+def test_doctor_report_artifacts_are_required(tmp_path):
+    write_minimal_repo(tmp_path)
+    (tmp_path / "schemas" / "doctor-report.schema.json").unlink()
+    (tmp_path / "templates" / "doctor-report.md").unlink()
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "missing schemas/doctor-report.schema.json" in errors
+    assert "missing templates/doctor-report.md" in errors
 
 
 def test_scorecard_schema_requires_comparable_run_tiers(tmp_path):

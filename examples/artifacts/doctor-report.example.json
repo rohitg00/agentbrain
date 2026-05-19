@@ -1,0 +1,37 @@
+{
+  "schema_version": "1",
+  "checked_at": "2026-05-19T00:00:00+00:00",
+  "repo_root": ".",
+  "python": {
+    "executable": ".venv/bin/python",
+    "version": "3.11.9",
+    "supported": true
+  },
+  "git": {
+    "worktree_status": "clean",
+    "head": "abc123",
+    "origin_main": "abc123",
+    "freshness": "fresh"
+  },
+  "required_entrypoints": [
+    {
+      "path": "AGENTS.md",
+      "status": "present"
+    }
+  ],
+  "public_copy": {
+    "readme_exposes_local_scrub_command": false,
+    "root_agent_docs_expose_local_scrub_command": false
+  },
+  "validator": {
+    "status": "pass",
+    "error_count": 0,
+    "errors": []
+  },
+  "readiness": "pass",
+  "warnings": [],
+  "blockers": [],
+  "next_actions": [
+    "select a command from commands/registry.json and proceed"
+  ]
+}

@@ -20,6 +20,8 @@ REQUIRED_ROOT = [
 ]
 REQUIRED_FILES = [
     "requirements-dev.txt",
+    "commands/registry.json",
+    "scripts/doctor.py",
     "scripts/scrub_public_copy.py",
     "scripts/runtime_smoke.py",
     "adapters/README.md",
@@ -41,6 +43,9 @@ REQUIRED_ARTIFACT_FILES = [
     "templates/runtime-smoke.md",
     "schemas/scorecard.schema.json",
     "templates/scorecard.md",
+    "schemas/doctor-report.schema.json",
+    "templates/doctor-report.md",
+    "schemas/command-registry.schema.json",
 ]
 REQUIRED_STATE_MACHINE_VALUES = [
     "INTAKE",
@@ -65,6 +70,8 @@ REQUIRED_DOCS = [
     "docs/ci-recovery.md",
     "docs/skill-distillation.md",
     "docs/runtime-lifecycle.md",
+    "docs/operation-contract.md",
+    "docs/replayable-evidence.md",
     "docs/state-machine.md",
 ]
 REQUIRED_STATE_MACHINE_DOC_STATES = [
@@ -444,6 +451,48 @@ REQUIRED_SCORECARD_SCHEMA_FIELDS = [
     "next_actions",
 ]
 REQUIRED_SCORECARD_RUN_TIERS = ["smoke", "iteration", "release"]
+REQUIRED_DOCTOR_REPORT_FIELDS = [
+    "schema_version",
+    "checked_at",
+    "repo_root",
+    "python",
+    "git",
+    "required_entrypoints",
+    "public_copy",
+    "validator",
+    "readiness",
+    "warnings",
+    "blockers",
+    "next_actions",
+]
+REQUIRED_COMMAND_REGISTRY_FIELDS = ["schema_version", "commands"]
+REQUIRED_OPERATION_CONTRACT_TERMS = [
+    "read-only",
+    "workspace-write",
+    "approval-gated",
+    "external side effect",
+    "destructive",
+    "write fence",
+    "allowed paths",
+    "disallowed paths",
+    "rollback command",
+    "explicit approval",
+    "preserving user changes",
+]
+REQUIRED_REPLAYABLE_EVIDENCE_TERMS = [
+    "repo commit",
+    "command or tool invocation",
+    "operation mode",
+    "input artifact",
+    "output artifact",
+    "transcript",
+    "environment",
+    "validation commands",
+    "schema",
+    "scorecard",
+    "recheck trigger",
+    "replay blocked",
+]
 REQUIRED_AGENT_HARNESS_SECTIONS = [
     "## Install",
     "## Fresh Checkout Bootstrap",
@@ -1733,6 +1782,14 @@ def validate(root: Path = ROOT) -> list[str]:
                 errors.append(
                     "schemas/scorecard.schema.json run_tier must enumerate smoke, iteration, and release"
                 )
+        if path.name == "doctor-report.schema.json":
+            for field in REQUIRED_DOCTOR_REPORT_FIELDS:
+                if field not in required_fields:
+                    errors.append(f"schemas/doctor-report.schema.json must require doctor field: {field}")
+        if path.name == "command-registry.schema.json":
+            for field in REQUIRED_COMMAND_REGISTRY_FIELDS:
+                if field not in required_fields:
+                    errors.append(f"schemas/command-registry.schema.json must require registry field: {field}")
         for field in required_fields:
             if field not in properties:
                 errors.append(f"{rel(path, root)} required field lacks property definition: {field}")
@@ -1913,6 +1970,73 @@ def validate(root: Path = ROOT) -> list[str]:
         for command in sorted((root / "commands").glob("*.md"))
         if command.name != "README.md"
     ]
+    command_registry = root / "commands" / "registry.json"
+    if command_registry.exists():
+        try:
+            registry = json.loads(
+                command_registry.read_text(encoding="utf-8"),
+                object_pairs_hook=reject_duplicate_json_keys,
+            )
+            registry_schema_path = root / "schemas" / "command-registry.schema.json"
+            if registry_schema_path.exists():
+                registry_schema = json.loads(
+                    registry_schema_path.read_text(encoding="utf-8"),
+                    object_pairs_hook=reject_duplicate_json_keys,
+                )
+                registry_validator_cls = validators.validator_for(registry_schema)
+                registry_validator_cls.check_schema(registry_schema)
+                registry_errors = sorted(
+                    registry_validator_cls(registry_schema).iter_errors(registry),
+                    key=lambda error: list(error.path),
+                )
+                for registry_error in registry_errors:
+                    errors.append(f"commands/registry.json must validate against schemas/command-registry.schema.json: {registry_error.message}")
+            registry_commands = registry.get("commands", [])
+            registry_by_name: dict[str, dict[str, object]] = {}
+            duplicate_registry_names: set[str] = set()
+            if isinstance(registry_commands, list):
+                for entry in registry_commands:
+                    if not isinstance(entry, dict):
+                        continue
+                    name = entry.get("name")
+                    if not isinstance(name, str):
+                        continue
+                    if name in registry_by_name:
+                        duplicate_registry_names.add(name)
+                    registry_by_name[name] = entry
+            for name in sorted(duplicate_registry_names):
+                errors.append(f"commands/registry.json must not duplicate command: {name}")
+            for command in command_files:
+                command_name = f"/{command.stem}"
+                command_text = command.read_text(errors="ignore")
+                entry = registry_by_name.get(command_name)
+                if not entry:
+                    errors.append(f"commands/registry.json missing command: {command_name}")
+                    continue
+                expected_file = rel(command, root)
+                if entry.get("file") != expected_file:
+                    errors.append(f"commands/registry.json entry for {command_name} must point to {expected_file}")
+                expected_state = command_lifecycle_state(command_text)
+                if expected_state and entry.get("lifecycle_state") != expected_state:
+                    errors.append(f"commands/registry.json entry for {command_name} must match command lifecycle state: {expected_state}")
+                expected_skills = command_skills_to_load(command_text)
+                if entry.get("skills") != expected_skills:
+                    errors.append(f"commands/registry.json entry for {command_name} must match command skills")
+                expected_artifact = command_required_artifact_template(command_text)
+                if expected_artifact and entry.get("required_artifact") != expected_artifact:
+                    errors.append(f"commands/registry.json entry for {command_name} must match command artifact: {expected_artifact}")
+                expected_schema = matching_artifact_schema(expected_artifact, root) if expected_artifact else ""
+                registry_schema_ref = entry.get("schema")
+                if expected_schema and registry_schema_ref != expected_schema:
+                    errors.append(f"commands/registry.json entry for {command_name} must match artifact schema: {expected_schema}")
+                if not expected_schema and registry_schema_ref is not None:
+                    errors.append(f"commands/registry.json entry for {command_name} must use null schema when no matching schema exists")
+            for command_name, entry in registry_by_name.items():
+                command_file = root / str(entry.get("file", ""))
+                if not command_file.exists():
+                    errors.append(f"commands/registry.json entry points to missing command file: {command_name}")
+        except Exception as exc:
+            errors.append(f"invalid command registry commands/registry.json: {exc}")
     adapter_files = sorted((root / "adapters").glob("*/README.md"))
     adapters_readme = root / "adapters" / "README.md"
     if adapters_readme.exists():
@@ -1957,6 +2081,20 @@ def validate(root: Path = ROOT) -> list[str]:
     for required_path in REQUIRED_DOCS:
         if not (root / required_path).exists():
             errors.append(f"missing {required_path}")
+
+    operation_contract = root / "docs" / "operation-contract.md"
+    if operation_contract.exists():
+        operation_contract_text = operation_contract.read_text(errors="ignore").lower()
+        for term in REQUIRED_OPERATION_CONTRACT_TERMS:
+            if term.lower() not in operation_contract_text:
+                errors.append(f"docs/operation-contract.md must document operation contract term: {term}")
+
+    replayable_evidence = root / "docs" / "replayable-evidence.md"
+    if replayable_evidence.exists():
+        replayable_evidence_text = replayable_evidence.read_text(errors="ignore").lower()
+        for term in REQUIRED_REPLAYABLE_EVIDENCE_TERMS:
+            if term.lower() not in replayable_evidence_text:
+                errors.append(f"docs/replayable-evidence.md must document replayable evidence term: {term}")
 
     state_machine = root / "docs" / "state-machine.md"
     if state_machine.exists():
