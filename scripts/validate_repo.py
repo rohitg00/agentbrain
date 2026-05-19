@@ -67,6 +67,7 @@ REQUIRED_DOCS = [
     "docs/devex-engineering.md",
     "docs/shared-language.md",
     "docs/decision-records.md",
+    "docs/drift-tracking.md",
     "docs/ci-recovery.md",
     "docs/skill-distillation.md",
     "docs/runtime-lifecycle.md",
@@ -492,6 +493,22 @@ REQUIRED_REPLAYABLE_EVIDENCE_TERMS = [
     "scorecard",
     "recheck trigger",
     "replay blocked",
+    "event hooks",
+    "session-start",
+    "prompt-submit",
+    "pre-tool",
+    "post-tool",
+]
+REQUIRED_DRIFT_TRACKING_TERMS = [
+    "deterministic extraction",
+    "structured diff",
+    "human-readable synthesis",
+    "intermediate artifacts",
+    "old version",
+    "new version",
+    "breaking changes",
+    "validation commands",
+    "update summary",
 ]
 REQUIRED_AGENT_HARNESS_SECTIONS = [
     "## Install",
@@ -1778,7 +1795,8 @@ def validate(root: Path = ROOT) -> list[str]:
                 if field not in required_fields:
                     errors.append(f"schemas/scorecard.schema.json must require scorecard field: {field}")
             run_tier_schema = properties.get("run_tier", {})
-            if not isinstance(run_tier_schema, dict) or run_tier_schema.get("enum") != REQUIRED_SCORECARD_RUN_TIERS:
+            run_tier_values = run_tier_schema.get("enum", []) if isinstance(run_tier_schema, dict) else []
+            if set(run_tier_values) != set(REQUIRED_SCORECARD_RUN_TIERS):
                 errors.append(
                     "schemas/scorecard.schema.json run_tier must enumerate smoke, iteration, and release"
                 )
@@ -2095,6 +2113,13 @@ def validate(root: Path = ROOT) -> list[str]:
         for term in REQUIRED_REPLAYABLE_EVIDENCE_TERMS:
             if term.lower() not in replayable_evidence_text:
                 errors.append(f"docs/replayable-evidence.md must document replayable evidence term: {term}")
+
+    drift_tracking = root / "docs" / "drift-tracking.md"
+    if drift_tracking.exists():
+        drift_tracking_text = drift_tracking.read_text(errors="ignore").lower()
+        for term in REQUIRED_DRIFT_TRACKING_TERMS:
+            if term.lower() not in drift_tracking_text:
+                errors.append(f"docs/drift-tracking.md must document drift tracking term: {term}")
 
     state_machine = root / "docs" / "state-machine.md"
     if state_machine.exists():

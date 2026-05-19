@@ -3,7 +3,7 @@
   "scorecard_id": "scorecard-2026-05-19-runtime-smoke",
   "subject": "/brain-verify on a read-only runtime smoke run",
   "evaluated_at": "2026-05-19T00:00:00Z",
-  "repo_commit": "abc123",
+  "repo_commit": "abc1234",
   "run_tier": "smoke",
   "adapter": {
     "runtime": "generic-cli-runtime",

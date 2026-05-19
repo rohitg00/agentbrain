@@ -43,6 +43,8 @@ Runtime work adds:
 adapter -> operation mode -> runtime smoke -> transcript -> capability evidence -> doctor report
 ```
 
+When the active runtime supports event hooks, keep hook evidence replayable by storing session-start, prompt-submit, pre-tool, and post-tool payloads as redacted artifacts. Hook evidence should name the event, tool or command, decision made, payload path, redaction status, and whether the hook blocked, allowed, or only observed the operation.
+
 ## Stop Conditions
 
 Stop when the evidence depends on memory, screenshots without source artifacts, missing logs, private credentials, unstated runtime settings, or a command that cannot be rerun safely.

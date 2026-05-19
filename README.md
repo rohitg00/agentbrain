@@ -359,6 +359,7 @@ scripts/                       # validation, doctor, scrub, and runtime smoke to
 Start here:
 
 - `docs/agent-harness.md` — setup, operating loop, stop conditions, and troubleshooting.
+- `docs/drift-tracking.md` — deterministic extraction, structured diffs, and release-note synthesis for changing contracts.
 - `docs/harness-effect.md` — why the harness layer changes agent behavior, operating rules for new tools, and parity checks across tool-output presentation modes.
 - `docs/operation-contract.md` — read-only, write, approval-gated, side-effect, and destructive operation modes.
 - `docs/replayable-evidence.md` — exact evidence chain needed to replay evals, runtime smoke, scorecards, and handoffs.

@@ -7,6 +7,15 @@ from jsonschema import Draft202012Validator
 
 from scripts import validate_repo
 
+README_SCRUB_COMMAND_LINE = "python scripts/scrub_public_copy.py <exact-source-name>"
+README_QUICKSTART_SCRUB_COMMAND_ERROR = (
+    "README.md Quickstart must document: python scripts/scrub_public_copy.py"
+)
+README_VALIDATION_SCRUB_COMMAND_ERROR = (
+    "README.md validation section must document exact scrub script command: "
+    "python scripts/scrub_public_copy.py"
+)
+
 
 def test_commands_directory_requires_catalog(tmp_path: Path) -> None:
     write_minimal_repo(tmp_path)
@@ -1643,12 +1652,25 @@ def write_minimal_repo(root: Path) -> None:
     readme_path.write_text(
         readme_path.read_text(encoding="utf-8")
         .replace(
+            "Run a targeted exact-name scrub for at least one exact source name before committing; it is case-insensitive:\n"
+            "python scripts/scrub_public_copy.py <exact-source-name>\n\n",
+            "Public copy changes still require a targeted exact-name scrub before release; maintainer-only leak checks are outside the public quickstart.\n\n",
+        )
+        .replace(
+            "git diff --check\n"
+            "python scripts/scrub_public_copy.py <exact-source-name>\n"
+            "```\n",
+            "git diff --check\n"
+            "```\n"
+            "Maintainer-only public-copy leak checks are separate from the public validation path.\n",
+        )
+        .replace(
             "- `runtime-smoke` — real-runtime smoke proof skill.",
             "- `runtime-lifecycle` — runtime lifecycle proof skill.\n- `runtime-smoke` — real-runtime smoke proof skill.",
         )
         .replace(
             "- `docs/state-machine.md` — executable harness states and command mapping.",
-            "- `docs/operation-contract.md` — operation modes, write fences, approvals, rollback, and side-effect boundaries.\n- `docs/replayable-evidence.md` — replayable command, artifact, transcript, validation, and scorecard evidence.\n- `docs/runtime-lifecycle.md` — runtime phase, queue, tool, save-point, and abort discipline.\n- `docs/state-machine.md` — executable harness states and command mapping.",
+            "- `docs/drift-tracking.md` — deterministic extraction, structured diff, human-readable synthesis, update summary, and release change validation.\n- `docs/operation-contract.md` — operation modes, write fences, approvals, rollback, and side-effect boundaries.\n- `docs/replayable-evidence.md` — replayable command, artifact, transcript, validation, event hooks, and scorecard evidence.\n- `docs/runtime-lifecycle.md` — runtime phase, queue, tool, save-point, and abort discipline.\n- `docs/state-machine.md` — executable harness states and command mapping.",
         )
         .replace(
             "requirements-dev.txt           # local validation dependencies",
@@ -2091,8 +2113,12 @@ def write_minimal_repo(root: Path) -> None:
                     "schema_version": {"type": "string"},
                     "scorecard_id": {"type": "string"},
                     "subject": {"type": "string"},
-                    "evaluated_at": {"type": "string"},
-                    "repo_commit": {"type": "string"},
+                    "evaluated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "pattern": r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})$",
+                    },
+                    "repo_commit": {"type": "string", "pattern": "^[0-9a-fA-F]{7,40}$"},
                     "run_tier": {"enum": ["smoke", "iteration", "release"]},
                     "adapter": {
                         "type": "object",
@@ -2320,7 +2346,7 @@ def write_minimal_repo(root: Path) -> None:
                 "scorecard_id": "scorecard-sample",
                 "subject": "/brain-verify sample",
                 "evaluated_at": "2026-05-19T00:00:00Z",
-                "repo_commit": "abc123",
+                "repo_commit": "abc1234",
                 "run_tier": "smoke",
                 "adapter": {
                     "runtime": "CLI runtime",
@@ -2744,6 +2770,11 @@ def write_minimal_repo(root: Path) -> None:
         "Runtime claims must name phase, queued input, tool preflight, result ordering, save point, retry, abort, compaction, and branch evidence before trust.\n",
         encoding="utf-8",
     )
+    (docs_dir / "drift-tracking.md").write_text(
+        "# Drift Tracking\n\n"
+        "Use deterministic extraction, structured diff, human-readable synthesis, intermediate artifacts, old version, new version, breaking changes, validation commands, and update summary to track contract drift.\n",
+        encoding="utf-8",
+    )
     (docs_dir / "operation-contract.md").write_text(
         "# Operation Contract\n\n"
         "Modes: read-only, workspace-write, approval-gated, external side effect, and destructive.\n"
@@ -2752,7 +2783,7 @@ def write_minimal_repo(root: Path) -> None:
     )
     (docs_dir / "replayable-evidence.md").write_text(
         "# Replayable Evidence\n\n"
-        "Capture repo commit, command or tool invocation, operation mode, input artifact, output artifact, transcript, environment, validation commands, schema, scorecard, recheck trigger, and replay blocked status.\n",
+        "Capture repo commit, command or tool invocation, operation mode, input artifact, output artifact, transcript, environment, validation commands, schema, scorecard, recheck trigger, replay blocked status, and event hooks such as session-start, prompt-submit, pre-tool, and post-tool payloads.\n",
         encoding="utf-8",
     )
 
@@ -3216,11 +3247,13 @@ def test_command_registry_is_required_and_must_cover_commands(tmp_path):
 
 def test_operation_and_replay_docs_are_required(tmp_path):
     write_minimal_repo(tmp_path)
+    (tmp_path / "docs" / "drift-tracking.md").unlink()
     (tmp_path / "docs" / "operation-contract.md").unlink()
     (tmp_path / "docs" / "replayable-evidence.md").unlink()
 
     errors = validate_repo.validate(tmp_path)
 
+    assert "missing docs/drift-tracking.md" in errors
     assert "missing docs/operation-contract.md" in errors
     assert "missing docs/replayable-evidence.md" in errors
 
@@ -6464,13 +6497,24 @@ def test_eval_report_artifacts_are_required(tmp_path):
 
 def test_scorecard_artifacts_are_required(tmp_path):
     write_minimal_repo(tmp_path)
-    (tmp_path / "schemas" / "scorecard.schema.json").unlink()
-    (tmp_path / "templates" / "scorecard.md").unlink()
+    schema_path = tmp_path / "schemas" / "scorecard.schema.json"
+    template_path = tmp_path / "templates" / "scorecard.md"
+    schema_text = schema_path.read_text(encoding="utf-8")
+    template_text = template_path.read_text(encoding="utf-8")
+    schema_path.unlink()
+    template_path.unlink()
 
     errors = validate_repo.validate(tmp_path)
 
     assert "missing schemas/scorecard.schema.json" in errors
     assert "missing templates/scorecard.md" in errors
+
+    schema_path.write_text(schema_text, encoding="utf-8")
+    template_path.write_text(template_text, encoding="utf-8")
+    (tmp_path / "examples" / "artifacts" / "scorecard.example.json").unlink()
+    errors = validate_repo.validate(tmp_path)
+
+    assert "schemas/scorecard.schema.json missing example artifact: examples/artifacts/scorecard.example.json" in errors
 
 
 def test_doctor_report_artifacts_are_required(tmp_path):
@@ -6494,6 +6538,27 @@ def test_scorecard_schema_requires_comparable_run_tiers(tmp_path):
     errors = validate_repo.validate(tmp_path)
 
     assert "schemas/scorecard.schema.json run_tier must enumerate smoke, iteration, and release" in errors
+
+
+def test_scorecard_schema_run_tier_validation_is_order_insensitive(tmp_path):
+    write_minimal_repo(tmp_path)
+    schema_path = tmp_path / "schemas" / "scorecard.schema.json"
+    schema = json.loads(schema_path.read_text(encoding="utf-8"))
+    schema["properties"]["run_tier"]["enum"] = ["release", "smoke", "iteration"]
+    schema_path.write_text(json.dumps(schema), encoding="utf-8")
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "schemas/scorecard.schema.json run_tier must enumerate smoke, iteration, and release" not in errors
+
+
+def test_scorecard_example_conforms_to_schema(tmp_path):
+    write_minimal_repo(tmp_path)
+    example = json.loads((tmp_path / "examples" / "artifacts" / "scorecard.example.json").read_text(encoding="utf-8"))
+
+    assert example["run_tier"] in {"smoke", "iteration", "release"}
+    assert "repo_commit" in example
+    assert validate_repo.validate(tmp_path) == []
 
 
 def test_adapter_readmes_must_include_validation_section(tmp_path):
@@ -7273,17 +7338,14 @@ def test_state_machine_command_mapping_requires_every_non_terminal_state(tmp_pat
 def test_readme_quickstart_does_not_require_public_copy_scrub_command(tmp_path):
     write_minimal_repo(tmp_path)
     readme = tmp_path / "README.md"
-    readme.write_text(
-        readme.read_text(encoding="utf-8").replace(
-            "python scripts/scrub_public_copy.py <exact-source-name>\n",
-            "",
-        ),
-        encoding="utf-8",
-    )
+    readme_text = readme.read_text(encoding="utf-8")
+
+    assert f"{README_SCRUB_COMMAND_LINE}\n" not in readme_text
 
     errors = validate_repo.validate(tmp_path)
 
-    assert all("scrub_public_copy.py" not in error for error in errors)
+    assert README_QUICKSTART_SCRUB_COMMAND_ERROR not in errors
+    assert README_VALIDATION_SCRUB_COMMAND_ERROR not in errors
 
 
 def test_agent_harness_doc_must_include_worker_scope_guidance(tmp_path):
@@ -7895,17 +7957,14 @@ def test_readme_validation_gate_must_include_cache_cleanup_and_exact_name_scrub(
 def test_readme_validation_section_does_not_require_exact_scrub_script(tmp_path):
     write_minimal_repo(tmp_path)
     readme = tmp_path / "README.md"
-    readme.write_text(
-        readme.read_text(encoding="utf-8").replace(
-            "python scripts/scrub_public_copy.py <exact-source-name>",
-            "Maintainer-only public-copy leak checks are separate from the user validation path.",
-        ),
-        encoding="utf-8",
-    )
+    readme_text = readme.read_text(encoding="utf-8")
+
+    assert README_SCRUB_COMMAND_LINE not in readme_text
 
     errors = validate_repo.validate(tmp_path)
 
-    assert all("scrub_public_copy.py" not in error for error in errors)
+    assert README_VALIDATION_SCRUB_COMMAND_ERROR not in errors
+    assert README_QUICKSTART_SCRUB_COMMAND_ERROR not in errors
 
 
 def test_research_watchlist_must_track_goal_and_skill_sources(tmp_path):
