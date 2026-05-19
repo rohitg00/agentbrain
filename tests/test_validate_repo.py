@@ -1670,7 +1670,7 @@ def write_minimal_repo(root: Path) -> None:
         )
         .replace(
             "- `docs/state-machine.md` — executable harness states and command mapping.",
-            "- `docs/drift-tracking.md` — deterministic extraction, structured diff, human-readable synthesis, update summary, and release change validation.\n- `docs/operation-contract.md` — operation modes, write fences, approvals, rollback, and side-effect boundaries.\n- `docs/replayable-evidence.md` — replayable command, artifact, transcript, validation, event hooks, and scorecard evidence.\n- `docs/runtime-lifecycle.md` — runtime phase, queue, tool, save-point, and abort discipline.\n- `docs/state-machine.md` — executable harness states and command mapping.",
+            "- `docs/audience-playbooks.md` — entrypoints and proof gates for adopters, agents, maintainers, runtime builders, workflow authors, teams, reviewers, and session operators.\n- `docs/drift-tracking.md` — deterministic extraction, structured diff, human-readable synthesis, update summary, and release change validation.\n- `docs/operation-contract.md` — operation modes, write fences, approvals, rollback, and side-effect boundaries.\n- `docs/replayable-evidence.md` — replayable command, artifact, transcript, validation, event hooks, and scorecard evidence.\n- `docs/runtime-lifecycle.md` — runtime phase, queue, tool, save-point, and abort discipline.\n- `docs/state-machine.md` — executable harness states and command mapping.",
         )
         .replace(
             "requirements-dev.txt           # local validation dependencies",
@@ -2770,6 +2770,11 @@ def write_minimal_repo(root: Path) -> None:
         "Runtime claims must name phase, queued input, tool preflight, result ordering, save point, retry, abort, compaction, and branch evidence before trust.\n",
         encoding="utf-8",
     )
+    (docs_dir / "audience-playbooks.md").write_text(
+        "# Audience Playbooks\n\n"
+        "First-time adopter uses scripts/doctor.py. Coding agent uses commands/registry.json. Maintainer uses drift-tracking.md. Runtime or adapter builder uses operation-contract.md and runtime-smoke. Workflow author creates skills and evals. Team or distribution owner chooses policy and bundled skills. Security or trust reviewer checks approval and rollback. Session operator uses handoff-report and replayable evidence.\n",
+        encoding="utf-8",
+    )
     (docs_dir / "drift-tracking.md").write_text(
         "# Drift Tracking\n\n"
         "Use deterministic extraction, structured diff, human-readable synthesis, intermediate artifacts, old version, new version, breaking changes, validation commands, and update summary to track contract drift.\n",
@@ -3247,12 +3252,14 @@ def test_command_registry_is_required_and_must_cover_commands(tmp_path):
 
 def test_operation_and_replay_docs_are_required(tmp_path):
     write_minimal_repo(tmp_path)
+    (tmp_path / "docs" / "audience-playbooks.md").unlink()
     (tmp_path / "docs" / "drift-tracking.md").unlink()
     (tmp_path / "docs" / "operation-contract.md").unlink()
     (tmp_path / "docs" / "replayable-evidence.md").unlink()
 
     errors = validate_repo.validate(tmp_path)
 
+    assert "missing docs/audience-playbooks.md" in errors
     assert "missing docs/drift-tracking.md" in errors
     assert "missing docs/operation-contract.md" in errors
     assert "missing docs/replayable-evidence.md" in errors

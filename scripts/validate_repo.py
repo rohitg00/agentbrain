@@ -63,6 +63,7 @@ REQUIRED_STATE_MACHINE_VALUES = [
 REQUIRED_GITIGNORE_PATTERNS = ["__pycache__/", "*.py[cod]", ".pytest_cache/", ".venv/"]
 REQUIRED_DOCS = [
     "docs/agent-harness.md",
+    "docs/audience-playbooks.md",
     "docs/autonomous-goals.md",
     "docs/devex-engineering.md",
     "docs/shared-language.md",
@@ -509,6 +510,22 @@ REQUIRED_DRIFT_TRACKING_TERMS = [
     "breaking changes",
     "validation commands",
     "update summary",
+]
+REQUIRED_AUDIENCE_PLAYBOOK_TERMS = [
+    "first-time adopter",
+    "coding agent",
+    "maintainer",
+    "runtime or adapter builder",
+    "workflow author",
+    "team or distribution owner",
+    "security or trust reviewer",
+    "session operator",
+    "scripts/doctor.py",
+    "commands/registry.json",
+    "operation-contract.md",
+    "runtime-smoke",
+    "drift-tracking.md",
+    "handoff-report",
 ]
 REQUIRED_AGENT_HARNESS_SECTIONS = [
     "## Install",
@@ -2120,6 +2137,13 @@ def validate(root: Path = ROOT) -> list[str]:
         for term in REQUIRED_DRIFT_TRACKING_TERMS:
             if term.lower() not in drift_tracking_text:
                 errors.append(f"docs/drift-tracking.md must document drift tracking term: {term}")
+
+    audience_playbooks = root / "docs" / "audience-playbooks.md"
+    if audience_playbooks.exists():
+        audience_playbooks_text = audience_playbooks.read_text(errors="ignore").lower()
+        for term in REQUIRED_AUDIENCE_PLAYBOOK_TERMS:
+            if term.lower() not in audience_playbooks_text:
+                errors.append(f"docs/audience-playbooks.md must document audience playbook term: {term}")
 
     state_machine = root / "docs" / "state-machine.md"
     if state_machine.exists():
