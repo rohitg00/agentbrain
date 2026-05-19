@@ -11,7 +11,9 @@ ROOT = Path(__file__).resolve().parents[1]
 
 REQUIRED_ROOT = [
     "README.md",
+    "AGENTS.md",
     "AGENTBRAIN.md",
+    "INSTALL_FOR_AGENTS.md",
     "PRINCIPLES.md",
     "ANTI_RATIONALIZATION.md",
     "CONTRIBUTING.md",
@@ -37,6 +39,8 @@ REQUIRED_ARTIFACT_FILES = [
     "schemas/changed-artifact-plus-implementation-notes.schema.json",
     "schemas/runtime-smoke.schema.json",
     "templates/runtime-smoke.md",
+    "schemas/scorecard.schema.json",
+    "templates/scorecard.md",
 ]
 REQUIRED_STATE_MACHINE_VALUES = [
     "INTAKE",
@@ -194,12 +198,8 @@ REQUIRED_README_QUICKSTART_COMMANDS = [
     "python -m pytest -q",
     "python scripts/validate_repo.py",
     "git diff --check",
-    "python scripts/scrub_public_copy.py",
 ]
 REQUIRED_README_QUICKSTART_TERMS = {
-    "targeted exact-name scrub": "README.md Quickstart must include targeted exact-name scrub",
-    "case-insensitive": "README.md Quickstart must document that targeted exact-name scrub is case-insensitive",
-    "at least one exact source name": "README.md Quickstart must document that targeted exact-name scrub requires at least one exact source name",
     "Python 3.11": "README.md Quickstart must document CI Python version: Python 3.11",
     "baseline validation before editing": "README.md Quickstart must require baseline validation before editing",
 }
@@ -257,7 +257,6 @@ REQUIRED_README_MINIMAL_HARNESS_PROMPT_TERMS = [
     "python -m pytest -q",
     "python scripts/validate_repo.py",
     "git diff --check",
-    "targeted exact-name scrub",
     "stop",
     "approval",
     "secrets",
@@ -393,6 +392,58 @@ REQUIRED_CONSTITUTION_PUBLIC_COPY_TERMS = [
     "public copy neutral",
     "targeted exact-name scrub",
 ]
+REQUIRED_AGENTS_ENTRYPOINT_TERMS = [
+    "read order",
+    "AGENTBRAIN.md",
+    "PRINCIPLES.md",
+    "ANTI_RATIONALIZATION.md",
+    "docs/state-machine.md",
+    "commands/README.md",
+    "git status --short",
+    "baseline validation",
+    "Preserve user changes",
+    "markdown specs",
+    "native command",
+    "fresh validation proof",
+    "templates/",
+    "schemas/",
+    "stop with a blocker",
+]
+REQUIRED_INSTALL_FOR_AGENTS_TERMS = [
+    "fresh checkout",
+    "git fetch origin main",
+    "git rev-parse HEAD",
+    "git rev-parse origin/main",
+    "HEAD equals origin/main",
+    "python3 -m venv .venv",
+    "source .venv/bin/activate",
+    "pip install -r requirements-dev.txt",
+    "python -m pytest -q",
+    "python scripts/validate_repo.py",
+    "git diff --check",
+    "select a command",
+    "capture artifacts",
+    "runtime smoke",
+    "scorecard",
+]
+REQUIRED_SCORECARD_SCHEMA_FIELDS = [
+    "schema_version",
+    "scorecard_id",
+    "subject",
+    "evaluated_at",
+    "repo_commit",
+    "run_tier",
+    "adapter",
+    "command",
+    "cases",
+    "metrics",
+    "evidence_artifacts",
+    "validation_commands",
+    "verdict",
+    "risks",
+    "next_actions",
+]
+REQUIRED_SCORECARD_RUN_TIERS = ["smoke", "iteration", "release"]
 REQUIRED_AGENT_HARNESS_SECTIONS = [
     "## Install",
     "## Fresh Checkout Bootstrap",
@@ -1673,6 +1724,15 @@ def validate(root: Path = ROOT) -> list[str]:
             for field in REQUIRED_HANDOFF_SCHEMA_BLOCKED_RESUME_FIELDS:
                 if field not in required_fields:
                     errors.append(f"schemas/handoff-report.schema.json must require {field} for blocked resume")
+        if path.name == "scorecard.schema.json":
+            for field in REQUIRED_SCORECARD_SCHEMA_FIELDS:
+                if field not in required_fields:
+                    errors.append(f"schemas/scorecard.schema.json must require scorecard field: {field}")
+            run_tier_schema = properties.get("run_tier", {})
+            if not isinstance(run_tier_schema, dict) or run_tier_schema.get("enum") != REQUIRED_SCORECARD_RUN_TIERS:
+                errors.append(
+                    "schemas/scorecard.schema.json run_tier must enumerate smoke, iteration, and release"
+                )
         for field in required_fields:
             if field not in properties:
                 errors.append(f"{rel(path, root)} required field lacks property definition: {field}")
@@ -1775,6 +1835,26 @@ def validate(root: Path = ROOT) -> list[str]:
     for required_path in REQUIRED_ARTIFACT_FILES:
         if not (root / required_path).exists():
             errors.append(f"missing {required_path}")
+
+    agents_entrypoint = root / "AGENTS.md"
+    if agents_entrypoint.exists():
+        agents_text = agents_entrypoint.read_text(errors="ignore")
+        agents_text_lower = agents_text.lower()
+        for required_term in REQUIRED_AGENTS_ENTRYPOINT_TERMS:
+            if required_term.lower() not in agents_text_lower:
+                errors.append(f"AGENTS.md must document agent entrypoint term: {required_term}")
+        if "scrub_public_copy.py" in agents_text:
+            errors.append("AGENTS.md must not expose maintainer-only public-copy command")
+
+    install_for_agents = root / "INSTALL_FOR_AGENTS.md"
+    if install_for_agents.exists():
+        install_text = install_for_agents.read_text(errors="ignore")
+        install_text_lower = install_text.lower()
+        for required_term in REQUIRED_INSTALL_FOR_AGENTS_TERMS:
+            if required_term.lower() not in install_text_lower:
+                errors.append(f"INSTALL_FOR_AGENTS.md must document install term: {required_term}")
+        if "scrub_public_copy.py" in install_text:
+            errors.append("INSTALL_FOR_AGENTS.md must not expose maintainer-only public-copy command")
 
     skill_template = root / "templates" / "skill-template.md"
     if skill_template.exists():
@@ -2465,10 +2545,6 @@ def validate(root: Path = ROOT) -> list[str]:
             if run_command not in readme_text:
                 errors.append(f"README.md validation section must document: {run_command}")
         readme_validation_body = section_body(readme_text, "## Validation")
-        if "python scripts/scrub_public_copy.py" not in readme_validation_body:
-            errors.append(
-                "README.md validation section must document exact scrub script command: python scripts/scrub_public_copy.py"
-            )
         readme_quickstart = section_body(readme_text, "## Quickstart")
         readme_quickstart_lower = readme_quickstart.lower()
         for run_command in REQUIRED_README_QUICKSTART_COMMANDS:

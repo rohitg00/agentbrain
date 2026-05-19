@@ -1,0 +1,51 @@
+{
+  "schema_version": "1",
+  "scorecard_id": "scorecard-2026-05-19-runtime-smoke",
+  "subject": "/brain-verify on a read-only runtime smoke run",
+  "evaluated_at": "2026-05-19T00:00:00Z",
+  "repo_commit": "abc123",
+  "run_tier": "smoke",
+  "adapter": {
+    "runtime": "generic-cli-runtime",
+    "version": "1.0.0",
+    "command_mode": "markdown_specs",
+    "sandbox_write_mode": "read_only",
+    "capability_evidence": [
+      "runtime-smoke artifact recorded markdown command mode and read-only sandbox"
+    ]
+  },
+  "command": "/brain-verify",
+  "cases": {
+    "total": 3,
+    "passed": 2,
+    "failed": 0,
+    "skipped": 1,
+    "failures": []
+  },
+  "metrics": {
+    "coverage": 67,
+    "confidence": "medium",
+    "notes": [
+      "one case skipped because shell validation was blocked by read-only mode"
+    ]
+  },
+  "evidence_artifacts": [
+    {
+      "path": "runtime-smoke.local.json",
+      "description": "schema-valid runtime smoke artifact"
+    }
+  ],
+  "validation_commands": [
+    {
+      "command": "python scripts/validate_repo.py",
+      "result": "passed"
+    }
+  ],
+  "verdict": "mixed",
+  "risks": [
+    "read-only smoke does not prove write-path behavior"
+  ],
+  "next_actions": [
+    "rerun as iteration tier when workspace writes and tests are available"
+  ]
+}

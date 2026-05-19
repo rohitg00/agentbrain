@@ -89,9 +89,10 @@
       </a>
     </td>
     <td align="center" width="150">
-      <a href="https://openclaw.ai/">
-        <img src="https://hermes-agent.nousresearch.com/docs/img/logo.png" alt="Hermes-Agent" height="28"><br>
+      <a href="https://hermes-agent.nousresearch.com/">
+        <img src="docs/assets/agent-runtimes/hermes.svg" alt="Hermes-Agent" height="28"><br>
         <sub>Hermes</sub>
+      </a>
     </td>
   </tr>
 </table>
@@ -185,12 +186,6 @@ git rev-parse origin/main
 ```
 
 Confirm `HEAD equals origin/main` before using a checkout as a trustworthy harness. Run baseline validation before editing so new failures are not blamed on old repository drift.
-
-Maintainers only: if you are editing Agent Brain's public docs after studying a named repo, vendor, internal tool, or user-shared source, run the targeted exact-name scrub for that source name. It is case-insensitive and requires at least one exact source name. This is not part of normal user setup; it is only a leak check so inspiration does not become accidental branding.
-
-```bash
-python scripts/scrub_public_copy.py <exact-source-name> [more-exact-names...]
-```
 
 Expected result:
 
@@ -334,14 +329,15 @@ Rules:
 7. Do not build before evidence, scope, and verification are clear.
 8. Stop when approval, secrets handling, loop limits, rollback, or evidence are missing.
 9. Before final output, run: rm -rf scripts/__pycache__ tests/__pycache__ && python -m pytest -q && python scripts/validate_repo.py && git diff --check.
-10. If maintaining public repo copy from external references, run the targeted exact-name scrub for the named sources.
-11. If running as a noninteractive scheduled run, do not ask questions. Use the safest documented default only when ambiguity does not change scope, safety, side effects, or approval.
+10. If running as a noninteractive scheduled run, do not ask questions. Use the safest documented default only when ambiguity does not change scope, safety, side effects, or approval.
 ```
 
 ## Repository Map
 
 ```text
+AGENTS.md                     # first-stop agent entrypoint
 AGENTBRAIN.md                  # constitution and operating loop
+INSTALL_FOR_AGENTS.md          # fresh-checkout setup path for agents
 PRINCIPLES.md                  # behavioral principles
 ANTI_RATIONALIZATION.md        # shortcut rebuttals
 CONTRIBUTING.md                # contribution and validation workflow
@@ -449,6 +445,7 @@ Use the command output first, then the closest template. Validate against the ma
 | Changed artifact and build notes | `templates/changed-artifact-plus-implementation-notes.md` | `schemas/changed-artifact-plus-implementation-notes.schema.json` |
 | QA or verification proof | `templates/qa-evidence.md` | `schemas/qa-evidence.schema.json` |
 | Real-runtime smoke evidence | `templates/runtime-smoke.md` | `schemas/runtime-smoke.schema.json` |
+| Comparable eval, adapter, or release result | `templates/scorecard.md` | `schemas/scorecard.schema.json` |
 | Harness-effect parity report for a tool wired into the harness | `evals/harness-effect/fixtures/` plus `scripts/harness_effect.py` | `schemas/harness-effect-report.schema.json` |
 | Trust review before handoff | `templates/review-report.md` | `schemas/review-report.schema.json` |
 | Launch or merge readiness | `templates/launch-checklist.md` | Command output contract |
@@ -604,9 +601,9 @@ rm -rf scripts/__pycache__ tests/__pycache__
 python -m pytest -q
 python scripts/validate_repo.py
 git diff --check
-# Maintainer-only leak check after using named external references:
-python scripts/scrub_public_copy.py <exact-source-name> [more-exact-names...]
 ```
+
+Maintainer-only public-copy leak checks are separate from the user validation path.
 
 When testing a real runtime or adapter, capture a schema-valid smoke artifact:
 

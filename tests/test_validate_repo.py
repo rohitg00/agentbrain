@@ -1583,7 +1583,9 @@ def test_quality_workflow_opts_into_current_javascript_action_runtime(tmp_path: 
 
 def write_minimal_repo(root: Path) -> None:
     for rel in [
+        "AGENTS.md",
         "AGENTBRAIN.md",
+        "INSTALL_FOR_AGENTS.md",
         "PRINCIPLES.md",
         "ANTI_RATIONALIZATION.md",
         "CONTRIBUTING.md",
@@ -1599,6 +1601,34 @@ def write_minimal_repo(root: Path) -> None:
         "## Done definition\n\n"
         "A task is done only with fresh validation proof from python -m pytest -q, "
         "python scripts/validate_repo.py, git diff --check, and targeted exact-name scrub.\n",
+        encoding="utf-8",
+    )
+    (root / "AGENTS.md").write_text(
+        "# Agent Entry Point\n\n"
+        "## Read Order\n\n"
+        "Read order: AGENTBRAIN.md, PRINCIPLES.md, ANTI_RATIONALIZATION.md, docs/state-machine.md, commands/README.md, the selected command, and only the listed skills.\n\n"
+        "## Starting Checks\n\n"
+        "Run git status --short, git log --oneline -5, and baseline validation before editing. Preserve user changes before editing.\n\n"
+        "## Command Boundary\n\n"
+        "Treat /brain-* entries as markdown specs unless the runtime proves native command support.\n\n"
+        "## Completion Proof\n\n"
+        "Use templates/ and schemas/, collect fresh validation proof, and stop with a blocker when evidence, approval, rollback, secrets handling, or loop limits are missing.\n",
+        encoding="utf-8",
+    )
+    (root / "INSTALL_FOR_AGENTS.md").write_text(
+        "# Install For Agents\n\n"
+        "## Fresh Checkout\n\n"
+        "Run git fetch origin main, git rev-parse HEAD, and git rev-parse origin/main. Confirm HEAD equals origin/main before using the checkout.\n\n"
+        "## Local Environment\n\n"
+        "Use python3 -m venv .venv, source .venv/bin/activate, and python3 -m pip install -r requirements-dev.txt.\n\n"
+        "## Baseline Validation\n\n"
+        "Run python -m pytest -q, python scripts/validate_repo.py, and git diff --check before editing.\n\n"
+        "## Operating Loop\n\n"
+        "Select a command, load only its skills, capture artifacts, preserve user changes, and rerun validation.\n\n"
+        "## Runtime Smoke\n\n"
+        "Capture runtime smoke evidence for real adapters.\n\n"
+        "## Scorecard\n\n"
+        "Use the scorecard template and schema for repeated evaluations.\n",
         encoding="utf-8",
     )
     (root / "CONTRIBUTING.md").write_text(
@@ -1619,6 +1649,18 @@ def write_minimal_repo(root: Path) -> None:
         .replace(
             "- `docs/state-machine.md` — executable harness states and command mapping.",
             "- `docs/runtime-lifecycle.md` — runtime phase, queue, tool, save-point, and abort discipline.\n- `docs/state-machine.md` — executable harness states and command mapping.",
+        )
+        .replace(
+            "requirements-dev.txt           # local validation dependencies",
+            "AGENTS.md                     # first-stop agent entrypoint\nAGENTBRAIN.md                  # constitution and operating loop\nINSTALL_FOR_AGENTS.md          # fresh-checkout setup path for agents\nrequirements-dev.txt           # local validation dependencies",
+        )
+        .replace(
+            "- `schemas/runtime-smoke.schema.json` — sample runtime smoke schema.",
+            "- `schemas/runtime-smoke.schema.json` — sample runtime smoke schema.\n- `schemas/scorecard.schema.json` — sample scorecard schema.",
+        )
+        .replace(
+            "- `templates/runtime-smoke.md` — sample runtime smoke template.",
+            "- `templates/runtime-smoke.md` — sample runtime smoke template.\n- `templates/scorecard.md` — sample scorecard template.",
         ),
         encoding="utf-8",
     )
@@ -1873,6 +1915,100 @@ def write_minimal_repo(root: Path) -> None:
         ),
         encoding="utf-8",
     )
+    (schema_dir / "scorecard.schema.json").write_text(
+        json.dumps(
+            {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "title": "Scorecard",
+                "type": "object",
+                "additionalProperties": False,
+                "required": [
+                    "schema_version",
+                    "scorecard_id",
+                    "subject",
+                    "evaluated_at",
+                    "repo_commit",
+                    "run_tier",
+                    "adapter",
+                    "command",
+                    "cases",
+                    "metrics",
+                    "evidence_artifacts",
+                    "validation_commands",
+                    "verdict",
+                    "risks",
+                    "next_actions",
+                ],
+                "properties": {
+                    "schema_version": {"type": "string"},
+                    "scorecard_id": {"type": "string"},
+                    "subject": {"type": "string"},
+                    "evaluated_at": {"type": "string"},
+                    "repo_commit": {"type": "string"},
+                    "run_tier": {"enum": ["smoke", "iteration", "release"]},
+                    "adapter": {
+                        "type": "object",
+                        "additionalProperties": False,
+                        "required": ["runtime", "version", "command_mode", "sandbox_write_mode", "capability_evidence"],
+                        "properties": {
+                            "runtime": {"type": "string"},
+                            "version": {"type": "string"},
+                            "command_mode": {"enum": ["native_commands", "markdown_specs", "mixed", "unknown"]},
+                            "sandbox_write_mode": {"enum": ["read_only", "workspace_write", "approval_gated", "unrestricted", "unknown"]},
+                            "capability_evidence": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+                        },
+                    },
+                    "command": {"type": "string"},
+                    "cases": {
+                        "type": "object",
+                        "additionalProperties": False,
+                        "required": ["total", "passed", "failed", "skipped", "failures"],
+                        "properties": {
+                            "total": {"type": "integer", "minimum": 0},
+                            "passed": {"type": "integer", "minimum": 0},
+                            "failed": {"type": "integer", "minimum": 0},
+                            "skipped": {"type": "integer", "minimum": 0},
+                            "failures": {"type": "array", "items": {"type": "string"}},
+                        },
+                    },
+                    "metrics": {
+                        "type": "object",
+                        "additionalProperties": False,
+                        "required": ["coverage", "confidence", "notes"],
+                        "properties": {
+                            "coverage": {"type": "integer", "minimum": 0, "maximum": 100},
+                            "confidence": {"enum": ["low", "medium", "high"]},
+                            "notes": {"type": "array", "items": {"type": "string"}},
+                        },
+                    },
+                    "evidence_artifacts": {
+                        "type": "array",
+                        "minItems": 1,
+                        "items": {
+                            "type": "object",
+                            "additionalProperties": False,
+                            "required": ["path", "description"],
+                            "properties": {"path": {"type": "string"}, "description": {"type": "string"}},
+                        },
+                    },
+                    "validation_commands": {
+                        "type": "array",
+                        "minItems": 1,
+                        "items": {
+                            "type": "object",
+                            "additionalProperties": False,
+                            "required": ["command", "result"],
+                            "properties": {"command": {"type": "string"}, "result": {"type": "string"}},
+                        },
+                    },
+                    "verdict": {"enum": ["pass", "fail", "blocked", "mixed"]},
+                    "risks": {"type": "array", "items": {"type": "string"}},
+                    "next_actions": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
     examples_dir = root / "examples" / "artifacts"
     examples_dir.mkdir(parents=True)
     (examples_dir / "artifact.example.json").write_text("{}\n", encoding="utf-8")
@@ -1979,6 +2115,35 @@ def write_minimal_repo(root: Path) -> None:
         + "\n",
         encoding="utf-8",
     )
+    (examples_dir / "scorecard.example.json").write_text(
+        json.dumps(
+            {
+                "schema_version": "1",
+                "scorecard_id": "scorecard-sample",
+                "subject": "/brain-verify sample",
+                "evaluated_at": "2026-05-19T00:00:00Z",
+                "repo_commit": "abc123",
+                "run_tier": "smoke",
+                "adapter": {
+                    "runtime": "CLI runtime",
+                    "version": "1.0.0",
+                    "command_mode": "markdown_specs",
+                    "sandbox_write_mode": "read_only",
+                    "capability_evidence": ["runtime smoke artifact checked"],
+                },
+                "command": "/brain-verify",
+                "cases": {"total": 1, "passed": 1, "failed": 0, "skipped": 0, "failures": []},
+                "metrics": {"coverage": 100, "confidence": "high", "notes": ["sample scorecard"]},
+                "evidence_artifacts": [{"path": "runtime-smoke.local.json", "description": "sample evidence"}],
+                "validation_commands": [{"command": "python scripts/validate_repo.py", "result": "passed"}],
+                "verdict": "pass",
+                "risks": [],
+                "next_actions": ["record result"],
+            }
+        )
+        + "\n",
+        encoding="utf-8",
+    )
     templates_dir = root / "templates"
     templates_dir.mkdir(exist_ok=True)
     (templates_dir / "handoff-report.md").write_text(
@@ -2001,6 +2166,10 @@ def write_minimal_repo(root: Path) -> None:
     )
     (templates_dir / "runtime-smoke.md").write_text(
         "# Runtime Smoke\n\nSchema fields: `runtime`, `version`, `python_executable`, `writable_temp_dir_status`, `git_fetch_result`, `git_freshness_result`, `git_worktree_status`, `exact_command`, `command_exit_status`, `smoke_result`, `transcript_path`, `transcript_redaction_status`, `sandbox_write_mode`, `brain_command_mode`, `selected_command`, `loaded_skills`, `adapter_path`, `blocked_commands`, `run_scope`, `validation_commands`, `evidence`. A pass artifact requires loaded skills declared by selected command. Exact command guidance must record runtime label, runtime version, adapter path, sandbox write mode, brain command mode, and run scope. Runtime evidence must record transcript redaction status.\n",
+        encoding="utf-8",
+    )
+    (templates_dir / "scorecard.md").write_text(
+        "# Scorecard\n\nSchema fields: `schema_version`, `scorecard_id`, `subject`, `evaluated_at`, `repo_commit`, `run_tier`, `adapter`, `command`, `cases`, `metrics`, `evidence_artifacts`, `validation_commands`, `verdict`, `risks`, `next_actions`.\n",
         encoding="utf-8",
     )
     (templates_dir / "sample-routing-summary.md").write_text(
@@ -2736,6 +2905,34 @@ def test_valid_minimal_repo_has_no_errors(tmp_path):
     write_minimal_repo(tmp_path)
 
     assert validate_repo.validate(tmp_path) == []
+
+
+def test_agent_entrypoint_docs_are_required(tmp_path):
+    write_minimal_repo(tmp_path)
+    (tmp_path / "AGENTS.md").unlink()
+    (tmp_path / "INSTALL_FOR_AGENTS.md").unlink()
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "missing AGENTS.md" in errors
+    assert "missing INSTALL_FOR_AGENTS.md" in errors
+
+
+def test_agent_entrypoint_must_document_command_boundary(tmp_path):
+    write_minimal_repo(tmp_path)
+    agents = tmp_path / "AGENTS.md"
+    agents.write_text(
+        agents.read_text(encoding="utf-8").replace(
+            "Treat /brain-* entries as markdown specs unless the runtime proves native command support.",
+            "Treat /brain-* entries as available commands.",
+        ),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "AGENTS.md must document agent entrypoint term: markdown specs" in errors
+    assert "AGENTS.md must document agent entrypoint term: native command" in errors
 
 
 def test_build_output_artifact_requires_schema_contract(tmp_path):
@@ -3833,8 +4030,7 @@ def test_readme_quickstart_must_include_full_local_quality_gate(tmp_path):
         readme.read_text(encoding="utf-8")
         .replace("rm -rf scripts/__pycache__ tests/__pycache__\n", "")
         .replace("python scripts/validate_repo.py\n", "")
-        .replace("git diff --check\n", "")
-        .replace("targeted exact-name scrub", "brand scrub"),
+        .replace("git diff --check\n", ""),
         encoding="utf-8",
     )
 
@@ -3843,7 +4039,6 @@ def test_readme_quickstart_must_include_full_local_quality_gate(tmp_path):
     assert "README.md Quickstart must document: rm -rf scripts/__pycache__ tests/__pycache__" in errors
     assert "README.md Quickstart must document: python scripts/validate_repo.py" in errors
     assert "README.md Quickstart must document: git diff --check" in errors
-    assert "README.md Quickstart must include targeted exact-name scrub" in errors
 
 
 def test_readme_quickstart_must_create_virtual_environment_before_install(tmp_path):
@@ -3874,32 +4069,6 @@ def test_readme_must_pin_setup_to_ci_python_version(tmp_path):
 
     assert "README.md Quickstart must document CI Python version: Python 3.11" in errors
     assert "README.md troubleshooting must document dependency bootstrap recovery: Python 3.11" in errors
-
-
-def test_readme_quickstart_must_document_case_insensitive_scrub(tmp_path):
-    write_minimal_repo(tmp_path)
-    readme = tmp_path / "README.md"
-    readme.write_text(
-        readme.read_text(encoding="utf-8").replace("case-insensitive", "case-aware"),
-        encoding="utf-8",
-    )
-
-    errors = validate_repo.validate(tmp_path)
-
-    assert "README.md Quickstart must document that targeted exact-name scrub is case-insensitive" in errors
-
-
-def test_readme_quickstart_must_warn_scrub_requires_at_least_one_exact_name(tmp_path):
-    write_minimal_repo(tmp_path)
-    readme = tmp_path / "README.md"
-    readme.write_text(
-        readme.read_text(encoding="utf-8").replace("at least one exact source name", "optional source names"),
-        encoding="utf-8",
-    )
-
-    errors = validate_repo.validate(tmp_path)
-
-    assert "README.md Quickstart must document that targeted exact-name scrub requires at least one exact source name" in errors
 
 
 def test_readme_must_include_weakest_failure_mode_audit(tmp_path):
@@ -4489,22 +4658,6 @@ def test_readme_minimal_harness_prompt_must_include_full_quality_gate(tmp_path):
     errors = validate_repo.validate(tmp_path)
 
     assert "README.md minimal harness prompt must mention: git diff --check" in errors
-
-
-def test_readme_minimal_harness_prompt_must_require_exact_name_scrub(tmp_path):
-    write_minimal_repo(tmp_path)
-    readme = tmp_path / "README.md"
-    readme.write_text(
-        readme.read_text(encoding="utf-8").replace(
-            ", and a targeted exact-name scrub before claiming completion.",
-            " before claiming completion.",
-        ),
-        encoding="utf-8",
-    )
-
-    errors = validate_repo.validate(tmp_path)
-
-    assert "README.md minimal harness prompt must mention: targeted exact-name scrub" in errors
 
 
 def test_readme_minimal_harness_prompt_must_run_baseline_validation_before_work(tmp_path):
@@ -6019,6 +6172,29 @@ def test_eval_report_artifacts_are_required(tmp_path):
     assert "missing templates/eval-report.md" in errors
 
 
+def test_scorecard_artifacts_are_required(tmp_path):
+    write_minimal_repo(tmp_path)
+    (tmp_path / "schemas" / "scorecard.schema.json").unlink()
+    (tmp_path / "templates" / "scorecard.md").unlink()
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "missing schemas/scorecard.schema.json" in errors
+    assert "missing templates/scorecard.md" in errors
+
+
+def test_scorecard_schema_requires_comparable_run_tiers(tmp_path):
+    write_minimal_repo(tmp_path)
+    schema_path = tmp_path / "schemas" / "scorecard.schema.json"
+    schema = json.loads(schema_path.read_text(encoding="utf-8"))
+    schema["properties"]["run_tier"]["enum"] = ["smoke", "iteration"]
+    schema_path.write_text(json.dumps(schema), encoding="utf-8")
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "schemas/scorecard.schema.json run_tier must enumerate smoke, iteration, and release" in errors
+
+
 def test_adapter_readmes_must_include_validation_section(tmp_path):
     write_minimal_repo(tmp_path)
     adapter_readme = tmp_path / "adapters" / "sample-adapter" / "README.md"
@@ -6793,20 +6969,20 @@ def test_state_machine_command_mapping_requires_every_non_terminal_state(tmp_pat
     assert "docs/state-machine.md command mapping missing state: verify" in errors
 
 
-def test_readme_quickstart_must_include_copyable_public_copy_scrub_command(tmp_path):
+def test_readme_quickstart_does_not_require_public_copy_scrub_command(tmp_path):
     write_minimal_repo(tmp_path)
     readme = tmp_path / "README.md"
     readme.write_text(
         readme.read_text(encoding="utf-8").replace(
             "python scripts/scrub_public_copy.py <exact-source-name>\n",
-            "Run a targeted exact-name scrub for disallowed source terms before committing.\n",
+            "",
         ),
         encoding="utf-8",
     )
 
     errors = validate_repo.validate(tmp_path)
 
-    assert "README.md Quickstart must document: python scripts/scrub_public_copy.py" in errors
+    assert all("scrub_public_copy.py" not in error for error in errors)
 
 
 def test_agent_harness_doc_must_include_worker_scope_guidance(tmp_path):
@@ -7415,20 +7591,20 @@ def test_readme_validation_gate_must_include_cache_cleanup_and_exact_name_scrub(
     assert "README.md validation gate must include targeted exact-name scrub" in errors
 
 
-def test_readme_validation_section_must_use_exact_scrub_script(tmp_path):
+def test_readme_validation_section_does_not_require_exact_scrub_script(tmp_path):
     write_minimal_repo(tmp_path)
     readme = tmp_path / "README.md"
     readme.write_text(
         readme.read_text(encoding="utf-8").replace(
             "python scripts/scrub_public_copy.py <exact-source-name>",
-            "python - <<'PY'\nprint('generic public copy check')\nPY",
+            "Maintainer-only public-copy leak checks are separate from the user validation path.",
         ),
         encoding="utf-8",
     )
 
     errors = validate_repo.validate(tmp_path)
 
-    assert "README.md validation section must document exact scrub script command: python scripts/scrub_public_copy.py" in errors
+    assert all("scrub_public_copy.py" not in error for error in errors)
 
 
 def test_research_watchlist_must_track_goal_and_skill_sources(tmp_path):
@@ -7720,8 +7896,8 @@ def test_readme_repository_map_must_not_list_missing_top_level_directories(tmp_p
     readme = tmp_path / "README.md"
     readme.write_text(
         readme.read_text(encoding="utf-8").replace(
-            "```text\nrequirements-dev.txt           # local validation dependencies\n.github/workflows/             # CI quality gate\ncommands/                      # command specs\nskills/                        # portable skills\nschemas/                       # artifact schemas\ntemplates/                     # artifact templates\ndocs/                          # supporting docs\n```",
-            "```text\nrequirements-dev.txt           # local validation dependencies\n.github/workflows/             # CI quality gate\ncommands/                      # exists\nmissing-area/                  # stale map entry\n```",
+            "```text\nAGENTS.md                     # first-stop agent entrypoint\nAGENTBRAIN.md                  # constitution and operating loop\nINSTALL_FOR_AGENTS.md          # fresh-checkout setup path for agents\nrequirements-dev.txt           # local validation dependencies\n.github/workflows/             # CI quality gate\ncommands/                      # command specs\nskills/                        # portable skills\nschemas/                       # artifact schemas\ntemplates/                     # artifact templates\ndocs/                          # supporting docs\n```",
+            "```text\nAGENTS.md                     # exists\nAGENTBRAIN.md                  # exists\nINSTALL_FOR_AGENTS.md          # exists\nrequirements-dev.txt           # local validation dependencies\n.github/workflows/             # CI quality gate\ncommands/                      # exists\nmissing-area/                  # stale map entry\n```",
         ),
         encoding="utf-8",
     )
@@ -7736,8 +7912,8 @@ def test_readme_repository_map_must_not_list_missing_files(tmp_path):
     readme = tmp_path / "README.md"
     readme.write_text(
         readme.read_text(encoding="utf-8").replace(
-            "```text\nrequirements-dev.txt           # local validation dependencies\n.github/workflows/             # CI quality gate\ncommands/                      # command specs\nskills/                        # portable skills\nschemas/                       # artifact schemas\ntemplates/                     # artifact templates\ndocs/                          # supporting docs\n```",
-            "```text\nrequirements-dev.txt           # local validation dependencies\n.github/workflows/             # CI quality gate\nAGENTBRAIN.md                  # exists\nmissing-guide.md               # stale file entry\ncommands/                      # exists\n```",
+            "```text\nAGENTS.md                     # first-stop agent entrypoint\nAGENTBRAIN.md                  # constitution and operating loop\nINSTALL_FOR_AGENTS.md          # fresh-checkout setup path for agents\nrequirements-dev.txt           # local validation dependencies\n.github/workflows/             # CI quality gate\ncommands/                      # command specs\nskills/                        # portable skills\nschemas/                       # artifact schemas\ntemplates/                     # artifact templates\ndocs/                          # supporting docs\n```",
+            "```text\nAGENTS.md                     # exists\nAGENTBRAIN.md                  # exists\nINSTALL_FOR_AGENTS.md          # exists\nrequirements-dev.txt           # local validation dependencies\n.github/workflows/             # CI quality gate\nmissing-guide.md               # stale file entry\ncommands/                      # exists\n```",
         ),
         encoding="utf-8",
     )
