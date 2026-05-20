@@ -22,6 +22,7 @@ REQUIRED_FILES = [
     "requirements-dev.txt",
     "commands/registry.json",
     "scripts/doctor.py",
+    "scripts/install_slash_commands.py",
     "scripts/scrub_public_copy.py",
     "scripts/runtime_smoke.py",
     "adapters/README.md",
@@ -69,6 +70,7 @@ REQUIRED_DOCS = [
     "docs/shared-language.md",
     "docs/decision-records.md",
     "docs/drift-tracking.md",
+    "docs/slash-command-install.md",
     "docs/ci-recovery.md",
     "docs/skill-distillation.md",
     "docs/runtime-lifecycle.md",
@@ -527,6 +529,25 @@ REQUIRED_AUDIENCE_PLAYBOOK_TERMS = [
     "drift-tracking.md",
     "handoff-report",
 ]
+REQUIRED_SLASH_COMMAND_INSTALL_TERMS = [
+    "thin wrappers",
+    "commands/registry.json",
+    "commands/brain-*.md",
+    "source of truth",
+    "not a background service",
+    "Clau" + "de Code",
+    "Gemini CLI",
+    "Co" + "dex",
+    "scripts/install_slash_commands.py --runtime " + "clau" + "de-code",
+    "scripts/install_slash_commands.py --runtime gemini-cli",
+    "native command support",
+    "runtime smoke",
+    "/brain-verify",
+]
+REQUIRED_SLASH_COMMAND_RUNTIMES = {
+    "clau" + "de-code": ("." + "clau" + "de/skills/{slug}/SKILL.md", "source of truth"),
+    "gemini-cli": (".gemini/commands/{slug}.toml", "source of truth"),
+}
 REQUIRED_AGENT_HARNESS_SECTIONS = [
     "## Install",
     "## Fresh Checkout Bootstrap",
@@ -980,6 +1001,9 @@ ALLOWED_README_PUBLIC_COPY_SECTIONS = {
     "comparisons",
     "supported agent runtimes",
 }
+ALLOWED_PUBLIC_COPY_TERM_PATHS = {
+    "docs/slash-command-install.md",
+}
 SECRET_LIKE_PATTERNS = [
     ("GitHub token", re.compile(r"\bgh[pousr]_[A-Za-z0-9_]{20,}\b")),
     ("private key block", re.compile(r"-----BEGIN (?:RSA |OPENSSH |EC |DSA )?PRIVATE KEY-----")),
@@ -1026,6 +1050,24 @@ LOWERCASE_KEBAB_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 
 def rel(path: Path, root: Path) -> str:
     return path.relative_to(root).as_posix()
+
+
+def slash_wrapper_required_terms(entry: dict[str, object]) -> list[str]:
+    terms = [
+        str(entry.get("name", "")),
+        str(entry.get("file", "")),
+        "commands/registry.json",
+        "source of truth",
+        str(entry.get("required_artifact", "")),
+        "Preserve user changes",
+        "/brain-verify",
+    ]
+    schema = entry.get("schema")
+    terms.append(str(schema) if isinstance(schema, str) else "none")
+    skills = entry.get("skills")
+    if isinstance(skills, list):
+        terms.extend(str(skill) for skill in skills if isinstance(skill, str))
+    return [term for term in terms if term]
 
 
 def has_delimited_frontmatter(text: str) -> bool:
@@ -1083,6 +1125,8 @@ def term_is_only_in_allowed_readme_section(text: str, term: str) -> bool:
 
 
 def public_copy_term_allowed(path: Path, text: str, term: str) -> bool:
+    if path.as_posix().endswith(tuple(ALLOWED_PUBLIC_COPY_TERM_PATHS)):
+        return True
     return path.name == "README.md" and term_is_only_in_allowed_readme_section(text, term)
 
 
@@ -2070,6 +2114,22 @@ def validate(root: Path = ROOT) -> list[str]:
                 command_file = root / str(entry.get("file", ""))
                 if not command_file.exists():
                     errors.append(f"commands/registry.json entry points to missing command file: {command_name}")
+                slug = command_name.removeprefix("/")
+                for runtime, (path_template, runtime_term) in REQUIRED_SLASH_COMMAND_RUNTIMES.items():
+                    wrapper_path = root / path_template.format(slug=slug)
+                    if not wrapper_path.exists():
+                        errors.append(f"missing {rel(wrapper_path, root)}")
+                        continue
+                    wrapper_text = wrapper_path.read_text(errors="ignore")
+                    for term in slash_wrapper_required_terms(entry):
+                        if term not in wrapper_text:
+                            errors.append(
+                                f"{rel(wrapper_path, root)} must include slash-command wrapper term: {term}"
+                            )
+                    if runtime_term not in wrapper_text:
+                        errors.append(
+                            f"{rel(wrapper_path, root)} must document {runtime} wrapper boundary: {runtime_term}"
+                        )
         except Exception as exc:
             errors.append(f"invalid command registry commands/registry.json: {exc}")
     adapter_files = sorted((root / "adapters").glob("*/README.md"))
@@ -2144,6 +2204,14 @@ def validate(root: Path = ROOT) -> list[str]:
         for term in REQUIRED_AUDIENCE_PLAYBOOK_TERMS:
             if term.lower() not in audience_playbooks_text:
                 errors.append(f"docs/audience-playbooks.md must document audience playbook term: {term}")
+
+    slash_command_install = root / "docs" / "slash-command-install.md"
+    if slash_command_install.exists():
+        slash_command_install_text = slash_command_install.read_text(errors="ignore")
+        slash_command_install_lower = slash_command_install_text.lower()
+        for term in REQUIRED_SLASH_COMMAND_INSTALL_TERMS:
+            if term.lower() not in slash_command_install_lower:
+                errors.append(f"docs/slash-command-install.md must document slash-command install term: {term}")
 
     state_machine = root / "docs" / "state-machine.md"
     if state_machine.exists():

@@ -1670,7 +1670,7 @@ def write_minimal_repo(root: Path) -> None:
         )
         .replace(
             "- `docs/state-machine.md` — executable harness states and command mapping.",
-            "- `docs/audience-playbooks.md` — entrypoints and proof gates for adopters, agents, maintainers, runtime builders, workflow authors, teams, reviewers, and session operators.\n- `docs/drift-tracking.md` — deterministic extraction, structured diff, human-readable synthesis, update summary, and release change validation.\n- `docs/operation-contract.md` — operation modes, write fences, approvals, rollback, and side-effect boundaries.\n- `docs/replayable-evidence.md` — replayable command, artifact, transcript, validation, event hooks, and scorecard evidence.\n- `docs/runtime-lifecycle.md` — runtime phase, queue, tool, save-point, and abort discipline.\n- `docs/state-machine.md` — executable harness states and command mapping.",
+            "- `docs/audience-playbooks.md` — entrypoints and proof gates for adopters, agents, maintainers, runtime builders, workflow authors, teams, reviewers, and session operators.\n- `docs/drift-tracking.md` — deterministic extraction, structured diff, human-readable synthesis, update summary, and release change validation.\n- `docs/operation-contract.md` — operation modes, write fences, approvals, rollback, and side-effect boundaries.\n- `docs/replayable-evidence.md` — replayable command, artifact, transcript, validation, event hooks, and scorecard evidence.\n- `docs/runtime-lifecycle.md` — runtime phase, queue, tool, save-point, and abort discipline.\n- `docs/slash-command-install.md` — thin wrappers for native commands without a background service.\n- `docs/state-machine.md` — executable harness states and command mapping.",
         )
         .replace(
             "requirements-dev.txt           # local validation dependencies",
@@ -1704,6 +1704,7 @@ def write_minimal_repo(root: Path) -> None:
     (scripts_dir / "scrub_public_copy.py").write_text("#!/usr/bin/env python3\n", encoding="utf-8")
     (scripts_dir / "runtime_smoke.py").write_text("#!/usr/bin/env python3\n", encoding="utf-8")
     (scripts_dir / "doctor.py").write_text("#!/usr/bin/env python3\n", encoding="utf-8")
+    (scripts_dir / "install_slash_commands.py").write_text("#!/usr/bin/env python3\n", encoding="utf-8")
     (root / ".gitignore").write_text(
         "__pycache__/\n*.py[cod]\n.pytest_cache/\n.venv/\n",
         encoding="utf-8",
@@ -2671,6 +2672,26 @@ def write_minimal_repo(root: Path) -> None:
         ),
         encoding="utf-8",
     )
+    registry = json.loads((command_dir / "registry.json").read_text(encoding="utf-8"))
+    for entry in registry["commands"]:
+        slug = entry["name"].removeprefix("/")
+        schema = entry["schema"] if entry["schema"] is not None else "none"
+        skills = ", ".join(entry["skills"])
+        wrapper_text = (
+            f"Use Agent Brain command `{entry['name']}`.\n"
+            f"The source of truth is `{entry['file']}` and `commands/registry.json`.\n"
+            f"Load only these skills: {skills}.\n"
+            f"Produce the required artifact: `{entry['required_artifact']}`.\n"
+            f"Validate against schema: `{schema}`.\n"
+            "Preserve user changes before editing.\n"
+            "If this wrapper drifts, route the fix through `/brain-verify`.\n"
+        )
+        cc_skill = root / ("." + "clau" + "de") / "skills" / slug / "SKILL.md"
+        cc_skill.parent.mkdir(parents=True, exist_ok=True)
+        cc_skill.write_text(wrapper_text, encoding="utf-8")
+        gemini_command = root / ".gemini" / "commands" / f"{slug}.toml"
+        gemini_command.parent.mkdir(parents=True, exist_ok=True)
+        gemini_command.write_text(wrapper_text, encoding="utf-8")
     docs_dir = root / "docs"
     docs_dir.mkdir()
     (docs_dir / "shared-language.md").write_text(
@@ -2773,6 +2794,13 @@ def write_minimal_repo(root: Path) -> None:
     (docs_dir / "audience-playbooks.md").write_text(
         "# Audience Playbooks\n\n"
         "First-time adopter uses scripts/doctor.py. Coding agent uses commands/registry.json. Maintainer uses drift-tracking.md. Runtime or adapter builder uses operation-contract.md and runtime-smoke. Workflow author creates skills and evals. Team or distribution owner chooses policy and bundled skills. Security or trust reviewer checks approval and rollback. Session operator uses handoff-report and replayable evidence.\n",
+        encoding="utf-8",
+    )
+    (docs_dir / "slash-command-install.md").write_text(
+        "# Slash Command Install\n\n"
+        "Use thin wrappers generated from commands/registry.json and commands/brain-*.md as the source of truth and not a background service. "
+        + ("Clau" + "de Code") + " and Gemini CLI wrappers come from scripts/install_slash_commands.py --runtime " + ("clau" + "de-code") + " and scripts/install_slash_commands.py --runtime gemini-cli. "
+        + ("Co" + "dex") + " must prove native command support before claiming slash commands. Use runtime smoke and route drift through /brain-verify.\n",
         encoding="utf-8",
     )
     (docs_dir / "drift-tracking.md").write_text(
@@ -3250,12 +3278,37 @@ def test_command_registry_is_required_and_must_cover_commands(tmp_path):
     assert "commands/registry.json missing command: /brain-verify" in errors
 
 
+def test_slash_command_wrappers_are_required_for_registry_commands(tmp_path):
+    write_minimal_repo(tmp_path)
+    (tmp_path / ("." + "clau" + "de") / "skills" / "brain-sample" / "SKILL.md").unlink()
+    (tmp_path / ".gemini" / "commands" / "brain-verify.toml").unlink()
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "missing " + "." + ("clau" + "de") + "/skills/brain-sample/SKILL.md" in errors
+    assert "missing .gemini/commands/brain-verify.toml" in errors
+
+
+def test_slash_command_wrappers_must_point_to_registry_source_of_truth(tmp_path):
+    write_minimal_repo(tmp_path)
+    wrapper = tmp_path / ("." + "clau" + "de") / "skills" / "brain-sample" / "SKILL.md"
+    wrapper.write_text(
+        wrapper.read_text(encoding="utf-8").replace("commands/registry.json", "commands/other.json"),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "." + ("clau" + "de") + "/skills/brain-sample/SKILL.md must include slash-command wrapper term: commands/registry.json" in errors
+
+
 def test_operation_and_replay_docs_are_required(tmp_path):
     write_minimal_repo(tmp_path)
     (tmp_path / "docs" / "audience-playbooks.md").unlink()
     (tmp_path / "docs" / "drift-tracking.md").unlink()
     (tmp_path / "docs" / "operation-contract.md").unlink()
     (tmp_path / "docs" / "replayable-evidence.md").unlink()
+    (tmp_path / "docs" / "slash-command-install.md").unlink()
 
     errors = validate_repo.validate(tmp_path)
 
@@ -3263,6 +3316,7 @@ def test_operation_and_replay_docs_are_required(tmp_path):
     assert "missing docs/drift-tracking.md" in errors
     assert "missing docs/operation-contract.md" in errors
     assert "missing docs/replayable-evidence.md" in errors
+    assert "missing docs/slash-command-install.md" in errors
 
 
 def test_build_output_artifact_requires_schema_contract(tmp_path):

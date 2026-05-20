@@ -165,6 +165,16 @@ I want to build an agent that handles customer refunds. Use Agent Brain before p
 
 A good run should not jump to code. It should route through `/brain-start`, challenge whether an agent is appropriate, name the missing evidence, and produce a small artifact before any build work.
 
+### Install native slash-command wrappers
+
+For runtimes with project-local custom command support, generate thin wrappers from `commands/registry.json`:
+
+```bash
+python scripts/install_slash_commands.py --runtime <runtime-key>
+```
+
+The wrappers expose `/brain-*` shortcuts while keeping `commands/brain-*.md` as the source of truth. Runtimes without proven custom slash-command support should use `AGENTS.md` and the command registry directly.
+
 ### Run the local quality gate
 
 Agent Brain is documentation-first, but it is still tested. Match CI with Python 3.11.
@@ -375,6 +385,7 @@ Start here:
 - `docs/devex-engineering.md` — setup, validation, command routing, and recovery guidance.
 - `docs/autonomous-goals.md` — scope long-running goals with measurable end states and loop limits.
 - `docs/shared-language.md` — keep project terms, aliases, and naming conflicts explicit.
+- `docs/slash-command-install.md` — native `/brain-*` wrapper generation for supported runtimes without turning Agent Brain into a service.
 - `docs/runtime-lifecycle.md` — phase, queue, tool lifecycle, save-point, retry, abort, and compaction discipline.
 - `docs/decision-records.md` — record durable trade-offs without turning chat into history.
 - `docs/claims-we-reject.md` — claims and shortcuts the harness refuses without evidence.
