@@ -7,6 +7,7 @@ disable-model-invocation: true
 Use Agent Brain command `/brain-learn`.
 
 This runtime wrapper is only an activation shortcut. The source of truth is `commands/brain-learn.md` and `commands/registry.json`.
+Wrapper boundary marker: `cc-source-of-truth`.
 
 Before acting:
 - Read `AGENTBRAIN.md`, `PRINCIPLES.md`, `ANTI_RATIONALIZATION.md`, and `docs/state-machine.md`.

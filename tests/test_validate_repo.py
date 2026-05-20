@@ -2688,10 +2688,10 @@ def write_minimal_repo(root: Path) -> None:
         )
         cc_skill = root / ("." + "clau" + "de") / "skills" / slug / "SKILL.md"
         cc_skill.parent.mkdir(parents=True, exist_ok=True)
-        cc_skill.write_text(wrapper_text, encoding="utf-8")
+        cc_skill.write_text(wrapper_text + "cc-source-of-truth\n", encoding="utf-8")
         gemini_command = root / ".gemini" / "commands" / f"{slug}.toml"
         gemini_command.parent.mkdir(parents=True, exist_ok=True)
-        gemini_command.write_text(wrapper_text, encoding="utf-8")
+        gemini_command.write_text(wrapper_text + "gemini-cli-source-of-truth\n", encoding="utf-8")
     docs_dir = root / "docs"
     docs_dir.mkdir()
     (docs_dir / "shared-language.md").write_text(
@@ -3300,6 +3300,19 @@ def test_slash_command_wrappers_must_point_to_registry_source_of_truth(tmp_path)
     errors = validate_repo.validate(tmp_path)
 
     assert "." + ("clau" + "de") + "/skills/brain-sample/SKILL.md must include slash-command wrapper term: commands/registry.json" in errors
+
+
+def test_slash_command_wrappers_must_include_runtime_boundary_marker(tmp_path):
+    write_minimal_repo(tmp_path)
+    wrapper = tmp_path / ".gemini" / "commands" / "brain-sample.toml"
+    wrapper.write_text(
+        wrapper.read_text(encoding="utf-8").replace("gemini-cli-source-of-truth", "cc-source-of-truth"),
+        encoding="utf-8",
+    )
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert ".gemini/commands/brain-sample.toml must document gemini-cli wrapper boundary: gemini-cli-source-of-truth" in errors
 
 
 def test_operation_and_replay_docs_are_required(tmp_path):

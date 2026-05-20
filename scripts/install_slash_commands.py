@@ -6,11 +6,13 @@ from __future__ import annotations
 import argparse
 import json
 from pathlib import Path
+import re
 import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 CC_RUNTIME = "clau" + "de-code"
 SUPPORTED_RUNTIMES = (CC_RUNTIME, "gemini-cli")
+SAFE_SLUG_RE = re.compile(r"^[A-Za-z0-9_-]+$")
 
 
 def load_registry(root: Path) -> list[dict[str, object]]:
@@ -19,13 +21,24 @@ def load_registry(root: Path) -> list[dict[str, object]]:
     commands = registry.get("commands")
     if not isinstance(commands, list):
         raise ValueError("commands/registry.json must contain a commands array")
-    return [entry for entry in commands if isinstance(entry, dict)]
+    entries: list[dict[str, object]] = []
+    for index, entry in enumerate(commands):
+        if not isinstance(entry, dict):
+            raise ValueError(
+                "commands/registry.json commands entry "
+                f"{index} must be an object, got {type(entry).__name__}"
+            )
+        entries.append(entry)
+    return entries
 
 
 def command_slug(command_name: object) -> str:
     if not isinstance(command_name, str) or not command_name.startswith("/"):
         raise ValueError(f"invalid command name: {command_name!r}")
-    return command_name.removeprefix("/")
+    slug = command_name.removeprefix("/")
+    if not slug or "/" in slug or "\\" in slug or ".." in slug or not SAFE_SLUG_RE.fullmatch(slug):
+        raise ValueError(f"invalid command slug: {slug!r}")
+    return slug
 
 
 def skills_text(entry: dict[str, object]) -> str:
@@ -35,7 +48,7 @@ def skills_text(entry: dict[str, object]) -> str:
     return ", ".join(f"`{skill}`" for skill in skills if isinstance(skill, str)) or "none"
 
 
-def wrapper_prompt(entry: dict[str, object], argument_line: str) -> str:
+def wrapper_prompt(entry: dict[str, object], argument_line: str, boundary_marker: str) -> str:
     command_name = str(entry["name"])
     command_file = str(entry["file"])
     schema = entry.get("schema")
@@ -46,6 +59,7 @@ def wrapper_prompt(entry: dict[str, object], argument_line: str) -> str:
             "",
             "This runtime wrapper is only an activation shortcut. "
             f"The source of truth is `{command_file}` and `commands/registry.json`.",
+            f"Wrapper boundary marker: `{boundary_marker}`.",
             "",
             "Before acting:",
             "- Read `AGENTBRAIN.md`, `PRINCIPLES.md`, `ANTI_RATIONALIZATION.md`, and `docs/state-machine.md`.",
@@ -75,7 +89,7 @@ def cc_skill(entry: dict[str, object]) -> str:
             "disable-model-invocation: true",
             "---",
             "",
-            wrapper_prompt(entry, "User arguments: $ARGUMENTS"),
+            wrapper_prompt(entry, "User arguments: $ARGUMENTS", "cc-source-of-truth"),
         ]
     )
 
@@ -85,7 +99,7 @@ def gemini_command(entry: dict[str, object]) -> str:
     return "\n".join(
         [
             f"description = {json.dumps(description)}",
-            f"prompt = {json.dumps(wrapper_prompt(entry, 'If arguments are provided, Gemini CLI appends them after these instructions.'))}",
+            f"prompt = {json.dumps(wrapper_prompt(entry, 'If arguments are provided, Gemini CLI appends them after these instructions.', 'gemini-cli-source-of-truth'))}",
             "",
         ]
     )

@@ -545,8 +545,8 @@ REQUIRED_SLASH_COMMAND_INSTALL_TERMS = [
     "/brain-verify",
 ]
 REQUIRED_SLASH_COMMAND_RUNTIMES = {
-    "clau" + "de-code": ("." + "clau" + "de/skills/{slug}/SKILL.md", "source of truth"),
-    "gemini-cli": (".gemini/commands/{slug}.toml", "source of truth"),
+    "clau" + "de-code": ("." + "clau" + "de/skills/{slug}/SKILL.md", "cc-source-of-truth"),
+    "gemini-cli": (".gemini/commands/{slug}.toml", "gemini-cli-source-of-truth"),
 }
 REQUIRED_AGENT_HARNESS_SECTIONS = [
     "## Install",
