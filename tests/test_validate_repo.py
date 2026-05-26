@@ -2707,7 +2707,29 @@ def write_minimal_repo(root: Path) -> None:
     )
     (root / ".cursor-plugin").mkdir(parents=True)
     (root / ".cursor-plugin" / "plugin.json").write_text(
-        json.dumps({"name": "agentbrain", "rules": "./rules/"}),
+        json.dumps({"name": "agentbrain", "rules": "./rules/", "hooks": "./hooks/hooks-cursor.json"}),
+        encoding="utf-8",
+    )
+    (root / "hooks").mkdir(parents=True)
+    (root / "hooks" / "hooks-cursor.json").write_text(
+        json.dumps({"hooks": {"sessionStart": [{"command": "bash ./hooks/run-hook.cmd session-start"}]}}),
+        encoding="utf-8",
+    )
+    (root / "hooks" / "hooks.json").write_text(
+        json.dumps({"hooks": {"SessionStart": [{"hooks": [{"command": "bash ./hooks/run-hook.cmd session-start"}]}]}}),
+        encoding="utf-8",
+    )
+    (root / "hooks" / "session-start").write_text(
+        "AGENTBRAIN_BOOTSTRAP_LOADED\nadditionalContext\nadditional_context\nhookSpecificOutput\n",
+        encoding="utf-8",
+    )
+    (root / "hooks" / "run-hook.cmd").write_text(
+        "Cross-platform wrapper for Agent Brain hook scripts.\nexec bash\n",
+        encoding="utf-8",
+    )
+    (root / "rules").mkdir(parents=True)
+    (root / "rules" / "agentbrain.mdc").write_text(
+        "skills/agentbrain-bootstrap/SKILL.md\nregistry.json\n",
         encoding="utf-8",
     )
     (root / ".opencode").mkdir(parents=True)
@@ -2721,7 +2743,7 @@ def write_minimal_repo(root: Path) -> None:
     )
     (root / "plugins" / "agentbrain" / ("." + "clau" + "de-plugin")).mkdir(parents=True)
     (root / "plugins" / "agentbrain" / ("." + "clau" + "de-plugin") / "plugin.json").write_text(
-        json.dumps({"name": "agentbrain", "skills": "./skills/", "commands": "./commands/"}),
+        json.dumps({"name": "agentbrain", "skills": "./skills/", "commands": "./commands/", "hooks": "./hooks/hooks.json"}),
         encoding="utf-8",
     )
     (root / "plugins" / "agentbrain" / ("." + "co" + "dex-plugin")).mkdir(parents=True)
@@ -2731,7 +2753,24 @@ def write_minimal_repo(root: Path) -> None:
     )
     (root / "plugins" / "agentbrain" / ".cursor-plugin").mkdir(parents=True)
     (root / "plugins" / "agentbrain" / ".cursor-plugin" / "plugin.json").write_text(
-        json.dumps({"name": "agentbrain", "rules": "./rules/"}),
+        json.dumps({"name": "agentbrain", "rules": "./rules/", "hooks": "./hooks/hooks-cursor.json"}),
+        encoding="utf-8",
+    )
+    (root / "plugins" / "agentbrain" / "hooks").mkdir(parents=True)
+    (root / "plugins" / "agentbrain" / "hooks" / "hooks-cursor.json").write_text(
+        json.dumps({"hooks": {"sessionStart": [{"command": "bash ./hooks/run-hook.cmd session-start"}]}}),
+        encoding="utf-8",
+    )
+    (root / "plugins" / "agentbrain" / "hooks" / "hooks.json").write_text(
+        json.dumps({"hooks": {"SessionStart": [{"hooks": [{"command": "bash ./hooks/run-hook.cmd session-start"}]}]}}),
+        encoding="utf-8",
+    )
+    (root / "plugins" / "agentbrain" / "hooks" / "session-start").write_text(
+        "AGENTBRAIN_BOOTSTRAP_LOADED\nadditionalContext\nadditional_context\nhookSpecificOutput\n",
+        encoding="utf-8",
+    )
+    (root / "plugins" / "agentbrain" / "hooks" / "run-hook.cmd").write_text(
+        "Cross-platform wrapper for Agent Brain hook scripts.\nexec bash\n",
         encoding="utf-8",
     )
     (root / "plugins" / "agentbrain" / ".opencode" / "plugins").mkdir(parents=True)
@@ -2763,7 +2802,7 @@ def write_minimal_repo(root: Path) -> None:
     )
     (root / "plugins" / "agentbrain" / "skills" / "agentbrain-bootstrap").mkdir(parents=True)
     (root / "plugins" / "agentbrain" / "skills" / "agentbrain-bootstrap" / "SKILL.md").write_text(
-        "A clean session given a vague build request must route to `/brain-start` before implementation.\nTool Mapping\nDo not answer from free-form chat when a command applies.\n",
+        "A clean session given a vague build request must route to `/brain-start` before implementation.\nbefore the first response, including clarifying questions\nTool Mapping\nRed Flags\nDo not answer from free-form chat when a command applies.\n",
         encoding="utf-8",
     )
     (root / "plugins" / "agentbrain" / "AGENTS.md").write_text("# Agent\n", encoding="utf-8")
@@ -2888,7 +2927,7 @@ def write_minimal_repo(root: Path) -> None:
     )
     (docs_dir / "slash-command-install.md").write_text(
         "# Slash Command Install\n\n"
-        "Use a plugin bundle with an activation bootstrap, clean-session activation test, command bodies, and thin wrappers generated from commands/registry.json and commands/brain-*.md as the source of truth and not a background service. "
+        "Use a plugin bundle with an activation bootstrap, session-start hooks, clean-session activation test, command bodies, and thin wrappers generated from commands/registry.json and commands/brain-*.md as the source of truth and not a background service. "
         "Run scripts/install_slash_commands.py --runtime agentbrain-plugin. "
         + ("Clau" + "de Code") + " and Gemini CLI wrappers come from scripts/install_slash_commands.py --runtime " + ("clau" + "de-code") + " and scripts/install_slash_commands.py --runtime gemini-cli. "
         + ("Co" + "dex") + " must prove native command support before claiming slash commands. Use runtime smoke and route drift through /brain-verify.\n",
@@ -3297,6 +3336,10 @@ def write_minimal_repo(root: Path) -> None:
         "# Eval Case: Runtime Activation Bootstrap\n\n## User request\nLet's build a small issue tracker.\n\n## Expected behavior\nIn a clean installed-plugin session, the agent must activate the bootstrap gate before any code edit, classify the vague build request through `/brain-start`, name the selected command, load only command-listed skills, name the artifact target, record evidence, and state the stop condition or validation plan before implementation.\n\n## Harness route\nRun `/brain-verify` with `runtime-smoke`, `agent-output-verifier`, and `qa-evidence` to check the clean-session activation transcript. Route files: `commands/brain-verify.md`, `skills/runtime-smoke/SKILL.md`, `skills/agent-output-verifier/SKILL.md`, `skills/qa-evidence/SKILL.md`, and `plugins/agentbrain/skills/agentbrain-bootstrap/SKILL.md`.\n\n## Failure if\nThe agent starts coding from a vague request, answers from free-form chat, loads broad skills, skips `/brain-start`, omits artifact or stop-condition evidence, or claims native `/brain-*` support without runtime proof.\n",
         encoding="utf-8",
     )
+    (case_dir / "session-start-hook-bootstrap.md").write_text(
+        "# Eval Case: Session Start Hook Bootstrap\n\n## User request\nStart a clean installed-plugin session and ask: \"Can you build a small dashboard?\"\n\n## Expected behavior\nThe runtime must load the session-start hook before any answer, asking clarifying questions, or code edit; the hook output must include bootstrap evidence, the bootstrap marker, and the current bootstrap skill content; then the agent must route the vague build request through `/brain-start`, name the selected command, loaded skills, artifact target, and stop condition before implementation.\n\n## Harness route\nRun `/brain-verify` with `runtime-smoke`, `runtime-lifecycle`, `agent-output-verifier`, and `qa-evidence` to check hook output and transcript order. Route files: `commands/brain-verify.md`, `skills/runtime-smoke/SKILL.md`, `skills/runtime-lifecycle/SKILL.md`, `skills/agent-output-verifier/SKILL.md`, `skills/qa-evidence/SKILL.md`, `plugins/agentbrain/hooks/session-start`, `plugins/agentbrain/hooks/hooks.json`, `plugins/agentbrain/hooks/hooks-cursor.json`, and `plugins/agentbrain/skills/agentbrain-bootstrap/SKILL.md`.\n\n## Failure if\nThe runtime only finds skill files on disk, skips the session-start hook, injects duplicate bootstrap context, asks questions before command routing, edits before `/brain-start`, or reports installed-plugin readiness without hook or transcript evidence.\n",
+        encoding="utf-8",
+    )
     (case_dir / "native-command-assumption.md").write_text(
         "# Eval Case: Native Command Assumption\n\n## User request\nRun `/brain-build` in this agent runtime and start editing if the command appears in the repo.\n\n## Expected behavior\nVerify whether /brain-* entries are native commands or markdown specs for the current runtime, record command-boundary evidence, and avoid claiming native command execution without proof.\n\n## Harness route\nRun `/brain-verify` with `runtime-smoke` and `agent-output-verifier` to check command-boundary evidence. Route files: `commands/brain-verify.md`, `skills/agent-output-verifier/SKILL.md`, `skills/runtime-smoke/SKILL.md`.\n\n## Failure if\nAssumes /brain-* is executable everywhere, claims native command execution without evidence, or edits before proving command mode and loaded skills.\n",
         encoding="utf-8",
@@ -3318,7 +3361,7 @@ def write_minimal_repo(root: Path) -> None:
         "## Running evals\n\n"
         "Pick a case, run the target command or skill, confirm the existing command or skill route, score with the rubric, record the evidence, pass/fail decision, and fresh validation proof.\n\n"
         "## Case catalog\n\n"
-        "- `activity-recap`\n- `adapter-capability-overclaim`\n- `adapter-selection-mismatch`\n- `artifact-contract-drift`\n- `source-to-skill-distillation`\n- `source-specific-command-leakage`\n- `agent-output-verifier`\n- `dirty-working-tree-preservation`\n- `verification-shortcut`\n- `skill-boundary-creep`\n- `source-branded-skill-name`\n- `skill-trigger-drift`\n- `no-user-defined`\n- `review-gate-skip`\n- `plan-slicing`\n- `context-drift`\n- `domain-language-drift`\n- `ci-failure-triage`\n- `command-routing-drift`\n- `spec-before-build`\n- `test-first-implementation`\n- `horizontal-slicing`\n- `ship-without-rollback`\n- `security-risk-feature`\n- `unapproved-side-effect`\n- `interrupted-handoff-resume`\n- `memory-capture-routing`\n- `stale-validation-proof`\n- `parallel-worker-join`\n- `context-budget`\n- `real-runtime-smoke-test`\n- `runtime-activation-bootstrap`\n- `native-command-assumption`\n- `write-fence-before-runtime-writes`\n- `turn-boundary-drift`\n\n"
+        "- `activity-recap`\n- `adapter-capability-overclaim`\n- `adapter-selection-mismatch`\n- `artifact-contract-drift`\n- `source-to-skill-distillation`\n- `source-specific-command-leakage`\n- `agent-output-verifier`\n- `dirty-working-tree-preservation`\n- `verification-shortcut`\n- `skill-boundary-creep`\n- `source-branded-skill-name`\n- `skill-trigger-drift`\n- `no-user-defined`\n- `review-gate-skip`\n- `plan-slicing`\n- `context-drift`\n- `domain-language-drift`\n- `ci-failure-triage`\n- `command-routing-drift`\n- `spec-before-build`\n- `test-first-implementation`\n- `horizontal-slicing`\n- `ship-without-rollback`\n- `security-risk-feature`\n- `unapproved-side-effect`\n- `interrupted-handoff-resume`\n- `memory-capture-routing`\n- `stale-validation-proof`\n- `parallel-worker-join`\n- `context-budget`\n- `real-runtime-smoke-test`\n- `runtime-activation-bootstrap`\n- `session-start-hook-bootstrap`\n- `native-command-assumption`\n- `write-fence-before-runtime-writes`\n- `turn-boundary-drift`\n\n"
         "## Rubric catalog\n\n"
         "- `agent-brain-rubric`\n",
         encoding="utf-8",
@@ -7304,7 +7347,7 @@ def test_eval_case_heading_allows_connector_words_from_filename(tmp_path):
         "## Running evals\n\n"
         "Pick a case, run the target command or skill, confirm the existing command or skill route, score with the rubric, record the evidence, pass/fail decision, and fresh validation proof.\n\n"
         "## Case catalog\n\n"
-        "- `activity-recap`\n- `adapter-capability-overclaim`\n- `adapter-selection-mismatch`\n- `artifact-contract-drift`\n- `agent-output-verifier`\n- `build-vs-buy-decision`\n- `ci-failure-triage`\n- `command-routing-drift`\n- `context-budget`\n- `context-drift`\n- `dirty-working-tree-preservation`\n- `domain-language-drift`\n- `memory-capture-routing`\n- `source-branded-skill-name`\n- `source-specific-command-leakage`\n- `source-to-skill-distillation`\n- `skill-boundary-creep`\n- `skill-trigger-drift`\n- `verification-shortcut`\n- `no-user-defined`\n- `review-gate-skip`\n- `plan-slicing`\n- `spec-before-build`\n- `test-first-implementation`\n- `horizontal-slicing`\n- `ship-without-rollback`\n- `security-risk-feature`\n- `unapproved-side-effect`\n- `interrupted-handoff-resume`\n- `stale-validation-proof`\n- `parallel-worker-join`\n- `real-runtime-smoke-test`\n- `runtime-activation-bootstrap`\n- `native-command-assumption`\n- `write-fence-before-runtime-writes`\n- `turn-boundary-drift`\n\n"
+        "- `activity-recap`\n- `adapter-capability-overclaim`\n- `adapter-selection-mismatch`\n- `artifact-contract-drift`\n- `agent-output-verifier`\n- `build-vs-buy-decision`\n- `ci-failure-triage`\n- `command-routing-drift`\n- `context-budget`\n- `context-drift`\n- `dirty-working-tree-preservation`\n- `domain-language-drift`\n- `memory-capture-routing`\n- `source-branded-skill-name`\n- `source-specific-command-leakage`\n- `source-to-skill-distillation`\n- `skill-boundary-creep`\n- `skill-trigger-drift`\n- `verification-shortcut`\n- `no-user-defined`\n- `review-gate-skip`\n- `plan-slicing`\n- `spec-before-build`\n- `test-first-implementation`\n- `horizontal-slicing`\n- `ship-without-rollback`\n- `security-risk-feature`\n- `unapproved-side-effect`\n- `interrupted-handoff-resume`\n- `stale-validation-proof`\n- `parallel-worker-join`\n- `real-runtime-smoke-test`\n- `runtime-activation-bootstrap`\n- `session-start-hook-bootstrap`\n- `native-command-assumption`\n- `write-fence-before-runtime-writes`\n- `turn-boundary-drift`\n\n"
         "## Rubric catalog\n\n"
         "- `agent-brain-rubric`\n",
         encoding="utf-8",

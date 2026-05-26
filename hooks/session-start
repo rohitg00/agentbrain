@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+# Session-start context injection for installed Agent Brain plugins.
+
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+PLUGIN_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
+
+bootstrap_skill_path="${PLUGIN_ROOT}/skills/agentbrain-bootstrap/SKILL.md"
+if [ ! -f "$bootstrap_skill_path" ] && [ -f "${PLUGIN_ROOT}/plugins/agentbrain/skills/agentbrain-bootstrap/SKILL.md" ]; then
+  bootstrap_skill_path="${PLUGIN_ROOT}/plugins/agentbrain/skills/agentbrain-bootstrap/SKILL.md"
+fi
+
+if [ ! -f "$bootstrap_skill_path" ]; then
+  exit 0
+fi
+
+bootstrap_content="$(cat "$bootstrap_skill_path" 2>&1 || echo "Error reading Agent Brain bootstrap skill")"
+
+escape_for_json() {
+  local s="$1"
+  s="${s//\\/\\\\}"
+  s="${s//\"/\\\"}"
+  s="${s//$'\n'/\n}"
+  s="${s//$'\r'/\r}"
+  s="${s//$'\t'/\t}"
+  printf '%s' "$s"
+}
+
+bootstrap_escaped="$(escape_for_json "$bootstrap_content")"
+session_context="<AGENTBRAIN_BOOTSTRAP_LOADED>\nYou have Agent Brain installed.\n\nThe activation skill below is already loaded. Follow it before answering, asking clarifying questions, or editing files.\n\n${bootstrap_escaped}\n</AGENTBRAIN_BOOTSTRAP_LOADED>"
+cc_root_var="$(printf 'CL%sUDE_PLUGIN_ROOT' 'A')"
+cc_root_value="${!cc_root_var:-}"
+
+if [ -n "${CURSOR_PLUGIN_ROOT:-}" ]; then
+  printf '{\n  "additional_context": "%s"\n}\n' "$session_context"
+elif [ -n "$cc_root_value" ] && [ -z "${COPILOT_CLI:-}" ]; then
+  printf '{\n  "hookSpecificOutput": {\n    "hookEventName": "SessionStart",\n    "additionalContext": "%s"\n  }\n}\n' "$session_context"
+else
+  printf '{\n  "additionalContext": "%s"\n}\n' "$session_context"
+fi

@@ -1,5 +1,6 @@
 import json
 from pathlib import Path
+import subprocess
 
 from scripts import install_slash_commands
 
@@ -130,11 +131,20 @@ def test_plugin_bundle_generation_and_check(tmp_path: Path) -> None:
         tmp_path / ("." + "clau" + "de-plugin") / "marketplace.json",
         tmp_path / ".agents" / "plugins" / "marketplace.json",
         tmp_path / ".cursor-plugin" / "plugin.json",
+        tmp_path / "hooks" / "hooks-cursor.json",
+        tmp_path / "hooks" / "hooks.json",
+        tmp_path / "hooks" / "run-hook.cmd",
+        tmp_path / "hooks" / "session-start",
         tmp_path / ".opencode" / "INSTALL.md",
+        tmp_path / "rules" / "agentbrain.mdc",
         tmp_path / "gemini-extension.json",
         tmp_path / "plugins" / "agentbrain" / ("." + "clau" + "de-plugin") / "plugin.json",
         tmp_path / "plugins" / "agentbrain" / ("." + "co" + "dex-plugin") / "plugin.json",
         tmp_path / "plugins" / "agentbrain" / ".cursor-plugin" / "plugin.json",
+        tmp_path / "plugins" / "agentbrain" / "hooks" / "hooks-cursor.json",
+        tmp_path / "plugins" / "agentbrain" / "hooks" / "hooks.json",
+        tmp_path / "plugins" / "agentbrain" / "hooks" / "run-hook.cmd",
+        tmp_path / "plugins" / "agentbrain" / "hooks" / "session-start",
         tmp_path / "plugins" / "agentbrain" / ".opencode" / "plugins" / "agentbrain.js",
         tmp_path / "plugins" / "agentbrain" / "GEMINI.md",
         tmp_path / "plugins" / "agentbrain" / "package.json",
@@ -155,6 +165,25 @@ def test_plugin_bundle_generation_and_check(tmp_path: Path) -> None:
     assert (tmp_path / "plugins" / "agentbrain" / "schemas" / "implementation-plan.schema.json").exists()
     bootstrap = (tmp_path / "plugins" / "agentbrain" / "skills" / "agentbrain-bootstrap" / "SKILL.md").read_text(encoding="utf-8")
     assert "A clean session given a vague build request must route to `/brain-start` before implementation." in bootstrap
+    assert "before the first response, including clarifying questions" in bootstrap
+    session_hook = tmp_path / "plugins" / "agentbrain" / "hooks" / "session-start"
+    assert "AGENTBRAIN_BOOTSTRAP_LOADED" in session_hook.read_text(encoding="utf-8")
+    assert session_hook.stat().st_mode & 0o111
+    hook_output = subprocess.run(
+        ["bash", str(tmp_path / "plugins" / "agentbrain" / "hooks" / "run-hook.cmd"), "session-start"],
+        check=True,
+        text=True,
+        capture_output=True,
+    )
+    hook_payload = json.loads(hook_output.stdout)
+    assert "AGENTBRAIN_BOOTSTRAP_LOADED" in hook_payload["additionalContext"]
+    assert "before the first response, including clarifying questions" in hook_payload["additionalContext"]
+    assert "bash ./hooks/run-hook.cmd session-start" in (
+        tmp_path / "plugins" / "agentbrain" / "hooks" / "hooks.json"
+    ).read_text(encoding="utf-8")
+    assert "bash ./hooks/run-hook.cmd session-start" in (
+        tmp_path / "plugins" / "agentbrain" / "hooks" / "hooks-cursor.json"
+    ).read_text(encoding="utf-8")
     opencode_plugin = (tmp_path / "plugins" / "agentbrain" / ".opencode" / "plugins" / "agentbrain.js").read_text(encoding="utf-8")
     assert "AGENTBRAIN_BOOTSTRAP_LOADED" in opencode_plugin
     assert "experimental.chat.messages.transform" in opencode_plugin

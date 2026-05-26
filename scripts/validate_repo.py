@@ -138,6 +138,8 @@ REQUIRED_EVAL_CASES = [
     "evals/cases/context-budget.md",
     "evals/cases/source-specific-command-leakage.md",
     "evals/cases/real-runtime-smoke-test.md",
+    "evals/cases/runtime-activation-bootstrap.md",
+    "evals/cases/session-start-hook-bootstrap.md",
     "evals/cases/native-command-assumption.md",
     "evals/cases/write-fence-before-runtime-writes.md",
     "evals/cases/turn-boundary-drift.md",
@@ -533,6 +535,7 @@ REQUIRED_SLASH_COMMAND_INSTALL_TERMS = [
     "thin wrappers",
     "plugin bundle",
     "activation bootstrap",
+    "session-start hooks",
     "clean-session activation test",
     "command bodies",
     "commands/registry.json",
@@ -568,6 +571,29 @@ REQUIRED_PLUGIN_BUNDLE_FILES = {
     ".cursor-plugin/plugin.json": [
         '"name": "agentbrain"',
         '"rules": "./rules/"',
+        '"hooks": "./hooks/hooks-cursor.json"',
+    ],
+    "hooks/hooks-cursor.json": [
+        '"sessionStart"',
+        "bash ./hooks/run-hook.cmd session-start",
+    ],
+    "hooks/hooks.json": [
+        '"SessionStart"',
+        "bash ./hooks/run-hook.cmd session-start",
+    ],
+    "hooks/session-start": [
+        "AGENTBRAIN_BOOTSTRAP_LOADED",
+        "additionalContext",
+        "additional_context",
+        "hookSpecificOutput",
+    ],
+    "hooks/run-hook.cmd": [
+        "Cross-platform wrapper for Agent Brain hook scripts.",
+        "exec bash",
+    ],
+    "rules/agentbrain.mdc": [
+        "skills/agentbrain-bootstrap/SKILL.md",
+        "registry.json",
     ],
     ".opencode/INSTALL.md": [
         "Agent Brain Plugin Install",
@@ -581,6 +607,7 @@ REQUIRED_PLUGIN_BUNDLE_FILES = {
         '"name": "agentbrain"',
         '"skills": "./skills/"',
         '"commands": "./commands/"',
+        '"hooks": "./hooks/hooks.json"',
     ],
     "plugins/agentbrain/." + "co" + "dex-plugin/plugin.json": [
         '"name": "agentbrain"',
@@ -590,6 +617,25 @@ REQUIRED_PLUGIN_BUNDLE_FILES = {
     "plugins/agentbrain/.cursor-plugin/plugin.json": [
         '"name": "agentbrain"',
         '"rules": "./rules/"',
+        '"hooks": "./hooks/hooks-cursor.json"',
+    ],
+    "plugins/agentbrain/hooks/hooks-cursor.json": [
+        '"sessionStart"',
+        "bash ./hooks/run-hook.cmd session-start",
+    ],
+    "plugins/agentbrain/hooks/hooks.json": [
+        '"SessionStart"',
+        "bash ./hooks/run-hook.cmd session-start",
+    ],
+    "plugins/agentbrain/hooks/session-start": [
+        "AGENTBRAIN_BOOTSTRAP_LOADED",
+        "additionalContext",
+        "additional_context",
+        "hookSpecificOutput",
+    ],
+    "plugins/agentbrain/hooks/run-hook.cmd": [
+        "Cross-platform wrapper for Agent Brain hook scripts.",
+        "exec bash",
     ],
     "plugins/agentbrain/.opencode/plugins/agentbrain.js": [
         "AGENTBRAIN_BOOTSTRAP_LOADED",
@@ -624,7 +670,9 @@ REQUIRED_PLUGIN_BUNDLE_FILES = {
     ],
     "plugins/agentbrain/skills/agentbrain-bootstrap/SKILL.md": [
         "A clean session given a vague build request must route to `/brain-start` before implementation.",
+        "before the first response, including clarifying questions",
         "Tool Mapping",
+        "Red Flags",
         "Do not answer from free-form chat when a command applies.",
     ],
     "plugins/agentbrain/AGENTS.md": [

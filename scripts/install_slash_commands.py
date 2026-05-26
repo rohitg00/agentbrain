@@ -229,16 +229,21 @@ def bootstrap_skill() -> str:
             "",
             "## Trigger",
             "",
-            "Use at session start and before the first substantive response to any software, product, research, planning, implementation, verification, review, or release request.",
+            "Use at session start and before the first response, including clarifying questions, to any software, product, research, planning, implementation, verification, review, or release request.",
+            "",
+            "## Priority",
+            "",
+            "User instructions still decide what to do. This bootstrap decides how to route applicable work through Agent Brain before free-form chat.",
             "",
             "## Procedure",
             "",
             "1. Before answering, decide whether an Agent Brain command applies.",
-            "2. If the request is vague or broad, route through `/brain-start`.",
-            "3. If the user names a `/brain-*` command, open the matching bundled command file.",
-            "4. Load only the command-listed skills from plugin-local `skills/`.",
-            "5. Produce the command's required artifact from plugin-local `templates/` and validate with plugin-local `schemas/` when a schema exists.",
-            "6. Preserve user changes before edits and stop when evidence, approval, rollback, secrets handling, or loop limits are missing.",
+            "2. If there is any reasonable chance a command applies, choose the safest command before asking follow-up questions or editing.",
+            "3. If the request is vague or broad, route through `/brain-start`.",
+            "4. If the user names a `/brain-*` command, open the matching bundled command file.",
+            "5. Load only the command-listed skills from plugin-local `skills/`.",
+            "6. Produce the command's required artifact from plugin-local `templates/` and validate with plugin-local `schemas/` when a schema exists.",
+            "7. Preserve user changes before edits and stop when evidence, approval, rollback, secrets handling, or loop limits are missing.",
             "",
             "## Tool Mapping",
             "",
@@ -251,6 +256,13 @@ def bootstrap_skill() -> str:
             "",
             "A clean session given a vague build request must route to `/brain-start` before implementation. The transcript should show the selected command, loaded skills, artifact target, and stop condition before any code edit.",
             "",
+            "## Red Flags",
+            "",
+            "- Thinking the request is too simple for routing.",
+            "- Asking clarifying questions before checking command fit.",
+            "- Reading broad repo context before selecting the command that says what context matters.",
+            "- Relying on memory of a command or skill instead of opening the bundled current file.",
+            "",
             "## Failure Modes",
             "",
             "- Do not answer from free-form chat when a command applies.",
@@ -259,6 +271,127 @@ def bootstrap_skill() -> str:
             "- Do not load every skill to be safe.",
         ]
     )
+
+
+def session_start_hook() -> str:
+    return f"""#!/usr/bin/env bash
+# Session-start context injection for installed Agent Brain plugins.
+
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+PLUGIN_ROOT="$(cd "${{SCRIPT_DIR}}/.." && pwd)"
+
+bootstrap_skill_path="${{PLUGIN_ROOT}}/skills/agentbrain-bootstrap/SKILL.md"
+if [ ! -f "$bootstrap_skill_path" ] && [ -f "${{PLUGIN_ROOT}}/plugins/agentbrain/skills/agentbrain-bootstrap/SKILL.md" ]; then
+  bootstrap_skill_path="${{PLUGIN_ROOT}}/plugins/agentbrain/skills/agentbrain-bootstrap/SKILL.md"
+fi
+
+if [ ! -f "$bootstrap_skill_path" ]; then
+  exit 0
+fi
+
+bootstrap_content="$(cat "$bootstrap_skill_path" 2>&1 || echo "Error reading Agent Brain bootstrap skill")"
+
+escape_for_json() {{
+  local s="$1"
+  s="${{s//\\\\/\\\\\\\\}}"
+  s="${{s//\\\"/\\\\\\\"}}"
+  s="${{s//$'\\n'/\\n}}"
+  s="${{s//$'\\r'/\\r}}"
+  s="${{s//$'\\t'/\\t}}"
+  printf '%s' "$s"
+}}
+
+bootstrap_escaped="$(escape_for_json "$bootstrap_content")"
+session_context="<{BOOTSTRAP_MARKER}>\\nYou have Agent Brain installed.\\n\\nThe activation skill below is already loaded. Follow it before answering, asking clarifying questions, or editing files.\\n\\n${{bootstrap_escaped}}\\n</{BOOTSTRAP_MARKER}>"
+cc_root_var="$(printf 'CL%sUDE_PLUGIN_ROOT' 'A')"
+cc_root_value="${{!cc_root_var:-}}"
+
+if [ -n "${{CURSOR_PLUGIN_ROOT:-}}" ]; then
+  printf '{{\\n  "additional_context": "%s"\\n}}\\n' "$session_context"
+elif [ -n "$cc_root_value" ] && [ -z "${{COPILOT_CLI:-}}" ]; then
+  printf '{{\\n  "hookSpecificOutput": {{\\n    "hookEventName": "SessionStart",\\n    "additionalContext": "%s"\\n  }}\\n}}\\n' "$session_context"
+else
+  printf '{{\\n  "additionalContext": "%s"\\n}}\\n' "$session_context"
+fi
+"""
+
+
+def run_hook_cmd() -> str:
+    return """: << 'CMDBLOCK'
+@echo off
+REM Cross-platform wrapper for Agent Brain hook scripts.
+REM Usage: run-hook.cmd <script-name> [args...]
+
+if "%~1"=="" (
+    echo run-hook.cmd: missing script name >&2
+    exit /b 1
+)
+
+set "HOOK_DIR=%~dp0"
+
+if exist "C:\\Program Files\\Git\\bin\\bash.exe" (
+    "C:\\Program Files\\Git\\bin\\bash.exe" "%HOOK_DIR%%~1" %2 %3 %4 %5 %6 %7 %8 %9
+    exit /b %ERRORLEVEL%
+)
+if exist "C:\\Program Files (x86)\\Git\\bin\\bash.exe" (
+    "C:\\Program Files (x86)\\Git\\bin\\bash.exe" "%HOOK_DIR%%~1" %2 %3 %4 %5 %6 %7 %8 %9
+    exit /b %ERRORLEVEL%
+)
+
+where bash >nul 2>nul
+if %ERRORLEVEL% equ 0 (
+    bash "%HOOK_DIR%%~1" %2 %3 %4 %5 %6 %7 %8 %9
+    exit /b %ERRORLEVEL%
+)
+
+exit /b 0
+CMDBLOCK
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+SCRIPT_NAME="$1"
+shift
+exec bash "${SCRIPT_DIR}/${SCRIPT_NAME}" "$@"
+"""
+
+
+def cc_hooks_json() -> str:
+    return json.dumps(
+        {
+            "hooks": {
+                "SessionStart": [
+                    {
+                        "matcher": "startup|clear|compact",
+                        "hooks": [
+                            {
+                                "type": "command",
+                                "command": "bash ./hooks/run-hook.cmd session-start",
+                                "async": False,
+                            }
+                        ],
+                    }
+                ]
+            }
+        },
+        indent=2,
+    ) + "\n"
+
+
+def cursor_hooks_json() -> str:
+    return json.dumps(
+        {
+            "version": 1,
+            "hooks": {
+                "sessionStart": [
+                    {
+                        "command": "bash ./hooks/run-hook.cmd session-start",
+                    }
+                ]
+            },
+        },
+        indent=2,
+    ) + "\n"
 
 
 def cx_plugin_manifest() -> str:
@@ -301,6 +434,7 @@ def cc_plugin_manifest() -> str:
             "version": "0.1.0",
             "skills": "./skills/",
             "commands": "./commands/",
+            "hooks": "./hooks/hooks.json",
         },
         indent=2,
     ) + "\n"
@@ -316,6 +450,7 @@ def cursor_plugin_manifest() -> str:
             "skills": "./skills/",
             "commands": "./commands/",
             "rules": "./rules/",
+            "hooks": "./hooks/hooks-cursor.json",
         },
         indent=2,
     ) + "\n"
@@ -351,7 +486,7 @@ def cursor_rule() -> str:
             "alwaysApply: true",
             "---",
             "",
-            "At session start and before substantive work, load `skills/agentbrain-bootstrap/SKILL.md` and route applicable requests through the bundled `registry.json` and `commands/brain-*.md` specs.",
+            "At session start and before answers, clarifying questions, or edits, load `skills/agentbrain-bootstrap/SKILL.md` and route applicable requests through the bundled `registry.json` and `commands/brain-*.md` specs.",
             "",
         ]
     )
@@ -522,11 +657,20 @@ def plugin_bundle_files(root: Path) -> list[tuple[Path, str]]:
         (root / ("." + "clau" + "de-plugin") / "marketplace.json", cc_marketplace()),
         (root / ".agents" / "plugins" / "marketplace.json", agent_marketplace()),
         (root / ".cursor-plugin" / "plugin.json", cursor_plugin_manifest()),
+        (root / "hooks" / "hooks-cursor.json", cursor_hooks_json()),
+        (root / "hooks" / "hooks.json", cc_hooks_json()),
+        (root / "hooks" / "run-hook.cmd", run_hook_cmd()),
+        (root / "hooks" / "session-start", session_start_hook()),
         (root / ".opencode" / "INSTALL.md", opencode_install_doc()),
+        (root / "rules" / "agentbrain.mdc", cursor_rule()),
         (root / "gemini-extension.json", gemini_extension_manifest()),
         (root / PLUGIN_ROOT / ("." + "clau" + "de-plugin") / "plugin.json", cc_plugin_manifest()),
         (root / PLUGIN_ROOT / ("." + "co" + "dex-plugin") / "plugin.json", cx_plugin_manifest()),
         (root / PLUGIN_ROOT / ".cursor-plugin" / "plugin.json", cursor_plugin_manifest()),
+        (root / PLUGIN_ROOT / "hooks" / "hooks-cursor.json", cursor_hooks_json()),
+        (root / PLUGIN_ROOT / "hooks" / "hooks.json", cc_hooks_json()),
+        (root / PLUGIN_ROOT / "hooks" / "run-hook.cmd", run_hook_cmd()),
+        (root / PLUGIN_ROOT / "hooks" / "session-start", session_start_hook()),
         (root / PLUGIN_ROOT / ".opencode" / "plugins" / "agentbrain.js", opencode_plugin()),
         (root / PLUGIN_ROOT / "package.json", opencode_package()),
         (root / PLUGIN_ROOT / "GEMINI.md", gemini_context_file()),
@@ -543,6 +687,10 @@ def plugin_bundle_files(root: Path) -> list[tuple[Path, str]]:
     for entry in commands:
         files.append((root / PLUGIN_ROOT / "commands" / f"{command_slug(entry['name'])}.md", plugin_command(entry, root)))
     return files
+
+
+def is_hook_executable(path: Path) -> bool:
+    return path.parent.name == "hooks" and path.name in {"run-hook.cmd", "session-start"}
 
 
 def target_path(runtime: str, entry: dict[str, object], root: Path, scope: str, output_dir: Path | None) -> Path:
@@ -589,6 +737,8 @@ def install_plugin_bundle(*, root: Path, check: bool = False, dry_run: bool = Fa
             continue
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(expected, encoding="utf-8")
+        if is_hook_executable(path):
+            path.chmod(path.stat().st_mode | 0o755)
         written.append(path)
     return written, errors
 

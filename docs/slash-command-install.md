@@ -43,6 +43,7 @@ This writes:
 - `plugins/agentbrain/.claude-plugin/plugin.json`,
 - `plugins/agentbrain/.codex-plugin/plugin.json`,
 - `plugins/agentbrain/.cursor-plugin/plugin.json`,
+- `plugins/agentbrain/hooks/session-start` and hook manifests for runtimes with startup hooks,
 - `plugins/agentbrain/.opencode/plugins/agentbrain.js`,
 - `plugins/agentbrain/skills/agentbrain-bootstrap/SKILL.md`,
 - `plugins/agentbrain/skills/agentbrain/SKILL.md`,
@@ -52,9 +53,9 @@ This writes:
 - `plugins/agentbrain/schemas/*.json`,
 - `plugins/agentbrain/AGENTBRAIN.md`, `PRINCIPLES.md`, `ANTI_RATIONALIZATION.md`, and `docs/state-machine.md`.
 
-The plugin bundle is the preferred distribution unit for plugin-based agents because it carries an activation bootstrap, command bodies, and supporting harness context. Runtime-specific wrappers are compatibility surfaces for agents that support project-local command files but do not install marketplace plugins.
+The plugin bundle is the preferred distribution unit for plugin-based agents because it carries an activation bootstrap, session-start hooks, command bodies, and supporting harness context. Runtime-specific wrappers are compatibility surfaces for agents that support project-local command files but do not install marketplace plugins.
 
-The clean-session activation test is simple: start a fresh agent session, send a vague build request, and verify the transcript routes through `/brain-start` before any code edit. The transcript must name the selected command, loaded skills, artifact target, and stop condition.
+The clean-session activation test is simple: start a fresh agent session, confirm the startup hook injected the bootstrap, send a vague build request, and verify the transcript routes through `/brain-start` before any question or code edit. The transcript must name the selected command, loaded skills, artifact target, and stop condition.
 
 ## Supported First Targets
 
