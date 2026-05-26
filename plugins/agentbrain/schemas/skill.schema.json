@@ -1,0 +1,114 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Skill",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "name",
+    "description",
+    "lifecycle_stage",
+    "trigger",
+    "inputs",
+    "procedure",
+    "anti_rationalization",
+    "when_not_to_use",
+    "verification",
+    "output_artifact",
+    "failure_modes",
+    "examples"
+  ],
+  "properties": {
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^Use when .+"
+    },
+    "lifecycle_stage": {
+      "type": "string",
+      "enum": [
+        "INTAKE",
+        "RESEARCH",
+        "CHALLENGE",
+        "DECIDE",
+        "DESIGN",
+        "PLAN",
+        "BUILD",
+        "VERIFY",
+        "REVIEW",
+        "SHIP",
+        "LEARN"
+      ]
+    },
+    "trigger": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^Use (when|after|before|for) .+"
+    },
+    "inputs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1,
+      "default": []
+    },
+    "procedure": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1,
+      "default": []
+    },
+    "anti_rationalization": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1,
+      "default": []
+    },
+    "when_not_to_use": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1,
+      "default": []
+    },
+    "verification": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1,
+      "default": []
+    },
+    "output_artifact": {
+      "type": "string",
+      "minLength": 1
+    },
+    "failure_modes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1,
+      "default": []
+    },
+    "examples": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "Trigger: .+ Action: .+ Verification: .+"
+      },
+      "minItems": 1,
+      "default": []
+    }
+  }
+}

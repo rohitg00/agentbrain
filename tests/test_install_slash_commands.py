@@ -1,12 +1,44 @@
 import json
 from pathlib import Path
+import subprocess
 
 from scripts import install_slash_commands
 
 
 def write_registry(root: Path) -> None:
+    for rel_path in ["AGENTS.md", "AGENTBRAIN.md", "PRINCIPLES.md", "ANTI_RATIONALIZATION.md"]:
+        (root / rel_path).write_text(f"# {rel_path}\n", encoding="utf-8")
     commands = root / "commands"
     commands.mkdir()
+    (commands / "README.md").write_text("# Command Catalog\n", encoding="utf-8")
+    (commands / "brain-plan.md").write_text(
+        "# /brain-plan\n\n"
+        "## Purpose\nState: PLAN\n\n"
+        "## Skills to load\n"
+        "- `engineering-grill` from `skills/engineering-grill/SKILL.md`.\n"
+        "- `plan-slicing` from `skills/plan-slicing/SKILL.md`.\n\n"
+        "## Output\nRequired artifact: **Implementation Plan** using `templates/implementation-plan.md` and `schemas/implementation-plan.schema.json`.\n",
+        encoding="utf-8",
+    )
+    docs = root / "docs"
+    docs.mkdir()
+    (docs / "state-machine.md").write_text("# State Machine\n", encoding="utf-8")
+    skills = root / "skills"
+    skills.mkdir()
+    (skills / "README.md").write_text("# Skills\n", encoding="utf-8")
+    for skill in ["engineering-grill", "plan-slicing"]:
+        skill_dir = skills / skill
+        skill_dir.mkdir()
+        (skill_dir / "SKILL.md").write_text(f"# {skill}\n", encoding="utf-8")
+    templates = root / "templates"
+    templates.mkdir()
+    (templates / "implementation-plan.md").write_text("# Implementation Plan\n", encoding="utf-8")
+    schemas = root / "schemas"
+    schemas.mkdir()
+    (schemas / "implementation-plan.schema.json").write_text(
+        json.dumps({"type": "object"}) + "\n",
+        encoding="utf-8",
+    )
     (commands / "registry.json").write_text(
         json.dumps(
             {
@@ -83,6 +115,93 @@ def test_command_slug_rejects_path_traversal_values() -> None:
             assert "invalid command slug" in str(exc)
         else:  # pragma: no cover
             raise AssertionError(f"accepted unsafe command slug: {command_name}")
+
+
+def test_plugin_bundle_generation_and_check(tmp_path: Path) -> None:
+    write_registry(tmp_path)
+
+    written, errors = install_slash_commands.install(
+        root=tmp_path,
+        runtime="agentbrain-plugin",
+        scope="project",
+    )
+
+    assert errors == []
+    expected_paths = {
+        tmp_path / ("." + "clau" + "de-plugin") / "marketplace.json",
+        tmp_path / ".agents" / "plugins" / "marketplace.json",
+        tmp_path / ".cursor-plugin" / "plugin.json",
+        tmp_path / "hooks" / "hooks-cursor.json",
+        tmp_path / "hooks" / "hooks.json",
+        tmp_path / "hooks" / "run-hook.cmd",
+        tmp_path / "hooks" / "session-start",
+        tmp_path / ".opencode" / "INSTALL.md",
+        tmp_path / "rules" / "agentbrain.mdc",
+        tmp_path / "gemini-extension.json",
+        tmp_path / "plugins" / "agentbrain" / ("." + "clau" + "de-plugin") / "plugin.json",
+        tmp_path / "plugins" / "agentbrain" / ("." + "co" + "dex-plugin") / "plugin.json",
+        tmp_path / "plugins" / "agentbrain" / ".cursor-plugin" / "plugin.json",
+        tmp_path / "plugins" / "agentbrain" / "hooks" / "hooks-cursor.json",
+        tmp_path / "plugins" / "agentbrain" / "hooks" / "hooks.json",
+        tmp_path / "plugins" / "agentbrain" / "hooks" / "run-hook.cmd",
+        tmp_path / "plugins" / "agentbrain" / "hooks" / "session-start",
+        tmp_path / "plugins" / "agentbrain" / ".opencode" / "plugins" / "agentbrain.js",
+        tmp_path / "plugins" / "agentbrain" / "GEMINI.md",
+        tmp_path / "plugins" / "agentbrain" / "package.json",
+        tmp_path / "plugins" / "agentbrain" / "registry.json",
+        tmp_path / "plugins" / "agentbrain" / "rules" / "agentbrain.mdc",
+        tmp_path / "plugins" / "agentbrain" / "skills" / "agentbrain-bootstrap" / "SKILL.md",
+        tmp_path / "plugins" / "agentbrain" / "skills" / "agentbrain" / "SKILL.md",
+        tmp_path / "plugins" / "agentbrain" / "commands" / "brain-plan.md",
+    }
+    assert expected_paths.issubset(set(written))
+    command_wrapper = tmp_path / "plugins" / "agentbrain" / "commands" / "brain-plan.md"
+    command_text = command_wrapper.read_text(encoding="utf-8")
+    assert "Wrapper boundary marker: `plugin-bundle-source-of-truth`." in command_text
+    assert "## Bundled Command Body" in command_text
+    assert "# /brain-plan" in command_text
+    assert (tmp_path / "plugins" / "agentbrain" / "skills" / "engineering-grill" / "SKILL.md").exists()
+    assert (tmp_path / "plugins" / "agentbrain" / "templates" / "implementation-plan.md").exists()
+    assert (tmp_path / "plugins" / "agentbrain" / "schemas" / "implementation-plan.schema.json").exists()
+    bootstrap = (tmp_path / "plugins" / "agentbrain" / "skills" / "agentbrain-bootstrap" / "SKILL.md").read_text(encoding="utf-8")
+    assert "A clean session given a vague build request must route to `/brain-start` before implementation." in bootstrap
+    assert "before the first response, including clarifying questions" in bootstrap
+    session_hook = tmp_path / "plugins" / "agentbrain" / "hooks" / "session-start"
+    assert "AGENTBRAIN_BOOTSTRAP_LOADED" in session_hook.read_text(encoding="utf-8")
+    assert session_hook.stat().st_mode & 0o111
+    hook_output = subprocess.run(
+        ["bash", str(tmp_path / "plugins" / "agentbrain" / "hooks" / "run-hook.cmd"), "session-start"],
+        check=True,
+        text=True,
+        capture_output=True,
+    )
+    hook_payload = json.loads(hook_output.stdout)
+    assert "AGENTBRAIN_BOOTSTRAP_LOADED" in hook_payload["additionalContext"]
+    assert "before the first response, including clarifying questions" in hook_payload["additionalContext"]
+    assert "bash ./hooks/run-hook.cmd session-start" in (
+        tmp_path / "plugins" / "agentbrain" / "hooks" / "hooks.json"
+    ).read_text(encoding="utf-8")
+    assert "bash ./hooks/run-hook.cmd session-start" in (
+        tmp_path / "plugins" / "agentbrain" / "hooks" / "hooks-cursor.json"
+    ).read_text(encoding="utf-8")
+    opencode_plugin = (tmp_path / "plugins" / "agentbrain" / ".opencode" / "plugins" / "agentbrain.js").read_text(encoding="utf-8")
+    assert "AGENTBRAIN_BOOTSTRAP_LOADED" in opencode_plugin
+    assert "experimental.chat.messages.transform" in opencode_plugin
+    assert "config.skills.paths" in opencode_plugin
+    plugin_registry = json.loads((tmp_path / "plugins" / "agentbrain" / "registry.json").read_text(encoding="utf-8"))
+    assert plugin_registry["commands"][0]["file"] == "commands/brain-plan.md"
+    assert plugin_registry["commands"][0]["source_file"] == "commands/brain-plan.md"
+    assert "commands/registry.json" in (tmp_path / "plugins" / "agentbrain" / "skills" / "agentbrain" / "SKILL.md").read_text(encoding="utf-8")
+
+    checked, check_errors = install_slash_commands.install(
+        root=tmp_path,
+        runtime="agentbrain-plugin",
+        scope="project",
+        check=True,
+    )
+
+    assert expected_paths.issubset(set(checked))
+    assert check_errors == []
 
 
 def test_gemini_cli_generation_and_check_drift(tmp_path: Path) -> None:

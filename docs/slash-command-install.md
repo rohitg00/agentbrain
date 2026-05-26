@@ -4,9 +4,9 @@ Agent Brain should be usable as native shortcuts where a runtime supports them. 
 
 ## Product Direction
 
-Start with installable slash commands, not a background service. The service layer can come later if hooks, shared session state, editor integration, or scheduled work needs it. Today the better default is explicit runtime invocation:
+Start with installable slash commands and plugin bundles, not a background service. The service layer can come later if hooks, shared session state, editor integration, or scheduled work needs it. Today the better default is explicit runtime invocation:
 
-- install wrappers,
+- install a plugin bundle or runtime wrappers,
 - type `/brain-start`, `/brain-plan`, `/brain-verify`, or another `/brain-*` command,
 - let the wrapper load the matching markdown command,
 - produce the required artifact and validation evidence.
@@ -27,6 +27,35 @@ Runtime wrappers must not contain independent workflow logic. They must only poi
 - the matching schema when one exists.
 
 If a wrapper conflicts with its command file or registry entry, the agent must follow the command file, report wrapper drift, and route the fix through `/brain-verify`.
+
+## Plugin Bundle
+
+Generate the marketplace-ready Agent Brain plugin bundle:
+
+```bash
+python scripts/install_slash_commands.py --runtime agentbrain-plugin
+```
+
+This writes:
+
+- `.claude-plugin/marketplace.json` for plugin marketplace discovery,
+- `.agents/plugins/marketplace.json` for agent plugin marketplace discovery,
+- `plugins/agentbrain/.claude-plugin/plugin.json`,
+- `plugins/agentbrain/.codex-plugin/plugin.json`,
+- `plugins/agentbrain/.cursor-plugin/plugin.json`,
+- `plugins/agentbrain/hooks/session-start` and hook manifests for runtimes with startup hooks,
+- `plugins/agentbrain/.opencode/plugins/agentbrain.js`,
+- `plugins/agentbrain/skills/agentbrain-bootstrap/SKILL.md`,
+- `plugins/agentbrain/skills/agentbrain/SKILL.md`,
+- `plugins/agentbrain/commands/brain-*.md`,
+- `plugins/agentbrain/skills/*/SKILL.md`,
+- `plugins/agentbrain/templates/*.md`,
+- `plugins/agentbrain/schemas/*.json`,
+- `plugins/agentbrain/AGENTBRAIN.md`, `PRINCIPLES.md`, `ANTI_RATIONALIZATION.md`, and `docs/state-machine.md`.
+
+The plugin bundle is the preferred distribution unit for plugin-based agents because it carries an activation bootstrap, session-start hooks, command bodies, and supporting harness context. Runtime-specific wrappers are compatibility surfaces for agents that support project-local command files but do not install marketplace plugins.
+
+The clean-session activation test is simple: start a fresh agent session, confirm the startup hook injected the bootstrap, send a vague build request, and verify the transcript routes through `/brain-start` before any question or code edit. The transcript must name the selected command, loaded skills, artifact target, and stop condition.
 
 ## Supported First Targets
 
@@ -59,14 +88,16 @@ Keep Codex on the portable command path until the active Codex runtime proves cu
 Regenerate wrappers after changing `commands/registry.json` or any `commands/brain-*.md` route:
 
 ```bash
+python scripts/install_slash_commands.py --runtime agentbrain-plugin
 python scripts/install_slash_commands.py --runtime claude-code
 python scripts/install_slash_commands.py --runtime gemini-cli
+python scripts/install_slash_commands.py --runtime agentbrain-plugin --check
 python scripts/install_slash_commands.py --runtime claude-code --check
 python scripts/install_slash_commands.py --runtime gemini-cli --check
 python scripts/validate_repo.py
 ```
 
-Validation must prove every committed wrapper includes the command name, command file, registry path, source-of-truth warning, command-listed skills, required artifact, schema marker, user-change preservation, stop conditions, and `/brain-verify` drift route.
+Validation must prove every committed plugin command and runtime wrapper includes the command name, command file, registry path, source-of-truth warning, command-listed skills, required artifact, schema marker, user-change preservation, stop conditions, runtime-specific boundary marker, and `/brain-verify` drift route.
 
 ## Runtime Smoke
 

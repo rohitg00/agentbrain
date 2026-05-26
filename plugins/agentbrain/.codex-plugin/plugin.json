@@ -1,0 +1,37 @@
+{
+  "name": "agentbrain",
+  "version": "0.1.0",
+  "description": "Portable Agent Brain lifecycle, command routing, validation, and handoff discipline.",
+  "author": {
+    "name": "Agent Brain Maintainers",
+    "url": "https://github.com/rohitg00/agentbrain"
+  },
+  "homepage": "https://github.com/rohitg00/agentbrain",
+  "repository": "https://github.com/rohitg00/agentbrain",
+  "license": "MIT",
+  "keywords": [
+    "agent-harness",
+    "slash-commands",
+    "verification",
+    "handoff"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Agent Brain",
+    "shortDescription": "Lifecycle and proof gates for coding agents.",
+    "longDescription": "Routes agent work through command specs, skills, artifact contracts, validation evidence, and handoffs.",
+    "developerName": "Agent Brain Maintainers",
+    "category": "Productivity",
+    "capabilities": [
+      "Interactive",
+      "Write"
+    ],
+    "websiteURL": "https://github.com/rohitg00/agentbrain",
+    "defaultPrompt": [
+      "Route this request through Agent Brain.",
+      "Plan this change with proof gates.",
+      "Verify this work before review."
+    ],
+    "brandColor": "#111827"
+  }
+}

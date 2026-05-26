@@ -138,6 +138,8 @@ REQUIRED_EVAL_CASES = [
     "evals/cases/context-budget.md",
     "evals/cases/source-specific-command-leakage.md",
     "evals/cases/real-runtime-smoke-test.md",
+    "evals/cases/runtime-activation-bootstrap.md",
+    "evals/cases/session-start-hook-bootstrap.md",
     "evals/cases/native-command-assumption.md",
     "evals/cases/write-fence-before-runtime-writes.md",
     "evals/cases/turn-boundary-drift.md",
@@ -531,10 +533,16 @@ REQUIRED_AUDIENCE_PLAYBOOK_TERMS = [
 ]
 REQUIRED_SLASH_COMMAND_INSTALL_TERMS = [
     "thin wrappers",
+    "plugin bundle",
+    "activation bootstrap",
+    "session-start hooks",
+    "clean-session activation test",
+    "command bodies",
     "commands/registry.json",
     "commands/brain-*.md",
     "source of truth",
     "not a background service",
+    "scripts/install_slash_commands.py --runtime agentbrain-plugin",
     "Clau" + "de Code",
     "Gemini CLI",
     "Co" + "dex",
@@ -545,8 +553,155 @@ REQUIRED_SLASH_COMMAND_INSTALL_TERMS = [
     "/brain-verify",
 ]
 REQUIRED_SLASH_COMMAND_RUNTIMES = {
+    "agentbrain-plugin": ("plugins/agentbrain/commands/{slug}.md", "plugin-bundle-source-of-truth"),
     "clau" + "de-code": ("." + "clau" + "de/skills/{slug}/SKILL.md", "cc-source-of-truth"),
     "gemini-cli": (".gemini/commands/{slug}.toml", "gemini-cli-source-of-truth"),
+}
+REQUIRED_PLUGIN_BUNDLE_FILES = {
+    "." + "clau" + "de-plugin/marketplace.json": [
+        '"name": "agentbrain"',
+        '"source": "./plugins/agentbrain"',
+    ],
+    ".agents/plugins/marketplace.json": [
+        '"name": "agentbrain"',
+        '"path": "./plugins/agentbrain"',
+        '"installation": "AVAILABLE"',
+        '"authentication": "ON_INSTALL"',
+    ],
+    ".cursor-plugin/plugin.json": [
+        '"name": "agentbrain"',
+        '"rules": "./rules/"',
+        '"hooks": "./hooks/hooks-cursor.json"',
+    ],
+    "hooks/hooks-cursor.json": [
+        '"sessionStart"',
+        "bash ./hooks/run-hook.cmd session-start",
+    ],
+    "hooks/hooks.json": [
+        '"SessionStart"',
+        "bash ./hooks/run-hook.cmd session-start",
+    ],
+    "hooks/session-start": [
+        "AGENTBRAIN_BOOTSTRAP_LOADED",
+        "additionalContext",
+        "additional_context",
+        "hookSpecificOutput",
+    ],
+    "hooks/run-hook.cmd": [
+        "Cross-platform wrapper for Agent Brain hook scripts.",
+        "exec bash",
+    ],
+    "rules/agentbrain.mdc": [
+        "skills/agentbrain-bootstrap/SKILL.md",
+        "registry.json",
+    ],
+    ".opencode/INSTALL.md": [
+        "Agent Brain Plugin Install",
+        "/brain-start",
+    ],
+    "gemini-extension.json": [
+        '"name": "agentbrain"',
+        '"contextFileName": "plugins/agentbrain/GEMINI.md"',
+    ],
+    "plugins/agentbrain/." + "clau" + "de-plugin/plugin.json": [
+        '"name": "agentbrain"',
+        '"skills": "./skills/"',
+        '"commands": "./commands/"',
+        '"hooks": "./hooks/hooks.json"',
+    ],
+    "plugins/agentbrain/." + "co" + "dex-plugin/plugin.json": [
+        '"name": "agentbrain"',
+        '"skills": "./skills/"',
+        '"displayName": "Agent Brain"',
+    ],
+    "plugins/agentbrain/.cursor-plugin/plugin.json": [
+        '"name": "agentbrain"',
+        '"rules": "./rules/"',
+        '"hooks": "./hooks/hooks-cursor.json"',
+    ],
+    "plugins/agentbrain/hooks/hooks-cursor.json": [
+        '"sessionStart"',
+        "bash ./hooks/run-hook.cmd session-start",
+    ],
+    "plugins/agentbrain/hooks/hooks.json": [
+        '"SessionStart"',
+        "bash ./hooks/run-hook.cmd session-start",
+    ],
+    "plugins/agentbrain/hooks/session-start": [
+        "AGENTBRAIN_BOOTSTRAP_LOADED",
+        "additionalContext",
+        "additional_context",
+        "hookSpecificOutput",
+    ],
+    "plugins/agentbrain/hooks/run-hook.cmd": [
+        "Cross-platform wrapper for Agent Brain hook scripts.",
+        "exec bash",
+    ],
+    "plugins/agentbrain/.opencode/plugins/agentbrain.js": [
+        "AGENTBRAIN_BOOTSTRAP_LOADED",
+        "experimental.chat.messages.transform",
+        "config.skills.paths",
+    ],
+    "plugins/agentbrain/package.json": [
+        '"name": "agentbrain"',
+        '".opencode/plugins/agentbrain.js"',
+    ],
+    "plugins/agentbrain/GEMINI.md": [
+        "@./skills/agentbrain-bootstrap/SKILL.md",
+        "@./skills/agentbrain/SKILL.md",
+    ],
+    "plugins/agentbrain/rules/agentbrain.mdc": [
+        "skills/agentbrain-bootstrap/SKILL.md",
+        "registry.json",
+    ],
+    "plugins/agentbrain/registry.json": [
+        '"schema_version": "1"',
+        '"source_file": "commands/brain-',
+    ],
+    "plugins/agentbrain/skills/agentbrain/SKILL.md": [
+        "Plugin-local `registry.json`",
+        "commands/registry.json",
+        "commands/brain-*.md",
+        "skills/`",
+        "templates/`",
+        "schemas/`",
+        "/brain-verify",
+        "python scripts/install_slash_commands.py --runtime agentbrain-plugin --check",
+    ],
+    "plugins/agentbrain/skills/agentbrain-bootstrap/SKILL.md": [
+        "A clean session given a vague build request must route to `/brain-start` before implementation.",
+        "before the first response, including clarifying questions",
+        "Tool Mapping",
+        "Red Flags",
+        "Do not answer from free-form chat when a command applies.",
+    ],
+    "plugins/agentbrain/AGENTS.md": [
+        "Agent",
+    ],
+    "plugins/agentbrain/AGENTBRAIN.md": [
+        "Agent Brain",
+    ],
+    "plugins/agentbrain/PRINCIPLES.md": [
+        "Principles",
+    ],
+    "plugins/agentbrain/ANTI_RATIONALIZATION.md": [
+        "Anti",
+    ],
+    "plugins/agentbrain/docs/state-machine.md": [
+        "State",
+    ],
+    "plugins/agentbrain/commands/README.md": [
+        "Command",
+    ],
+    "plugins/agentbrain/skills/qa-evidence/SKILL.md": [
+        "qa-evidence",
+    ],
+    "plugins/agentbrain/templates/qa-evidence.md": [
+        "Qa Evidence",
+    ],
+    "plugins/agentbrain/schemas/qa-evidence.schema.json": [
+        '"type"',
+    ],
 }
 REQUIRED_AGENT_HARNESS_SECTIONS = [
     "## Install",
@@ -2212,6 +2367,16 @@ def validate(root: Path = ROOT) -> list[str]:
         for term in REQUIRED_SLASH_COMMAND_INSTALL_TERMS:
             if term.lower() not in slash_command_install_lower:
                 errors.append(f"docs/slash-command-install.md must document slash-command install term: {term}")
+
+    for plugin_file, required_terms in REQUIRED_PLUGIN_BUNDLE_FILES.items():
+        plugin_path = root / plugin_file
+        if not plugin_path.exists():
+            errors.append(f"missing {plugin_file}")
+            continue
+        plugin_text = plugin_path.read_text(errors="ignore")
+        for term in required_terms:
+            if term not in plugin_text:
+                errors.append(f"{plugin_file} must document plugin bundle term: {term}")
 
     state_machine = root / "docs" / "state-machine.md"
     if state_machine.exists():

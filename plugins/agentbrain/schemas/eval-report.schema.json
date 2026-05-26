@@ -1,0 +1,94 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Eval Report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "target",
+    "cases",
+    "decision",
+    "evidence_checked",
+    "next_action"
+  ],
+  "properties": {
+    "target": {
+      "type": "string",
+      "minLength": 1
+    },
+    "cases": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "case",
+          "expected_behavior",
+          "observed_behavior",
+          "result",
+          "evidence"
+        ],
+        "properties": {
+          "case": {
+            "type": "string",
+            "minLength": 1
+          },
+          "expected_behavior": {
+            "type": "string",
+            "minLength": 1
+          },
+          "observed_behavior": {
+            "type": "string",
+            "minLength": 1
+          },
+          "result": {
+            "enum": [
+              "pass",
+              "fail",
+              "blocked"
+            ]
+          },
+          "evidence": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      }
+    },
+    "decision": {
+      "enum": [
+        "pass",
+        "pass-with-warnings",
+        "fail",
+        "blocked"
+      ]
+    },
+    "evidence_checked": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1
+    },
+    "risks": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "open_questions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "next_action": {
+      "type": "string",
+      "minLength": 1
+    }
+  }
+}

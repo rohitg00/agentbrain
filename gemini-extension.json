@@ -1,0 +1,6 @@
+{
+  "name": "agentbrain",
+  "description": "Portable lifecycle, command routing, validation, and handoff discipline for coding agents.",
+  "version": "0.1.0",
+  "contextFileName": "plugins/agentbrain/GEMINI.md"
+}
