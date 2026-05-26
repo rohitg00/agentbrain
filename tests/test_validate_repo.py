@@ -2692,6 +2692,53 @@ def write_minimal_repo(root: Path) -> None:
         gemini_command = root / ".gemini" / "commands" / f"{slug}.toml"
         gemini_command.parent.mkdir(parents=True, exist_ok=True)
         gemini_command.write_text(wrapper_text + "gemini-cli-source-of-truth\n", encoding="utf-8")
+        plugin_command = root / "plugins" / "agentbrain" / "commands" / f"{slug}.md"
+        plugin_command.parent.mkdir(parents=True, exist_ok=True)
+        plugin_command.write_text(wrapper_text + "plugin-bundle-source-of-truth\n", encoding="utf-8")
+    (root / ("." + "clau" + "de-plugin")).mkdir(parents=True)
+    (root / ("." + "clau" + "de-plugin") / "marketplace.json").write_text(
+        json.dumps({"name": "agentbrain", "owner": {"name": "Agent Brain Maintainers"}, "plugins": [{"name": "agentbrain", "source": "./plugins/agentbrain"}]}),
+        encoding="utf-8",
+    )
+    (root / ".agents" / "plugins").mkdir(parents=True)
+    (root / ".agents" / "plugins" / "marketplace.json").write_text(
+        json.dumps({"name": "agentbrain", "interface": {"displayName": "Agent Brain"}, "plugins": [{"name": "agentbrain", "source": {"source": "local", "path": "./plugins/agentbrain"}, "policy": {"installation": "AVAILABLE", "authentication": "ON_INSTALL"}, "category": "Productivity"}]}),
+        encoding="utf-8",
+    )
+    (root / "plugins" / "agentbrain" / ("." + "clau" + "de-plugin")).mkdir(parents=True)
+    (root / "plugins" / "agentbrain" / ("." + "clau" + "de-plugin") / "plugin.json").write_text(
+        json.dumps({"name": "agentbrain", "skills": "./skills/", "commands": "./commands/"}),
+        encoding="utf-8",
+    )
+    (root / "plugins" / "agentbrain" / ("." + "co" + "dex-plugin")).mkdir(parents=True)
+    (root / "plugins" / "agentbrain" / ("." + "co" + "dex-plugin") / "plugin.json").write_text(
+        json.dumps({"name": "agentbrain", "skills": "./skills/", "interface": {"displayName": "Agent Brain"}}),
+        encoding="utf-8",
+    )
+    (root / "plugins" / "agentbrain" / "registry.json").write_text(
+        json.dumps({"schema_version": "1", "commands": [{"name": "/brain-sample", "source_file": "commands/brain-sample.md"}]}),
+        encoding="utf-8",
+    )
+    (root / "plugins" / "agentbrain" / "skills" / "agentbrain").mkdir(parents=True)
+    (root / "plugins" / "agentbrain" / "skills" / "agentbrain" / "SKILL.md").write_text(
+        "Plugin-local `registry.json`\ncommands/registry.json\ncommands/brain-*.md\n`skills/`, `templates/`, `schemas/`\n/brain-verify\npython scripts/install_slash_commands.py --runtime agentbrain-plugin --check\n",
+        encoding="utf-8",
+    )
+    (root / "plugins" / "agentbrain" / "AGENTBRAIN.md").write_text("# Agent Brain\n", encoding="utf-8")
+    (root / "plugins" / "agentbrain" / "PRINCIPLES.md").write_text("# Principles\n", encoding="utf-8")
+    (root / "plugins" / "agentbrain" / "ANTI_RATIONALIZATION.md").write_text("# Anti\n", encoding="utf-8")
+    (root / "plugins" / "agentbrain" / "docs").mkdir(parents=True)
+    (root / "plugins" / "agentbrain" / "docs" / "state-machine.md").write_text("# State Machine\n", encoding="utf-8")
+    (root / "plugins" / "agentbrain" / "commands" / "README.md").write_text("# Command Catalog\n", encoding="utf-8")
+    (root / "plugins" / "agentbrain" / "skills" / "qa-evidence").mkdir(parents=True)
+    (root / "plugins" / "agentbrain" / "skills" / "qa-evidence" / "SKILL.md").write_text("# qa-evidence\n", encoding="utf-8")
+    (root / "plugins" / "agentbrain" / "templates").mkdir(parents=True)
+    (root / "plugins" / "agentbrain" / "templates" / "qa-evidence.md").write_text("# Qa Evidence\n", encoding="utf-8")
+    (root / "plugins" / "agentbrain" / "schemas").mkdir(parents=True)
+    (root / "plugins" / "agentbrain" / "schemas" / "qa-evidence.schema.json").write_text(
+        json.dumps({"type": "object"}),
+        encoding="utf-8",
+    )
     docs_dir = root / "docs"
     docs_dir.mkdir()
     (docs_dir / "shared-language.md").write_text(
@@ -2798,7 +2845,8 @@ def write_minimal_repo(root: Path) -> None:
     )
     (docs_dir / "slash-command-install.md").write_text(
         "# Slash Command Install\n\n"
-        "Use thin wrappers generated from commands/registry.json and commands/brain-*.md as the source of truth and not a background service. "
+        "Use a plugin bundle with command bodies and thin wrappers generated from commands/registry.json and commands/brain-*.md as the source of truth and not a background service. "
+        "Run scripts/install_slash_commands.py --runtime agentbrain-plugin. "
         + ("Clau" + "de Code") + " and Gemini CLI wrappers come from scripts/install_slash_commands.py --runtime " + ("clau" + "de-code") + " and scripts/install_slash_commands.py --runtime gemini-cli. "
         + ("Co" + "dex") + " must prove native command support before claiming slash commands. Use runtime smoke and route drift through /brain-verify.\n",
         encoding="utf-8",
@@ -3282,11 +3330,13 @@ def test_slash_command_wrappers_are_required_for_registry_commands(tmp_path):
     write_minimal_repo(tmp_path)
     (tmp_path / ("." + "clau" + "de") / "skills" / "brain-sample" / "SKILL.md").unlink()
     (tmp_path / ".gemini" / "commands" / "brain-verify.toml").unlink()
+    (tmp_path / "plugins" / "agentbrain" / "commands" / "brain-sample.md").unlink()
 
     errors = validate_repo.validate(tmp_path)
 
     assert "missing " + "." + ("clau" + "de") + "/skills/brain-sample/SKILL.md" in errors
     assert "missing .gemini/commands/brain-verify.toml" in errors
+    assert "missing plugins/agentbrain/commands/brain-sample.md" in errors
 
 
 def test_slash_command_wrappers_must_point_to_registry_source_of_truth(tmp_path):
@@ -3313,6 +3363,17 @@ def test_slash_command_wrappers_must_include_runtime_boundary_marker(tmp_path):
     errors = validate_repo.validate(tmp_path)
 
     assert ".gemini/commands/brain-sample.toml must document gemini-cli wrapper boundary: gemini-cli-source-of-truth" in errors
+
+
+def test_plugin_bundle_files_are_required(tmp_path):
+    write_minimal_repo(tmp_path)
+    (tmp_path / ".agents" / "plugins" / "marketplace.json").unlink()
+    (tmp_path / "plugins" / "agentbrain" / "skills" / "agentbrain" / "SKILL.md").unlink()
+
+    errors = validate_repo.validate(tmp_path)
+
+    assert "missing .agents/plugins/marketplace.json" in errors
+    assert "missing plugins/agentbrain/skills/agentbrain/SKILL.md" in errors
 
 
 def test_operation_and_replay_docs_are_required(tmp_path):

@@ -531,10 +531,13 @@ REQUIRED_AUDIENCE_PLAYBOOK_TERMS = [
 ]
 REQUIRED_SLASH_COMMAND_INSTALL_TERMS = [
     "thin wrappers",
+    "plugin bundle",
+    "command bodies",
     "commands/registry.json",
     "commands/brain-*.md",
     "source of truth",
     "not a background service",
+    "scripts/install_slash_commands.py --runtime agentbrain-plugin",
     "Clau" + "de Code",
     "Gemini CLI",
     "Co" + "dex",
@@ -545,8 +548,69 @@ REQUIRED_SLASH_COMMAND_INSTALL_TERMS = [
     "/brain-verify",
 ]
 REQUIRED_SLASH_COMMAND_RUNTIMES = {
+    "agentbrain-plugin": ("plugins/agentbrain/commands/{slug}.md", "plugin-bundle-source-of-truth"),
     "clau" + "de-code": ("." + "clau" + "de/skills/{slug}/SKILL.md", "cc-source-of-truth"),
     "gemini-cli": (".gemini/commands/{slug}.toml", "gemini-cli-source-of-truth"),
+}
+REQUIRED_PLUGIN_BUNDLE_FILES = {
+    "." + "clau" + "de-plugin/marketplace.json": [
+        '"name": "agentbrain"',
+        '"source": "./plugins/agentbrain"',
+    ],
+    ".agents/plugins/marketplace.json": [
+        '"name": "agentbrain"',
+        '"path": "./plugins/agentbrain"',
+        '"installation": "AVAILABLE"',
+        '"authentication": "ON_INSTALL"',
+    ],
+    "plugins/agentbrain/." + "clau" + "de-plugin/plugin.json": [
+        '"name": "agentbrain"',
+        '"skills": "./skills/"',
+        '"commands": "./commands/"',
+    ],
+    "plugins/agentbrain/." + "co" + "dex-plugin/plugin.json": [
+        '"name": "agentbrain"',
+        '"skills": "./skills/"',
+        '"displayName": "Agent Brain"',
+    ],
+    "plugins/agentbrain/registry.json": [
+        '"schema_version": "1"',
+        '"source_file": "commands/brain-',
+    ],
+    "plugins/agentbrain/skills/agentbrain/SKILL.md": [
+        "Plugin-local `registry.json`",
+        "commands/registry.json",
+        "commands/brain-*.md",
+        "skills/`",
+        "templates/`",
+        "schemas/`",
+        "/brain-verify",
+        "python scripts/install_slash_commands.py --runtime agentbrain-plugin --check",
+    ],
+    "plugins/agentbrain/AGENTBRAIN.md": [
+        "Agent Brain",
+    ],
+    "plugins/agentbrain/PRINCIPLES.md": [
+        "Principles",
+    ],
+    "plugins/agentbrain/ANTI_RATIONALIZATION.md": [
+        "Anti",
+    ],
+    "plugins/agentbrain/docs/state-machine.md": [
+        "State",
+    ],
+    "plugins/agentbrain/commands/README.md": [
+        "Command",
+    ],
+    "plugins/agentbrain/skills/qa-evidence/SKILL.md": [
+        "qa-evidence",
+    ],
+    "plugins/agentbrain/templates/qa-evidence.md": [
+        "Qa Evidence",
+    ],
+    "plugins/agentbrain/schemas/qa-evidence.schema.json": [
+        '"type"',
+    ],
 }
 REQUIRED_AGENT_HARNESS_SECTIONS = [
     "## Install",
@@ -2212,6 +2276,16 @@ def validate(root: Path = ROOT) -> list[str]:
         for term in REQUIRED_SLASH_COMMAND_INSTALL_TERMS:
             if term.lower() not in slash_command_install_lower:
                 errors.append(f"docs/slash-command-install.md must document slash-command install term: {term}")
+
+    for plugin_file, required_terms in REQUIRED_PLUGIN_BUNDLE_FILES.items():
+        plugin_path = root / plugin_file
+        if not plugin_path.exists():
+            errors.append(f"missing {plugin_file}")
+            continue
+        plugin_text = plugin_path.read_text(errors="ignore")
+        for term in required_terms:
+            if term not in plugin_text:
+                errors.append(f"{plugin_file} must document plugin bundle term: {term}")
 
     state_machine = root / "docs" / "state-machine.md"
     if state_machine.exists():

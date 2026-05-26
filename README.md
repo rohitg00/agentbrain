@@ -170,10 +170,11 @@ A good run should not jump to code. It should route through `/brain-start`, chal
 For runtimes with project-local custom command support, generate thin wrappers from `commands/registry.json`:
 
 ```bash
+python scripts/install_slash_commands.py --runtime agentbrain-plugin
 python scripts/install_slash_commands.py --runtime <runtime-key>
 ```
 
-The wrappers expose `/brain-*` shortcuts while keeping `commands/brain-*.md` as the source of truth. Runtimes without proven custom slash-command support should use `AGENTS.md` and the command registry directly.
+The plugin bundle and wrappers expose `/brain-*` shortcuts while keeping `commands/brain-*.md` as the source of truth. The plugin bundle also carries the command bodies, skills, templates, schemas, and core docs needed by plugin-based agents. Runtimes without proven plugin or custom slash-command support should use `AGENTS.md` and the command registry directly.
 
 ### Run the local quality gate
 

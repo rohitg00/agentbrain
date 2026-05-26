@@ -1,0 +1,89 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Memory Decision",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "candidate",
+    "decision",
+    "target_tier",
+    "evidence",
+    "freshness",
+    "privacy_review",
+    "rejected_material",
+    "next_use"
+  ],
+  "properties": {
+    "candidate": {
+      "type": "string",
+      "minLength": 1
+    },
+    "decision": {
+      "type": "string",
+      "enum": ["write", "update", "reject", "retrieve", "defer"]
+    },
+    "target_tier": {
+      "type": "string",
+      "enum": [
+        "profile",
+        "session-recall",
+        "project-doc",
+        "skill",
+        "external-index",
+        "none"
+      ]
+    },
+    "evidence": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "minItems": 1
+    },
+    "freshness": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["scope", "expires_or_review_after"],
+      "properties": {
+        "scope": { "type": "string", "minLength": 1 },
+        "expires_or_review_after": { "type": "string", "minLength": 1 }
+      }
+    },
+    "privacy_review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["contains_secret", "contains_sensitive_personal_data", "action"],
+      "properties": {
+        "contains_secret": { "type": "boolean" },
+        "contains_sensitive_personal_data": { "type": "boolean" },
+        "action": { "type": "string", "minLength": 1 }
+      }
+    },
+    "rejected_material": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "written_update": {
+      "type": "string"
+    },
+    "no_write_reason": {
+      "type": "string"
+    },
+    "next_use": {
+      "type": "string",
+      "minLength": 1
+    },
+    "follow_up": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "decision": { "const": "reject" } } },
+      "then": { "required": ["no_write_reason"] }
+    },
+    {
+      "if": { "properties": { "decision": { "enum": ["write", "update"] } } },
+      "then": { "required": ["written_update"] }
+    }
+  ]
+}

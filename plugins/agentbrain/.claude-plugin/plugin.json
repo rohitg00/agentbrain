@@ -1,0 +1,7 @@
+{
+  "name": "agentbrain",
+  "description": "Portable Agent Brain lifecycle, command routing, validation, and handoff discipline.",
+  "version": "0.1.0",
+  "skills": "./skills/",
+  "commands": "./commands/"
+}

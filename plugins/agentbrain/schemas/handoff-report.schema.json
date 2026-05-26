@@ -1,0 +1,185 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Handoff Report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "state",
+    "decision",
+    "evidence_checked",
+    "fresh_validation_proof",
+    "coordination_review",
+    "user_change_review",
+    "context_boundary",
+    "artifact_paths",
+    "facts",
+    "assumptions",
+    "open_questions",
+    "risks",
+    "stop_conditions",
+    "next_action"
+  ],
+  "properties": {
+    "state": {
+      "type": "string",
+      "enum": [
+        "INTAKE",
+        "RESEARCH",
+        "CHALLENGE",
+        "DECIDE",
+        "DESIGN",
+        "PLAN",
+        "BUILD",
+        "VERIFY",
+        "REVIEW",
+        "SHIP",
+        "LEARN"
+      ]
+    },
+    "decision": {
+      "type": "string",
+      "enum": [
+        "continue",
+        "blocked",
+        "needs-review",
+        "ready-to-ship",
+        "killed"
+      ]
+    },
+    "evidence_checked": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "fresh_validation_proof": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Current-run validation command, exit status, and relevant output; use blocked when proof cannot be produced."
+    },
+    "coordination_review": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Single-agent or parallel-worker join review covering worker scopes, accepted evidence, rejected or stale outputs, conflicts, and resolution."
+    },
+    "user_change_review": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Current-run git status and preservation action for pre-existing user changes, including none observed when the working tree was checked and clean."
+    },
+    "context_boundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "included_context",
+        "excluded_context",
+        "read_files",
+        "modified_files",
+        "compaction",
+        "freshness"
+      ],
+      "properties": {
+        "included_context": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "description": "Files, artifacts, source notes, or prior handoff fragments intentionally kept in context for the next agent."
+        },
+        "excluded_context": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "description": "Plausible but intentionally omitted context, with reason when omission could affect scope."
+        },
+        "read_files": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "description": "Files read for this run or inherited from a checked compaction/handoff."
+        },
+        "modified_files": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "description": "Files modified in this run or inherited from a checked compaction/handoff."
+        },
+        "compaction": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Summary of how older conversation, branch, or source context was compacted, or 'none needed' when no compaction occurred."
+        },
+        "freshness": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Change that would make this context boundary stale and force a recheck."
+        }
+      },
+      "description": "Boundary that separates selected context from intentionally omitted context so resume agents do not reload everything or trust hidden state."
+    },
+    "artifact_paths": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "description": "Paths to the primary artifacts, templates, schemas, logs, reports, or changed files that a resuming agent must inspect before continuing."
+    },
+    "facts": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "default": []
+    },
+    "assumptions": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "default": []
+    },
+    "open_questions": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "default": []
+    },
+    "risks": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "default": []
+    },
+    "stop_conditions": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "description": "Specific blockers, approval gaps, loop limits, safety limits, or missing evidence that stopped or would stop the run.",
+      "default": []
+    },
+    "next_action": {
+      "type": "string",
+      "minLength": 1
+    }
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "name": "agentbrain",
+  "owner": {
+    "name": "Agent Brain Maintainers"
+  },
+  "plugins": [
+    {
+      "name": "agentbrain",
+      "source": "./plugins/agentbrain",
+      "description": "Agent Brain lifecycle and proof-gate plugin.",
+      "version": "0.1.0"
+    }
+  ]
+}
