@@ -14,9 +14,11 @@ CC_RUNTIME = "clau" + "de-code"
 PLUGIN_RUNTIME = "agentbrain-plugin"
 PLUGIN_NAME = "agentbrain"
 PLUGIN_ROOT = Path("plugins") / PLUGIN_NAME
+BOOTSTRAP_MARKER = "AGENTBRAIN_BOOTSTRAP_LOADED"
 SUPPORTED_RUNTIMES = (PLUGIN_RUNTIME, CC_RUNTIME, "gemini-cli")
 SAFE_SLUG_RE = re.compile(r"^[A-Za-z0-9_-]+$")
 PLUGIN_ALWAYS_COPY = (
+    Path("AGENTS.md"),
     Path("AGENTBRAIN.md"),
     Path("PRINCIPLES.md"),
     Path("ANTI_RATIONALIZATION.md"),
@@ -213,6 +215,52 @@ def plugin_skill(commands: list[dict[str, object]]) -> str:
     )
 
 
+def bootstrap_skill() -> str:
+    return "\n".join(
+        [
+            "---",
+            "name: agentbrain-bootstrap",
+            "description: Use when an installed Agent Brain plugin starts a session, receives a new request, or must decide whether to route work through Agent Brain before answering.",
+            "disable-model-invocation: true",
+            "---",
+            "# agentbrain-bootstrap",
+            "",
+            "This is the activation gate for installed Agent Brain plugins.",
+            "",
+            "## Trigger",
+            "",
+            "Use at session start and before the first substantive response to any software, product, research, planning, implementation, verification, review, or release request.",
+            "",
+            "## Procedure",
+            "",
+            "1. Before answering, decide whether an Agent Brain command applies.",
+            "2. If the request is vague or broad, route through `/brain-start`.",
+            "3. If the user names a `/brain-*` command, open the matching bundled command file.",
+            "4. Load only the command-listed skills from plugin-local `skills/`.",
+            "5. Produce the command's required artifact from plugin-local `templates/` and validate with plugin-local `schemas/` when a schema exists.",
+            "6. Preserve user changes before edits and stop when evidence, approval, rollback, secrets handling, or loop limits are missing.",
+            "",
+            "## Tool Mapping",
+            "",
+            "- Use the active runtime's native task tracker for checklists.",
+            "- Use the active runtime's native skill loader when one exists; otherwise read the bundled skill files directly.",
+            "- Use the active runtime's native subagent or worker mechanism only for independent read-only audits or assigned disjoint write scopes.",
+            "- Use native file, shell, approval, and network tools only after the selected command permits them and the operation contract is clear.",
+            "",
+            "## Activation Test",
+            "",
+            "A clean session given a vague build request must route to `/brain-start` before implementation. The transcript should show the selected command, loaded skills, artifact target, and stop condition before any code edit.",
+            "",
+            "## Failure Modes",
+            "",
+            "- Do not answer from free-form chat when a command applies.",
+            "- Do not implement before command selection, artifact selection, and validation plan exist.",
+            "- Do not claim native `/brain-*` support unless the runtime has proven it.",
+            "- Do not load every skill to be safe.",
+        ]
+    )
+
+
 def cx_plugin_manifest() -> str:
     return json.dumps(
         {
@@ -256,6 +304,159 @@ def cc_plugin_manifest() -> str:
         },
         indent=2,
     ) + "\n"
+
+
+def cursor_plugin_manifest() -> str:
+    return json.dumps(
+        {
+            "name": PLUGIN_NAME,
+            "displayName": "Agent Brain",
+            "description": "Portable lifecycle, command routing, validation, and handoff discipline for coding agents.",
+            "version": "0.1.0",
+            "skills": "./skills/",
+            "commands": "./commands/",
+            "rules": "./rules/",
+        },
+        indent=2,
+    ) + "\n"
+
+
+def gemini_extension_manifest() -> str:
+    return json.dumps(
+        {
+            "name": PLUGIN_NAME,
+            "description": "Portable lifecycle, command routing, validation, and handoff discipline for coding agents.",
+            "version": "0.1.0",
+            "contextFileName": "plugins/agentbrain/GEMINI.md",
+        },
+        indent=2,
+    ) + "\n"
+
+
+def gemini_context_file() -> str:
+    return "\n".join(
+        [
+            "@./skills/agentbrain-bootstrap/SKILL.md",
+            "@./skills/agentbrain/SKILL.md",
+            "",
+        ]
+    )
+
+
+def cursor_rule() -> str:
+    return "\n".join(
+        [
+            "---",
+            "description: Agent Brain activation and command routing",
+            "alwaysApply: true",
+            "---",
+            "",
+            "At session start and before substantive work, load `skills/agentbrain-bootstrap/SKILL.md` and route applicable requests through the bundled `registry.json` and `commands/brain-*.md` specs.",
+            "",
+        ]
+    )
+
+
+def opencode_install_doc() -> str:
+    return "\n".join(
+        [
+            "# Agent Brain Plugin Install",
+            "",
+            "Add Agent Brain to the runtime plugin list with the local plugin path:",
+            "",
+            "```json",
+            "{",
+            '  "plugin": ["./plugins/agentbrain"]',
+            "}",
+            "```",
+            "",
+            "Restart the runtime, then run the activation test: send a vague build request and confirm the session routes through `/brain-start` before code edits.",
+            "",
+        ]
+    )
+
+
+def opencode_package() -> str:
+    return json.dumps(
+        {
+            "name": PLUGIN_NAME,
+            "version": "0.1.0",
+            "type": "module",
+            "main": ".opencode/plugins/agentbrain.js",
+        },
+        indent=2,
+    ) + "\n"
+
+
+def opencode_plugin() -> str:
+    return f"""/**
+ * Agent Brain plugin activation hook.
+ *
+ * Registers bundled skills and injects the bootstrap gate once per session so
+ * requests route through Agent Brain before free-form implementation.
+ */
+
+import fs from 'fs';
+import path from 'path';
+import {{ fileURLToPath }} from 'url';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const MARKER = '{BOOTSTRAP_MARKER}';
+let bootstrapCache = undefined;
+
+const stripFrontmatter = (content) => {{
+  const match = content.match(/^---\\n[\\s\\S]*?\\n---\\n([\\s\\S]*)$/);
+  return match ? match[1] : content;
+}};
+
+const pluginRoot = () => path.resolve(__dirname, '../..');
+
+const bootstrapContent = () => {{
+  if (bootstrapCache !== undefined) return bootstrapCache;
+
+  const root = pluginRoot();
+  const skillPath = path.join(root, 'skills', 'agentbrain-bootstrap', 'SKILL.md');
+  if (!fs.existsSync(skillPath)) {{
+    bootstrapCache = null;
+    return null;
+  }}
+
+  const content = stripFrontmatter(fs.readFileSync(skillPath, 'utf8')).trim();
+  bootstrapCache = `<${{MARKER}}>
+You have Agent Brain installed.
+
+The activation skill below is already loaded. Follow it before answering, and do not load it again unless the runtime explicitly requires that.
+
+${{content}}
+</${{MARKER}}>`;
+  return bootstrapCache;
+}};
+
+export const AgentBrainPlugin = async () => ({{
+  config: async (config) => {{
+    const skillsDir = path.join(pluginRoot(), 'skills');
+    config.skills = config.skills || {{}};
+    config.skills.paths = config.skills.paths || [];
+    if (!config.skills.paths.includes(skillsDir)) {{
+      config.skills.paths.push(skillsDir);
+    }}
+  }},
+
+  'experimental.chat.messages.transform': async (_input, output) => {{
+    const bootstrap = bootstrapContent();
+    if (!bootstrap || !output.messages?.length) return;
+
+    const firstUser = output.messages.find((message) => message.info?.role === 'user');
+    if (!firstUser?.parts?.length) return;
+    if (firstUser.parts.some((part) => part.type === 'text' && part.text.includes(MARKER))) return;
+
+    const ref = firstUser.parts[0];
+    firstUser.parts.unshift({{ ...ref, type: 'text', text: bootstrap }});
+  }},
+}});
+
+export default AgentBrainPlugin;
+"""
 
 
 def cc_marketplace() -> str:
@@ -320,10 +521,19 @@ def plugin_bundle_files(root: Path) -> list[tuple[Path, str]]:
     files: list[tuple[Path, str]] = [
         (root / ("." + "clau" + "de-plugin") / "marketplace.json", cc_marketplace()),
         (root / ".agents" / "plugins" / "marketplace.json", agent_marketplace()),
+        (root / ".cursor-plugin" / "plugin.json", cursor_plugin_manifest()),
+        (root / ".opencode" / "INSTALL.md", opencode_install_doc()),
+        (root / "gemini-extension.json", gemini_extension_manifest()),
         (root / PLUGIN_ROOT / ("." + "clau" + "de-plugin") / "plugin.json", cc_plugin_manifest()),
         (root / PLUGIN_ROOT / ("." + "co" + "dex-plugin") / "plugin.json", cx_plugin_manifest()),
+        (root / PLUGIN_ROOT / ".cursor-plugin" / "plugin.json", cursor_plugin_manifest()),
+        (root / PLUGIN_ROOT / ".opencode" / "plugins" / "agentbrain.js", opencode_plugin()),
+        (root / PLUGIN_ROOT / "package.json", opencode_package()),
+        (root / PLUGIN_ROOT / "GEMINI.md", gemini_context_file()),
+        (root / PLUGIN_ROOT / "rules" / "agentbrain.mdc", cursor_rule()),
         (root / PLUGIN_ROOT / "registry.json", plugin_registry(commands)),
         (root / PLUGIN_ROOT / "skills" / PLUGIN_NAME / "SKILL.md", plugin_skill(commands)),
+        (root / PLUGIN_ROOT / "skills" / "agentbrain-bootstrap" / "SKILL.md", bootstrap_skill()),
     ]
     command_source_paths = {Path(str(entry["file"])) for entry in commands}
     for rel_path in plugin_support_paths(root, commands):

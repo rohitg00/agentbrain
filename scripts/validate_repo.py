@@ -532,6 +532,8 @@ REQUIRED_AUDIENCE_PLAYBOOK_TERMS = [
 REQUIRED_SLASH_COMMAND_INSTALL_TERMS = [
     "thin wrappers",
     "plugin bundle",
+    "activation bootstrap",
+    "clean-session activation test",
     "command bodies",
     "commands/registry.json",
     "commands/brain-*.md",
@@ -563,6 +565,18 @@ REQUIRED_PLUGIN_BUNDLE_FILES = {
         '"installation": "AVAILABLE"',
         '"authentication": "ON_INSTALL"',
     ],
+    ".cursor-plugin/plugin.json": [
+        '"name": "agentbrain"',
+        '"rules": "./rules/"',
+    ],
+    ".opencode/INSTALL.md": [
+        "Agent Brain Plugin Install",
+        "/brain-start",
+    ],
+    "gemini-extension.json": [
+        '"name": "agentbrain"',
+        '"contextFileName": "plugins/agentbrain/GEMINI.md"',
+    ],
     "plugins/agentbrain/." + "clau" + "de-plugin/plugin.json": [
         '"name": "agentbrain"',
         '"skills": "./skills/"',
@@ -572,6 +586,27 @@ REQUIRED_PLUGIN_BUNDLE_FILES = {
         '"name": "agentbrain"',
         '"skills": "./skills/"',
         '"displayName": "Agent Brain"',
+    ],
+    "plugins/agentbrain/.cursor-plugin/plugin.json": [
+        '"name": "agentbrain"',
+        '"rules": "./rules/"',
+    ],
+    "plugins/agentbrain/.opencode/plugins/agentbrain.js": [
+        "AGENTBRAIN_BOOTSTRAP_LOADED",
+        "experimental.chat.messages.transform",
+        "config.skills.paths",
+    ],
+    "plugins/agentbrain/package.json": [
+        '"name": "agentbrain"',
+        '".opencode/plugins/agentbrain.js"',
+    ],
+    "plugins/agentbrain/GEMINI.md": [
+        "@./skills/agentbrain-bootstrap/SKILL.md",
+        "@./skills/agentbrain/SKILL.md",
+    ],
+    "plugins/agentbrain/rules/agentbrain.mdc": [
+        "skills/agentbrain-bootstrap/SKILL.md",
+        "registry.json",
     ],
     "plugins/agentbrain/registry.json": [
         '"schema_version": "1"',
@@ -586,6 +621,14 @@ REQUIRED_PLUGIN_BUNDLE_FILES = {
         "schemas/`",
         "/brain-verify",
         "python scripts/install_slash_commands.py --runtime agentbrain-plugin --check",
+    ],
+    "plugins/agentbrain/skills/agentbrain-bootstrap/SKILL.md": [
+        "A clean session given a vague build request must route to `/brain-start` before implementation.",
+        "Tool Mapping",
+        "Do not answer from free-form chat when a command applies.",
+    ],
+    "plugins/agentbrain/AGENTS.md": [
+        "Agent",
     ],
     "plugins/agentbrain/AGENTBRAIN.md": [
         "Agent Brain",

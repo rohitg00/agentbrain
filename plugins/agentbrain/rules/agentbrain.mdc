@@ -1,0 +1,6 @@
+---
+description: Agent Brain activation and command routing
+alwaysApply: true
+---
+
+At session start and before substantive work, load `skills/agentbrain-bootstrap/SKILL.md` and route applicable requests through the bundled `registry.json` and `commands/brain-*.md` specs.

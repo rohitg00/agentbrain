@@ -174,7 +174,7 @@ python scripts/install_slash_commands.py --runtime agentbrain-plugin
 python scripts/install_slash_commands.py --runtime <runtime-key>
 ```
 
-The plugin bundle and wrappers expose `/brain-*` shortcuts while keeping `commands/brain-*.md` as the source of truth. The plugin bundle also carries the command bodies, skills, templates, schemas, and core docs needed by plugin-based agents. Runtimes without proven plugin or custom slash-command support should use `AGENTS.md` and the command registry directly.
+The plugin bundle and wrappers expose `/brain-*` shortcuts while keeping `commands/brain-*.md` as the source of truth. The plugin bundle also carries an activation bootstrap, command bodies, skills, templates, schemas, and core docs needed by plugin-based agents. Runtimes without proven plugin or custom slash-command support should use `AGENTS.md` and the command registry directly.
 
 ### Run the local quality gate
 

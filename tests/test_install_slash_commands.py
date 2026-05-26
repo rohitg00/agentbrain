@@ -5,7 +5,7 @@ from scripts import install_slash_commands
 
 
 def write_registry(root: Path) -> None:
-    for rel_path in ["AGENTBRAIN.md", "PRINCIPLES.md", "ANTI_RATIONALIZATION.md"]:
+    for rel_path in ["AGENTS.md", "AGENTBRAIN.md", "PRINCIPLES.md", "ANTI_RATIONALIZATION.md"]:
         (root / rel_path).write_text(f"# {rel_path}\n", encoding="utf-8")
     commands = root / "commands"
     commands.mkdir()
@@ -129,9 +129,18 @@ def test_plugin_bundle_generation_and_check(tmp_path: Path) -> None:
     expected_paths = {
         tmp_path / ("." + "clau" + "de-plugin") / "marketplace.json",
         tmp_path / ".agents" / "plugins" / "marketplace.json",
+        tmp_path / ".cursor-plugin" / "plugin.json",
+        tmp_path / ".opencode" / "INSTALL.md",
+        tmp_path / "gemini-extension.json",
         tmp_path / "plugins" / "agentbrain" / ("." + "clau" + "de-plugin") / "plugin.json",
         tmp_path / "plugins" / "agentbrain" / ("." + "co" + "dex-plugin") / "plugin.json",
+        tmp_path / "plugins" / "agentbrain" / ".cursor-plugin" / "plugin.json",
+        tmp_path / "plugins" / "agentbrain" / ".opencode" / "plugins" / "agentbrain.js",
+        tmp_path / "plugins" / "agentbrain" / "GEMINI.md",
+        tmp_path / "plugins" / "agentbrain" / "package.json",
         tmp_path / "plugins" / "agentbrain" / "registry.json",
+        tmp_path / "plugins" / "agentbrain" / "rules" / "agentbrain.mdc",
+        tmp_path / "plugins" / "agentbrain" / "skills" / "agentbrain-bootstrap" / "SKILL.md",
         tmp_path / "plugins" / "agentbrain" / "skills" / "agentbrain" / "SKILL.md",
         tmp_path / "plugins" / "agentbrain" / "commands" / "brain-plan.md",
     }
@@ -144,6 +153,12 @@ def test_plugin_bundle_generation_and_check(tmp_path: Path) -> None:
     assert (tmp_path / "plugins" / "agentbrain" / "skills" / "engineering-grill" / "SKILL.md").exists()
     assert (tmp_path / "plugins" / "agentbrain" / "templates" / "implementation-plan.md").exists()
     assert (tmp_path / "plugins" / "agentbrain" / "schemas" / "implementation-plan.schema.json").exists()
+    bootstrap = (tmp_path / "plugins" / "agentbrain" / "skills" / "agentbrain-bootstrap" / "SKILL.md").read_text(encoding="utf-8")
+    assert "A clean session given a vague build request must route to `/brain-start` before implementation." in bootstrap
+    opencode_plugin = (tmp_path / "plugins" / "agentbrain" / ".opencode" / "plugins" / "agentbrain.js").read_text(encoding="utf-8")
+    assert "AGENTBRAIN_BOOTSTRAP_LOADED" in opencode_plugin
+    assert "experimental.chat.messages.transform" in opencode_plugin
+    assert "config.skills.paths" in opencode_plugin
     plugin_registry = json.loads((tmp_path / "plugins" / "agentbrain" / "registry.json").read_text(encoding="utf-8"))
     assert plugin_registry["commands"][0]["file"] == "commands/brain-plan.md"
     assert plugin_registry["commands"][0]["source_file"] == "commands/brain-plan.md"
