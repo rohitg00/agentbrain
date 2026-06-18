@@ -116,6 +116,13 @@ SINGLETON_PROVENANCE_FLAGS = [
     "--output",
 ]
 
+def _single_line_git_output(output: str) -> str:
+    return " ".join(output.split())
+
+
+def _unavailable_git_status(reason: str) -> str:
+    return f"unavailable: {_single_line_git_output(reason) or 'no git output'}"
+
 
 def _run_git(root: Path, *args: str) -> tuple[bool, str]:
     try:
@@ -141,7 +148,7 @@ def git_freshness_result(root: Path) -> str:
     origin_ok, origin = _run_git(root, "rev-parse", "origin/main")
     if not head_ok or not origin_ok:
         reason = head if not head_ok else origin
-        return f"unavailable: {reason}"
+        return _unavailable_git_status(reason)
     if head == origin:
         return f"fresh: HEAD equals origin/main at {head}"
     return f"stale: HEAD {head} differs from origin/main {origin}"
@@ -150,15 +157,15 @@ def git_freshness_result(root: Path) -> str:
 def git_fetch_result(root: Path) -> str:
     fetch_ok, fetch_output = _run_git(root, "fetch", "origin", "main")
     if not fetch_ok:
-        return f"unavailable: {fetch_output}"
-    suffix = f" ({fetch_output})" if fetch_output else ""
+        return _unavailable_git_status(fetch_output)
+    suffix = f" ({_single_line_git_output(fetch_output)})" if fetch_output else ""
     return f"fetched: git fetch origin main succeeded{suffix}"
 
 
 def git_worktree_status(root: Path) -> str:
     status_ok, status_output = _run_git(root, "status", "--short")
     if not status_ok:
-        return f"unavailable: {status_output}"
+        return _unavailable_git_status(status_output)
     if not status_output:
         return "clean"
     changed_paths = [line.strip() for line in status_output.splitlines() if line.strip()]
