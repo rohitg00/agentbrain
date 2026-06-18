@@ -910,6 +910,33 @@ def test_build_report_records_worktree_status_to_preserve_user_changes(tmp_path:
     )
 
 
+def test_git_worktree_status_preserves_multiline_status_output(monkeypatch, tmp_path: Path) -> None:
+    monkeypatch.setattr(
+        runtime_smoke,
+        "_run_git",
+        lambda *_args: (True, " M scripts/runtime_smoke.py\n?? notes.txt\n"),
+    )
+
+    assert runtime_smoke.git_worktree_status(tmp_path) == "dirty: 2 path(s) changed"
+
+
+def test_git_worktree_status_collapses_multiline_unavailable_output(monkeypatch, tmp_path: Path) -> None:
+    monkeypatch.setattr(
+        runtime_smoke,
+        "_run_git",
+        lambda *_args: (
+            False,
+            "fatal: not a git repository\nStopping at filesystem boundary",
+        ),
+    )
+
+    status = runtime_smoke.git_worktree_status(tmp_path)
+
+    assert status == "unavailable: fatal: not a git repository Stopping at filesystem boundary"
+    assert "\n" not in status
+
+
+
 def test_full_validation_rejects_blocked_validation_command_as_successful_gate(monkeypatch, tmp_path: Path):
     monkeypatch.setattr(runtime_smoke, "git_freshness_result", lambda _root: "fresh: HEAD equals origin/main at abc123")
     monkeypatch.setattr(runtime_smoke, "git_fetch_result", lambda _root: "fetched: git fetch origin main succeeded")
