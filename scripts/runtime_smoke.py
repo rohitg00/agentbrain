@@ -130,7 +130,7 @@ def _run_git(root: Path, *args: str) -> tuple[bool, str]:
     except Exception as exc:  # pragma: no cover - defensive around host git setup
         return False, str(exc)
 
-    output = (completed.stdout or completed.stderr).strip()
+    output = " ".join((completed.stdout or completed.stderr).split())
     if completed.returncode != 0:
         return False, output or f"git {' '.join(args)} exited {completed.returncode}"
     return True, output
